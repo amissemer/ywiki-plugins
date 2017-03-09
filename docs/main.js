@@ -17,11 +17,27 @@ $( document ).ready( function () {
             if (foo.is(e.target) || foo.has(e.target).length > 0) {
                 // If the target of the click is the surrounding block
                 // Hide the iframe
-                $('iframe').fadeOut();
-                $('#block').fadeOut();
-                $('#iframecontainer').fadeOut();
+                close_iframe();
             }
         });
 
 	});
 });
+
+function close_iframe() {
+    $('iframe').fadeOut();
+    $('#block').fadeOut();
+    $('#iframecontainer').fadeOut();
+}
+
+var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+var eventer = window[eventMethod];
+var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+// Listen to message from child window
+eventer(messageEvent,function(e) {
+  console.log('parent received message!:  ',e.data);
+  if (e.data=="CloseMe") {
+    close_iframe();
+  }
+},false);
