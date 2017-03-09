@@ -25,9 +25,15 @@ $( document ).ready( function () {
 });
 
 function close_iframe() {
-    $('iframe').fadeOut();
-    $('#block').fadeOut();
-    $('#iframecontainer').fadeOut();
+    $('iframe').fadeOut( function() {
+        $('#block').fadeOut();
+        $('#iframecontainer').fadeOut();
+    });
+}
+
+function doCreate() {
+    console.log("New Service Engagement...");
+    close_iframe();
 }
 
 var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
@@ -36,8 +42,9 @@ var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
 
 // Listen to message from child window
 eventer(messageEvent,function(e) {
-  console.log('parent received message!:  ',e.data);
-  if (e.data=="CloseMe") {
-    close_iframe();
+  switch (e.data) {
+    case "CloseMe": close_iframe(); break
+    case "Submit": doCreate(); break
+    default: console.log('Parent received unknown message!:  ',e.data);
   }
 },false);
