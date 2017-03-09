@@ -1,0 +1,22 @@
+{
+  "name": "ywiki-plugins",
+  "homepage": "http://?",
+  "authors": [
+    "Adrien MISSEMER <adrien.missemer@hybris.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "proprietary",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "bootstrap-select": "^1.12.2"
+  }
+}

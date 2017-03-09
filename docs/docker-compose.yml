@@ -1,0 +1,11 @@
+version: "2"
+services:
+  http:
+    image: nginx
+    volumes:
+     - .:/usr/share/nginx/html:ro
+     - ./mockServer/conf.d:/etc/nginx/conf.d/
+    ports:
+     - 80:80
+     - 443:443
+
