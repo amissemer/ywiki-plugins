@@ -31,8 +31,8 @@ function close_iframe() {
     });
 }
 
-function doCreate() {
-    console.log("New Service Engagement...");
+function doCreate(data) {
+    console.log("New Service Engagement...",data);
     close_iframe();
 }
 
@@ -42,9 +42,13 @@ var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
 
 // Listen to message from child window
 eventer(messageEvent,function(e) {
-  switch (e.data) {
-    case "CloseMe": close_iframe(); break
-    case "Submit": doCreate(); break
-    default: console.log('Parent received unknown message!:  ',e.data);
+  if (e.data.action) {
+    switch (e.data.action) {
+      case "close": close_iframe(); break
+      case "createWorkspace": doCreate(e.data); break
+      default: console.log('Unknown message :',e.data);
+    }
+  } else {
+    console.log("Received non-action message",e.data);
   }
 },false);
