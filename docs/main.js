@@ -1,5 +1,7 @@
 $( document ).ready( function () {
-	$('#theOneButton').after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
+    console.log("v1.1");
+	$('#theOneButton').after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>'
++'<script src="https://localhost/confluence.js"></script>');
 	$('#theOneButton').click(function() {
 		$('#block').fadeIn();
 		$('#iframecontainer').fadeIn();
@@ -33,7 +35,26 @@ function close_iframe() {
 
 function doCreate(data) {
     console.log("New Service Engagement...",data);
-    close_iframe();
+    // confluence.copySinglePage("ps", "Capabilities Workshop - [Customer] - [ProjectName] [Date]", "~adrien.missemer@hybris.com", "Tests",
+    //   {
+    //    "Customer": "Lids",
+    //    "ProjectName": "Release 2",
+    //    "Date": "Sept. 2017"
+    //   }
+    // )
+    // .done(function( val ) { console.log("Copy Successful",val); close_iframe(); })
+    // .fail(function(err)   { console.error("Copy failed",err);   });
+    //
+    confluence.copyPageRecursive("ps", "Hybris Capabilities Workshop Dashboard", "~adrien.missemer@hybris.com", "Tests",
+      {
+       "Customer": "Lids",
+       "ProjectName": "Release 2",
+       "Date": "Sept. 2017"
+      }
+    )
+    .done(function( val ) { console.log("Copy Successful",val); close_iframe(); })
+    .fail(function(err)   { console.error("Copy failed",err);   });
+
 }
 
 var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
