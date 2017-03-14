@@ -11,6 +11,7 @@ $( document ).ready( function () {
                 projectName: $('#projectName').val()
             },"https://wiki.hybris.com");
         }
+        this.prop('disabled', true);
         return false;
     });
 });
