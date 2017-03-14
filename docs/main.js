@@ -34,24 +34,32 @@ yWikiPlugins.main = (function() {
         });
       }
 
+      var template_pattern = /\[Customer\]|\[ProjectName\]/;
       // Filters pages that contain [placeholders]
       var onlyTemplates = function (page) {
-        return /\[Customer\]|\[ProjectName\]/.test(page.title);
+
+        return template_pattern.test(page.title);
       }
 
       function doCreate(data) {
         console.log("New Service Engagement...",data);
         //confluence.deletePageRecursive("~adrien.missemer@hybris.com","Hybris Capabilities Workshop Dashboard").
         //then( function() {
-
+        var copiedPages=[];
         confluence.copyPageRecursive("ps", data.servicePackage, targetSpace, data.customer, onlyTemplates,
           {
             "Customer": data.customer,
             "ProjectName": data.projectName,
             "ServicePackage": data.servicePackage
           }
-        )
-        .done(function() { console.log("Copy Successful",arguments); close_iframe(); })
+          ,copiedPages
+        ).pipe( function() {
+          if (copiedPages.length==0) {
+            throw "No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern;
+          }
+          return confluence.addLabel(copiedPages[0].id,'capabilities-workshop');
+        })
+        .done(function() { console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages); close_iframe(); })
         .fail(function() { console.error("Copy failed",arguments);   });
         //} );
 
