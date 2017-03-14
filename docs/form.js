@@ -2,7 +2,8 @@ $( document ).ready( function () {
 	$("#form-close").click( function() {
         parent.postMessage({action: "close"},"https://wiki.hybris.com");
     });
-    $("#wizard-submit").click( function() {
+		var submitBtn=$("#wizard-submit");
+    submitBtn.click( function() {
         if (parent) {
             parent.postMessage({
                 action: "createWorkspace",
@@ -11,7 +12,7 @@ $( document ).ready( function () {
                 projectName: $('#projectName').val()
             },"https://wiki.hybris.com");
         }
-        this.prop('disabled', true);
+        submitBtn.prop('disabled', true);
         return false;
     });
 });
