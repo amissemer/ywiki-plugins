@@ -1,6 +1,6 @@
 yWikiPlugins.main = (function() {
 
-  var wireButton = function(buttonSelector) {
+  var wireButton = function(buttonSelector,targetSpace) {
     $( document ).ready( function () {
       $('#theOneButton').after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>'
       +'<script src="'+yWikiPlugins.getHost()+'/confluence.js"></script>');
@@ -34,44 +34,49 @@ yWikiPlugins.main = (function() {
         });
       }
 
+      // Filters pages that contain [placeholders]
+      var onlyTemplates = function (page) {
+        return /\[Customer\]|\[ProjectName\]/.test(page.title);
+      }
+
       function doCreate(data) {
         console.log("New Service Engagement...",data);
         //confluence.deletePageRecursive("~adrien.missemer@hybris.com","Hybris Capabilities Workshop Dashboard").
         //then( function() {
 
-          confluence.copyPageRecursive("ps", data.servicePackage, "ps", data.customer,
+        confluence.copyPageRecursive("ps", data.servicePackage, targetSpace, data.customer, onlyTemplates,
           {
             "Customer": data.customer,
             "ProjectName": data.projectName,
             "ServicePackage": data.servicePackage
           }
         )
-        .done(function( val ) { console.log("Copy Successful",val); close_iframe(); })
-        .fail(function(err)   { console.error("Copy failed",err);   });
-      //} );
+        .done(function() { console.log("Copy Successful",arguments); close_iframe(); })
+        .fail(function() { console.error("Copy failed",arguments);   });
+        //} );
 
-    }
-
-    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-    var eventer = window[eventMethod];
-    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-
-    // Listen to message from child window
-    eventer(messageEvent,function(e) {
-      if (e.data.action) {
-        switch (e.data.action) {
-          case "close": close_iframe(); break
-          case "createWorkspace": doCreate(e.data); break
-          default: console.log('Unknown message :',e.data);
-        }
-      } else {
-        console.log("Received non-action message",e.data);
       }
-    },false);
-  });
-};
-return {
-  wireButton:wireButton
-}
+
+      var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+      var eventer = window[eventMethod];
+      var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+      // Listen to message from child window
+      eventer(messageEvent,function(e) {
+        if (e.data.action) {
+          switch (e.data.action) {
+            case "close": close_iframe(); break
+            case "createWorkspace": doCreate(e.data); break
+            default: console.log('Unknown message :',e.data);
+          }
+        } else {
+          console.log("Received non-action message",e.data);
+        }
+      },false);
+    });
+  };
+  return {
+    wireButton:wireButton
+  }
 
 })()

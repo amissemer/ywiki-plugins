@@ -98,36 +98,44 @@ var confluence = (function () {
       }
     );
   };
-  var copyPageRecursive = function(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, titleReplacements) {
+  var copyPageRecursive = function(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, filter, titleReplacements) {
     var sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
     var targetPagePromise = getContent(toSpaceKey,toPageTitle, 'space');
     return $.when( sourcePagePromise, targetPagePromise )
     .pipe(function(sourcePage, targetPage) {
-      return copyPageRecursiveInternal( sourcePage.id, targetPage.space.key, targetPage.id, titleReplacements);
+      return copyPageRecursiveInternal( sourcePage.id, targetPage.space.key, targetPage.id, filter, titleReplacements);
     });
   };
-  var copyPageRecursiveInternal = function (sourcePageId, targetSpaceKey, targetPageId, titleReplacements) {
+  var copyPageRecursiveInternal = function (sourcePageId, targetSpaceKey, targetPageId, filter, titleReplacements) {
     return getContentById(sourcePageId, 'space,body.storage,children.page')
     .pipe(function (pageToCopy) {
-      console.log("Found page to Copy",pageToCopy);
-      pageToCopy.title = replacePlaceholders(pageToCopy.title, titleReplacements);
-      console.log("New Title for target page: "+pageToCopy.title);
-      // Create the new page under targetSpaceKey:targetPageId
-      return createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId)
-      .pipe( function(copiedPage) {
-        // now we recursively copy all children
-        var childrenPromises = [];
-        console.log("In copyPageRecursiveInternal", pageToCopy,copiedPage);
-        if (pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results) {
-          pageToCopy.children.page.results.forEach( function (child) {
-            childrenPromises.push(copyPageRecursiveInternal(child.id,targetSpaceKey,copiedPage.id,titleReplacements));
+      if (filter(pageToCopy)) {
+        console.log("Found page to Copy",pageToCopy);
+        pageToCopy.title = replacePlaceholders(pageToCopy.title, titleReplacements);
+        console.log("New Title for target page: "+pageToCopy.title);
+        // Create the new page under targetSpaceKey:targetPageId
+        return createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId)
+          .pipe( function(copiedPage) {
+            return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, filter, titleReplacements);
           });
-        }
-        // return the combination of all children copy promises
-        return $.when.apply($,childrenPromises);
-      });
-    })
+      } else {
+        console.log("Page is not a template, not copied, but children will be copied: ",pageToCopy.title);
+        return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, filter, titleReplacements);
+      }
 
+    })
+  };
+  var copyAllChildren = function(pageToCopy, targetSpaceKey, targetPageId, filter, titleReplacements) {
+    // recursively copy all children
+    var childrenPromises = [];
+    console.log("In copyAllChildren", pageToCopy,targetPageId);
+    if (pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results) {
+      pageToCopy.children.page.results.forEach( function (child) {
+        childrenPromises.push(copyPageRecursiveInternal(child.id, targetSpaceKey, targetPageId, filter, titleReplacements));
+      });
+    }
+    // return the combination of all children copy promises
+    return $.when.apply($,childrenPromises);
   }
   // returns a function that will log all the arguments on the console as an error, preprended with a message.
   var errorLogger = function (message) {
@@ -174,6 +182,15 @@ var confluence = (function () {
         data: JSON.stringify(page)
       }).fail( errorLogger( "POST new page failed" ));
     };
+    var addLabel = function(pageId, label) {
+      return jQuery.ajax(
+        {
+          url: contextPath + '/rest/api/content'+encodeURIComponent(pageId)+'/label',
+          type: 'POST',
+          contentType: 'application/json',
+          data: [{"prefix": "global","name": "label"}]
+        }).fail( errorLogger( "ADD label to page "+pageId+" failed" ));
+    };
 
     // exported functions
     return {
@@ -182,7 +199,8 @@ var confluence = (function () {
       copyPageRecursive: copyPageRecursive,
       createPage: createPage,
       deletePage: deletePage,
-      deletePageRecursive: deletePageRecursive
+      deletePageRecursive: deletePageRecursive,
+      addLabel: addLabel
     }
 
   })();
