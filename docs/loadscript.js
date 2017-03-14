@@ -5,17 +5,17 @@ var yWikiPlugins = (function () {
     script.type = "text/javascript";
 
     if (script.readyState){  //IE
-        script.onreadystatechange = function(){
-            if (script.readyState == "loaded" ||
-                    script.readyState == "complete"){
-                script.onreadystatechange = null;
-                if (typeof callback === "function") {callback();}
-            }
-        };
+      script.onreadystatechange = function(){
+        if (script.readyState == "loaded" ||
+        script.readyState == "complete"){
+          script.onreadystatechange = null;
+          if (typeof callback === "function") {callback();}
+        }
+      };
     } else {  //Others
-        script.onload = function(){
-            if (typeof callback === "function") {callback();}
-        };
+      script.onload = function(){
+        if (typeof callback === "function") {callback();}
+      };
     }
 
     script.src = url;

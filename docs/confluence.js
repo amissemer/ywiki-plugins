@@ -2,14 +2,14 @@ var confluence = (function () {
 
   var deletePage = function(spaceKey,pageTitle) {
     return getContent(spaceKey,pageTitle)
-      .pipe( function (page) {
+    .pipe( function (page) {
       return deletePageById(page.id);
     });
   };
   var deletePageRecursive = function(spaceKey,pageTitle) {
     return getContent(spaceKey,pageTitle)
-      .pipe( function (page) {
-        return deletePageRecursiveInternal( page.id );
+    .pipe( function (page) {
+      return deletePageRecursiveInternal( page.id );
     });
   };
   var deletePageById = function (pageId) {
@@ -20,29 +20,29 @@ var confluence = (function () {
   };
   var deletePageRecursiveInternal = function (pageId) {
     return getContentById(pageId, 'children.page')
-        .pipe( function (page) {
-          // first delete children
-          var childrenPromises = [];
-          console.log("In deletePageRecursiveInternal for ", page.title);
-          if (page.children && page.children.page && page.children.page.results) {
-            page.children.page.results.forEach( function (child) {
-              childrenPromises.push(deletePageRecursiveInternal(child.id));
-            });
-          }
-          // when all children are deleted
-          return $.when.apply($,childrenPromises)
-          // delete the current page
-            .pipe( function() {
-              return deletePageById(pageId);
-          });
+    .pipe( function (page) {
+      // first delete children
+      var childrenPromises = [];
+      console.log("In deletePageRecursiveInternal for ", page.title);
+      if (page.children && page.children.page && page.children.page.results) {
+        page.children.page.results.forEach( function (child) {
+          childrenPromises.push(deletePageRecursiveInternal(child.id));
         });
+      }
+      // when all children are deleted
+      return $.when.apply($,childrenPromises)
+      // delete the current page
+      .pipe( function() {
+        return deletePageById(pageId);
+      });
+    });
   };
   /**
-   * Get a page by spaceKey and title from Confluence and returns a deferred for that page.
-   * See jQuery.ajax().done()
-   * Failures are logged and ignored.
-   * The deferred is resolved with the first matching page is any, else it is rejected.
-   */
+  * Get a page by spaceKey and title from Confluence and returns a deferred for that page.
+  * See jQuery.ajax().done()
+  * Failures are logged and ignored.
+  * The deferred is resolved with the first matching page is any, else it is rejected.
+  */
   var getContent = function(spaceKey,pageTitle,expand) {
     var expandParam="";
     if (expand) {
@@ -68,28 +68,28 @@ var confluence = (function () {
           defer.reject(status, error, jqr);
         }
       });
-    // add a default handler for failures, to make sure they are logged
-    defer.fail(errorLogger( "AJAX get page by title failed"));
-    return defer.promise();
-  };
+      // add a default handler for failures, to make sure they are logged
+      defer.fail(errorLogger( "AJAX get page by title failed"));
+      return defer.promise();
+    };
 
-  var getContentById = function(pageId, expand) {
-    var expandParam="";
-    if (expand) {
-      expandParam = '?expand='+encodeURIComponent(expand);
-    }
-    var url = contextPath + '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
-    console.log(url);
-    return jQuery.ajax(url)
-        .fail(errorLogger( "GET page by pageId failed"));
-  };
-  /**
-   * Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
-   * and do a placeholder replacement in each page title using the titleReplacements.
-   */
-  var copyPage = function(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, titleReplacements) {
-    return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage')
-    .pipe(function(pageToCopy) {
+    var getContentById = function(pageId, expand) {
+      var expandParam="";
+      if (expand) {
+        expandParam = '?expand='+encodeURIComponent(expand);
+      }
+      var url = contextPath + '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
+      console.log(url);
+      return jQuery.ajax(url)
+      .fail(errorLogger( "GET page by pageId failed"));
+    };
+    /**
+    * Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
+    * and do a placeholder replacement in each page title using the titleReplacements.
+    */
+    var copyPage = function(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, titleReplacements) {
+      return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage')
+      .pipe(function(pageToCopy) {
         console.log("Found page to Copy",pageToCopy);
         pageToCopy.title = replacePlaceholders(pageToCopy.title,titleReplacements);
         console.log("New Title for target page: "+pageToCopy.title);
@@ -102,31 +102,31 @@ var confluence = (function () {
     var sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
     var targetPagePromise = getContent(toSpaceKey,toPageTitle, 'space');
     return $.when( sourcePagePromise, targetPagePromise )
-      .pipe(function(sourcePage, targetPage) {
-        return copyPageRecursiveInternal( sourcePage.id, targetPage.space.key, targetPage.id, titleReplacements);
-      });
-    };
+    .pipe(function(sourcePage, targetPage) {
+      return copyPageRecursiveInternal( sourcePage.id, targetPage.space.key, targetPage.id, titleReplacements);
+    });
+  };
   var copyPageRecursiveInternal = function (sourcePageId, targetSpaceKey, targetPageId, titleReplacements) {
     return getContentById(sourcePageId, 'space,body.storage,children.page')
-        .pipe(function (pageToCopy) {
-          console.log("Found page to Copy",pageToCopy);
-          pageToCopy.title = replacePlaceholders(pageToCopy.title, titleReplacements);
-          console.log("New Title for target page: "+pageToCopy.title);
-          // Create the new page under targetSpaceKey:targetPageId
-          return createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId)
-            .pipe( function(copiedPage) {
-              // now we recursively copy all children
-              var childrenPromises = [];
-              console.log("In copyPageRecursiveInternal", pageToCopy,copiedPage);
-              if (pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results) {
-                pageToCopy.children.page.results.forEach( function (child) {
-                  childrenPromises.push(copyPageRecursiveInternal(child.id,targetSpaceKey,copiedPage.id,titleReplacements));
-                });
-              }
-              // return the combination of all children copy promises
-              return $.when.apply($,childrenPromises);
+    .pipe(function (pageToCopy) {
+      console.log("Found page to Copy",pageToCopy);
+      pageToCopy.title = replacePlaceholders(pageToCopy.title, titleReplacements);
+      console.log("New Title for target page: "+pageToCopy.title);
+      // Create the new page under targetSpaceKey:targetPageId
+      return createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId)
+      .pipe( function(copiedPage) {
+        // now we recursively copy all children
+        var childrenPromises = [];
+        console.log("In copyPageRecursiveInternal", pageToCopy,copiedPage);
+        if (pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results) {
+          pageToCopy.children.page.results.forEach( function (child) {
+            childrenPromises.push(copyPageRecursiveInternal(child.id,targetSpaceKey,copiedPage.id,titleReplacements));
           });
-        })
+        }
+        // return the combination of all children copy promises
+        return $.when.apply($,childrenPromises);
+      });
+    })
 
   }
   // returns a function that will log all the arguments on the console as an error, preprended with a message.
@@ -168,31 +168,31 @@ var confluence = (function () {
   }
   var postPage = function(page) {
     return jQuery.ajax(
-        {
-          url: contextPath + '/rest/api/content',
-          type: 'POST',
-          contentType: 'application/json',
-          data: JSON.stringify(page)
-        }).fail( errorLogger( "POST new page failed" ));
-  };
+      {
+        url: contextPath + '/rest/api/content',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(page)
+      }).fail( errorLogger( "POST new page failed" ));
+    };
 
-  // exported functions
-  return {
-    getContent: getContent,
-    copyPage: copyPage,
-    copyPageRecursive: copyPageRecursive,
-    createPage: createPage,
-    deletePage: deletePage,
-    deletePageRecursive: deletePageRecursive
-  }
+    // exported functions
+    return {
+      getContent: getContent,
+      copyPage: copyPage,
+      copyPageRecursive: copyPageRecursive,
+      createPage: createPage,
+      deletePage: deletePage,
+      deletePageRecursive: deletePageRecursive
+    }
 
-})();
+  })();
 
 
-// confluence.copyPage("ps", "Capabilities Workshop - [Customer] - [ProjectName] [Date]", "~adrien.missemer@hybris.com", "Tests",
-//   {
-//     "Customer": "Lids",
-//     "ProjectName": "Release 2",
-//     "Date": "Sept. 2017"
-//   }
-// ).done(function( val ) {console.log("Copy Successful",val)}).fail(function(err) {console.error("Copy failed",err)});
+  // confluence.copyPage("ps", "Capabilities Workshop - [Customer] - [ProjectName] [Date]", "~adrien.missemer@hybris.com", "Tests",
+  //   {
+  //     "Customer": "Lids",
+  //     "ProjectName": "Release 2",
+  //     "Date": "Sept. 2017"
+  //   }
+  // ).done(function( val ) {console.log("Copy Successful",val)}).fail(function(err) {console.error("Copy failed",err)});
