@@ -8,11 +8,19 @@ $( document ).ready( function () {
 			parent.postMessage({
 				action: "createWorkspace",
 				customer: $('#customerSelect').val(),
-				servicePackage: $('#serviceSelect').val(),
 				projectName: $('#projectName').val()
 			},"https://wiki.hybris.com");
 		}
 		submitBtn.prop('disabled', true);
 		return false;
 	});
+
+	function getHashValue(key) {
+	  var matches = location.hash.match(new RegExp(key+'=([^&]*)'));
+	  return matches ? matches[1] : null;
+	}
+
+	// usage
+	var newInstanceDisplayName = decodeURIComponent(getHashValue('newInstanceDisplayName'));
+	$('#mainTitle').text("New " + newInstanceDisplayName);
 });

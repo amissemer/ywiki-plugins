@@ -1,13 +1,26 @@
 yWikiPlugins.main = (function() {
 
-  var wireButton = function(buttonSelector,targetSpace) {
+/*  {
+    cssSelector: '#theOneButton',
+	  targetSpace: 'ps',
+	  newInstanceDisplayName: 'Hybris Capabilities Workshop Engagement',
+	  addLabel: 'capabilities-workshop'
+  }*/
+  var wireButton = function(options) {
+    if (!options || !options.cssSelector || !options.targetSpace || !options.newInstanceDisplayName || !options.addLabel) {
+      throw "wireButton({cssSelector='',targetSpace='',newInstanceDisplayName='',addLabel=''})"
+    }
+    var sourcePageId = $('meta[name=ajs-page-id]').attr("content");
+    if (!sourcePageId) {
+      throw "Could not read current pageId";
+    }
     $( document ).ready( function () {
-      $('#theOneButton').after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>'
+      $(options.cssSelector).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>'
       +'<script src="'+yWikiPlugins.getHost()+'/confluence.js"></script>');
-      $(buttonSelector).click(function() {
+      $(options.cssSelector).click(function() {
         $('#block').fadeIn();
         $('#iframecontainer').fadeIn();
-        $('#iframecontainer iframe').attr('src', yWikiPlugins.getHost()+'/form.html');
+        $('#iframecontainer iframe').attr('src', yWikiPlugins.getHost()+'/form.html#newInstanceDisplayName='+encodeURIComponent(options.newInstanceDisplayName));
         $('#iframecontainer iframe').load(function() {
           $('#loader').fadeOut(function() {
             $('iframe').fadeIn();
@@ -46,20 +59,26 @@ yWikiPlugins.main = (function() {
         //confluence.deletePageRecursive("~adrien.missemer@hybris.com","Hybris Capabilities Workshop Dashboard").
         //then( function() {
         var copiedPages=[];
-        confluence.copyPageRecursive("ps", data.servicePackage, targetSpace, data.customer, onlyTemplates,
+        confluence.getContentById(sourcePageId,'space')
+        .pipe(function(sourcePage) {
+          return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, data.customer, onlyTemplates,
           {
             "Customer": data.customer,
-            "ProjectName": data.projectName,
-            "ServicePackage": data.servicePackage
+            "ProjectName": data.projectName
           }
           ,copiedPages
-        ).pipe( function() {
+        )}).pipe( function() {
           if (copiedPages.length==0) {
             throw "No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern;
           }
-          return confluence.addLabel(copiedPages[0].id,'capabilities-workshop');
+          return confluence.addLabel(copiedPages[0].id, options.addLabel);
         })
-        .done(function() { console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages); close_iframe(); })
+        .done(function() {
+          console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages);
+          //close_iframe();
+          // New redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
+          window.location.href = '/pages/viewpage.action?pageId='+copiedPages[0].id;
+        })
         .fail(function() { console.error("Copy failed",arguments);   });
         //} );
 

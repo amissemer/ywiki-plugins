@@ -201,7 +201,8 @@ var confluence = (function () {
       createPage: createPage,
       deletePage: deletePage,
       deletePageRecursive: deletePageRecursive,
-      addLabel: addLabel
+      addLabel: addLabel,
+      getContentById:getContentById
     }
 
   })();
