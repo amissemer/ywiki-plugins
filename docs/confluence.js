@@ -183,6 +183,15 @@ var confluence = (function () {
         data: JSON.stringify(page)
       }).fail( errorLogger( "POST new page failed" ));
     };
+    var updateContent = function(page) {
+      return jQuery.ajax(
+        {
+          url: contextPath + '/rest/api/content/'+encodeURIComponent(page.id),
+          type: 'PUT',
+          contentType: 'application/json',
+          data: JSON.stringify(page)
+        }).fail( errorLogger( "PUT page failed "+page.title ));
+    };
     var addLabel = function(pageId, label) {
       return jQuery.ajax(
         {
@@ -202,7 +211,8 @@ var confluence = (function () {
       deletePage: deletePage,
       deletePageRecursive: deletePageRecursive,
       addLabel: addLabel,
-      getContentById:getContentById
+      getContentById: getContentById,
+      updateContent: updateContent
     }
 
   })();
