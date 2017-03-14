@@ -35,7 +35,7 @@ function close_iframe() {
 
 function doCreate(data) {
     console.log("New Service Engagement...",data);
-    // confluence.copySinglePage("ps", "Capabilities Workshop - [Customer] - [ProjectName] [Date]", "~adrien.missemer@hybris.com", "Tests",
+    // confluence.copyPage("ps", "Capabilities Workshop - [Customer] - [ProjectName] [Date]", "~adrien.missemer@hybris.com", "Tests",
     //   {
     //    "Customer": "Lids",
     //    "ProjectName": "Release 2",
@@ -45,15 +45,21 @@ function doCreate(data) {
     // .done(function( val ) { console.log("Copy Successful",val); close_iframe(); })
     // .fail(function(err)   { console.error("Copy failed",err);   });
     //
-    confluence.copyPageRecursive("ps", "Hybris Capabilities Workshop Dashboard", "~adrien.missemer@hybris.com", "Tests",
-      {
-       "Customer": "Lids",
-       "ProjectName": "Release 2",
-       "Date": "Sept. 2017"
-      }
-    )
-    .done(function( val ) { console.log("Copy Successful",val); close_iframe(); })
-    .fail(function(err)   { console.error("Copy failed",err);   });
+    confluence.deletePageRecursive("~adrien.missemer@hybris.com","Hybris Capabilities Workshop Dashboard").
+    then( function() {
+
+      confluence.copyPageRecursive("ps", "Hybris Capabilities Workshop Dashboard", "~adrien.missemer@hybris.com", "Tests",
+        {
+         "Customer": "Lids",
+         "ProjectName": "Release 2",
+         "Date": "Sept. 2017"
+        }
+      )
+      .done(function( val ) { console.log("Copy Successful",val); close_iframe(); })
+      .fail(function(err)   { console.error("Copy failed",err);   });
+
+
+    } );
 
 }
 
