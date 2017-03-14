@@ -75,9 +75,9 @@ yWikiPlugins.main = (function() {
         })
         .done(function() {
           console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages);
-          //close_iframe();
-          // New redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
-          window.location.href = '/pages/viewpage.action?pageId='+copiedPages[0].id;
+          close_iframe();
+          // Now open new tab to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
+          window.open('/pages/viewpage.action?pageId='+copiedPages[0].id);
         })
         .fail(function() { console.error("Copy failed",arguments);   });
         //} );
