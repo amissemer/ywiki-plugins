@@ -132,8 +132,7 @@ var confluence = (function () {
   // returns a function that will log all the arguments on the console as an error, preprended with a message.
   var errorLogger = function (message) {
     return function() {
-      arguments.unshit(message);
-      console.error.apply(console,arguments);
+      console.error(message,arguments);
     }
   };
   var replacePlaceholders=function(template, replacements) {
