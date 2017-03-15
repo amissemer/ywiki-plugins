@@ -5,7 +5,7 @@ $( document ).ready( function () {
 	$('#customerSelect').autocomplete({
     source: function(request,responseCallback) {
 			parent.postMessage({ action: "findCustomer", customerPartial: request.term }, "https://wiki.hybris.com");
-			currentCustomerCallback = responseCallback;
+			customerCallbacks[request.term] = responseCallback;
 		}
   });
 	var submitBtn=$("#wizard-submit");
@@ -29,7 +29,7 @@ $( document ).ready( function () {
 	$('#mainTitle').text("New " + newInstanceDisplayName);
 });
 
-var currentCustomerCallback=null;
+var customerCallbacks={};
 // Listen to message from parent window
 var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
 var eventer = window[eventMethod];
@@ -38,10 +38,9 @@ eventer(messageEvent,function(e) {
 	if (e.data.action) {
 		switch (e.data.action) {
 			case "findCustomerResponse":
-				if (currentCustomerCallback) {
+				if (customerCallbacks[e.data.term]) {
 					console.log("callback",e.data.result);
-					currentCustomerCallback(e.data.result);
-					currentCustomerCallback=null;
+					customerCallbacks[e.data.term](e.data.result);
 				} else {
 					console.log("no callback",e.data.result);
 				}

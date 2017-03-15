@@ -152,9 +152,10 @@ yWikiPlugins.main = (function() {
       }
 
       var findCustomerAction = function (data) {
+        var term = data.customerPartial;
         getCustomersMatching(options.targetSpace , options.projectDocumentationRootPage, data.customerPartial, customerComboLimit)
         .done(function (customerNames) {
-          sendCustomerNames(customerNames);
+          sendCustomerNames(term, customerNames);
         });
       };
 
@@ -225,7 +226,7 @@ yWikiPlugins.main = (function() {
       })
       .pipe(function (regionResults) {
         cachedRegionResults = regionResults;
-        var titleRestriction = (partialTitle?' and title~"'+encodeURIComponent(partialTitle)+'*"':"");
+        var titleRestriction = (partialTitle?' and (title~"'+encodeURIComponent(partialTitle)+'" OR title~"'+encodeURIComponent(partialTitle)+'*")':"");
         return confluence.searchPagesWithCQL(spaceKey, parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
       })
       .pipe(function (searchResponse) {
@@ -236,11 +237,13 @@ yWikiPlugins.main = (function() {
          return customers
       });
   };
-  var sendCustomerNames = function(customerNames){
+  var sendCustomerNames = function(term, customerNames){
     var iframeWin = $('#iframecontainer iframe')[0].contentWindow;
     iframeWin.postMessage({
-      action: "findCustomerResponse",
-      result: customerNames}
+        action: "findCustomerResponse",
+        term: term,
+        result: customerNames
+      }
       ,yWikiPlugins.getHost());
   };
 
