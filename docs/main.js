@@ -77,6 +77,7 @@ yWikiPlugins.main = (function() {
 
       function close_iframe() {
         $('iframe').fadeOut( function() {
+          $('#iframecontainer iframe').attr('src', '');
           $('#block').fadeOut();
           $('#iframecontainer').fadeOut();
         });
