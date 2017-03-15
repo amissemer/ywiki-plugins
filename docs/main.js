@@ -1,5 +1,7 @@
 yWikiPlugins.main = (function() {
 
+  var defaultProjectDocumentationRootPage='Project Documentation';
+  var customerComboLimit=15;
 /*  {
     cssSelector: '#theOneButton',
     targetSpace: 'ps',
@@ -24,7 +26,13 @@ yWikiPlugins.main = (function() {
     if (!currentSpaceKey) {
       throw new "Could not resolve current spaceKey";
     }
+
+    // set defaults for missing options
+    options.projectDocumentationRootPage = (options.projectDocumentationRootPage? options.projectDocumentationRootPage:defaultProjectDocumentationRootPage);
+    console.log("projectDocumentationRootPage",options.projectDocumentationRootPage);
     options.openInNewTab=!!options.openInNewTab;
+    options.targetSpace = (typeof options.targetSpace === undefined ? currentSpaceKey : options.targetSpace);
+
     var logCreation = function(logToPage, createdPage) {
       if (logToPage) {
           console.log("Logging creation of "+createdPage.title+" by "+currentUserKey+' in '+logToPage);
@@ -49,6 +57,13 @@ yWikiPlugins.main = (function() {
       }
     }
 
+    // var sendAllCustomersToIframe = function() {
+    //   getCustomersMatching(options.targetSpace , options.projectDocumentationRootPage, null, 1000)
+    //   .done(function (customerNames) {
+    //     sendCustomerNames(customerNames);
+    //   });
+    // }
+
     $( document ).ready( function () {
       $(options.cssSelector).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>'
       +'<script src="'+yWikiPlugins.getHost()+'/confluence.js"></script>');
@@ -57,6 +72,7 @@ yWikiPlugins.main = (function() {
         $('#iframecontainer').fadeIn();
         $('#iframecontainer iframe').attr('src', yWikiPlugins.getHost()+'/form.html#newInstanceDisplayName='+encodeURIComponent(options.newInstanceDisplayName));
         $('#iframecontainer iframe').load(function() {
+          //sendAllCustomersToIframe();
           $('#loader').fadeOut(function() {
             $('iframe').fadeIn();
           });
@@ -135,16 +151,23 @@ yWikiPlugins.main = (function() {
 
       }
 
+      var findCustomerAction = function (data) {
+        getCustomersMatching(options.targetSpace , options.projectDocumentationRootPage, data.customerPartial, customerComboLimit)
+        .done(function (customerNames) {
+          sendCustomerNames(customerNames);
+        });
+      };
+
+      // Listen to message from child window
       var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
       var eventer = window[eventMethod];
       var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-
-      // Listen to message from child window
       eventer(messageEvent,function(e) {
         if (e.data.action) {
           switch (e.data.action) {
             case "close": close_iframe(); break
             case "createWorkspace": doCreate(e.data); break
+            case "findCustomer": findCustomerAction(e.data); break
             default: console.log('Unknown message :',e.data);
           }
         } else {
@@ -168,8 +191,62 @@ yWikiPlugins.main = (function() {
     return yyyy+'-'+mm+'-'+dd;
   }
 
+  var cachedProjectDocumentationRootPageResult=null;
+  var cachedRegionResults=null;
+  var extractPageIds = function(searchAPIResponse) {
+    var pageIds=[];
+    searchAPIResponse.results.forEach(function( page ) {
+      pageIds.push(page.id);
+    });
+    return pageIds;
+  }
+  var parentQuery=function(pageIds) {
+    var restriction = [];
+    pageIds.forEach(function (pageId) {
+      restriction.push("parent="+pageId);
+    });
+    return '('+restriction.join(' OR ')+')';
+  }
+  /** Return 'limit' sub-sub pages of the spaceKey:projectDocumentationRootPage, whose title partially match partialTitle */
+  var getCustomersMatching = function(spaceKey, projectDocumentationRootPage, partialTitle, limit) {
+    var promise;
+    if (cachedProjectDocumentationRootPageResult) {
+      promise = $.Deferred().resolve(cachedProjectDocumentationRootPageResult).promise();
+    } else {
+      // get the id of the root Product Documentation page
+      promise = confluence.getContent(spaceKey,projectDocumentationRootPage)
+    }
+    return promise
+      .pipe(function(rootPage) {
+        cachedProjectDocumentationRootPageResult = rootPage;
+        if (cachedRegionResults) return cachedRegionResults;
+        // get all the direct children of the root (the region pages) (there are around 10 of them but we use a limit of 50 to make sure we have them all)
+        return confluence.searchPagesWithCQL(spaceKey, "parent="+cachedProjectDocumentationRootPageResult.id, 50);
+      })
+      .pipe(function (regionResults) {
+        cachedRegionResults = regionResults;
+        var titleRestriction = (partialTitle?' and title~"'+encodeURIComponent(partialTitle)+'*"':"");
+        return confluence.searchPagesWithCQL(spaceKey, parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
+      })
+      .pipe(function (searchResponse) {
+        var customers=[];
+         searchResponse.results.forEach(function(page) {
+           customers.push(page.title);
+         });
+         return customers
+      });
+  };
+  var sendCustomerNames = function(customerNames){
+    var iframeWin = $('#iframecontainer iframe')[0].contentWindow;
+    iframeWin.postMessage({
+      action: "findCustomerResponse",
+      result: customerNames}
+      ,yWikiPlugins.getHost());
+  };
+
   return {
-    wireButton:wireButton
+    wireButton:wireButton,
+    getCustomersMatching:getCustomersMatching
   }
 
 })()

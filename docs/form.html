@@ -6,7 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" />
-        <link rel="stylesheet" href="bower_components/bootstrap-select/dist/css/bootstrap-select.min.css" />
         <link rel="stylesheet" href="form.css" />
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -18,8 +17,8 @@
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
         <script src="form.js"></script>
     </head>
     <body>
@@ -30,12 +29,9 @@
             <h1 id="mainTitle">New Service Engagement Wizard</h1>
             <p class="lead">Please select your customer so we can generate your service engagement working space.</p>
             <form>
-              <div class="form-group">
+              <div class="form-group ui-widget">
                 <label for="customerSelect">Customer</label>
-                <select class="selectpicker form-control" id="customerSelect" title="Pick your customer">
-                  <option>Test Customer</option>
-                  <option>Lids</option>
-                </select>
+                <input class="form-control autocomplete" id="customerSelect" placeholder="Pick your customer" />
                 <span class="help-block">Your working space will be created under this wiki page. Can't find the customer you're looking for? <a href="#">Create a new Customer page</a>.</span>
               </div>
               <div class="form-group">
