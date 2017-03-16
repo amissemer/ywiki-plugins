@@ -146,7 +146,7 @@ yWikiPlugins.main = (function() {
           endCopyProcess(copiedPages);
 
         })
-        .fail(function() { console.error("Copy failed",arguments);postSubmitError("Copy failed, "+arguments[0]);   });
+        .fail(function() { console.error("Copy failed",arguments);postSubmitError("Copy failed, "+toError(arguments));   });
         //} );
 
       }
@@ -255,6 +255,16 @@ yWikiPlugins.main = (function() {
         action: "submitError",
         error: error
     });
+  }
+  var toError = function(args) {
+    if (typeof args === "string") return args;
+    if (args.length>0) {
+      if (args[0].responseText) {
+        return args[0].responseText;
+      }
+      return args[0];
+    }
+    return "";
   }
 
   return {
