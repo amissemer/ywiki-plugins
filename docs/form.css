@@ -27,3 +27,9 @@ button.close {
 .ui-helper-hidden-accessible {
   display: none;
 }
+#customer-progress {
+	display: none;
+	margin-top: -7px;
+	margin-bottom: 5px;
+	height: 6px;
+}

@@ -1,7 +1,7 @@
 yWikiPlugins.main = (function() {
 
   var defaultProjectDocumentationRootPage='Project Documentation';
-  var customerComboLimit=15;
+  var customerComboLimit=10;
 /*  {
     cssSelector: '#theOneButton',
     targetSpace: 'ps',
