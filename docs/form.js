@@ -24,14 +24,19 @@
 		var submitBtn=$("#wizard-submit");
 		var submitProgress=$('#progress-indicator');
 		submitBtn.click( function() {
-			parent.postMessage({
-				action: "createWorkspace",
-				customer: customerSelect.val(),
-				projectName: $('#projectName').val()
-			},"https://wiki.hybris.com");
-			submitBtn.prop('disabled', true);
-			submitProgress.show();
-			$('#error-display').hide();
+			console.log(submitBtn.prop('disabled'));
+			if (submitBtn.hasClass('disabled')) {
+				return true;
+			} else {
+				parent.postMessage({
+					action: "createWorkspace",
+					customer: customerSelect.val(),
+					projectName: $('#projectName').val()
+				},"https://wiki.hybris.com");
+				submitBtn.prop('disabled', true);
+				submitProgress.show();
+				$('#error-display').hide();
+			}
 			return false;
 		});
 
