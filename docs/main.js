@@ -133,7 +133,7 @@ yWikiPlugins.main = (function() {
           ,copiedPages
         )}).pipe( function() {
           if (copiedPages.length==0) {
-            throw "No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern;
+            return $.Deferred().reject("No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern);
           }
           return confluence.addLabel(copiedPages[0].id, options.addLabel);
         })
@@ -146,7 +146,7 @@ yWikiPlugins.main = (function() {
           endCopyProcess(copiedPages);
 
         })
-        .fail(function() { console.error("Copy failed",arguments);   });
+        .fail(function() { console.error("Copy failed",arguments);postSubmitError("Copy failed, "+arguments[0]);   });
         //} );
 
       }
@@ -238,14 +238,24 @@ yWikiPlugins.main = (function() {
       });
   };
   var sendCustomerNames = function(term, customerNames){
-    var iframeWin = $('#iframecontainer iframe')[0].contentWindow;
-    iframeWin.postMessage({
+    postMessage(
+    {
         action: "findCustomerResponse",
         term: term,
         result: customerNames
-      }
-      ,yWikiPlugins.getHost());
+    });
   };
+  var postMessage = function(message) {
+    var iframeWin = $('#iframecontainer iframe')[0].contentWindow;
+    iframeWin.postMessage(message,yWikiPlugins.getHost());
+  }
+  var postSubmitError = function(error) {
+    postMessage(
+    {
+        action: "submitError",
+        error: error
+    });
+  }
 
   return {
     wireButton:wireButton,
