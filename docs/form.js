@@ -48,6 +48,13 @@
 		// usage
 		var newInstanceDisplayName = decodeURIComponent(getHashValue('newInstanceDisplayName'));
 		$('#mainTitle').text("New " + newInstanceDisplayName);
+
+		$('#create-new-customer').click(function() {
+			// TODO (Adrien) This is temporary. We must ask for the region and create the page under that region
+			// Also, do not hardcode the templateId and spaceKey if possible.
+			var cust = customerSelect.val();
+			parent.location.href = 'https://wiki.hybris.com/pages/createpage-entervariables.action?templateId=136019971&spaceKey=ps&title='+cust+'&newSpaceKey=ps&fromPageId=327520116';
+		});
 	};
 
 	var startMessageListener = function () {
