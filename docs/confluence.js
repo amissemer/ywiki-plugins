@@ -100,13 +100,19 @@ var confluence = (function () {
     var copyPage = function(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, titleReplacements) {
       return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage')
       .pipe(function(pageToCopy) {
-        console.log("Found page to Copy",pageToCopy);
-        pageToCopy.title = replacePlaceholders(pageToCopy.title,titleReplacements);
-        console.log("New Title for target page: "+pageToCopy.title);
+        transformPage(pageToCopy, titleReplacements);
         // Create the new page under toPageTitle
         return createPage(pageToCopy,toSpaceKey,toPageTitle);
       }
     );
+  };
+  var transformPage = function(page, replacements) {
+    console.log("Found page to Copy",page);
+    page.title = replacePlaceholders(page.title,replacements);
+    console.log("New Title for target page: "+page.title);
+    console.log("Content before: "+page.body.storage.value);
+    page.body.storage.value = replacePlaceholders(page.body.storage.value,replacements);
+    console.log("Content after: "+page.body.storage.value);
   };
   var copyPageRecursive = function(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, filter, titleReplacements, copiedPages) {
     var sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
@@ -120,9 +126,8 @@ var confluence = (function () {
     return getContentById(sourcePageId, 'space,body.storage,children.page')
     .pipe(function (pageToCopy) {
       if (filter(pageToCopy)) {
-        console.log("Found page to Copy",pageToCopy);
-        pageToCopy.title = replacePlaceholders(pageToCopy.title, titleReplacements);
-        console.log("New Title for target page: "+pageToCopy.title);
+        transformPage(pageToCopy, titleReplacements);
+
         // Create the new page under targetSpaceKey:targetPageId
         return createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId)
           .pipe( function(copiedPage) {
