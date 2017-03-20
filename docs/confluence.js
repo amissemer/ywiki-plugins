@@ -90,7 +90,7 @@ var confluence = (function () {
         limit=15;
       }
       var expandParam=(expand?"&expand="+encodeURIComponent(expand):"");
-      return jQuery.ajax(contextPath + '/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space='+spaceKey)+expandParam);
+      return jQuery.ajax(contextPath + '/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
     };
 
     /**
@@ -110,9 +110,9 @@ var confluence = (function () {
     console.log("Found page to Copy",page);
     page.title = replacePlaceholders(page.title,replacements);
     console.log("New Title for target page: "+page.title);
-    console.log("Content before: "+page.body.storage.value);
-    page.body.storage.value = replacePlaceholders(page.body.storage.value,replacements);
-    console.log("Content after: "+page.body.storage.value);
+    if (typeof replacements!=='string') {
+      page.body.storage.value = replacePlaceholders(page.body.storage.value,replacements);
+    }
   };
   var copyPageRecursive = function(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, filter, titleReplacements, copiedPages) {
     var sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
@@ -159,8 +159,12 @@ var confluence = (function () {
       console.error(message,arguments);
     }
   };
+  /** if replacements is not provided, returns the template.
+  if replacements is a simple string, returns that string
+  if replacements is a map, for each (key,value) pair in the map, replaces [key] placeholders with value. */
   var replacePlaceholders=function(template, replacements) {
-    if (typeof replacements === undefined) return str;
+    if (typeof replacements === undefined) return template;
+    if (typeof replacements === 'string') return replacements;
     var result = template;
     for (var key in replacements) {
       if (replacements.hasOwnProperty(key)) {

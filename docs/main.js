@@ -2,6 +2,7 @@ yWikiPlugins.main = (function() {
 
   var defaultProjectDocumentationRootPage='Project Documentation';
   var customerComboLimit=10;
+  var defaultCustomerPageTemplate='.CI New Project Documentation Template';
 /*  {
     cssSelector: '#theOneButton',
     targetSpace: 'ps',
@@ -29,6 +30,7 @@ yWikiPlugins.main = (function() {
 
     // set defaults for missing options
     options.projectDocumentationRootPage = (options.projectDocumentationRootPage? options.projectDocumentationRootPage:defaultProjectDocumentationRootPage);
+    options.customerPageTemplate = (options.customerPageTemplate? options.customerPageTemplate:defaultCustomerPageTemplate);
     console.log("projectDocumentationRootPage",options.projectDocumentationRootPage);
     options.openInNewTab=!!options.openInNewTab;
     options.targetSpace = (typeof options.targetSpace === undefined ? currentSpaceKey : options.targetSpace);
@@ -57,12 +59,19 @@ yWikiPlugins.main = (function() {
       }
     }
 
-    // var sendAllCustomersToIframe = function() {
-    //   getCustomersMatching(options.targetSpace , options.projectDocumentationRootPage, null, 1000)
-    //   .done(function (customerNames) {
-    //     sendCustomerNames(customerNames);
-    //   });
-    // }
+    var sendRegionsToIFrame = function() {
+      getRegions(options.targetSpace , options.projectDocumentationRootPage)
+      .pipe(function (regionResults) {
+        return regionResults.results.map(function(regionPage) {return regionPage.title;});
+      })
+      .done(function(regionNames) {
+        postMessage(
+        {
+            action: "regionNames",
+            regionNames: regionNames
+        });
+      });
+    }
 
     $( document ).ready( function () {
       $(options.cssSelector).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>'
@@ -72,7 +81,7 @@ yWikiPlugins.main = (function() {
         $('#iframecontainer').fadeIn();
         $('#iframecontainer iframe').attr('src', yWikiPlugins.getHost()+'/form.html#newInstanceDisplayName='+encodeURIComponent(options.newInstanceDisplayName));
         $('#iframecontainer iframe').load(function() {
-          //sendAllCustomersToIframe();
+          sendRegionsToIFrame();
           $('#loader').fadeOut(function() {
             $('iframe').fadeIn();
           });
@@ -120,10 +129,37 @@ yWikiPlugins.main = (function() {
 
       function doCreate(data) {
         console.log("New Service Engagement...",data);
-        //confluence.deletePageRecursive("~adrien.missemer@hybris.com","Hybris Capabilities Workshop Dashboard").
-        //then( function() {
+        if (data.region) {
+          console.log("First creating Customer Page "+data.customer+" in region" + data.region);
+          return createCustomerPage(data.region,data.customer).pipe( function() {
+            return createWorkspace(data);
+          } );
+        } else {
+          return createWorkspace(data);
+        }
+      }
+
+      function createCustomerPage(region,customer) {
+        // NO API to create from a template but the following could be used
+
+        // https://wiki.hybris.com/pages/createpage-entervariables.action?templateId=136019971&spaceKey=~adrien.missemer%40hybris.com&title=fdsfds&newSpaceKey=~adrien.missemer%40hybris.com&fromPageId=327185731
+        // JSON.stringify({
+        //     "value": $("#wysiwygTextarea").val(),
+        //     "representation": "editor"
+        // });
+        // POST https://wiki.hybris.com/rest/api/contentbody/convert/storage
+        //{"value": wysiwyg,"representation":"editor"}
+        //
+
+        // For now we use a page instead of a pageTemplate. The page title used as a template is provided in options.customerPageTemplate
+         return confluence.copyPage(options.targetSpace, options.customerPageTemplate, options.targetSpace, region, customer);
+      }
+
+
+
+      function createWorkspace(data) {
         var copiedPages=[];
-        confluence.getContentById(sourcePageId,'space')
+        return confluence.getContentById(sourcePageId,'space')
         .pipe(function(sourcePage) {
           return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, data.customer, onlyTemplates,
           {
@@ -147,8 +183,6 @@ yWikiPlugins.main = (function() {
 
         })
         .fail(function() { console.error("Copy failed",arguments);postSubmitError("Copy failed, "+toError(arguments));   });
-        //} );
-
       }
 
       var findCustomerAction = function (data) {
@@ -208,8 +242,8 @@ yWikiPlugins.main = (function() {
     });
     return '('+restriction.join(' OR ')+')';
   }
-  /** Return 'limit' sub-sub pages of the spaceKey:projectDocumentationRootPage, whose title partially match partialTitle */
-  var getCustomersMatching = function(spaceKey, projectDocumentationRootPage, partialTitle, limit) {
+
+  var getRegions = function(spaceKey, projectDocumentationRootPage) {
     var promise;
     if (cachedProjectDocumentationRootPageResult) {
       promise = $.Deferred().resolve(cachedProjectDocumentationRootPageResult).promise();
@@ -222,10 +256,17 @@ yWikiPlugins.main = (function() {
         cachedProjectDocumentationRootPageResult = rootPage;
         if (cachedRegionResults) return cachedRegionResults;
         // get all the direct children of the root (the region pages) (there are around 10 of them but we use a limit of 50 to make sure we have them all)
-        return confluence.searchPagesWithCQL(spaceKey, "parent="+cachedProjectDocumentationRootPageResult.id, 50);
+        return confluence.searchPagesWithCQL(spaceKey, "label!='project-documentation-pages' AND parent="+cachedProjectDocumentationRootPageResult.id, 50);
       })
       .pipe(function (regionResults) {
         cachedRegionResults = regionResults;
+        return regionResults;
+      });
+  }
+  /** Return 'limit' sub-sub pages of the spaceKey:projectDocumentationRootPage, whose title partially match partialTitle */
+  var getCustomersMatching = function(spaceKey, projectDocumentationRootPage, partialTitle, limit) {
+      return getRegions(spaceKey, projectDocumentationRootPage)
+      .pipe(function (regionResults) {
         var titleRestriction = (partialTitle?' and (title~"'+encodeURIComponent(partialTitle)+'" OR title~"'+encodeURIComponent(partialTitle)+'*")':"");
         return confluence.searchPagesWithCQL(spaceKey, parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
       })

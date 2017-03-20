@@ -31,6 +31,7 @@
 				parent.postMessage({
 					action: "createWorkspace",
 					customer: customerSelect.val(),
+					region: $('#regionSelect').val(),
 					projectName: $('#projectName').val()
 				},"https://wiki.hybris.com");
 				submitBtn.prop('disabled', true);
@@ -62,6 +63,13 @@
 				todayHighlight: true,
         autoclose: true
     });
+
+		var customerElements = $(".copyCustomerName");
+		var copyCustomerName = function(fromElt) { customerElements.val($(fromElt).val());  };
+		customerElements
+			.keyup (function() { copyCustomerName(this); } )
+			.change(function() { copyCustomerName(this); } );
+
 	};
 
 	var startMessageListener = function () {
@@ -92,6 +100,9 @@
 					case "submitError":
 						onSubmitError(e.data.error);
 						break;
+					case "regionNames":
+					  setRegionNames(e.data.regionNames);
+						break;
 					default: console.log('Unknown message :',e.data);
 				}
 			} else {
@@ -106,6 +117,15 @@
 		$('#progress-indicator').hide();
 		$("#wizard-submit").prop('disabled', false);
 	}
+	var setRegionNames = function(regionNames) {
+		$.each(regionNames.sort(), function (i, item) {
+		    $('#regionSelect').append($('<option>', {
+		        value: item,
+		        text : item
+		    }));
+		});
+	}
+
 
 
 	$(document).ready(bindDOM);
