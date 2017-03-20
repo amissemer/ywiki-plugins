@@ -49,12 +49,19 @@
 		var newInstanceDisplayName = decodeURIComponent(getHashValue('newInstanceDisplayName'));
 		$('#mainTitle').text("New " + newInstanceDisplayName);
 
-		$('#create-new-customer').click(function() {
-			// TODO (Adrien) This is temporary. We must ask for the region and create the page under that region
-			// Also, do not hardcode the templateId and spaceKey if possible.
-			var cust = customerSelect.val();
-			parent.location.href = 'https://wiki.hybris.com/pages/createpage-entervariables.action?templateId=136019971&spaceKey=ps&title='+cust+'&newSpaceKey=ps&fromPageId=327520116';
-		});
+		// $('#create-new-customer').click(function() {
+		// 	// TODO (Adrien) This is temporary. We must ask for the region and create the page under that region
+		// 	// Also, do not hardcode the templateId and spaceKey if possible.
+		// 	var cust = customerSelect.val();
+		// 	parent.location.href = 'https://wiki.hybris.com/pages/createpage-entervariables.action?templateId=136019971&spaceKey=ps&title='+cust+'&newSpaceKey=ps&fromPageId=327520116';
+		// });
+
+    $('.datepicker').datepicker({
+        todayBtn: 'linked',
+        startDate: '+0d',
+				todayHighlight: true,
+        autoclose: true
+    });
 	};
 
 	var startMessageListener = function () {
@@ -94,7 +101,8 @@
 	};
 
 	var onSubmitError = function(error) {
-		$('#error-display').text(error).show();
+		$('#error-display .msg').text(error);
+		$('#error-display').show();
 		$('#progress-indicator').hide();
 		$("#wizard-submit").prop('disabled', false);
 	}
