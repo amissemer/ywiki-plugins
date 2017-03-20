@@ -164,7 +164,8 @@ yWikiPlugins.main = (function() {
           return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, data.customer, onlyTemplates,
           {
             "Customer": data.customer,
-            "ProjectName": data.projectName
+            "ProjectName": data.projectName,
+            "TargetEndDate": data.targetEndDate
           }
           ,copiedPages
         )}).pipe( function() {

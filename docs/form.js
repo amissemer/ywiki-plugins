@@ -32,7 +32,8 @@
 					action: "createWorkspace",
 					customer: customerSelect.val(),
 					region: $('#regionSelect').val(),
-					projectName: $('#projectName').val()
+					projectName: $('#projectName').val(),
+					targetEndDate: $('#targetEndDate').val()
 				},"https://wiki.hybris.com");
 				submitBtn.prop('disabled', true);
 				submitProgress.show();
