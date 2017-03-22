@@ -3,6 +3,8 @@ yWikiPlugins.main = (function() {
   var defaultProjectDocumentationRootPage='Project Documentation';
   var customerComboLimit=10;
   var defaultCustomerPageTemplate='.CI New Project Documentation Template';
+  var template_pattern = /\[Customer\]|\[ProjectName\]/;
+
 /*  {
     cssSelector: '#theOneButton',
     targetSpace: 'ps',
@@ -11,7 +13,7 @@ yWikiPlugins.main = (function() {
     logToPage: 'Capabilities Workshop - Log',
     openInNewTab: true
   }*/
-  var wireButton = function(options) {
+  function wireButton(options) {
     if (!options || !options.cssSelector || !options.targetSpace || !options.newInstanceDisplayName || !options.addLabel) {
       throw "wireButton({cssSelector:'',targetSpace:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
     }
@@ -35,7 +37,7 @@ yWikiPlugins.main = (function() {
     options.openInNewTab=!!options.openInNewTab;
     options.targetSpace = (typeof options.targetSpace === undefined ? currentSpaceKey : options.targetSpace);
 
-    var logCreation = function(logToPage, createdPage) {
+    function logCreation(logToPage, createdPage) {
       if (logToPage) {
           console.log("Logging creation of "+createdPage.title+" by "+currentUserKey+' in '+logToPage);
           return confluence.getContent(currentSpaceKey, logToPage, 'space,body.storage,version')
@@ -59,7 +61,7 @@ yWikiPlugins.main = (function() {
       }
     }
 
-    var sendRegionsToIFrame = function() {
+    function sendRegionsToIFrame() {
       getRegions(options.targetSpace , options.projectDocumentationRootPage)
       .pipe(function (regionResults) {
         return regionResults.results.map(function(regionPage) {return regionPage.title;});
@@ -73,128 +75,117 @@ yWikiPlugins.main = (function() {
       });
     }
 
-    $( document ).ready( function () {
-      $(options.cssSelector).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>'
-      +'<script src="'+yWikiPlugins.getHost()+'/confluence.js"></script>');
-      $(options.cssSelector).click(function() {
-        $('#block').fadeIn();
-        $('#iframecontainer').fadeIn();
-        $('#iframecontainer iframe').attr('src', yWikiPlugins.getHost()+'/form.html#newInstanceDisplayName='+encodeURIComponent(options.newInstanceDisplayName));
-        $('#iframecontainer iframe').load(function() {
-          sendRegionsToIFrame();
-          $('#loader').fadeOut(function() {
-            $('iframe').fadeIn();
-          });
-        });
-
-        $(document).mouseup(function (e)
-        {
-          // Grab your div
-          var foo = $('#block');
-          if (foo.is(e.target) || foo.has(e.target).length > 0) {
-            // If the target of the click is the surrounding block
-            // Hide the iframe
-            close_iframe();
-          }
-        });
-
+    function close_iframe() {
+      $('#iframecontainer iframe').unbind('load');
+      $('iframe').fadeOut( function() {
+        $('#iframecontainer iframe').attr('src', '');
+        $('#block').fadeOut();
+        $('#iframecontainer').fadeOut();
       });
+    }
 
-      function close_iframe() {
-        $('iframe').fadeOut( function() {
-          $('#iframecontainer iframe').attr('src', '');
-          $('#block').fadeOut();
-          $('#iframecontainer').fadeOut();
+    function open_iframe() {
+      $('#block').fadeIn();
+      $('#iframecontainer').fadeIn();
+      $('#iframecontainer iframe').bind('load', function() {
+        console.log("iframe loaded");
+        sendRegionsToIFrame();
+        $('#loader').fadeOut(function() {
+          $('iframe').fadeIn();
         });
-      }
+      });
+      $('#iframecontainer iframe').attr('src', yWikiPlugins.getHost()+'/form.html#newInstanceDisplayName='+encodeURIComponent(options.newInstanceDisplayName));
 
-      var template_pattern = /\[Customer\]|\[ProjectName\]/;
-      // Filters pages that contain [placeholders]
-      var onlyTemplates = function (page) {
-
-        return template_pattern.test(page.title);
-      }
-
-      function endCopyProcess(copiedPages) {
-        var workspaceURL = '/pages/viewpage.action?pageId='+copiedPages[0].id;
-        if (options.openInNewTab) {
-          // option to open in new tab is set
+      $(document).mouseup(function (e)
+      {
+        // Grab your div
+        var foo = $('#block');
+        if (foo.is(e.target) || foo.has(e.target).length > 0) {
+          // If the target of the click is the surrounding block
+          // Hide the iframe
           close_iframe();
-          window.open(workspaceURL);
-        } else {
-          // simple redirect
-          window.location.href = workspaceURL;
         }
-      }
+      });
+    }
 
-      function doCreate(data) {
-        console.log("New Service Engagement...",data);
-        if (data.region) {
-          console.log("First creating Customer Page "+data.customer+" in region" + data.region);
-          return createCustomerPage(data.region,data.customer).pipe( function() {
-            return createWorkspace(data);
-          } );
-        } else {
+    function endCopyProcess(copiedPages) {
+      var workspaceURL = '/pages/viewpage.action?pageId='+copiedPages[0].id;
+      if (options.openInNewTab) {
+        // option to open in new tab is set
+        close_iframe();
+        window.open(workspaceURL);
+      } else {
+        // simple redirect
+        window.location.href = workspaceURL;
+      }
+    }
+
+    function doCreate(data) {
+      console.log("New Service Engagement...",data);
+      if (data.region) {
+        console.log("First creating Customer Page "+data.customer+" in region" + data.region);
+        return createCustomerPage(data.region,data.customer).pipe( function() {
           return createWorkspace(data);
+        } );
+      } else {
+        return createWorkspace(data);
+      }
+    }
+
+    function createCustomerPage(region,customer) {
+      // NO API to create from a template but the following could be used
+
+      // https://wiki.hybris.com/pages/createpage-entervariables.action?templateId=136019971&spaceKey=~adrien.missemer%40hybris.com&title=fdsfds&newSpaceKey=~adrien.missemer%40hybris.com&fromPageId=327185731
+      // JSON.stringify({
+      //     "value": $("#wysiwygTextarea").val(),
+      //     "representation": "editor"
+      // });
+      // POST https://wiki.hybris.com/rest/api/contentbody/convert/storage
+      //{"value": wysiwyg,"representation":"editor"}
+      //
+
+      // For now we use a page instead of a pageTemplate. The page title used as a template is provided in options.customerPageTemplate
+       return confluence.copyPage(options.targetSpace, options.customerPageTemplate, options.targetSpace, region, customer);
+    }
+
+    function createWorkspace(data) {
+      var copiedPages=[];
+      return confluence.getContentById(sourcePageId,'space')
+      .pipe(function(sourcePage) {
+        return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, data.customer, onlyTemplates,
+        {
+          "Customer": data.customer,
+          "ProjectName": data.projectName,
+          "TargetEndDate": data.targetEndDate
         }
-      }
+        ,copiedPages
+      )}).pipe( function() {
+        if (copiedPages.length==0) {
+          return $.Deferred().reject("No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern);
+        }
+        return confluence.addLabel(copiedPages[0].id, options.addLabel);
+      })
+      .pipe(function() {
+        return logCreation(options.logToPage,copiedPages[0]);
+      })
+      .done(function() {
+        console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages);
+        // Now open new tab or redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
+        endCopyProcess(copiedPages);
 
-      function createCustomerPage(region,customer) {
-        // NO API to create from a template but the following could be used
+      })
+      .fail(function() { console.error("Copy failed",arguments);postSubmitError("Copy failed, "+toError(arguments));   });
+    }
 
-        // https://wiki.hybris.com/pages/createpage-entervariables.action?templateId=136019971&spaceKey=~adrien.missemer%40hybris.com&title=fdsfds&newSpaceKey=~adrien.missemer%40hybris.com&fromPageId=327185731
-        // JSON.stringify({
-        //     "value": $("#wysiwygTextarea").val(),
-        //     "representation": "editor"
-        // });
-        // POST https://wiki.hybris.com/rest/api/contentbody/convert/storage
-        //{"value": wysiwyg,"representation":"editor"}
-        //
+    function findCustomerAction(data) {
+      var term = data.customerPartial;
+      getCustomersMatching(options.targetSpace , options.projectDocumentationRootPage, data.customerPartial, customerComboLimit)
+      .done(function (customerNames) {
+        sendCustomerNames(term, customerNames);
+      });
+    }
 
-        // For now we use a page instead of a pageTemplate. The page title used as a template is provided in options.customerPageTemplate
-         return confluence.copyPage(options.targetSpace, options.customerPageTemplate, options.targetSpace, region, customer);
-      }
-
-
-
-      function createWorkspace(data) {
-        var copiedPages=[];
-        return confluence.getContentById(sourcePageId,'space')
-        .pipe(function(sourcePage) {
-          return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, data.customer, onlyTemplates,
-          {
-            "Customer": data.customer,
-            "ProjectName": data.projectName,
-            "TargetEndDate": data.targetEndDate
-          }
-          ,copiedPages
-        )}).pipe( function() {
-          if (copiedPages.length==0) {
-            return $.Deferred().reject("No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern);
-          }
-          return confluence.addLabel(copiedPages[0].id, options.addLabel);
-        })
-        .pipe(function() {
-          return logCreation(options.logToPage,copiedPages[0]);
-        })
-        .done(function() {
-          console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages);
-          // Now open new tab or redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
-          endCopyProcess(copiedPages);
-
-        })
-        .fail(function() { console.error("Copy failed",arguments);postSubmitError("Copy failed, "+toError(arguments));   });
-      }
-
-      var findCustomerAction = function (data) {
-        var term = data.customerPartial;
-        getCustomersMatching(options.targetSpace , options.projectDocumentationRootPage, data.customerPartial, customerComboLimit)
-        .done(function (customerNames) {
-          sendCustomerNames(term, customerNames);
-        });
-      };
-
-      // Listen to message from child window
+    function listenToMessageFromChildWindow() {
       var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
       var eventer = window[eventMethod];
       var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
@@ -210,8 +201,17 @@ yWikiPlugins.main = (function() {
           console.log("Received non-action message",e.data);
         }
       },false);
+    }
+
+    $( document ).ready( function () {
+      $(options.cssSelector).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>'
+      +'<script src="'+yWikiPlugins.getHost()+'/confluence.js"></script>');
+      $(options.cssSelector).click(open_iframe);
+      listenToMessageFromChildWindow();
     });
   };
+
+
 
   function formattedDate() {
     var today = new Date();
@@ -229,14 +229,14 @@ yWikiPlugins.main = (function() {
 
   var cachedProjectDocumentationRootPageResult=null;
   var cachedRegionResults=null;
-  var extractPageIds = function(searchAPIResponse) {
+  function extractPageIds(searchAPIResponse) {
     var pageIds=[];
     searchAPIResponse.results.forEach(function( page ) {
       pageIds.push(page.id);
     });
     return pageIds;
   }
-  var parentQuery=function(pageIds) {
+  function parentQuery(pageIds) {
     var restriction = [];
     pageIds.forEach(function (pageId) {
       restriction.push("parent="+pageId);
@@ -244,7 +244,7 @@ yWikiPlugins.main = (function() {
     return '('+restriction.join(' OR ')+')';
   }
 
-  var getRegions = function(spaceKey, projectDocumentationRootPage) {
+  function getRegions(spaceKey, projectDocumentationRootPage) {
     var promise;
     if (cachedProjectDocumentationRootPageResult) {
       promise = $.Deferred().resolve(cachedProjectDocumentationRootPageResult).promise();
@@ -265,7 +265,7 @@ yWikiPlugins.main = (function() {
       });
   }
   /** Return 'limit' sub-sub pages of the spaceKey:projectDocumentationRootPage, whose title partially match partialTitle */
-  var getCustomersMatching = function(spaceKey, projectDocumentationRootPage, partialTitle, limit) {
+  function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTitle, limit) {
       return getRegions(spaceKey, projectDocumentationRootPage)
       .pipe(function (regionResults) {
         var titleRestriction = (partialTitle?' and (title~"'+encodeURIComponent(partialTitle)+'" OR title~"'+encodeURIComponent(partialTitle)+'*")':"");
@@ -278,27 +278,27 @@ yWikiPlugins.main = (function() {
          });
          return customers
       });
-  };
-  var sendCustomerNames = function(term, customerNames){
+  }
+  function sendCustomerNames(term, customerNames){
     postMessage(
     {
         action: "findCustomerResponse",
         term: term,
         result: customerNames
     });
-  };
-  var postMessage = function(message) {
+  }
+  function postMessage(message) {
     var iframeWin = $('#iframecontainer iframe')[0].contentWindow;
     iframeWin.postMessage(message,yWikiPlugins.getHost());
   }
-  var postSubmitError = function(error) {
+  function postSubmitError(error) {
     postMessage(
     {
         action: "submitError",
         error: error
     });
   }
-  var toError = function(args) {
+  function toError(args) {
     if (typeof args === "string") return args;
     if (args.length>0) {
       if (args[0].responseText) {
@@ -308,10 +308,14 @@ yWikiPlugins.main = (function() {
     }
     return "";
   }
+  // Filters pages that contain [placeholders]
+  function onlyTemplates(page) {
+    return template_pattern.test(page.title);
+  }
 
   return {
-    wireButton:wireButton,
-    getCustomersMatching:getCustomersMatching
+    wireButton: wireButton,
+    getCustomersMatching: getCustomersMatching
   }
 
 })()
