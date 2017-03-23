@@ -1,4 +1,4 @@
-var confluence = (function () {
+var confluence = (function (proxy) {
 
   var deletePage = function(spaceKey,pageTitle) {
     return getContent(spaceKey,pageTitle)
@@ -13,7 +13,7 @@ var confluence = (function () {
     });
   };
   var deletePageById = function (pageId) {
-    return jQuery.ajax({
+    return proxy.ajax({
       url: contextPath + '/rest/api/content/'+encodeURIComponent(pageId),
       type: 'DELETE'
     }).fail(errorLogger( "DELETE page failed"));
@@ -39,7 +39,7 @@ var confluence = (function () {
   };
   /**
   * Get a page by spaceKey and title from Confluence and returns a deferred for that page.
-  * See jQuery.ajax().done()
+  * See $.ajax().done()
   * Failures are logged and ignored.
   * The deferred is resolved with the first matching page is any, else it is rejected.
   */
@@ -51,7 +51,7 @@ var confluence = (function () {
     var defer = $.Deferred();
     var url = contextPath + '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
     console.log(url);
-    jQuery.ajax(
+    proxy.ajax(
       {
         url: url,
         success: function (response) {
@@ -80,7 +80,7 @@ var confluence = (function () {
       }
       var url = contextPath + '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
       console.log(url);
-      return jQuery.ajax(url)
+      return proxy.ajax(url)
       .fail(errorLogger( "GET page by pageId failed"));
     };
     /** search for content with CQL
@@ -90,7 +90,7 @@ var confluence = (function () {
         limit=15;
       }
       var expandParam=(expand?"&expand="+encodeURIComponent(expand):"");
-      return jQuery.ajax(contextPath + '/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
+      return proxy.ajax(contextPath + '/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
     };
 
     /**
@@ -194,7 +194,7 @@ var confluence = (function () {
     return postPage(page);
   }
   var postPage = function(page) {
-    return jQuery.ajax(
+    return proxy.ajax(
       {
         url: contextPath + '/rest/api/content',
         type: 'POST',
@@ -203,7 +203,7 @@ var confluence = (function () {
       }).fail( errorLogger( "POST new page failed" ));
     };
     var updateContent = function(page) {
-      return jQuery.ajax(
+      return proxy.ajax(
         {
           url: contextPath + '/rest/api/content/'+encodeURIComponent(page.id),
           type: 'PUT',
@@ -212,7 +212,7 @@ var confluence = (function () {
         }).fail( errorLogger( "PUT page failed "+page.title ));
     };
     var addLabel = function(pageId, label) {
-      return jQuery.ajax(
+      return proxy.ajax(
         {
           url: contextPath + '/rest/api/content/'+encodeURIComponent(pageId)+'/label',
           type: 'POST',
@@ -235,13 +235,4 @@ var confluence = (function () {
       searchPagesWithCQL: searchPagesWithCQL
     }
 
-  })();
-
-
-  // confluence.copyPage("ps", "Capabilities Workshop - [Customer] - [ProjectName] [Date]", "~adrien.missemer@hybris.com", "Tests",
-  //   {
-  //     "Customer": "Lids",
-  //     "ProjectName": "Release 2",
-  //     "Date": "Sept. 2017"
-  //   }
-  // ).done(function( val ) {console.log("Copy Successful",val)}).fail(function(err) {console.error("Copy failed",err)});
+  })(proxy);

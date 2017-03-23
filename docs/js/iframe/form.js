@@ -1,9 +1,24 @@
 (function () {
-	var customerCallbacks={};
 
-	var bindDOM = function () {
+	var iframeWrapper = iframeWrapperFactory.iframeWrapper(parent, "https://wiki.hybris.com");
+
+  /** Perform an ajax call in the parent frame and returns a promise that will get resolved or rejected with the data as seen by the parent frame.
+   *  Not compatible with ajax callbacks that can usually be passed in the settings parameter (complete, beforeSend, error, success)
+   */
+  function ajax(param) {
+    return iframeWrapper.call("ajax", param);
+  }
+	function closeFrame() {
+    return iframeWrapper.call("closeFrame");
+  }
+  function redirect(url) {
+    return iframeWrapper.call("redirect", url);
+  }
+
+
+	function bindDOM() {
 		$("#form-close").click( function() {
-			parent.postMessage({action: "close"},"https://wiki.hybris.com");
+			parent.closeFrame();
 		});
 		var customerSelect = $('#customerSelect');
 		var customerProgress = $('#customer-progress');
@@ -11,8 +26,7 @@
 			minLength: 3,
 			autoFocus: true,
 			source: function(request,responseCallback) {
-				parent.postMessage({ action: "findCustomer", customerPartial: request.term }, "https://wiki.hybris.com");
-				customerCallbacks[request.term] = responseCallback;
+				// insert code for action: "findCustomer", customerPartial: request.term
 			},
 			search: function(event, ui) {
 				 customerProgress.show();
@@ -28,13 +42,11 @@
 			if (submitBtn.hasClass('disabled')) {
 				return true;
 			} else {
-				parent.postMessage({
-					action: "createWorkspace",
-					customer: customerSelect.val(),
-					region: $('#regionSelect').val(),
-					projectName: $('#projectName').val(),
-					targetEndDate: $('#targetEndDate').val()
-				},"https://wiki.hybris.com");
+				// INSERT CODE for action: createWorkspace
+				// 	customer: customerSelect.val(),
+				// 	region: $('#regionSelect').val(),
+				// 	projectName: $('#projectName').val(),
+				// 	targetEndDate: $('#targetEndDate').val()
 				submitBtn.prop('disabled', true);
 				submitProgress.show();
 				$('#error-display').hide();
@@ -66,59 +78,21 @@
     });
 
 		var customerElements = $(".copyCustomerName");
-		var copyCustomerName = function(fromElt) { customerElements.val($(fromElt).val());  };
+		function copyCustomerName(fromElt) {
+			customerElements.val($(fromElt).val());
+		}
 		customerElements
 			.keyup (function() { copyCustomerName(this); } )
 			.change(function() { copyCustomerName(this); } );
+	}
 
-	};
-
-	var startMessageListener = function () {
-		// Listen to message from parent window
-		var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-		var eventer = window[eventMethod];
-		var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-		eventer(messageEvent,function(e) {
-			if (e.data.action) {
-				switch (e.data.action) {
-					case "findCustomerResponse":
-						var responseCallback = customerCallbacks[e.data.term];
-						if (responseCallback) {
-							console.log("callback",e.data.result);
-							// if no result found
-							if (!e.data.result.length) {
-					       responseCallback([{
-		 							label: 'No matches found',
-		 			       	value: e.data.term
-		 			       }]);
-							} else {
-								responseCallback(e.data.result);
-							}
-						} else {
-							console.log("no callback",e.data.result);
-						}
-						break;
-					case "submitError":
-						onSubmitError(e.data.error);
-						break;
-					case "regionNames":
-					  setRegionNames(e.data.regionNames);
-						break;
-					default: console.log('Unknown message :',e.data);
-				}
-			} else {
-				console.log("Received non-action message",e.data);
-			}
-		},false);
-	};
-
-	var onSubmitError = function(error) {
+	function onSubmitError(error) {
 		$('#error-display .msg').text(error);
 		$('#error-display').show();
 		$('#progress-indicator').hide();
 		$("#wizard-submit").prop('disabled', false);
 	}
-	var setRegionNames = function(regionNames) {
+	function setRegionNames(regionNames) {
 		$.each(regionNames.sort(), function (i, item) {
 		    $('#regionSelect').append($('<option>', {
 		        value: item,
@@ -127,9 +101,5 @@
 		});
 	}
 
-
-
 	$(document).ready(bindDOM);
-	startMessageListener();
-
 })();
