@@ -48,13 +48,13 @@
   function attachHandlersToIFrameWindow(myIFrame) {
     iframeWrapperFactory.iframeWrapper(myIFrame[0].contentWindow, yWikiPlugins.getHost())
       .attachActionHandler("ajax", function (param) {
-        jQuery.ajax(param);
+        return jQuery.ajax(param);
       })
       .attachActionHandler("closeFrame", function () {
-        closeIFrame(myIFrame);
+        return closeIFrame(myIFrame);
       })
       .attachActionHandler("redirect", function (url) {
-        redirectTo(url);
+        return redirectTo(url);
       });
   }
 

@@ -2,25 +2,25 @@ var confluence = (function (proxy) {
 
   var deletePage = function(spaceKey,pageTitle) {
     return getContent(spaceKey,pageTitle)
-    .pipe( function (page) {
+    .then( function (page) {
       return deletePageById(page.id);
     });
   };
   var deletePageRecursive = function(spaceKey,pageTitle) {
     return getContent(spaceKey,pageTitle)
-    .pipe( function (page) {
+    .then( function (page) {
       return deletePageRecursiveInternal( page.id );
     });
   };
   var deletePageById = function (pageId) {
     return proxy.ajax({
-      url: contextPath + '/rest/api/content/'+encodeURIComponent(pageId),
+      url: '/rest/api/content/'+encodeURIComponent(pageId),
       type: 'DELETE'
     }).fail(errorLogger( "DELETE page failed"));
   };
   var deletePageRecursiveInternal = function (pageId) {
     return getContentById(pageId, 'children.page')
-    .pipe( function (page) {
+    .then( function (page) {
       // first delete children
       var childrenPromises = [];
       console.log("In deletePageRecursiveInternal for ", page.title);
@@ -32,7 +32,7 @@ var confluence = (function (proxy) {
       // when all children are deleted
       return $.when.apply($,childrenPromises)
       // delete the current page
-      .pipe( function() {
+      .then( function() {
         return deletePageById(pageId);
       });
     });
@@ -49,61 +49,56 @@ var confluence = (function (proxy) {
       expandParam = '&expand='+encodeURIComponent(expand);
     }
     var defer = $.Deferred();
-    var url = contextPath + '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
+    var url = '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
     console.log(url);
-    proxy.ajax(
-      {
-        url: url,
-        success: function (response) {
-          console.log("Filtering AJAX response",response);
-          if (response.results && response.results.length>0) {
-            var page = response.results[0];
-            console.log("Returning ",page);
-            defer.resolve(page);
-          } else {
-            defer.reject("Page Not found: '"+spaceKey+":"+pageTitle+"'");
-          }
-        },
-        error: function (jqr, status, error) {
-          defer.reject(status, error, jqr);
-        }
-      });
-      // add a default handler for failures, to make sure they are logged
-      defer.fail(errorLogger( "AJAX get page by title failed"));
-      return defer.promise();
-    };
+    proxy.ajax(url)
+    .done( function (response) {
+      console.log("Filtering AJAX response",response);
+      if (response.results && response.results.length>0) {
+        var page = response.results[0];
+        console.log("Returning ",page);
+        defer.resolve(page);
+      } else {
+        defer.reject("Page Not found: '"+spaceKey+":"+pageTitle+"'");
+      }
+    })
+    .fail( function (jqr, status, error) {
+      defer.reject(status, error, jqr);
+    });
+    return defer.promise();
+  };
 
-    var getContentById = function(pageId, expand) {
-      var expandParam="";
-      if (expand) {
-        expandParam = '?expand='+encodeURIComponent(expand);
-      }
-      var url = contextPath + '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
-      console.log(url);
-      return proxy.ajax(url)
-      .fail(errorLogger( "GET page by pageId failed"));
-    };
-    /** search for content with CQL
-    for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
-    var searchPagesWithCQL = function(spaceKey, cqlQuery, limit, expand) {
-      if (!limit || limit<0) {
-        limit=15;
-      }
-      var expandParam=(expand?"&expand="+encodeURIComponent(expand):"");
-      return proxy.ajax(contextPath + '/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
-    };
+  var getContentById = function(pageId, expand) {
+    var expandParam="";
+    if (expand) {
+      expandParam = '?expand='+encodeURIComponent(expand);
+    }
+    var url = '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
+    console.log(url);
+    return proxy.ajax(url)
+    .fail(errorLogger( "GET page by pageId failed"));
+  };
+  /** search for content with CQL
+  for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
+  var searchPagesWithCQL = function(spaceKey, cqlQuery, limit, expand) {
+    if (!limit || limit<0) {
+      limit=15;
+    }
+    var expandParam=(expand?"&expand="+encodeURIComponent(expand):"");
+    return proxy.ajax('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
+  };
 
-    /**
-    * Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
-    * and do a placeholder replacement in each page title using the titleReplacements.
-    */
-    var copyPage = function(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, titleReplacements) {
-      return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage')
-      .pipe(function(pageToCopy) {
-        transformPage(pageToCopy, titleReplacements);
-        // Create the new page under toPageTitle
-        return createPage(pageToCopy,toSpaceKey,toPageTitle);
-      }
+  /**
+  * Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
+  * and do a placeholder replacement in each page title using the titleReplacements.
+  */
+  var copyPage = function(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, titleReplacements) {
+    return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage')
+    .then(function(pageToCopy) {
+      transformPage(pageToCopy, titleReplacements);
+      // Create the new page under toPageTitle
+      return createPage(pageToCopy,toSpaceKey,toPageTitle);
+    }
     );
   };
   var transformPage = function(page, replacements) {
@@ -118,19 +113,19 @@ var confluence = (function (proxy) {
     var sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
     var targetPagePromise = getContent(toSpaceKey,toPageTitle, 'space');
     return $.when( sourcePagePromise, targetPagePromise )
-    .pipe(function(sourcePage, targetPage) {
+    .then(function(sourcePage, targetPage) {
       return copyPageRecursiveInternal( sourcePage.id, targetPage.space.key, targetPage.id, filter, titleReplacements, copiedPages);
     });
   };
   var copyPageRecursiveInternal = function (sourcePageId, targetSpaceKey, targetPageId, filter, titleReplacements, copiedPages) {
     return getContentById(sourcePageId, 'space,body.storage,children.page')
-    .pipe(function (pageToCopy) {
+    .then(function (pageToCopy) {
       if (filter(pageToCopy)) {
         transformPage(pageToCopy, titleReplacements);
 
         // Create the new page under targetSpaceKey:targetPageId
         return createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId)
-          .pipe( function(copiedPage) {
+          .then( function(copiedPage) {
             copiedPages.push(copiedPage);
             return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, filter, titleReplacements,copiedPages);
           });
@@ -182,7 +177,7 @@ var confluence = (function (proxy) {
   }
   var createPage = function(page, targetSpaceKey, targetParentTitle) {
     return getContent(targetSpaceKey,targetParentTitle,'space')
-    .pipe(function(targetParentPage) {
+    .then(function(targetParentPage) {
       console.log("targetParentPage: space=",targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
       return createPageUnderPageId(page, targetParentPage.space.key, targetParentPage.id);
     });
@@ -196,7 +191,7 @@ var confluence = (function (proxy) {
   var postPage = function(page) {
     return proxy.ajax(
       {
-        url: contextPath + '/rest/api/content',
+        url: '/rest/api/content',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(page)
@@ -205,7 +200,7 @@ var confluence = (function (proxy) {
     var updateContent = function(page) {
       return proxy.ajax(
         {
-          url: contextPath + '/rest/api/content/'+encodeURIComponent(page.id),
+          url: '/rest/api/content/'+encodeURIComponent(page.id),
           type: 'PUT',
           contentType: 'application/json',
           data: JSON.stringify(page)
@@ -214,7 +209,7 @@ var confluence = (function (proxy) {
     var addLabel = function(pageId, label) {
       return proxy.ajax(
         {
-          url: contextPath + '/rest/api/content/'+encodeURIComponent(pageId)+'/label',
+          url: '/rest/api/content/'+encodeURIComponent(pageId)+'/label',
           type: 'POST',
           contentType: 'application/json',
           data: JSON.stringify([{"prefix": "global","name": label}])

@@ -3,7 +3,7 @@ var windowEventListener = (function () {
   var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
   var eventer = window[eventMethod];
   var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-  var requestListeners = {}; // map of key=action, value=function(payload)
+  var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
   var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
   eventer(messageEvent, mainListener, false);
 
@@ -11,8 +11,7 @@ var windowEventListener = (function () {
     if (e.data.action) {
       // action data is in the form { action: "actionName", payload: object }
       if (requestListeners[e.data.action]) {
-        // delegate to the registered requestListener
-        requestListeners[e.data.action](e.data.payload);
+        requestListeners[e.data.action](e.data.correlationId, e.data.payload);
       } else {
         // no registered requestListener for this action
         console.warn('No requestListeners for action: ', e.data.action);
