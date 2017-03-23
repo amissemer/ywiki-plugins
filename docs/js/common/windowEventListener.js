@@ -37,6 +37,8 @@ var windowEventListener = (function () {
     }
   }
 
+  // func should be a function(correlationId, payload). The return value will be ignored
+  // consider this private. Use iframeWrapper.attachActionHandler(action, handler) instead
   function registerRequestListener( action, func ) {
     if (typeof func != 'function') {
       console.error("Cannot register request listener since not a function: ", func);

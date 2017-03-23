@@ -7,7 +7,7 @@ var iframeWrapperFactory = (function(windowEventListener, deferredBuilder) {
   function iframeWrapper( postToWindow, targetHostname ) {
     var _correlationId=1;
 
-    /** Chainable way to attach action Handlers. Handlers can return a promise or a result
+    /** Chainable function to attach action handlers. Handlers take a single argument and may return a promise or a result
     that will be used to send the response back to the other frame. */
     function attachActionHandler(actionName, handler) {
 
