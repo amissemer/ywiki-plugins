@@ -1,0 +1,115 @@
+#iframecontainer {
+	width:90%;
+	height: 700px;
+	display: none;
+	position: fixed;
+	top:50%;
+	left:50%;
+	margin-top: -350px;
+	margin-left: -45%;
+	background:#FFF;
+	border: 1px solid #555;
+	box-shadow: 2px 2px 40px #222;
+	z-index: 999999;
+}
+#iframecontainer iframe {
+	display:none;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	border: none;
+}
+#loader {
+	background: url(/dist/a1cd24ddb8cb8288ce0893da7bbe45e5.gif);
+	background-repeat:no-repeat;
+	width: 500px;
+	height: 500px;
+	margin:auto;
+}
+#block {
+	background: #000;
+	opacity:0.6;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top:0;
+	left:0;
+	display:none;
+}
+#theOneButton {
+  display: inline-block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 48px;
+  content: ;
+  cursor: pointer;
+	margin: 10px auto 10px auto;
+  padding: 10px 10px;
+  outline: none;
+  border: 0 none rgb(177,106,2);
+  border-bottom: 4px solid rgb(177,106,2);
+  -webkit-border-radius: 7px 7px 9px 9px;
+  border-radius: 7px 7px 9px 9px;
+  font: normal normal bold 20px/24px "Averia Sans Libre", Helvetica, sans-serif;
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  text-indent: 0;
+  -o-text-overflow: clip;
+  text-overflow: clip;
+  letter-spacing: 0;
+  white-space: nowrap;
+  word-spacing: 0;
+  word-wrap: ;
+  background: -webkit-linear-gradient(-90deg, rgb(253,218,134) 0, rgb(225,157,60) 100%), rgb(253, 218, 134);
+  background: -moz-linear-gradient(180deg, rgb(253,218,134) 0, rgb(225,157,60) 100%), rgb(253, 218, 134);
+  background: linear-gradient(180deg, rgb(253,218,134) 0, rgb(225,157,60) 100%), rgb(253, 218, 134);
+  background-repeat: repeat;
+  background-position: 0 0;
+  -webkit-background-origin: padding-box;
+  background-origin: padding-box;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-background-size: auto auto;
+  background-size: auto auto;
+  -webkit-box-shadow: 0 -1px 1px 0 rgba(255,255,255,0.701961) inset, 0 1px 1px 0 rgb(177,106,2) ;
+  box-shadow: 0 -1px 1px 0 rgba(255,255,255,0.701961) inset, 0 1px 1px 0 rgb(177,106,2) ;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.498039) ;
+}
+
+
+#theOneButton:hover {
+  background: rgb(225, 157, 60);
+  -webkit-transition: all 100ms cubic-bezier(0.42, 0, 0.58, 1);
+  -moz-transition: all 100ms cubic-bezier(0.42, 0, 0.58, 1);
+  -o-transition: all 100ms cubic-bezier(0.42, 0, 0.58, 1);
+  transition: all 100ms cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+
+#theOneButton:active {
+  height: 44px;
+  margin: 14px 0 0 0;
+  border: none;
+  -webkit-border-radius: 7px;
+  border-radius: 7px;
+  background: -webkit-linear-gradient(-90deg, rgb(253,218,134) 0, rgb(225,157,60) 100%), rgb(253, 218, 134);
+  background: -moz-linear-gradient(180deg, rgb(253,218,134) 0, rgb(225,157,60) 100%), rgb(253, 218, 134);
+  background: linear-gradient(180deg, rgb(253,218,134) 0, rgb(225,157,60) 100%), rgb(253, 218, 134);
+  background-repeat: repeat;
+  background-position: 0 0;
+  -webkit-background-origin: padding-box;
+  background-origin: padding-box;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-background-size: auto auto;
+  background-size: auto auto;
+  -webkit-transition: all 30ms cubic-bezier(0.42, 0, 0.58, 1);
+  -moz-transition: all 30ms cubic-bezier(0.42, 0, 0.58, 1);
+  -o-transition: all 30ms cubic-bezier(0.42, 0, 0.58, 1);
+  transition: all 30ms cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+/*# sourceMappingURL=mainframe-styles.css.map*/
