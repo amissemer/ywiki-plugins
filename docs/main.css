@@ -36,7 +36,13 @@
 	left:0;
 	display:none;
 }
+.summary.action {
+	position: relative;
+}
 #theOneButton {
+	position: absolute;
+	top: 30px;
+	left: 58px;
   display: inline-block;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
