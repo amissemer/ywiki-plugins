@@ -1,4 +1,5 @@
 import * as proxy from './proxy';
+import $ from 'jquery';
 
 /**
  * An API for confluence that runs ajax queries through the proxy object to bypass the CORS restriction.

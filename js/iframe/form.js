@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import * as proxy from './proxy';
 import * as confluence from './confluence';
+import * as wizardService from './wizardService';
 import 'jquery-ui-bundle';
 import 'bootstrap';
 import 'bootstrap-validator';
@@ -11,8 +12,8 @@ import 'bootstrap/dist/css/bootstrap-theme.min.css';
 import 'bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css';
 import '../../css/form.css';
 
-
 function bindDOM() {
+
 	$("#form-close").click( function() {
 		proxy.closeFrame();
 	});
@@ -22,7 +23,7 @@ function bindDOM() {
 		minLength: 3,
 		autoFocus: true,
 		source: function(request,responseCallback) {
-			// insert code for action: "findCustomer", customerPartial: request.term
+			wizardService.findCustomer(request.term).done(responseCallback);
 		},
 		search: function(event, ui) {
 			 customerProgress.show();
@@ -31,6 +32,7 @@ function bindDOM() {
 			 customerProgress.hide();
 	 }
 	});
+	wizardService.loadRegions().done(setRegionNames);
 	var submitBtn=$("#wizard-submit");
 	var submitProgress=$('#progress-indicator');
 	submitBtn.click( function() {
@@ -38,11 +40,12 @@ function bindDOM() {
 		if (submitBtn.hasClass('disabled')) {
 			return true;
 		} else {
-			// INSERT CODE for action: createWorkspace
-			// 	customer: customerSelect.val(),
-			// 	region: $('#regionSelect').val(),
-			// 	projectName: $('#projectName').val(),
-			// 	targetEndDate: $('#targetEndDate').val()
+			wizardService.createWorkspace({
+				customer: customerSelect.val(),
+				region: $('#regionSelect').val(),
+				projectName: $('#projectName').val(),
+				targetEndDate: $('#targetEndDate').val()
+			});
 			submitBtn.prop('disabled', true);
 			submitProgress.show();
 			$('#error-display').hide();
@@ -50,14 +53,7 @@ function bindDOM() {
 		return false;
 	});
 
-	function getHashValue(key) {
-		var matches = location.hash.match(new RegExp(key+'=([^&]*)'));
-		return matches ? matches[1] : null;
-	}
-
-	// usage
-	var newInstanceDisplayName = decodeURIComponent(getHashValue('newInstanceDisplayName'));
-	$('#mainTitle').text("New " + newInstanceDisplayName);
+	$('#mainTitle').text("New " + wizardService.getOption('newInstanceDisplayName'));
 
   $('.datepicker').datepicker({
       todayBtn: 'linked',

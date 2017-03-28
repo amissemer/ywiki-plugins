@@ -10446,7 +10446,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-(function(yloader) {
+(function(yloader, jQuery) {
 
   function closeIFrame(iframeElt) {
     iframeElt.unbind('load').fadeOut( function() {
@@ -10503,6 +10503,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       })
       .attachActionHandler("redirect", function (url) {
         return redirectTo(url);
+      })
+      .attachActionHandler("$metacontent", function (e) {
+        return jQuery(e).attr("content");
       });
   }
 
@@ -10522,7 +10525,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   // exports:
   yloader.wireButton = wireButton
 
-})(yloader)
+})(yloader, jQuery)
 
 
 /***/ }),

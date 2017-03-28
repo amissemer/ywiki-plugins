@@ -1,7 +1,7 @@
 import '../../css/main.css';
 import iframeWrapper from '../common/iframeWrapper';
 
-(function(yloader) {
+(function(yloader, jQuery) {
 
   function closeIFrame(iframeElt) {
     iframeElt.unbind('load').fadeOut( function() {
@@ -58,6 +58,9 @@ import iframeWrapper from '../common/iframeWrapper';
       })
       .attachActionHandler("redirect", function (url) {
         return redirectTo(url);
+      })
+      .attachActionHandler("$metacontent", function (e) {
+        return jQuery(e).attr("content");
       });
   }
 
@@ -77,4 +80,4 @@ import iframeWrapper from '../common/iframeWrapper';
   // exports:
   yloader.wireButton = wireButton
 
-})(yloader)
+})(yloader, jQuery)

@@ -25,3 +25,10 @@ export function closeFrame() {
 export function redirect(url) {
   return wrapper.call("redirect", url);
 }
+
+/**
+ * proxy for $(el).attr("content") function
+ */
+export function $metacontent(el) {
+  return wrapper.call("$metacontent", el);
+}
