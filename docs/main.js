@@ -5,6 +5,23 @@ yWikiPlugins.main = (function() {
   var defaultCustomerPageTemplate='.CI New Project Documentation Template';
   var template_pattern = /\[Customer\]|\[ProjectName\]/;
 
+  function wireBanner(options) {
+    $(".wiki-content .innerCell").css("overflow-x", "visible");
+    $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
+    .html('<div class="ciaction">\
+                <img src="'+yWikiPlugins.getHost()+'/banner/clickme.png" />\
+                <div id="theOneButton">Start</div>\
+              </div>\
+              <div class="cilogo">\
+                <img src="'+yWikiPlugins.getHost()+'/banner/dashboard_figure.png" />\
+              </div>\
+              <div class="cicenter">\
+                <h1>'+$('#title-text').text()+'</h1>\
+              </div>\
+            ');
+    options.cssSelector="#theOneButton";
+    wireButton(options);
+  }
 /*  {
     cssSelector: '#theOneButton',
     targetSpace: 'ps',
@@ -315,7 +332,8 @@ yWikiPlugins.main = (function() {
 
   return {
     wireButton: wireButton,
-    getCustomersMatching: getCustomersMatching
+    getCustomersMatching: getCustomersMatching,
+    wireBanner: wireBanner
   }
 
 })()
