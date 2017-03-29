@@ -146,8 +146,8 @@
 	width: 100%;
 	float: left;
 	position: relative;
-	top: -50px;
-	margin-bottom: -50px;
+	top: -100px;
+	margin-bottom: -90px;
 }
 .ciaction, .cilogo {
 	display: flex;
