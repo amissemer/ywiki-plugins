@@ -55,6 +55,11 @@ yWikiPlugins.main = (function() {
     options.targetSpace = (typeof options.targetSpace === undefined ? currentSpaceKey : options.targetSpace);
 
     function logCreation(logToPage, createdPage) {
+      var version = $('.confluenceTh:contains("Current Version")').siblings('.confluenceTd').text();
+      var versionMsg="";
+      if (version) {
+        versionMsg = " with baseline "+version;
+      }
       if (logToPage) {
           console.log("Logging creation of "+createdPage.title+" by "+currentUserKey+' in '+logToPage);
           return confluence.getContent(currentSpaceKey, logToPage, 'space,body.storage,version')
@@ -65,7 +70,7 @@ yWikiPlugins.main = (function() {
               if (bodyContent.indexOf('<ul>')<0) {
                 bodyContent='<ul></ul>';
               }
-              var logLine = '<li><ac:link><ri:user ri:userkey="[userkey]" /></ac:link> created&nbsp;<ac:link><ri:page ri:content-title="[pagetitle]" /></ac:link> on&nbsp;<time datetime="[date]" />&nbsp;</li>';
+              var logLine = '<li><ac:link><ri:user ri:userkey="[userkey]" /></ac:link> created&nbsp;<ac:link><ri:page ri:content-title="[pagetitle]" /></ac:link> on&nbsp;<time datetime="[date]" />&nbsp;'+versionMsg+'</li>';
               logLine=logLine.replace('[userkey]',currentUserKey).replace('[pagetitle]',createdPage.title).replace('[date]',formattedDate);
               logPageJson.body.storage.value=bodyContent.replace('</ul>',logLine+'</ul>');
               logPageJson.version.minorEdit=false;
