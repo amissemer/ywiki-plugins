@@ -53,6 +53,8 @@
           cacheBuster: cacheBuster,
           cssSelector: this,
           disablePullUp: jEl.data('disable-pull-up'),
+          buttonText: jEl.data('button-text'),
+          bannerText: jEl.data('banner-text'),
           targetSpace: jEl.data('target-space'),
           newInstanceDisplayName: jEl.data('new-instance-display-name'),
           addLabel: jEl.data('add-label'),

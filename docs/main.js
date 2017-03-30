@@ -11,17 +11,19 @@ var goldenButton = (function() {
     if (!options.disablePullUp) {
       jEl.addClass("pullup");
     }
+    options.buttonText = options.buttonText || "Start";
+    options.bannerText = options.bannerText || $('#title-text').text();
     $(".wiki-content .innerCell").css("overflow-x", "visible");
     $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
     .html('<div class="ciaction">\
                 <img src="'+options.host+'/banner/clickme.png" />\
-                <div id="theOneButton">Start</div>\
+                <div id="theOneButton">'+options.buttonText+'</div>\
               </div>\
               <div class="cilogo">\
                 <img src="'+options.host+'/banner/dashboard_figure.png" />\
               </div>\
               <div class="cicenter">\
-                <h1>'+$('#title-text').text()+'</h1>\
+                <h1>'+options.bannerText+'</h1>\
               </div>\
             ');
     options.cssSelector="#theOneButton";
