@@ -146,6 +146,8 @@
 	width: 100%;
 	float: left;
 	position: relative;
+}
+.pullup {
 	top: -100px;
 	margin-bottom: -90px;
 }

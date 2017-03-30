@@ -1,4 +1,4 @@
-yWikiPlugins.main = (function() {
+var goldenButton = (function() {
 
   var defaultProjectDocumentationRootPage='Project Documentation';
   var customerComboLimit=10;
@@ -6,14 +6,19 @@ yWikiPlugins.main = (function() {
   var template_pattern = /\[Customer\]|\[ProjectName\]/;
 
   function wireBanner(options) {
+    var jEl = $(options.cssSelector);
+    jEl.addClass("cibanner");
+    if (!options.disablePullUp) {
+      jEl.addClass("pullup");
+    }
     $(".wiki-content .innerCell").css("overflow-x", "visible");
     $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
     .html('<div class="ciaction">\
-                <img src="'+yWikiPlugins.getHost()+'/banner/clickme.png" />\
+                <img src="'+options.host+'/banner/clickme.png" />\
                 <div id="theOneButton">Start</div>\
               </div>\
               <div class="cilogo">\
-                <img src="'+yWikiPlugins.getHost()+'/banner/dashboard_figure.png" />\
+                <img src="'+options.host+'/banner/dashboard_figure.png" />\
               </div>\
               <div class="cicenter">\
                 <h1>'+$('#title-text').text()+'</h1>\
@@ -116,7 +121,7 @@ yWikiPlugins.main = (function() {
           $('iframe').fadeIn();
         });
       });
-      $('#iframecontainer iframe').attr('src', yWikiPlugins.getHost()+'/form.html#newInstanceDisplayName='+encodeURIComponent(options.newInstanceDisplayName));
+      $('#iframecontainer iframe').attr('src', options.host+'/form.html#newInstanceDisplayName='+encodeURIComponent(options.newInstanceDisplayName));
 
       $(document).mouseup(function (e)
       {
@@ -227,10 +232,30 @@ yWikiPlugins.main = (function() {
 
     $( document ).ready( function () {
       $(options.cssSelector).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>'
-      +'<script src="'+yWikiPlugins.getHost()+'/confluence.js"></script>');
+      +'<script src="'+options.host+'/confluence.js'+options.cacheBuster+'"></script>');
       $(options.cssSelector).click(open_iframe);
       listenToMessageFromChildWindow();
     });
+
+    function sendCustomerNames(term, customerNames){
+      postMessage(
+      {
+          action: "findCustomerResponse",
+          term: term,
+          result: customerNames
+      });
+    }
+    function postMessage(message) {
+      var iframeWin = $('#iframecontainer iframe')[0].contentWindow;
+      iframeWin.postMessage(message,options.host);
+    }
+    function postSubmitError(error) {
+      postMessage(
+      {
+          action: "submitError",
+          error: error
+      });
+    }
   };
 
 
@@ -301,25 +326,7 @@ yWikiPlugins.main = (function() {
          return customers
       });
   }
-  function sendCustomerNames(term, customerNames){
-    postMessage(
-    {
-        action: "findCustomerResponse",
-        term: term,
-        result: customerNames
-    });
-  }
-  function postMessage(message) {
-    var iframeWin = $('#iframecontainer iframe')[0].contentWindow;
-    iframeWin.postMessage(message,yWikiPlugins.getHost());
-  }
-  function postSubmitError(error) {
-    postMessage(
-    {
-        action: "submitError",
-        error: error
-    });
-  }
+
   function toError(args) {
     if (typeof args === "string") return args;
     if (args.length>0) {

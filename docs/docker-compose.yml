@@ -3,9 +3,8 @@ services:
   http:
     image: nginx
     volumes:
-     - .:/usr/share/nginx/html:ro
+     - .:/usr/share/nginx/html/ywiki-plugins/:ro
      - ./mockServer/conf.d:/etc/nginx/conf.d/
     ports:
      - 80:80
      - 443:443
-
