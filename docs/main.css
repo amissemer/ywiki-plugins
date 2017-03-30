@@ -35,6 +35,7 @@
 	top:0;
 	left:0;
 	display:none;
+	z-index: 100;
 }
 #theOneButton {
 	position: absolute;
