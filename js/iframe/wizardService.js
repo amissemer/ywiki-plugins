@@ -8,30 +8,34 @@ var defaultCustomerPageTemplate='.CI New Project Documentation Template';
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 
 var options = getOptionsFromLocationHash();
-if (!options.cssSelector || !options.targetSpace || !options.newInstanceDisplayName || !options.addLabel) {
-	throw "wireButton({cssSelector:'',targetSpace:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
+if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
+	throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
 }
-proxy.$metacontent('meta[name=ajs-page-id]')
+var promises = [];
+promises.push(proxy.$metacontent('meta[name=ajs-page-id]')
 	.done(function(val) { options.sourcePageId=val; })
-	.fail(function () { console.error("Could not read current pageId")});
-proxy.$metacontent('meta[name=ajs-remote-user-key]')
+	.fail(function () { console.error("Could not read current pageId")}));
+promises.push(proxy.$metacontent('meta[name=ajs-remote-user-key]')
 	.done(function(val) { options.currentUserKey=val; })
-	.fail(function () { console.error("Could not resolve current userkey")});
-proxy.$metacontent('meta[name=confluence-space-key]')
+	.fail(function () { console.error("Could not resolve current userkey")}));
+promises.push(proxy.$metacontent('meta[name=confluence-space-key]')
 	.done(function(val) { options.currentSpaceKey=val; })
-	.fail(function () { console.error("Could not resolve current spaceKey")});
+	.fail(function () { console.error("Could not resolve current spaceKey")}));
+var optionsPromise = $.when(promises).then( postProcessOptions );
+optionsPromise.then(function (options) { console.log("yWiki Options: ",options);});
 
-// set defaults for missing options
-options.projectDocumentationRootPage = (options.projectDocumentationRootPage? options.projectDocumentationRootPage:defaultProjectDocumentationRootPage);
-options.customerPageTemplate = (options.customerPageTemplate? options.customerPageTemplate:defaultCustomerPageTemplate);
-console.log("projectDocumentationRootPage",options.projectDocumentationRootPage);
-options.openInNewTab=!!options.openInNewTab;
-options.targetSpace = (typeof options.targetSpace === undefined ? options.currentSpaceKey : options.targetSpace);
+function postProcessOptions() {
+	// set defaults for missing options
+	options.projectDocumentationRootPage = options.projectDocumentationRootPage || defaultProjectDocumentationRootPage;
+	options.customerPageTemplate = options.customerPageTemplate || defaultCustomerPageTemplate;
+	options.openInNewTab= !!options.openInNewTab;
+	options.targetSpace = options.targetSpace || options.currentSpaceKey;
+	return options;
+}
 
-console.log("yWiki Options",options);
 
-export function getOption(name) {
-  return options[name];
+export function withOption(name) {
+  return optionsPromise.then( function (options) { return options[name]; } );
 }
 function getOptionsFromLocationHash() {
 
@@ -49,31 +53,47 @@ function getOptionsFromLocationHash() {
 }
 
 function logCreation(logToPage, createdPage) {
-  if (logToPage) {
-    console.log("Logging creation of "+createdPage.title+" by "+options.currentUserKey+' in '+logToPage);
-    return confluence.getContent(options.currentSpaceKey, logToPage, 'space,body.storage,version')
-    .then( function(logPageJson) {
-      console.log("logPageJson before edit: ",logPageJson);
-      if (logPageJson.body.storage) {
-        var bodyContent = logPageJson.body.storage.value;
-        if (bodyContent.indexOf('<ul>')<0) {
-          bodyContent='<ul></ul>';
-        }
-        var logLine = '<li><ac:link><ri:user ri:userkey="[userkey]" /></ac:link> created&nbsp;<ac:link><ri:page ri:content-title="[pagetitle]" /></ac:link> on&nbsp;<time datetime="[date]" />&nbsp;</li>';
-        logLine=logLine.replace('[userkey]',options.currentUserKey).replace('[pagetitle]',createdPage.title).replace('[date]',formattedDate);
-        logPageJson.body.storage.value=bodyContent.replace('</ul>',logLine+'</ul>');
-        logPageJson.version.minorEdit=false;
-        logPageJson.version.number+=1;
-        return confluence.updateContent(logPageJson);
-      }
-    });
-  } else {
-    console.log("Not logging because logToPage option is not set");
-  }
+	proxy.$text(".confluenceTh:contains('Current Version') + .confluenceTd").done( function (version) {
+		logCreationWithVersion(version, logToPage, createdPage);
+	}).
+	fail( function () {
+		log.warning("Could not retrieve baseline version, make sure you have a meta-data table with a 'Current Version' row.");
+		logCreationWithVersion(null, logToPage, createdPage);
+	});
+}
+function logCreationWithVersion(version, logToPage, createdPage) {
+	var versionMsg="";
+	if (version) {
+		versionMsg = " with baseline "+version;
+	}
+	if (logToPage) {
+		console.log("Logging creation of "+createdPage.title+" by "+options.currentUserKey+' in '+logToPage);
+		return confluence.getContent(options.currentSpaceKey, logToPage, 'space,body.storage,version')
+		.then( function(logPageJson) {
+			console.log("logPageJson before edit: ",logPageJson);
+			if (logPageJson.body.storage) {
+				var bodyContent = logPageJson.body.storage.value;
+				if (bodyContent.indexOf('<ul>')<0) {
+					bodyContent='<ul></ul>';
+				}
+				var logLine = '<li><ac:link><ri:user ri:userkey="[userkey]" /></ac:link> created&nbsp;<ac:link><ri:page ri:content-title="[pagetitle]" /></ac:link> on&nbsp;<time datetime="[date]" />&nbsp;'+versionMsg+'</li>';
+				logLine=logLine.replace('[userkey]',options.currentUserKey).replace('[pagetitle]',createdPage.title).replace('[date]',formattedDate);
+				logPageJson.body.storage.value=bodyContent.replace('</ul>',logLine+'</ul>');
+				logPageJson.version.minorEdit=false;
+				logPageJson.version.number+=1;
+				return confluence.updateContent(logPageJson);
+			}
+		});
+	} else {
+		console.log("Not logging because logToPage option is not set");
+	}
 }
 
 export function loadRegions() {
-  return getRegions(options.targetSpace , options.projectDocumentationRootPage)
+	return optionsPromise
+	.then( function (options) {
+	  return getRegions(options.targetSpace , options.projectDocumentationRootPage);
+	})
   .then(function (regionResults) {
     return regionResults.results.map(function(regionPage) {return regionPage.title;});
   });
@@ -85,15 +105,17 @@ function endCopyProcess(copiedPages) {
 }
 
 export function createWorkspace(workspaceOpts) {
-  console.log("New Service Engagement...",workspaceOpts);
-  if (workspaceOpts.region) {
-    console.log("First creating Customer Page "+workspaceOpts.customer+" in region" + workspaceOpts.region);
-    return createCustomerPage(workspaceOpts.region,workspaceOpts.customer).then( function() {
-      return createJustWorkspace(workspaceOpts);
-    } );
-  } else {
-    return createJustWorkspace(workspaceOpts);
-  }
+	optionsPromise.then( function (options) {
+		console.log("New Service Engagement...",workspaceOpts);
+	  if (workspaceOpts.region) {
+	    console.log("First creating Customer Page "+workspaceOpts.customer+" in region" + workspaceOpts.region);
+	    return createCustomerPage(workspaceOpts.region,workspaceOpts.customer).then( function() {
+	      return createJustWorkspace(workspaceOpts);
+	    } );
+	  } else {
+	    return createJustWorkspace(workspaceOpts);
+	  }
+	} );
 }
 
 function createCustomerPage(region,customer) {
@@ -131,7 +153,9 @@ function createJustWorkspace(workspaceOpts) {
 }
 
 export function findCustomer(term) {
-  return getCustomersMatching(options.targetSpace , options.projectDocumentationRootPage, term, customerComboLimit);
+  return optionsPromise.then( function(options) {
+		return getCustomersMatching(options.targetSpace , options.projectDocumentationRootPage, term, customerComboLimit);
+	});
 }
 
 function formattedDate() {

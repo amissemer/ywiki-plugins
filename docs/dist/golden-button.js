@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -10335,7 +10335,7 @@ return jQuery;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(3);
 /* harmony export (immutable) */ __webpack_exports__["a"] = iframeWrapper;
 
 
@@ -10435,102 +10435,126 @@ function iframeWrapper( postToWindow, targetHostname ) {
 
 /***/ }),
 
-/***/ 15:
+/***/ 16:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_main_css__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_main_css__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_main_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__css_main_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_iframeWrapper__ = __webpack_require__(1);
+/* harmony export (immutable) */ __webpack_exports__["wireBanner"] = wireBanner;
+/* harmony export (immutable) */ __webpack_exports__["wireButton"] = wireButton;
 
 
 
-(function(yloader, jQuery) {
+function closeIFrame(iframeElt) {
+  iframeElt.unbind('load').fadeOut( function() {
+    iframeElt.attr('src', '');
+    $('#block').fadeOut();
+    $('#iframecontainer').fadeOut();
+  });
+}
 
-  function closeIFrame(iframeElt) {
-    iframeElt.unbind('load').fadeOut( function() {
-      iframeElt.attr('src', '');
-      $('#block').fadeOut();
-      $('#iframecontainer').fadeOut();
-    });
-  }
-
-  function encodeOptions(options) {
-    var res = [];
-    for (var key in options) {
-      if (options.hasOwnProperty(key)) {
-          res.push(key+"="+encodeURIComponent(options[key]));
-      }
+function encodeOptions(options) {
+  var res = [];
+  for (var key in options) {
+    if (options.hasOwnProperty(key)) {
+        res.push(key+"="+encodeURIComponent(options[key]));
     }
-    return res.join('&');
   }
+  return res.join('&');
+}
 
-  /** Opens the iframe in a "lightbox" fashion, loading it from frameSrc, and passing all provided options in the hash part of the url */
-  function openIFrame(iframeElt, frameSrc, options) {
-    var block = $('#block');
-    block.fadeIn();
-    $('#iframecontainer').fadeIn();
-    iframeElt.bind('load', function() {
-      console.log("iframe loaded");
-      $('#loader').fadeOut(function() {
-        iframeElt.fadeIn();
-      });
+/** Opens the iframe in a "lightbox" fashion, loading it from frameSrc, and passing all provided options in the hash part of the url */
+function openIFrame(iframeElt, frameSrc, options) {
+  var block = $('#block');
+  block.fadeIn();
+  $('#iframecontainer').fadeIn();
+  iframeElt.bind('load', function() {
+    console.log("iframe loaded");
+    $('#loader').fadeOut(function() {
+      iframeElt.fadeIn();
     });
-    iframeElt.attr('src', frameSrc + '#' + encodeOptions(options));
+  });
+  iframeElt.attr('src', frameSrc + '#' + encodeOptions(options));
 
-    $(document).mouseup(function (e)
-    {
-      if (block.is(e.target) || block.has(e.target).length > 0) {
-        // If the target of the click is the surrounding block
-        // Hide the iframe
-        closeIFrame(iframeElt);
-      }
+  $(document).mouseup(function (e)
+  {
+    if (block.is(e.target) || block.has(e.target).length > 0) {
+      // If the target of the click is the surrounding block
+      // Hide the iframe
+      closeIFrame(iframeElt);
+    }
+  });
+}
+
+function redirectTo(url) {
+  window.location.href = url;
+}
+
+function attachHandlersToIFrameWindow(myIFrame) {
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__common_iframeWrapper__["a" /* default */])(myIFrame[0].contentWindow, yloader.getHost())
+    .attachActionHandler("ajax", function (param) {
+      return jQuery.ajax(param);
+    })
+    .attachActionHandler("closeFrame", function () {
+      return closeIFrame(myIFrame);
+    })
+    .attachActionHandler("redirect", function (url) {
+      return redirectTo(url);
+    })
+    .attachActionHandler("$metacontent", function (e) {
+      return jQuery(e).attr("content");
+    })
+    .attachActionHandler("$text", function (e) {
+      return jQuery(e).text();
     });
+}
+
+function wireBanner(options) {
+  var jEl = $(options.cssSelector);
+  jEl.addClass("cibanner");
+  if (!options.disablePullUp) {
+    jEl.addClass("pullup");
   }
+  options.buttonText = options.buttonText || "Start";
+  options.bannerText = options.bannerText || $('#title-text').text();
+  $(".wiki-content .innerCell").css("overflow-x", "visible");
+  $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
+  .html('<div class="ciaction">\
+              <img src="'+options.host+'/banner/clickme.png" />\
+              <div id="theOneButton">'+options.buttonText+'</div>\
+            </div>\
+            <div class="cilogo">\
+              <img src="'+options.host+'/banner/dashboard_figure.png" />\
+            </div>\
+            <div class="cicenter">\
+            <h1>'+options.bannerText+'</h1>\
+            </div>\
+          ');
+  options.cssSelector="#theOneButton";
+  wireButton(options);
+}
 
-  function redirectTo(url) {
-    window.location.href = url;
-  }
 
-  function attachHandlersToIFrameWindow(myIFrame) {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__common_iframeWrapper__["a" /* default */])(myIFrame[0].contentWindow, yloader.getHost())
-      .attachActionHandler("ajax", function (param) {
-        return jQuery.ajax(param);
-      })
-      .attachActionHandler("closeFrame", function () {
-        return closeIFrame(myIFrame);
-      })
-      .attachActionHandler("redirect", function (url) {
-        return redirectTo(url);
-      })
-      .attachActionHandler("$metacontent", function (e) {
-        return jQuery(e).attr("content");
-      });
-  }
+/** The main entrypoint for the plugin, which receives all options, loads the dependencies,
+creates the iframe element, attach the click event to the main button to load the iframe */
+function wireButton(options) {
 
-  /** The main entrypoint for the plugin, which receives all options, loads the dependencies,
-  creates the iframe element, attach the click event to the main button to load the iframe */
-  function wireButton(options) {
-
-    // load dependencies in order
-    $(options.cssSelector).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
-    var myIFrame = $('#iframecontainer iframe');
-    $(options.cssSelector).click(function() {
-      openIFrame(myIFrame, yloader.getHost()+'/form.html', options);
-      attachHandlersToIFrameWindow(myIFrame);
-    });
-  }
-
-  // exports:
-  yloader.wireButton = wireButton
-
-})(yloader, jQuery)
+  // load dependencies in order
+  $(options.cssSelector).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
+  var myIFrame = $('#iframecontainer iframe');
+  $(options.cssSelector).click(function() {
+    openIFrame(myIFrame, options.host+'/form.html', options);
+    attachHandlersToIFrameWindow(myIFrame);
+  });
+}
 
 
 /***/ }),
 
-/***/ 2:
+/***/ 3:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10637,7 +10661,7 @@ var windowEventListener = (function windowEventListener() {
 
 /***/ }),
 
-/***/ 6:
+/***/ 7:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
@@ -10645,4 +10669,4 @@ var windowEventListener = (function windowEventListener() {
 /***/ })
 
 /******/ });
-//# sourceMappingURL=mainframe-bundle.js.map
+//# sourceMappingURL=golden-button.js.map

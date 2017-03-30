@@ -32,3 +32,9 @@ export function redirect(url) {
 export function $metacontent(el) {
   return wrapper.call("$metacontent", el);
 }
+/**
+ * proxy for $(el).text() function
+ */
+export function $text(el) {
+  return wrapper.call("$text", el);
+}

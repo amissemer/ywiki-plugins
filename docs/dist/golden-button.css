@@ -35,8 +35,12 @@
 	top:0;
 	left:0;
 	display:none;
+	z-index: 100;
 }
 #theOneButton {
+	position: absolute;
+	top: 30px;
+	left: 25px;
   display: inline-block;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -112,4 +116,83 @@
   transition: all 30ms cubic-bezier(0.42, 0, 0.58, 1);
 }
 
-/*# sourceMappingURL=mainframe-styles.css.map*/
+
+
+// BANNER
+/* Extra small devices (phones, less than 768px) */
+/* No media query since this is the default in Bootstrap */
+.cibanner h1{
+	font-size:22px !important;
+}
+/* Medium devices (desktops, @screen-sm-min and up) */
+@media (min-width: 768px) {
+  .cibanner h1{
+      font-size:24px !important;
+  }
+}
+/* Medium devices (desktops, @screen-md-min and up) */
+@media (min-width: 992px) {
+  .cibanner h1{
+      font-size:36px !important;
+  }
+}
+.cibanner {
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#9cb3d0), to(#c4d2e2));
+	background: -webkit-linear-gradient(top, #c4d2e2, #9cb3d0);
+	background: -moz-linear-gradient(top, #c4d2e2, #9cb3d0);
+	background: -ms-linear-gradient(top, #c4d2e2, #9cb3d0);
+	background: -o-linear-gradient(top, #c4d2e2, #9cb3d0);
+	border: none;
+	display: table;
+	width: 100%;
+	float: left;
+	position: relative;
+}
+.pullup {
+	top: -100px;
+	margin-bottom: -90px;
+}
+.ciaction, .cilogo {
+	display: flex;
+	float: left;
+	position: relative;
+}
+.valign {
+	display:flex;
+	align-items: center;
+	justify-content: center;
+}
+.cibanner .ciaction {
+	background-color:#fafafc;
+	height: 132px;
+	width: 132px;
+	border: none;
+	padding: 0;
+}
+.cibanner .ciaction img, .cibanner .cilogo img {
+	max-width: 100%;
+	max-height: 100%;
+	height: auto;
+	display:block;
+	margin-left: auto;
+	margin-right: auto;
+}
+.cibanner .cicenter {
+	height: 132px;
+	padding-left:20px;
+	padding-right: 20px;
+	overflow: hidden;
+
+}
+.cicenter h1 {
+	color:#ffffff;
+	border-top: none !important;
+}
+.cibanner .cilogo {
+	background-color:#7a9bc5;
+	height: 132px;
+	width: 132px;
+	float: right;
+}
+
+/*# sourceMappingURL=golden-button.css.map*/

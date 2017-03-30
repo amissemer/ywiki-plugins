@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10333,7 +10333,7 @@ return jQuery;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(3);
 /* harmony export (immutable) */ __webpack_exports__["a"] = iframeWrapper;
 
 
@@ -10433,6 +10433,59 @@ function iframeWrapper( postToWindow, targetHostname ) {
 
 /***/ }),
 /* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(1);
+/* harmony export (immutable) */ __webpack_exports__["e"] = ajax;
+/* harmony export (immutable) */ __webpack_exports__["a"] = closeFrame;
+/* harmony export (immutable) */ __webpack_exports__["d"] = redirect;
+/* harmony export (immutable) */ __webpack_exports__["b"] = $metacontent;
+/* harmony export (immutable) */ __webpack_exports__["c"] = $text;
+
+
+/**
+ * A handy proxy for actions that can be executed in the parent frame bypassing CORS.
+ */
+var wrapper = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__["a" /* default */])(parent, "https://wiki.hybris.com");
+
+/**
+ * Perform an ajax call in the parent frame and returns a promise that will get resolved or rejected with the data as seen by the parent frame.
+ * Not compatible with ajax callbacks that can usually be passed in the settings parameter (complete, beforeSend, error, success), use the return value which is a promise instead.
+ */
+function ajax(param) {
+  return wrapper.call("ajax", param);
+}
+/**
+ * Closes the iframe from inside the iframe.
+ * It actually asks the parent window to nicely close the iframe.
+ */
+function closeFrame() {
+  return wrapper.call("closeFrame");
+}
+/**
+ * Asks the parent window to redirect to a URL.
+ */
+function redirect(url) {
+  return wrapper.call("redirect", url);
+}
+
+/**
+ * proxy for $(el).attr("content") function
+ */
+function $metacontent(el) {
+  return wrapper.call("$metacontent", el);
+}
+/**
+ * proxy for $(el).text() function
+ */
+function $text(el) {
+  return wrapper.call("$text", el);
+}
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10538,57 +10591,11 @@ var windowEventListener = (function windowEventListener() {
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(1);
-/* harmony export (immutable) */ __webpack_exports__["d"] = ajax;
-/* harmony export (immutable) */ __webpack_exports__["a"] = closeFrame;
-/* harmony export (immutable) */ __webpack_exports__["c"] = redirect;
-/* harmony export (immutable) */ __webpack_exports__["b"] = $metacontent;
-
-
-/**
- * A handy proxy for actions that can be executed in the parent frame bypassing CORS.
- */
-var wrapper = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__["a" /* default */])(parent, "https://wiki.hybris.com");
-
-/**
- * Perform an ajax call in the parent frame and returns a promise that will get resolved or rejected with the data as seen by the parent frame.
- * Not compatible with ajax callbacks that can usually be passed in the settings parameter (complete, beforeSend, error, success), use the return value which is a promise instead.
- */
-function ajax(param) {
-  return wrapper.call("ajax", param);
-}
-/**
- * Closes the iframe from inside the iframe.
- * It actually asks the parent window to nicely close the iframe.
- */
-function closeFrame() {
-  return wrapper.call("closeFrame");
-}
-/**
- * Asks the parent window to redirect to a URL.
- */
-function redirect(url) {
-  return wrapper.call("redirect", url);
-}
-
-/**
- * proxy for $(el).attr("content") function
- */
-function $metacontent(el) {
-  return wrapper.call("$metacontent", el);
-}
-
-
-/***/ }),
 /* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxy__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxy__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
 /* unused harmony export deletePage */
@@ -10624,7 +10631,7 @@ function deletePageRecursive(spaceKey,pageTitle) {
   });
 }
 function deletePageById(pageId) {
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */]({
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */]({
     url: '/rest/api/content/'+encodeURIComponent(pageId),
     type: 'DELETE'
   }).fail(errorLogger( "DELETE page failed"));
@@ -10664,7 +10671,7 @@ function getContent(spaceKey,pageTitle,expand) {
   var defer = __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred();
   var url = '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
   console.log(url);
-  __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */](url)
+  __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */](url)
   .done( function (response) {
     console.log("Filtering AJAX response",response);
     if (response.results && response.results.length>0) {
@@ -10688,7 +10695,7 @@ function getContentById(pageId, expand) {
   }
   var url = '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
   console.log(url);
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */](url)
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */](url)
   .fail(errorLogger( "GET page by pageId failed"));
 }
 
@@ -10699,7 +10706,7 @@ function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
     limit=15;
   }
   var expandParam=(expand?"&expand="+encodeURIComponent(expand):"");
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */]('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */]('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
 }
 
 /**
@@ -10811,7 +10818,7 @@ function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
 }
 
 function postPage(page) {
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */](
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */](
     {
       url: '/rest/api/content',
       type: 'POST',
@@ -10821,7 +10828,7 @@ function postPage(page) {
 }
 
 function updateContent(page) {
-    return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */](
+    return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */](
       {
         url: '/rest/api/content/'+encodeURIComponent(page.id),
         type: 'PUT',
@@ -10831,7 +10838,7 @@ function updateContent(page) {
   }
 
 function addLabel(pageId, label) {
-    return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */](
+    return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */](
       {
         url: '/rest/api/content/'+encodeURIComponent(pageId)+'/label',
         type: 'POST',
@@ -10843,18 +10850,260 @@ function addLabel(pageId, label) {
 
 /***/ }),
 /* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluence__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jquery__);
+/* harmony export (immutable) */ __webpack_exports__["d"] = withOption;
+/* harmony export (immutable) */ __webpack_exports__["b"] = loadRegions;
+/* harmony export (immutable) */ __webpack_exports__["c"] = createWorkspace;
+/* harmony export (immutable) */ __webpack_exports__["a"] = findCustomer;
+
+
+
+
+var defaultProjectDocumentationRootPage='Project Documentation';
+var customerComboLimit=10;
+var defaultCustomerPageTemplate='.CI New Project Documentation Template';
+var template_pattern = /\[Customer\]|\[ProjectName\]/;
+
+var options = getOptionsFromLocationHash();
+if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
+	throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
+}
+var promises = [];
+promises.push(__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=ajs-page-id]')
+	.done(function(val) { options.sourcePageId=val; })
+	.fail(function () { console.error("Could not read current pageId")}));
+promises.push(__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=ajs-remote-user-key]')
+	.done(function(val) { options.currentUserKey=val; })
+	.fail(function () { console.error("Could not resolve current userkey")}));
+promises.push(__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=confluence-space-key]')
+	.done(function(val) { options.currentSpaceKey=val; })
+	.fail(function () { console.error("Could not resolve current spaceKey")}));
+var optionsPromise = __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.when(promises).then( postProcessOptions );
+optionsPromise.then(function (options) { console.log("yWiki Options: ",options);});
+
+function postProcessOptions() {
+	// set defaults for missing options
+	options.projectDocumentationRootPage = options.projectDocumentationRootPage || defaultProjectDocumentationRootPage;
+	options.customerPageTemplate = options.customerPageTemplate || defaultCustomerPageTemplate;
+	options.openInNewTab= !!options.openInNewTab;
+	options.targetSpace = options.targetSpace || options.currentSpaceKey;
+	return options;
+}
+
+
+function withOption(name) {
+  return optionsPromise.then( function (options) { return options[name]; } );
+}
+function getOptionsFromLocationHash() {
+
+  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
+  var match;
+  var params = {};
+  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
+
+  var hash = document.location.hash;
+
+  while (match = re.exec(hash)) {
+    params[decode(match[1])] = decode(match[2]);
+  }
+  return params;
+}
+
+function logCreation(logToPage, createdPage) {
+	__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* $text */](".confluenceTh:contains('Current Version') + .confluenceTd").done( function (version) {
+		logCreationWithVersion(version, logToPage, createdPage);
+	}).
+	fail( function () {
+		log.warning("Could not retrieve baseline version, make sure you have a meta-data table with a 'Current Version' row.");
+		logCreationWithVersion(null, logToPage, createdPage);
+	});
+}
+function logCreationWithVersion(version, logToPage, createdPage) {
+	var versionMsg="";
+	if (version) {
+		versionMsg = " with baseline "+version;
+	}
+	if (logToPage) {
+		console.log("Logging creation of "+createdPage.title+" by "+options.currentUserKey+' in '+logToPage);
+		return __WEBPACK_IMPORTED_MODULE_0__confluence__["a" /* getContent */](options.currentSpaceKey, logToPage, 'space,body.storage,version')
+		.then( function(logPageJson) {
+			console.log("logPageJson before edit: ",logPageJson);
+			if (logPageJson.body.storage) {
+				var bodyContent = logPageJson.body.storage.value;
+				if (bodyContent.indexOf('<ul>')<0) {
+					bodyContent='<ul></ul>';
+				}
+				var logLine = '<li><ac:link><ri:user ri:userkey="[userkey]" /></ac:link> created&nbsp;<ac:link><ri:page ri:content-title="[pagetitle]" /></ac:link> on&nbsp;<time datetime="[date]" />&nbsp;'+versionMsg+'</li>';
+				logLine=logLine.replace('[userkey]',options.currentUserKey).replace('[pagetitle]',createdPage.title).replace('[date]',formattedDate);
+				logPageJson.body.storage.value=bodyContent.replace('</ul>',logLine+'</ul>');
+				logPageJson.version.minorEdit=false;
+				logPageJson.version.number+=1;
+				return __WEBPACK_IMPORTED_MODULE_0__confluence__["b" /* updateContent */](logPageJson);
+			}
+		});
+	} else {
+		console.log("Not logging because logToPage option is not set");
+	}
+}
+
+function loadRegions() {
+	return optionsPromise
+	.then( function (options) {
+	  return getRegions(options.targetSpace , options.projectDocumentationRootPage);
+	})
+  .then(function (regionResults) {
+    return regionResults.results.map(function(regionPage) {return regionPage.title;});
+  });
+}
+
+function endCopyProcess(copiedPages) {
+  var workspaceURL = '/pages/viewpage.action?pageId='+copiedPages[0].id;
+  __WEBPACK_IMPORTED_MODULE_1__proxy__["d" /* redirect */](workspaceURL);
+}
+
+function createWorkspace(workspaceOpts) {
+	optionsPromise.then( function (options) {
+		console.log("New Service Engagement...",workspaceOpts);
+	  if (workspaceOpts.region) {
+	    console.log("First creating Customer Page "+workspaceOpts.customer+" in region" + workspaceOpts.region);
+	    return createCustomerPage(workspaceOpts.region,workspaceOpts.customer).then( function() {
+	      return createJustWorkspace(workspaceOpts);
+	    } );
+	  } else {
+	    return createJustWorkspace(workspaceOpts);
+	  }
+	} );
+}
+
+function createCustomerPage(region,customer) {
+ return __WEBPACK_IMPORTED_MODULE_0__confluence__["c" /* copyPage */](options.targetSpace, options.customerPageTemplate, options.targetSpace, region, customer);
+}
+
+function createJustWorkspace(workspaceOpts) {
+  var copiedPages=[];
+  return __WEBPACK_IMPORTED_MODULE_0__confluence__["d" /* getContentById */](options.sourcePageId,'space')
+  .then(function(sourcePage) {
+    return __WEBPACK_IMPORTED_MODULE_0__confluence__["e" /* copyPageRecursive */](sourcePage.space.key, sourcePage.title, options.targetSpace, data.customer, onlyTemplates,
+    {
+      "Customer": data.customer,
+      "ProjectName": data.projectName,
+      "TargetEndDate": data.targetEndDate
+    }
+    ,copiedPages
+  )}).then( function() {
+    if (copiedPages.length==0) {
+      return __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.Deferred().reject("No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern);
+    }
+    return __WEBPACK_IMPORTED_MODULE_0__confluence__["f" /* addLabel */](copiedPages[0].id, options.addLabel);
+  })
+  .then(function() {
+    return logCreation(options.logToPage,copiedPages[0]);
+  })
+  .done(function() {
+    console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages);
+    // Now open new tab or redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
+    endCopyProcess(copiedPages);
+  })
+  .fail(function() {
+    console.error("Copy failed",arguments);
+  });
+}
+
+function findCustomer(term) {
+  return optionsPromise.then( function(options) {
+		return getCustomersMatching(options.targetSpace , options.projectDocumentationRootPage, term, customerComboLimit);
+	});
+}
+
+function formattedDate() {
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth()+1; //January is 0!
+  var yyyy = today.getFullYear();
+  if(dd<10) {
+      dd='0'+dd
+  }
+  if(mm<10) {
+      mm='0'+mm
+  }
+  return yyyy+'-'+mm+'-'+dd;
+}
+
+var cachedProjectDocumentationRootPageResult=null;
+var cachedRegionResults=null;
+function extractPageIds(searchAPIResponse) {
+  var pageIds=[];
+  searchAPIResponse.results.forEach(function( page ) {
+    pageIds.push(page.id);
+  });
+  return pageIds;
+}
+
+function parentQuery(pageIds) {
+  var restriction = [];
+  pageIds.forEach(function (pageId) {
+    restriction.push("parent="+pageId);
+  });
+  return '('+restriction.join(' OR ')+')';
+}
+
+function getRegions(spaceKey, projectDocumentationRootPage) {
+  var promise;
+  if (cachedProjectDocumentationRootPageResult) {
+    promise = __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.Deferred().resolve(cachedProjectDocumentationRootPageResult).promise();
+  } else {
+    // get the id of the root Product Documentation page
+    promise = __WEBPACK_IMPORTED_MODULE_0__confluence__["a" /* getContent */](spaceKey,projectDocumentationRootPage)
+  }
+  return promise
+    .then(function(rootPage) {
+      cachedProjectDocumentationRootPageResult = rootPage;
+      if (cachedRegionResults) return cachedRegionResults;
+      // get all the direct children of the root (the region pages) (there are around 10 of them but we use a limit of 50 to make sure we have them all)
+      return __WEBPACK_IMPORTED_MODULE_0__confluence__["g" /* searchPagesWithCQL */](spaceKey, "label!='project-documentation-pages' AND parent="+cachedProjectDocumentationRootPageResult.id, 50);
+    })
+    .then(function (regionResults) {
+      cachedRegionResults = regionResults;
+      return regionResults;
+    });
+}
+
+/** Return 'limit' sub-sub pages of the spaceKey:projectDocumentationRootPage, whose title partially match partialTitle */
+function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTitle, limit) {
+    return getRegions(spaceKey, projectDocumentationRootPage)
+    .then(function (regionResults) {
+      var titleRestriction = (partialTitle?' and (title~"'+encodeURIComponent(partialTitle)+'" OR title~"'+encodeURIComponent(partialTitle)+'*")':"");
+      return __WEBPACK_IMPORTED_MODULE_0__confluence__["g" /* searchPagesWithCQL */](spaceKey, parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
+    })
+    .then(function (searchResponse) {
+      var customers=[];
+       searchResponse.results.forEach(function(page) {
+         customers.push(page.title);
+       });
+       return customers
+    });
+}
+
+// Filters pages that contain [placeholders]
+function onlyTemplates(page) {
+  return template_pattern.test(page.title);
+}
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 6 */,
-/* 7 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
+/* 7 */,
 /* 8 */
 /***/ (function(module, exports) {
 
@@ -10868,6 +11117,12 @@ function addLabel(pageId, label) {
 
 /***/ }),
 /* 10 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*** IMPORTS FROM imports-loader ***/
@@ -12978,7 +13233,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -13404,7 +13659,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -13413,22 +13668,22 @@ var $ = __webpack_require__(0);
 (function() {
 
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
-__webpack_require__(27)
-__webpack_require__(17)
+__webpack_require__(28)
 __webpack_require__(18)
 __webpack_require__(19)
 __webpack_require__(20)
 __webpack_require__(21)
 __webpack_require__(22)
-__webpack_require__(26)
 __webpack_require__(23)
+__webpack_require__(27)
 __webpack_require__(24)
 __webpack_require__(25)
-__webpack_require__(16)
+__webpack_require__(26)
+__webpack_require__(17)
 }.call(window));
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! jQuery UI - v1.12.1 - 2017-03-19
@@ -32142,31 +32397,31 @@ var effectsEffectTransfer = effect;
 }));
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__confluence__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wizardService__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wizardService__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_bootstrap__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_validator__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_validator__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_validator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_datepicker__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_datepicker__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_datepicker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_bootstrap_datepicker__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__css_form_css__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__css_form_css__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__css_form_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__css_form_css__);
 
 
@@ -32223,7 +32478,11 @@ function bindDOM() {
 		return false;
 	});
 
-	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#mainTitle').text("New " + __WEBPACK_IMPORTED_MODULE_3__wizardService__["d" /* getOption */]('newInstanceDisplayName'));
+	__WEBPACK_IMPORTED_MODULE_3__wizardService__["d" /* withOption */]('newInstanceDisplayName').done(
+		function (value) {
+			__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#mainTitle').text("New " + value);
+		}
+	);
 
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()('.datepicker').datepicker({
       todayBtn: 'linked',
@@ -32260,8 +32519,8 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
 
 
 /***/ }),
-/* 15 */,
-/* 16 */
+/* 16 */,
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -32435,7 +32694,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -32541,7 +32800,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -32678,7 +32937,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -32927,7 +33186,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33151,7 +33410,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33328,7 +33587,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33679,7 +33938,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33799,7 +34058,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33983,7 +34242,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -34150,7 +34409,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -34682,7 +34941,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -34752,242 +35011,6 @@ var $ = __webpack_require__(0);
 
 }.call(window));
 
-/***/ }),
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluence__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jquery__);
-/* harmony export (immutable) */ __webpack_exports__["d"] = getOption;
-/* harmony export (immutable) */ __webpack_exports__["b"] = loadRegions;
-/* harmony export (immutable) */ __webpack_exports__["c"] = createWorkspace;
-/* harmony export (immutable) */ __webpack_exports__["a"] = findCustomer;
-
-
-
-
-var defaultProjectDocumentationRootPage='Project Documentation';
-var customerComboLimit=10;
-var defaultCustomerPageTemplate='.CI New Project Documentation Template';
-var template_pattern = /\[Customer\]|\[ProjectName\]/;
-
-var options = getOptionsFromLocationHash();
-if (!options.cssSelector || !options.targetSpace || !options.newInstanceDisplayName || !options.addLabel) {
-	throw "wireButton({cssSelector:'',targetSpace:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
-}
-__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=ajs-page-id]')
-	.done(function(val) { options.sourcePageId=val; })
-	.fail(function () { console.error("Could not read current pageId")});
-__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=ajs-remote-user-key]')
-	.done(function(val) { options.currentUserKey=val; })
-	.fail(function () { console.error("Could not resolve current userkey")});
-__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=confluence-space-key]')
-	.done(function(val) { options.currentSpaceKey=val; })
-	.fail(function () { console.error("Could not resolve current spaceKey")});
-
-// set defaults for missing options
-options.projectDocumentationRootPage = (options.projectDocumentationRootPage? options.projectDocumentationRootPage:defaultProjectDocumentationRootPage);
-options.customerPageTemplate = (options.customerPageTemplate? options.customerPageTemplate:defaultCustomerPageTemplate);
-console.log("projectDocumentationRootPage",options.projectDocumentationRootPage);
-options.openInNewTab=!!options.openInNewTab;
-options.targetSpace = (typeof options.targetSpace === undefined ? options.currentSpaceKey : options.targetSpace);
-
-console.log("yWiki Options",options);
-
-function getOption(name) {
-  return options[name];
-}
-function getOptionsFromLocationHash() {
-
-  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
-  var match;
-  var params = {};
-  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
-
-  var hash = document.location.hash;
-
-  while (match = re.exec(hash)) {
-    params[decode(match[1])] = decode(match[2]);
-  }
-  return params;
-}
-
-function logCreation(logToPage, createdPage) {
-  if (logToPage) {
-    console.log("Logging creation of "+createdPage.title+" by "+options.currentUserKey+' in '+logToPage);
-    return __WEBPACK_IMPORTED_MODULE_0__confluence__["a" /* getContent */](options.currentSpaceKey, logToPage, 'space,body.storage,version')
-    .then( function(logPageJson) {
-      console.log("logPageJson before edit: ",logPageJson);
-      if (logPageJson.body.storage) {
-        var bodyContent = logPageJson.body.storage.value;
-        if (bodyContent.indexOf('<ul>')<0) {
-          bodyContent='<ul></ul>';
-        }
-        var logLine = '<li><ac:link><ri:user ri:userkey="[userkey]" /></ac:link> created&nbsp;<ac:link><ri:page ri:content-title="[pagetitle]" /></ac:link> on&nbsp;<time datetime="[date]" />&nbsp;</li>';
-        logLine=logLine.replace('[userkey]',options.currentUserKey).replace('[pagetitle]',createdPage.title).replace('[date]',formattedDate);
-        logPageJson.body.storage.value=bodyContent.replace('</ul>',logLine+'</ul>');
-        logPageJson.version.minorEdit=false;
-        logPageJson.version.number+=1;
-        return __WEBPACK_IMPORTED_MODULE_0__confluence__["b" /* updateContent */](logPageJson);
-      }
-    });
-  } else {
-    console.log("Not logging because logToPage option is not set");
-  }
-}
-
-function loadRegions() {
-  return getRegions(options.targetSpace , options.projectDocumentationRootPage)
-  .then(function (regionResults) {
-    return regionResults.results.map(function(regionPage) {return regionPage.title;});
-  });
-}
-
-function endCopyProcess(copiedPages) {
-  var workspaceURL = '/pages/viewpage.action?pageId='+copiedPages[0].id;
-  __WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* redirect */](workspaceURL);
-}
-
-function createWorkspace(workspaceOpts) {
-  console.log("New Service Engagement...",workspaceOpts);
-  if (workspaceOpts.region) {
-    console.log("First creating Customer Page "+workspaceOpts.customer+" in region" + workspaceOpts.region);
-    return createCustomerPage(workspaceOpts.region,workspaceOpts.customer).then( function() {
-      return createJustWorkspace(workspaceOpts);
-    } );
-  } else {
-    return createJustWorkspace(workspaceOpts);
-  }
-}
-
-function createCustomerPage(region,customer) {
- return __WEBPACK_IMPORTED_MODULE_0__confluence__["c" /* copyPage */](options.targetSpace, options.customerPageTemplate, options.targetSpace, region, customer);
-}
-
-function createJustWorkspace(workspaceOpts) {
-  var copiedPages=[];
-  return __WEBPACK_IMPORTED_MODULE_0__confluence__["d" /* getContentById */](options.sourcePageId,'space')
-  .then(function(sourcePage) {
-    return __WEBPACK_IMPORTED_MODULE_0__confluence__["e" /* copyPageRecursive */](sourcePage.space.key, sourcePage.title, options.targetSpace, data.customer, onlyTemplates,
-    {
-      "Customer": data.customer,
-      "ProjectName": data.projectName,
-      "TargetEndDate": data.targetEndDate
-    }
-    ,copiedPages
-  )}).then( function() {
-    if (copiedPages.length==0) {
-      return __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.Deferred().reject("No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern);
-    }
-    return __WEBPACK_IMPORTED_MODULE_0__confluence__["f" /* addLabel */](copiedPages[0].id, options.addLabel);
-  })
-  .then(function() {
-    return logCreation(options.logToPage,copiedPages[0]);
-  })
-  .done(function() {
-    console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages);
-    // Now open new tab or redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
-    endCopyProcess(copiedPages);
-  })
-  .fail(function() {
-    console.error("Copy failed",arguments);
-  });
-}
-
-function findCustomer(term) {
-  return getCustomersMatching(options.targetSpace , options.projectDocumentationRootPage, term, customerComboLimit);
-}
-
-function formattedDate() {
-  var today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth()+1; //January is 0!
-  var yyyy = today.getFullYear();
-  if(dd<10) {
-      dd='0'+dd
-  }
-  if(mm<10) {
-      mm='0'+mm
-  }
-  return yyyy+'-'+mm+'-'+dd;
-}
-
-var cachedProjectDocumentationRootPageResult=null;
-var cachedRegionResults=null;
-function extractPageIds(searchAPIResponse) {
-  var pageIds=[];
-  searchAPIResponse.results.forEach(function( page ) {
-    pageIds.push(page.id);
-  });
-  return pageIds;
-}
-
-function parentQuery(pageIds) {
-  var restriction = [];
-  pageIds.forEach(function (pageId) {
-    restriction.push("parent="+pageId);
-  });
-  return '('+restriction.join(' OR ')+')';
-}
-
-function getRegions(spaceKey, projectDocumentationRootPage) {
-  var promise;
-  if (cachedProjectDocumentationRootPageResult) {
-    promise = __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.Deferred().resolve(cachedProjectDocumentationRootPageResult).promise();
-  } else {
-    // get the id of the root Product Documentation page
-    promise = __WEBPACK_IMPORTED_MODULE_0__confluence__["a" /* getContent */](spaceKey,projectDocumentationRootPage)
-  }
-  return promise
-    .then(function(rootPage) {
-      cachedProjectDocumentationRootPageResult = rootPage;
-      if (cachedRegionResults) return cachedRegionResults;
-      // get all the direct children of the root (the region pages) (there are around 10 of them but we use a limit of 50 to make sure we have them all)
-      return __WEBPACK_IMPORTED_MODULE_0__confluence__["g" /* searchPagesWithCQL */](spaceKey, "label!='project-documentation-pages' AND parent="+cachedProjectDocumentationRootPageResult.id, 50);
-    })
-    .then(function (regionResults) {
-      cachedRegionResults = regionResults;
-      return regionResults;
-    });
-}
-
-/** Return 'limit' sub-sub pages of the spaceKey:projectDocumentationRootPage, whose title partially match partialTitle */
-function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTitle, limit) {
-    return getRegions(spaceKey, projectDocumentationRootPage)
-    .then(function (regionResults) {
-      var titleRestriction = (partialTitle?' and (title~"'+encodeURIComponent(partialTitle)+'" OR title~"'+encodeURIComponent(partialTitle)+'*")':"");
-      return __WEBPACK_IMPORTED_MODULE_0__confluence__["g" /* searchPagesWithCQL */](spaceKey, parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
-    })
-    .then(function (searchResponse) {
-      var customers=[];
-       searchResponse.results.forEach(function(page) {
-         customers.push(page.title);
-       });
-       return customers
-    });
-}
-
-// Filters pages that contain [placeholders]
-function onlyTemplates(page) {
-  return template_pattern.test(page.title);
-}
-
-
 /***/ })
 /******/ ]);
-//# sourceMappingURL=iframe-bundle.js.map
+//# sourceMappingURL=iframe.js.map

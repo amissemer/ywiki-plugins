@@ -3,11 +3,11 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: {
-    iframe: './js/iframe/form.js',
-    mainframe: './js/mainframe/main.js'
+    "iframe": './js/iframe/form.js',
+    "golden-button": './js/mainframe/main.js'
   },
   output: {
-    filename: '[name]-bundle.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'docs/dist'),
     publicPath: '/dist/'
   },
@@ -25,7 +25,7 @@ module.exports = {
     ]
   },
   plugins: [
-     new ExtractTextPlugin('[name]-styles.css'),
+     new ExtractTextPlugin('[name].css'),
 
   ]
 };

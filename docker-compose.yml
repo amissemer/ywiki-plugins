@@ -3,7 +3,7 @@ services:
   http:
     image: nginx
     volumes:
-     - ./docs:/usr/share/nginx/html:ro
+     - ./docs:/usr/share/nginx/html/ywiki-plugins/:ro
      - ./mockServer/conf.d:/etc/nginx/conf.d/
     ports:
      - 80:80

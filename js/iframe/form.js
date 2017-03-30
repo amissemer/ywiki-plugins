@@ -53,7 +53,11 @@ function bindDOM() {
 		return false;
 	});
 
-	$('#mainTitle').text("New " + wizardService.getOption('newInstanceDisplayName'));
+	wizardService.withOption('newInstanceDisplayName').done(
+		function (value) {
+			$('#mainTitle').text("New " + value);
+		}
+	);
 
   $('.datepicker').datepicker({
       todayBtn: 'linked',
