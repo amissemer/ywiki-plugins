@@ -36,8 +36,8 @@ var goldenButton = (function() {
     openInNewTab: true
   }*/
   function wireButton(options) {
-    if (!options || !options.cssSelector || !options.targetSpace || !options.newInstanceDisplayName || !options.addLabel) {
-      throw "wireButton({cssSelector:'',targetSpace:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
+    if (!options || !options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
+      throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
     }
     var sourcePageId = $('meta[name=ajs-page-id]').attr("content");
     if (!sourcePageId) {
@@ -57,8 +57,8 @@ var goldenButton = (function() {
     options.customerPageTemplate = (options.customerPageTemplate? options.customerPageTemplate:defaultCustomerPageTemplate);
     console.log("projectDocumentationRootPage",options.projectDocumentationRootPage);
     options.openInNewTab=!!options.openInNewTab;
-    options.targetSpace = (typeof options.targetSpace === undefined ? currentSpaceKey : options.targetSpace);
-
+    options.targetSpace = options.targetSpace || currentSpaceKey;
+    console.log("plugin options",options);
     function logCreation(logToPage, createdPage) {
       var version = $('.confluenceTh:contains("Current Version")').siblings('.confluenceTd').text();
       var versionMsg="";
