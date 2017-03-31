@@ -1,13 +1,14 @@
 import * as confluence from './confluence'
 import * as proxy from './proxy';
 import $ from 'jquery';
+import optionsParser from './optionsParser';
 
+var options = optionsParser();
 var defaultProjectDocumentationRootPage='Project Documentation';
 var customerComboLimit=10;
 var defaultCustomerPageTemplate='.CI New Project Documentation Template';
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 
-var options = getOptionsFromLocationHash();
 if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
 	throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
 }
@@ -42,20 +43,7 @@ function postProcessOptions() {
 export function withOption(name) {
   return optionsPromise.then( function (options) { return options[name]; } );
 }
-function getOptionsFromLocationHash() {
 
-  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
-  var match;
-  var params = {};
-  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
-
-  var hash = document.location.hash;
-
-  while (match = re.exec(hash)) {
-    params[decode(match[1])] = decode(match[2]);
-  }
-  return params;
-}
 
 function logCreation(logToPage, createdPage) {
 	proxy.$text(".confluenceTh:contains('Current Version') + .confluenceTd").done( function (version) {

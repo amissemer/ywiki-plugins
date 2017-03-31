@@ -40,7 +40,7 @@
     padding: 15px 0 10px 0;
 }
 
-.action-box:not(.normal-links) A{
+.action-box:not(.normal-links) a, .cibutton{
     margin-top: 15px;
     display: inline-block;
     font-size: 17px;
@@ -51,8 +51,9 @@
     background: #ffcc28;
     padding: 12px 20px 8px;
     text-decoration:none !important;
+    cursor:pointer;
 }
-.action-box:not(.normal-links) A:hover{
+.action-box:not(.normal-links) a:hover, .cibutton:hover{
     text-decoration:underline !important;
 }
 #sharp_design_banner {

@@ -96,16 +96,23 @@ export function wireBanner(options) {
   wireButton(options);
 }
 
+function genericButton(options, formPath) {
+  // load dependencies in order
+  var myIFrame = $('#iframecontainer iframe');
+  $(options.cssSelector).click(function() {
+    openIFrame(myIFrame, options.host+'/'+formPath, options);
+    attachHandlersToIFrameWindow(options.host,myIFrame);
+  });
+}
 
 /** The main entrypoint for the plugin, which receives all options, loads the dependencies,
 creates the iframe element, attach the click event to the main button to load the iframe */
 export function wireButton(options) {
+  return genericButton(options, 'form.html');
+}
 
-  // load dependencies in order
-  $(options.cssSelector).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
-  var myIFrame = $('#iframecontainer iframe');
-  $(options.cssSelector).click(function() {
-    openIFrame(myIFrame, options.host+'/form.html', options);
-    attachHandlersToIFrameWindow(options.host,myIFrame);
-  });
+export function wireCreateJiraButton(options) {
+
+  $(options.cssSelector).addClass("cibutton");
+  return genericButton(options, 'create-jira.html');
 }

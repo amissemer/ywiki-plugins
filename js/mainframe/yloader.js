@@ -20,7 +20,14 @@ function loadStyleSheet(host, url) {
   document.getElementsByTagName('head')[0].appendChild(link)
 }
 
+function insertFrame() {
+  // insert the frame html after the current script tag
+  var scripts = document.getElementsByTagName('script');
+  $(scripts[scripts.length-1]).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
+}
+
 function bootstrap(host, cacheBuster) {
+  insertFrame();
   loadStyleSheet(host,'dist/golden-button.css'+cacheBuster);
   $('[data-activate="golden-banner"]').each( function() {
     var jEl=$(this);
@@ -35,6 +42,18 @@ function bootstrap(host, cacheBuster) {
       newInstanceDisplayName: jEl.data('new-instance-display-name'),
       addLabel: jEl.data('add-label'),
       logToPage: jEl.data('log-to-page'),
+    });
+  });
+  $('[data-activate="issue-creator"]').each( function() {
+    var jEl=$(this);
+    main.wireCreateJiraButton({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      jiraProjectKey: jEl.data('jira-project-key'),
+      serviceDisplayName: jEl.data('service-display-name'),
+      issueType: jEl.data('issue-type'),
+      issueComponent: jEl.data('issue-component'),
     });
   });
 }

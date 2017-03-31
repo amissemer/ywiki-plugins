@@ -5,6 +5,7 @@ module.exports = {
   entry: {
     // create a bundle for the iframe and a separate bundle for the main frame (the wiki page)
     "iframe": './js/iframe/form.js',
+    "create-jira": './js/iframe/create-jira.js',
     "golden-button": './js/mainframe/yloader.js'
   },
   output: {
