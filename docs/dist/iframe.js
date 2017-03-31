@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10332,11 +10332,11 @@ return jQuery;
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(2);
-/* harmony export (immutable) */ __webpack_exports__["e"] = ajax;
+/* harmony export (immutable) */ __webpack_exports__["b"] = ajax;
 /* harmony export (immutable) */ __webpack_exports__["a"] = closeFrame;
-/* harmony export (immutable) */ __webpack_exports__["d"] = redirect;
-/* harmony export (immutable) */ __webpack_exports__["b"] = $metacontent;
-/* harmony export (immutable) */ __webpack_exports__["c"] = $text;
+/* harmony export (immutable) */ __webpack_exports__["e"] = redirect;
+/* harmony export (immutable) */ __webpack_exports__["c"] = $metacontent;
+/* harmony export (immutable) */ __webpack_exports__["d"] = $text;
 
 
 /**
@@ -10631,7 +10631,7 @@ function deletePageRecursive(spaceKey,pageTitle) {
   });
 }
 function deletePageById(pageId) {
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */]({
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */]({
     url: '/rest/api/content/'+encodeURIComponent(pageId),
     type: 'DELETE'
   }).fail(errorLogger( "DELETE page failed"));
@@ -10671,7 +10671,7 @@ function getContent(spaceKey,pageTitle,expand) {
   var defer = __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred();
   var url = '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
   console.log(url);
-  __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */](url)
+  __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](url)
   .done( function (response) {
     console.log("Filtering AJAX response",response);
     if (response.results && response.results.length>0) {
@@ -10695,7 +10695,7 @@ function getContentById(pageId, expand) {
   }
   var url = '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
   console.log(url);
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */](url)
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](url)
   .fail(errorLogger( "GET page by pageId failed"));
 }
 
@@ -10706,7 +10706,7 @@ function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
     limit=15;
   }
   var expandParam=(expand?"&expand="+encodeURIComponent(expand):"");
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */]('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */]('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
 }
 
 /**
@@ -10818,7 +10818,7 @@ function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
 }
 
 function postPage(page) {
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */](
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](
     {
       url: '/rest/api/content',
       type: 'POST',
@@ -10828,7 +10828,7 @@ function postPage(page) {
 }
 
 function updateContent(page) {
-    return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */](
+    return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](
       {
         url: '/rest/api/content/'+encodeURIComponent(page.id),
         type: 'PUT',
@@ -10838,7 +10838,7 @@ function updateContent(page) {
   }
 
 function addLabel(pageId, label) {
-    return __WEBPACK_IMPORTED_MODULE_0__proxy__["e" /* ajax */](
+    return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](
       {
         url: '/rest/api/content/'+encodeURIComponent(pageId)+'/label',
         type: 'POST',
@@ -10874,17 +10874,17 @@ var options = getOptionsFromLocationHash();
 if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
 	throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
 }
-var promise1=__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=ajs-page-id]')
+var promise1=__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* $metacontent */]('meta[name=ajs-page-id]')
 	.then(
 		function(val) { options.sourcePageId=val; },
 		function () { console.error("Could not read current pageId")}
 	);
-var promise2=__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=ajs-remote-user-key]')
+var promise2=__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* $metacontent */]('meta[name=ajs-remote-user-key]')
 	.then(
 		function(val) { options.currentUserKey=val; },
 		function () { console.error("Could not resolve current userkey")}
 	);
-var promise3=__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=confluence-space-key]')
+var promise3=__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* $metacontent */]('meta[name=confluence-space-key]')
 	.then(
 		function(val) { options.currentSpaceKey=val; },
 		function () { console.error("Could not resolve current spaceKey")}
@@ -10921,7 +10921,7 @@ function getOptionsFromLocationHash() {
 }
 
 function logCreation(logToPage, createdPage) {
-	__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* $text */](".confluenceTh:contains('Current Version') + .confluenceTd").done( function (version) {
+	__WEBPACK_IMPORTED_MODULE_1__proxy__["d" /* $text */](".confluenceTh:contains('Current Version') + .confluenceTd").done( function (version) {
 		logCreationWithVersion(version, logToPage, createdPage);
 	}).
 	fail( function () {
@@ -10969,7 +10969,7 @@ function loadRegions() {
 
 function endCopyProcess(copiedPages) {
   var workspaceURL = '/pages/viewpage.action?pageId='+copiedPages[0].id;
-  __WEBPACK_IMPORTED_MODULE_1__proxy__["d" /* redirect */](workspaceURL);
+  __WEBPACK_IMPORTED_MODULE_1__proxy__["e" /* redirect */](workspaceURL);
 }
 
 function createWorkspace(workspaceOpts) {
@@ -13673,18 +13673,18 @@ var $ = __webpack_require__(0);
 (function() {
 
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
-__webpack_require__(30)
-__webpack_require__(20)
+__webpack_require__(31)
 __webpack_require__(21)
 __webpack_require__(22)
 __webpack_require__(23)
 __webpack_require__(24)
 __webpack_require__(25)
-__webpack_require__(29)
 __webpack_require__(26)
+__webpack_require__(30)
 __webpack_require__(27)
 __webpack_require__(28)
-__webpack_require__(19)
+__webpack_require__(29)
+__webpack_require__(20)
 }.call(window));
 
 /***/ }),
@@ -32402,7 +32402,8 @@ var effectsEffectTransfer = effect;
 }));
 
 /***/ }),
-/* 15 */
+/* 15 */,
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -32446,6 +32447,11 @@ function bindDOM() {
 
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#form-close").click( function() {
 		__WEBPACK_IMPORTED_MODULE_1__proxy__["a" /* closeFrame */]();
+	});
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).keyup(function(e) {
+    if (e.keyCode == 27) { // ESC
+			 __WEBPACK_IMPORTED_MODULE_1__proxy__["a" /* closeFrame */]();
+    }
 	});
 	var customerSelect = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#customerSelect');
 	var customerProgress = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#customer-progress');
@@ -32493,7 +32499,8 @@ function bindDOM() {
       todayBtn: 'linked',
       startDate: '+0d',
 			todayHighlight: true,
-      autoclose: true
+      autoclose: true,
+			format: "yyyy/mm/dd"
   });
 
 	var customerElements = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".copyCustomerName");
@@ -32524,10 +32531,10 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
 
 
 /***/ }),
-/* 16 */,
 /* 17 */,
 /* 18 */,
-/* 19 */
+/* 19 */,
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -32701,7 +32708,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -32807,7 +32814,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -32944,7 +32951,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33193,7 +33200,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33417,7 +33424,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33594,7 +33601,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33945,7 +33952,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -34065,7 +34072,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -34249,7 +34256,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -34416,7 +34423,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -34948,7 +34955,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/

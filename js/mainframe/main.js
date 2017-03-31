@@ -32,6 +32,11 @@ function openIFrame(iframeElt, frameSrc, options) {
     });
   });
   iframeElt.attr('src', frameSrc + '#' + encodeOptions(options));
+  $(document).keyup(function(e) {
+    if (e.keyCode == 27) { // ESC
+			 closeIFrame(iframeElt);
+    }
+	});
 
   $(document).mouseup(function (e)
   {

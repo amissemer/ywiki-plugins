@@ -17,6 +17,11 @@ function bindDOM() {
 	$("#form-close").click( function() {
 		proxy.closeFrame();
 	});
+	$(document).keyup(function(e) {
+    if (e.keyCode == 27) { // ESC
+			 proxy.closeFrame();
+    }
+	});
 	var customerSelect = $('#customerSelect');
 	var customerProgress = $('#customer-progress');
 	customerSelect.autocomplete({
@@ -63,7 +68,8 @@ function bindDOM() {
       todayBtn: 'linked',
       startDate: '+0d',
 			todayHighlight: true,
-      autoclose: true
+      autoclose: true,
+			format: "yyyy/mm/dd"
   });
 
 	var customerElements = $(".copyCustomerName");
