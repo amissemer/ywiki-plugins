@@ -17,7 +17,7 @@ npm run watch
 
 * This project uses [webpack](https://webpack.js.org/guides/get-started/) to compile, concatenate and minify the javascripts and css. 
 * The `docs/dist` folder is versioned because the generated bundled scripts and styles are exposed as a [GitHub page](https://help.github.com/articles/configuring-a-publishing-source-for-github-pages/) to be included in Confluence wiki pages via `HTML` macros. 
-* Keep `npm run watch` running, or at least run it once before committing changes to the css or js files, and commit all changes to files in the `docs/dist` folder.
+* Keep `npm run watch` running, or at least run it once before committing changes to the source css or js files, and commit all changes to files in the `docs/dist` folder.
 
 ## Usage
 
