@@ -66,9 +66,8 @@
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 0:
+/******/ ([
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10328,72 +10327,8 @@ return jQuery;
 
 
 /***/ }),
-
-/***/ 16:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__main__ = __webpack_require__(6);
-
-
-function getOriginLocation() {
-  var scripts = document.getElementsByTagName('script');
-  var l = document.createElement("a");
-  l.href = scripts[scripts.length-1].getAttribute("src");
-  console.log("origin",l.origin);
-  return l;
-}
-
-// Loads a stylesheet at url. Url can be relative to the configured host.
-function loadStyleSheet(host, url) {
-  if (!url.startsWith('http')) {
-    url = host+'/'+url;
-  }
-  var link = document.createElement('link')
-  link.setAttribute('rel', 'stylesheet')
-  link.setAttribute('type', 'text/css')
-  link.setAttribute('href', url)
-  document.getElementsByTagName('head')[0].appendChild(link)
-}
-
-function bootstrap(host, cacheBuster) {
-  loadStyleSheet(host,'dist/golden-button.css'+cacheBuster);
-  $('[data-activate="golden-banner"]').each( function() {
-    var jEl=$(this);
-    __WEBPACK_IMPORTED_MODULE_0__main__["a" /* wireBanner */]({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      disablePullUp: jEl.data('disable-pull-up'),
-      buttonText: jEl.data('button-text'),
-      bannerText: jEl.data('banner-text'),
-      targetSpace: jEl.data('target-space'),
-      newInstanceDisplayName: jEl.data('new-instance-display-name'),
-      addLabel: jEl.data('add-label'),
-      logToPage: jEl.data('log-to-page'),
-    });
-  });
-}
-
-var originlocation = getOriginLocation();
-var host = originlocation.origin+'/ywiki-plugins';
-var cacheBuster=originlocation.search;
-console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
-
-bootstrap(host,cacheBuster);
-
-
-/***/ }),
-
-/***/ 17:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 2:
+/* 1 */,
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10498,8 +10433,7 @@ function iframeWrapper( postToWindow, targetHostname ) {
 
 
 /***/ }),
-
-/***/ 3:
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10605,19 +10539,13 @@ var windowEventListener = (function windowEventListener() {
 
 
 /***/ }),
-
-/***/ 42:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 6:
+/* 4 */,
+/* 5 */,
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__css_professors_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_main_css__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_main_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__css_main_css__);
@@ -10732,7 +10660,83 @@ function wireButton(options) {
 }
 
 
-/***/ })
+/***/ }),
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */,
+/* 11 */,
+/* 12 */,
+/* 13 */,
+/* 14 */,
+/* 15 */,
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-/******/ });
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__main__ = __webpack_require__(6);
+
+
+function getOriginLocation() {
+  var scripts = document.getElementsByTagName('script');
+  var l = document.createElement("a");
+  l.href = scripts[scripts.length-1].getAttribute("src");
+  console.log("origin",l.origin);
+  return l;
+}
+
+// Loads a stylesheet at url. Url can be relative to the configured host.
+function loadStyleSheet(host, url) {
+  if (!url.startsWith('http')) {
+    url = host+'/'+url;
+  }
+  var link = document.createElement('link')
+  link.setAttribute('rel', 'stylesheet')
+  link.setAttribute('type', 'text/css')
+  link.setAttribute('href', url)
+  document.getElementsByTagName('head')[0].appendChild(link)
+}
+
+function bootstrap(host, cacheBuster) {
+  loadStyleSheet(host,'dist/golden-button.css'+cacheBuster);
+  $('[data-activate="golden-banner"]').each( function() {
+    var jEl=$(this);
+    __WEBPACK_IMPORTED_MODULE_0__main__["a" /* wireBanner */]({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      disablePullUp: jEl.data('disable-pull-up'),
+      buttonText: jEl.data('button-text'),
+      bannerText: jEl.data('banner-text'),
+      targetSpace: jEl.data('target-space'),
+      newInstanceDisplayName: jEl.data('new-instance-display-name'),
+      addLabel: jEl.data('add-label'),
+      logToPage: jEl.data('log-to-page'),
+    });
+  });
+}
+
+var originlocation = getOriginLocation();
+var host = originlocation.origin+'/ywiki-plugins';
+var cacheBuster=originlocation.search;
+console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
+
+bootstrap(host,cacheBuster);
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ })
+/******/ ]);
 //# sourceMappingURL=golden-button.js.map
