@@ -1,3 +1,4 @@
+import '../../css/professors.css';
 import '../../css/main.css';
 import iframeWrapper from '../common/iframeWrapper';
 
@@ -12,7 +13,7 @@ function closeIFrame(iframeElt) {
 function encodeOptions(options) {
   var res = [];
   for (var key in options) {
-    if (options.hasOwnProperty(key)) {
+    if (options.hasOwnProperty(key) && options[key]!==undefined) {
         res.push(key+"="+encodeURIComponent(options[key]));
     }
   }
@@ -46,8 +47,8 @@ function redirectTo(url) {
   window.location.href = url;
 }
 
-function attachHandlersToIFrameWindow(myIFrame) {
-  iframeWrapper(myIFrame[0].contentWindow, yloader.getHost())
+function attachHandlersToIFrameWindow(host, myIFrame) {
+  iframeWrapper(myIFrame[0].contentWindow, host)
     .attachActionHandler("ajax", function (param) {
       return jQuery.ajax(param);
     })
@@ -72,7 +73,7 @@ export function wireBanner(options) {
     jEl.addClass("pullup");
   }
   options.buttonText = options.buttonText || "Start";
-  options.bannerText = options.bannerText || $('#title-text').text();
+  options.bannerText = options.bannerText || $('#title-text').text().trim();
   $(".wiki-content .innerCell").css("overflow-x", "visible");
   $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
   .html('<div class="ciaction">\
@@ -100,6 +101,6 @@ export function wireButton(options) {
   var myIFrame = $('#iframecontainer iframe');
   $(options.cssSelector).click(function() {
     openIFrame(myIFrame, options.host+'/form.html', options);
-    attachHandlersToIFrameWindow(myIFrame);
+    attachHandlersToIFrameWindow(options.host,myIFrame);
   });
 }

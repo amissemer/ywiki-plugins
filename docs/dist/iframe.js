@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/dist/";
+/******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 15);
@@ -10331,6 +10331,59 @@ return jQuery;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(2);
+/* harmony export (immutable) */ __webpack_exports__["e"] = ajax;
+/* harmony export (immutable) */ __webpack_exports__["a"] = closeFrame;
+/* harmony export (immutable) */ __webpack_exports__["d"] = redirect;
+/* harmony export (immutable) */ __webpack_exports__["b"] = $metacontent;
+/* harmony export (immutable) */ __webpack_exports__["c"] = $text;
+
+
+/**
+ * A handy proxy for actions that can be executed in the parent frame bypassing CORS.
+ */
+var wrapper = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__["a" /* default */])(parent, "https://wiki.hybris.com");
+
+/**
+ * Perform an ajax call in the parent frame and returns a promise that will get resolved or rejected with the data as seen by the parent frame.
+ * Not compatible with ajax callbacks that can usually be passed in the settings parameter (complete, beforeSend, error, success), use the return value which is a promise instead.
+ */
+function ajax(param) {
+  return wrapper.call("ajax", param);
+}
+/**
+ * Closes the iframe from inside the iframe.
+ * It actually asks the parent window to nicely close the iframe.
+ */
+function closeFrame() {
+  return wrapper.call("closeFrame");
+}
+/**
+ * Asks the parent window to redirect to a URL.
+ */
+function redirect(url) {
+  return wrapper.call("redirect", url);
+}
+
+/**
+ * proxy for $(el).attr("content") function
+ */
+function $metacontent(el) {
+  return wrapper.call("$metacontent", el);
+}
+/**
+ * proxy for $(el).text() function
+ */
+function $text(el) {
+  return wrapper.call("$text", el);
+}
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(3);
@@ -10428,59 +10481,6 @@ function iframeWrapper( postToWindow, targetHostname ) {
     call: call,
     attachActionHandler: attachActionHandler
   }
-}
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(1);
-/* harmony export (immutable) */ __webpack_exports__["e"] = ajax;
-/* harmony export (immutable) */ __webpack_exports__["a"] = closeFrame;
-/* harmony export (immutable) */ __webpack_exports__["d"] = redirect;
-/* harmony export (immutable) */ __webpack_exports__["b"] = $metacontent;
-/* harmony export (immutable) */ __webpack_exports__["c"] = $text;
-
-
-/**
- * A handy proxy for actions that can be executed in the parent frame bypassing CORS.
- */
-var wrapper = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__["a" /* default */])(parent, "https://wiki.hybris.com");
-
-/**
- * Perform an ajax call in the parent frame and returns a promise that will get resolved or rejected with the data as seen by the parent frame.
- * Not compatible with ajax callbacks that can usually be passed in the settings parameter (complete, beforeSend, error, success), use the return value which is a promise instead.
- */
-function ajax(param) {
-  return wrapper.call("ajax", param);
-}
-/**
- * Closes the iframe from inside the iframe.
- * It actually asks the parent window to nicely close the iframe.
- */
-function closeFrame() {
-  return wrapper.call("closeFrame");
-}
-/**
- * Asks the parent window to redirect to a URL.
- */
-function redirect(url) {
-  return wrapper.call("redirect", url);
-}
-
-/**
- * proxy for $(el).attr("content") function
- */
-function $metacontent(el) {
-  return wrapper.call("$metacontent", el);
-}
-/**
- * proxy for $(el).text() function
- */
-function $text(el) {
-  return wrapper.call("$text", el);
 }
 
 
@@ -10595,7 +10595,7 @@ var windowEventListener = (function windowEventListener() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxy__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxy__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
 /* unused harmony export deletePage */
@@ -10854,7 +10854,7 @@ function addLabel(pageId, label) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluence__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jquery__);
 /* harmony export (immutable) */ __webpack_exports__["d"] = withOption;
@@ -10874,17 +10874,22 @@ var options = getOptionsFromLocationHash();
 if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
 	throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
 }
-var promises = [];
-promises.push(__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=ajs-page-id]')
-	.done(function(val) { options.sourcePageId=val; })
-	.fail(function () { console.error("Could not read current pageId")}));
-promises.push(__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=ajs-remote-user-key]')
-	.done(function(val) { options.currentUserKey=val; })
-	.fail(function () { console.error("Could not resolve current userkey")}));
-promises.push(__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=confluence-space-key]')
-	.done(function(val) { options.currentSpaceKey=val; })
-	.fail(function () { console.error("Could not resolve current spaceKey")}));
-var optionsPromise = __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.when(promises).then( postProcessOptions );
+var promise1=__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=ajs-page-id]')
+	.then(
+		function(val) { options.sourcePageId=val; },
+		function () { console.error("Could not read current pageId")}
+	);
+var promise2=__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=ajs-remote-user-key]')
+	.then(
+		function(val) { options.currentUserKey=val; },
+		function () { console.error("Could not resolve current userkey")}
+	);
+var promise3=__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $metacontent */]('meta[name=confluence-space-key]')
+	.then(
+		function(val) { options.currentSpaceKey=val; },
+		function () { console.error("Could not resolve current spaceKey")}
+);
+var optionsPromise = __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.when(promise1,promise2,promise3).then( postProcessOptions );
 optionsPromise.then(function (options) { console.log("yWiki Options: ",options);});
 
 function postProcessOptions() {
@@ -10989,11 +10994,11 @@ function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
   return __WEBPACK_IMPORTED_MODULE_0__confluence__["d" /* getContentById */](options.sourcePageId,'space')
   .then(function(sourcePage) {
-    return __WEBPACK_IMPORTED_MODULE_0__confluence__["e" /* copyPageRecursive */](sourcePage.space.key, sourcePage.title, options.targetSpace, data.customer, onlyTemplates,
+    return __WEBPACK_IMPORTED_MODULE_0__confluence__["e" /* copyPageRecursive */](sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
     {
-      "Customer": data.customer,
-      "ProjectName": data.projectName,
-      "TargetEndDate": data.targetEndDate
+      "Customer": workspaceOpts.customer,
+      "ProjectName": workspaceOpts.projectName,
+      "TargetEndDate": workspaceOpts.targetEndDate
     }
     ,copiedPages
   )}).then( function() {
@@ -11097,13 +11102,13 @@ function onlyTemplates(page) {
 
 
 /***/ }),
-/* 6 */
+/* 6 */,
+/* 7 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 7 */,
 /* 8 */
 /***/ (function(module, exports) {
 
@@ -13668,18 +13673,18 @@ var $ = __webpack_require__(0);
 (function() {
 
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
-__webpack_require__(28)
-__webpack_require__(18)
+__webpack_require__(29)
 __webpack_require__(19)
 __webpack_require__(20)
 __webpack_require__(21)
 __webpack_require__(22)
 __webpack_require__(23)
-__webpack_require__(27)
 __webpack_require__(24)
+__webpack_require__(28)
 __webpack_require__(25)
 __webpack_require__(26)
-__webpack_require__(17)
+__webpack_require__(27)
+__webpack_require__(18)
 }.call(window));
 
 /***/ }),
@@ -32404,7 +32409,7 @@ var effectsEffectTransfer = effect;
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__confluence__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wizardService__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle__ = __webpack_require__(14);
@@ -32421,7 +32426,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__css_form_css__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__css_form_css__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__css_form_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__css_form_css__);
 
 
@@ -32520,7 +32525,8 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
 
 /***/ }),
 /* 16 */,
-/* 17 */
+/* 17 */,
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -32694,7 +32700,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -32800,7 +32806,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -32937,7 +32943,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33186,7 +33192,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33410,7 +33416,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33587,7 +33593,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33938,7 +33944,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -34058,7 +34064,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -34242,7 +34248,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -34409,7 +34415,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -34941,7 +34947,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/

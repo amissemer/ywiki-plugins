@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/dist/";
+/******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 16);
@@ -10329,7 +10329,71 @@ return jQuery;
 
 /***/ }),
 
-/***/ 1:
+/***/ 16:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__main__ = __webpack_require__(6);
+
+
+function getOriginLocation() {
+  var scripts = document.getElementsByTagName('script');
+  var l = document.createElement("a");
+  l.href = scripts[scripts.length-1].getAttribute("src");
+  console.log("origin",l.origin);
+  return l;
+}
+
+// Loads a stylesheet at url. Url can be relative to the configured host.
+function loadStyleSheet(host, url) {
+  if (!url.startsWith('http')) {
+    url = host+'/'+url;
+  }
+  var link = document.createElement('link')
+  link.setAttribute('rel', 'stylesheet')
+  link.setAttribute('type', 'text/css')
+  link.setAttribute('href', url)
+  document.getElementsByTagName('head')[0].appendChild(link)
+}
+
+function bootstrap(host, cacheBuster) {
+  loadStyleSheet(host,'dist/golden-button.css'+cacheBuster);
+  $('[data-activate="golden-banner"]').each( function() {
+    var jEl=$(this);
+    __WEBPACK_IMPORTED_MODULE_0__main__["a" /* wireBanner */]({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      disablePullUp: jEl.data('disable-pull-up'),
+      buttonText: jEl.data('button-text'),
+      bannerText: jEl.data('banner-text'),
+      targetSpace: jEl.data('target-space'),
+      newInstanceDisplayName: jEl.data('new-instance-display-name'),
+      addLabel: jEl.data('add-label'),
+      logToPage: jEl.data('log-to-page'),
+    });
+  });
+}
+
+var originlocation = getOriginLocation();
+var host = originlocation.origin+'/ywiki-plugins';
+var cacheBuster=originlocation.search;
+console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
+
+bootstrap(host,cacheBuster);
+
+
+/***/ }),
+
+/***/ 17:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 2:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10430,125 +10494,6 @@ function iframeWrapper( postToWindow, targetHostname ) {
     call: call,
     attachActionHandler: attachActionHandler
   }
-}
-
-
-/***/ }),
-
-/***/ 16:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_main_css__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_main_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__css_main_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_iframeWrapper__ = __webpack_require__(1);
-/* harmony export (immutable) */ __webpack_exports__["wireBanner"] = wireBanner;
-/* harmony export (immutable) */ __webpack_exports__["wireButton"] = wireButton;
-
-
-
-function closeIFrame(iframeElt) {
-  iframeElt.unbind('load').fadeOut( function() {
-    iframeElt.attr('src', '');
-    $('#block').fadeOut();
-    $('#iframecontainer').fadeOut();
-  });
-}
-
-function encodeOptions(options) {
-  var res = [];
-  for (var key in options) {
-    if (options.hasOwnProperty(key)) {
-        res.push(key+"="+encodeURIComponent(options[key]));
-    }
-  }
-  return res.join('&');
-}
-
-/** Opens the iframe in a "lightbox" fashion, loading it from frameSrc, and passing all provided options in the hash part of the url */
-function openIFrame(iframeElt, frameSrc, options) {
-  var block = $('#block');
-  block.fadeIn();
-  $('#iframecontainer').fadeIn();
-  iframeElt.bind('load', function() {
-    console.log("iframe loaded");
-    $('#loader').fadeOut(function() {
-      iframeElt.fadeIn();
-    });
-  });
-  iframeElt.attr('src', frameSrc + '#' + encodeOptions(options));
-
-  $(document).mouseup(function (e)
-  {
-    if (block.is(e.target) || block.has(e.target).length > 0) {
-      // If the target of the click is the surrounding block
-      // Hide the iframe
-      closeIFrame(iframeElt);
-    }
-  });
-}
-
-function redirectTo(url) {
-  window.location.href = url;
-}
-
-function attachHandlersToIFrameWindow(myIFrame) {
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__common_iframeWrapper__["a" /* default */])(myIFrame[0].contentWindow, yloader.getHost())
-    .attachActionHandler("ajax", function (param) {
-      return jQuery.ajax(param);
-    })
-    .attachActionHandler("closeFrame", function () {
-      return closeIFrame(myIFrame);
-    })
-    .attachActionHandler("redirect", function (url) {
-      return redirectTo(url);
-    })
-    .attachActionHandler("$metacontent", function (e) {
-      return jQuery(e).attr("content");
-    })
-    .attachActionHandler("$text", function (e) {
-      return jQuery(e).text();
-    });
-}
-
-function wireBanner(options) {
-  var jEl = $(options.cssSelector);
-  jEl.addClass("cibanner");
-  if (!options.disablePullUp) {
-    jEl.addClass("pullup");
-  }
-  options.buttonText = options.buttonText || "Start";
-  options.bannerText = options.bannerText || $('#title-text').text();
-  $(".wiki-content .innerCell").css("overflow-x", "visible");
-  $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
-  .html('<div class="ciaction">\
-              <img src="'+options.host+'/banner/clickme.png" />\
-              <div id="theOneButton">'+options.buttonText+'</div>\
-            </div>\
-            <div class="cilogo">\
-              <img src="'+options.host+'/banner/dashboard_figure.png" />\
-            </div>\
-            <div class="cicenter">\
-            <h1>'+options.bannerText+'</h1>\
-            </div>\
-          ');
-  options.cssSelector="#theOneButton";
-  wireButton(options);
-}
-
-
-/** The main entrypoint for the plugin, which receives all options, loads the dependencies,
-creates the iframe element, attach the click event to the main button to load the iframe */
-function wireButton(options) {
-
-  // load dependencies in order
-  $(options.cssSelector).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
-  var myIFrame = $('#iframecontainer iframe');
-  $(options.cssSelector).click(function() {
-    openIFrame(myIFrame, options.host+'/form.html', options);
-    attachHandlersToIFrameWindow(myIFrame);
-  });
 }
 
 
@@ -10661,10 +10606,131 @@ var windowEventListener = (function windowEventListener() {
 
 /***/ }),
 
-/***/ 7:
+/***/ 42:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 6:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__css_professors_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_main_css__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_main_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__css_main_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_iframeWrapper__ = __webpack_require__(2);
+/* harmony export (immutable) */ __webpack_exports__["a"] = wireBanner;
+/* unused harmony export wireButton */
+
+
+
+
+function closeIFrame(iframeElt) {
+  iframeElt.unbind('load').fadeOut( function() {
+    iframeElt.attr('src', '');
+    $('#block').fadeOut();
+    $('#iframecontainer').fadeOut();
+  });
+}
+
+function encodeOptions(options) {
+  var res = [];
+  for (var key in options) {
+    if (options.hasOwnProperty(key) && options[key]!==undefined) {
+        res.push(key+"="+encodeURIComponent(options[key]));
+    }
+  }
+  return res.join('&');
+}
+
+/** Opens the iframe in a "lightbox" fashion, loading it from frameSrc, and passing all provided options in the hash part of the url */
+function openIFrame(iframeElt, frameSrc, options) {
+  var block = $('#block');
+  block.fadeIn();
+  $('#iframecontainer').fadeIn();
+  iframeElt.bind('load', function() {
+    console.log("iframe loaded");
+    $('#loader').fadeOut(function() {
+      iframeElt.fadeIn();
+    });
+  });
+  iframeElt.attr('src', frameSrc + '#' + encodeOptions(options));
+
+  $(document).mouseup(function (e)
+  {
+    if (block.is(e.target) || block.has(e.target).length > 0) {
+      // If the target of the click is the surrounding block
+      // Hide the iframe
+      closeIFrame(iframeElt);
+    }
+  });
+}
+
+function redirectTo(url) {
+  window.location.href = url;
+}
+
+function attachHandlersToIFrameWindow(host, myIFrame) {
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__common_iframeWrapper__["a" /* default */])(myIFrame[0].contentWindow, host)
+    .attachActionHandler("ajax", function (param) {
+      return jQuery.ajax(param);
+    })
+    .attachActionHandler("closeFrame", function () {
+      return closeIFrame(myIFrame);
+    })
+    .attachActionHandler("redirect", function (url) {
+      return redirectTo(url);
+    })
+    .attachActionHandler("$metacontent", function (e) {
+      return jQuery(e).attr("content");
+    })
+    .attachActionHandler("$text", function (e) {
+      return jQuery(e).text();
+    });
+}
+
+function wireBanner(options) {
+  var jEl = $(options.cssSelector);
+  jEl.addClass("cibanner");
+  if (!options.disablePullUp) {
+    jEl.addClass("pullup");
+  }
+  options.buttonText = options.buttonText || "Start";
+  options.bannerText = options.bannerText || $('#title-text').text().trim();
+  $(".wiki-content .innerCell").css("overflow-x", "visible");
+  $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
+  .html('<div class="ciaction">\
+              <img src="'+options.host+'/banner/clickme.png" />\
+              <div id="theOneButton">'+options.buttonText+'</div>\
+            </div>\
+            <div class="cilogo">\
+              <img src="'+options.host+'/banner/dashboard_figure.png" />\
+            </div>\
+            <div class="cicenter">\
+            <h1>'+options.bannerText+'</h1>\
+            </div>\
+          ');
+  options.cssSelector="#theOneButton";
+  wireButton(options);
+}
+
+
+/** The main entrypoint for the plugin, which receives all options, loads the dependencies,
+creates the iframe element, attach the click event to the main button to load the iframe */
+function wireButton(options) {
+
+  // load dependencies in order
+  $(options.cssSelector).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
+  var myIFrame = $('#iframecontainer iframe');
+  $(options.cssSelector).click(function() {
+    openIFrame(myIFrame, options.host+'/form.html', options);
+    attachHandlersToIFrameWindow(options.host,myIFrame);
+  });
+}
+
 
 /***/ })
 

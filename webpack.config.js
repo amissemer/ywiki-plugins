@@ -4,12 +4,12 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   entry: {
     "iframe": './js/iframe/form.js',
-    "golden-button": './js/mainframe/main.js'
+    "golden-button": './js/mainframe/yloader.js'
   },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'docs/dist'),
-    publicPath: '/dist/'
+    publicPath: '/ywiki-plugins/dist/'
   },
   devtool: "cheap-module-source-map",
   module: {

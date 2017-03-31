@@ -11,17 +11,22 @@ var options = getOptionsFromLocationHash();
 if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
 	throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
 }
-var promises = [];
-promises.push(proxy.$metacontent('meta[name=ajs-page-id]')
-	.done(function(val) { options.sourcePageId=val; })
-	.fail(function () { console.error("Could not read current pageId")}));
-promises.push(proxy.$metacontent('meta[name=ajs-remote-user-key]')
-	.done(function(val) { options.currentUserKey=val; })
-	.fail(function () { console.error("Could not resolve current userkey")}));
-promises.push(proxy.$metacontent('meta[name=confluence-space-key]')
-	.done(function(val) { options.currentSpaceKey=val; })
-	.fail(function () { console.error("Could not resolve current spaceKey")}));
-var optionsPromise = $.when(promises).then( postProcessOptions );
+var promise1=proxy.$metacontent('meta[name=ajs-page-id]')
+	.then(
+		function(val) { options.sourcePageId=val; },
+		function () { console.error("Could not read current pageId")}
+	);
+var promise2=proxy.$metacontent('meta[name=ajs-remote-user-key]')
+	.then(
+		function(val) { options.currentUserKey=val; },
+		function () { console.error("Could not resolve current userkey")}
+	);
+var promise3=proxy.$metacontent('meta[name=confluence-space-key]')
+	.then(
+		function(val) { options.currentSpaceKey=val; },
+		function () { console.error("Could not resolve current spaceKey")}
+);
+var optionsPromise = $.when(promise1,promise2,promise3).then( postProcessOptions );
 optionsPromise.then(function (options) { console.log("yWiki Options: ",options);});
 
 function postProcessOptions() {
@@ -126,11 +131,11 @@ function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
   return confluence.getContentById(options.sourcePageId,'space')
   .then(function(sourcePage) {
-    return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, data.customer, onlyTemplates,
+    return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
     {
-      "Customer": data.customer,
-      "ProjectName": data.projectName,
-      "TargetEndDate": data.targetEndDate
+      "Customer": workspaceOpts.customer,
+      "ProjectName": workspaceOpts.projectName,
+      "TargetEndDate": workspaceOpts.targetEndDate
     }
     ,copiedPages
   )}).then( function() {

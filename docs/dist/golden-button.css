@@ -1,3 +1,67 @@
+.wiki-content h1,
+.wiki-content h3 {
+    border-top: 2px solid #000;
+    padding: 15px 0 10px 0;
+}
+.wiki-content h1 {
+    font-weight:bold;
+    font-size: 20px;
+}
+.wiki-content h3 {
+    line-height: 32px;
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-weight:normal;
+}
+
+.summary {
+    font-size: 20px;
+    font-family: DINWebPro,Arial,sans-serif;
+    margin: 10px 0 !important;
+}
+.rw_corners.rw_page_left_section {
+    background:none;
+    border:none;
+    border-radius:0;
+    margin:0;
+    padding:0;
+}
+.action-box {
+    width:100%;
+    font-family: DINWebPro,Arial,sans-serif;
+    margin-bottom: 20px !important;
+}
+.action-box h3 {
+    border-top: 2px solid #000;
+    line-height: 32px;
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-weight:normal;
+    padding: 15px 0 10px 0;
+}
+
+.action-box:not(.normal-links) A{
+    margin-top: 15px;
+    display: inline-block;
+    font-size: 17px;
+    line-height: 1;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #000 !important;
+    background: #ffcc28;
+    padding: 12px 20px 8px;
+    text-decoration:none !important;
+}
+.action-box:not(.normal-links) A:hover{
+    text-decoration:underline !important;
+}
+#sharp_design_banner {
+    background: #0661a7;
+    box-shadow: 0 0 0;
+    -moz-box-shadow: 0 0 0;
+    -webkit-box-shadow: 0 0 0;
+	height: 145px;
+}
 #iframecontainer {
 	width:90%;
 	height: 700px;
@@ -20,7 +84,7 @@
 	border: none;
 }
 #loader {
-	background: url(/dist/a1cd24ddb8cb8288ce0893da7bbe45e5.gif);
+	background: url(/ywiki-plugins/dist/a1cd24ddb8cb8288ce0893da7bbe45e5.gif);
 	background-repeat:no-repeat;
 	width: 500px;
 	height: 500px;
