@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 33);
+/******/ 	return __webpack_require__(__webpack_require__.s = 34);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -10435,13 +10435,13 @@ function iframeWrapper( postToWindow, targetHostname ) {
 
 /***/ }),
 
-/***/ 23:
+/***/ 24:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(36);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__css_professors_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_main_css__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_main_css__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_main_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__css_main_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_iframeWrapper__ = __webpack_require__(2);
 /* harmony export (immutable) */ __webpack_exports__["a"] = wireBanner;
@@ -10676,12 +10676,12 @@ var windowEventListener = (function windowEventListener() {
 
 /***/ }),
 
-/***/ 33:
+/***/ 34:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__main__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__main__ = __webpack_require__(24);
 
 
 function getOriginLocation() {
@@ -10752,14 +10752,14 @@ bootstrap(host,cacheBuster);
 
 /***/ }),
 
-/***/ 34:
+/***/ 35:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 35:
+/***/ 36:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

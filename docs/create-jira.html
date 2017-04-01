@@ -9,8 +9,6 @@
         <script src="dist/create-jira.js"></script>
     </head>
     <body>
-      <script type="text/javascript" src="https://jira.hybris.com/s/b3674d114f50c3439305a36dc673cbd4-T/en_UKxvmpqf/71013/f4deb5a9bd2b654ec6bdc0bcf60353b4/2.0.14/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-UK&collectorId=90f36d25"></script>
-
     <div class="container-fluid">
         <div class="row">
           <div id="main" class="col-xs-offset-1 col-xs-10">
@@ -19,12 +17,17 @@
                 <h1 class="col-sm-12" id="mainTitle">New Improvement action item</h1>
                 <p class="lead col-sm-12">
                 Use this form to provide feedback for <span class="service-display-name">service engagements</span>, ideas of improvement or issues you faced that you would like to submit to the practice lead.</p>
+                <div class="col-sm-12 alert alert-success alert-dismissible" id="resultPanel" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <strong>Success!</strong>&nbsp;Issue <a href="#" class="alert-link issueKeyCreated" target="_blank"></a> has been created in JIRA. Click to further edit the issue, add attachments, screenshots or rich text in JIRA.</p>
+                </div>
               </div>
+
             <form role="form" data-toggle="validator">
                 <div class="row">
                   <div class="form-group required col-sm-12">
                     <label for="summary">Summary</label>
-                    <input class="form-control" id="summary" required />
+                    <input type="text" class="form-control" id="summary" required />
                     <span class="help-block">You will be able to modify the summary after the action item is created.</span>
                   </div>
                   <div class="form-group col-sm-12">
@@ -33,8 +36,8 @@
                     <span class="help-block">You can leave this field empty for now and use JIRA rich text editor in next step. You will be able to copy-paste screenshots and upload documents as well.</span>
                   </div>
                   <div class="form-group col-xs-6 col-sm-4 col-md-3 col-lg-2">
-                    <label for="Priority">Priority</label>&nbsp;<a href="https://jira.hybris.com/secure/ShowConstantsHelp.jspa?decorator=popup#PriorityLevels" target="_blank"><span class="glyphicon glyphicon-question-sign"></span></a>
-                    <select class="selectpicker form-control">
+                    <label for="priority">Priority</label>&nbsp;<a href="https://jira.hybris.com/secure/ShowConstantsHelp.jspa?decorator=popup#PriorityLevels" target="_blank"><span class="glyphicon glyphicon-question-sign"></span></a>
+                    <select class="selectpicker form-control" id="priority">
                       <option data-content="<img src='https://jira.hybris.com/images/icons/priorities/minor.svg'> Minor">Minor</option>
                       <option data-content="<img src='https://jira.hybris.com/images/icons/priorities/major.svg'> Major">Major</option>
                       <option data-content="<img src='https://jira.hybris.com/images/icons/priorities/critical.svg'> Critical">Critical</option>
@@ -47,8 +50,10 @@
                     <button id="wizard-submit" type="submit" class="btn btn-primary">Submit</button>
                     <button type="button" class="btn">Cancel</button>
                     <img id="progress-indicator" src="progress.gif" />
-                    <div class="alert alert-danger" role="alert" id="error-display"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        <span class="sr-only">Error:</span><span class="msg"></span></div>
+                    <div class="alert alert-danger" role="alert" id="error-display">
+                      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                      <span class="sr-only">Error:</span><span class="msg"></span>
+                    </div>
                   </div>
                 </div>
             </form>

@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 31);
+/******/ 	return __webpack_require__(__webpack_require__.s = 32);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -13568,24 +13568,135 @@ var $ = __webpack_require__(0);
 
 /***/ }),
 /* 21 */,
-/* 22 */,
+/* 22 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(1);
+/* harmony export (immutable) */ __webpack_exports__["a"] = createIssue;
+
+
+
+const jiraServerHost = 'jira.hybris.com';
+
+function getJiraServer() {
+  return __WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* ajax */]("/rest/createjiracontent/1.0/get-jira-servers")
+  .then( function(servers) {
+    var matchingJiraServer = __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.grep(servers, function (value, idx) {
+      return value.url.indexOf(jiraServerHost)>0;
+    });
+    if (matchingJiraServer.length>0) {
+      return matchingJiraServer[0];
+    }
+    var msg="No jira server server with url "+jiraServerHost+" found";
+    console.error(msg);
+    throw msg;
+  } )
+  .then ( function (jiraServer) {
+    return jiraServer.id;
+  });
+}
+
+function getJiraProject(jiraServerP, projectKey) {
+  var jiraServerP = getJiraServer();
+  return jiraServerP.then(function(serverId) {
+    return __WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* ajax */]("/rest/jira-integration/1.0/servers/"+serverId+"/projects")
+  }).then(function (result) {
+    for (var i=0;i<result.length;i++) {
+      if (result[i].key === projectKey) {
+        console.log("Project",result[i]);
+        return result[i];
+      }
+    }
+    var msg="No project '"+projectKey+"' found on JIRA server";
+    console.error(msg);
+    throw msg;
+  });
+}
+
+function getIssueTypeId(jiraProject, issueTypeName) {
+  return jiraProject.then( function (project) {
+    for (var i=0;i<project.issuetypes.length;i++) {
+      if (project.issuetypes[i].name=== issueTypeName) {
+        return project.issuetypes[i];
+      }
+    }
+    var msg="No issue type '"+issueTypeName+"' for project "+project.key;
+    console.error(msg);
+    throw msg;
+  }).then (function(issueType) {
+    return issueType.id;
+  });
+}
+
+/** Returns a promise for the issueKey */
+function createIssue(projectKey, issueTypeName, componentName, summary, description, priority) {
+  var jiraServerP = getJiraServer();
+  //var jiraProjectP = getJiraProject(jiraServerP, projectKey);
+  //var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
+  return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when(jiraServerP)
+    .then(function(jiraServer) {
+      return __WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* ajax */]({
+        url: "/rest/jira-integration/1.0/issues?applicationId="+jiraServer,
+        contentType: "application/json;charset=UTF-8",
+        type: "POST",
+        data: JSON.stringify(
+          { "issues":[
+            {
+              "fields": {
+                "project": {"key": projectKey},
+                "issuetype":{"name": issueTypeName},
+                "components":[{"name": componentName}],
+                "summary":summary,
+                "description":description,
+                "priority": {"name": priority}
+              }
+            }
+          ]}
+        )
+      });
+    })
+    .then( function (result) {
+      if (result && result.errors && result.errors.length>0) {
+        var msg=JSON.stringify(result.errors[0].elementErrors.errors);
+        console.error(msg);
+        throw msg;
+      }
+      if (result && result.issues && result.issues.length>0) {
+        var issue = result.issues[0];
+        if (!issue.issue.key) {
+          throw new "Expecting an issue.key property in the response";
+        }
+        return issue.issue.key;
+      }
+      var msg="Unknown JIRA ticket creation error, " + JSON.stringify(result);
+      console.error(msg);
+      throw msg;
+    });
+}
+
+
+/***/ }),
 /* 23 */,
-/* 24 */
+/* 24 */,
+/* 25 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 25 */,
 /* 26 */,
-/* 27 */
+/* 27 */,
+/* 28 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 28 */,
-/* 29 */
+/* 29 */,
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*** IMPORTS FROM imports-loader ***/
@@ -15493,8 +15604,8 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 30 */,
-/* 31 */
+/* 31 */,
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15506,17 +15617,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_bootstrap__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap_validator__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_bootstrap_validator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_select__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_select__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_select___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_bootstrap_select__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_dist_css_bootstrap_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_bootstrap_dist_css_bootstrap_min_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_select_dist_css_bootstrap_select_min_css__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_select_dist_css_bootstrap_select_min_css__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_select_dist_css_bootstrap_select_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_bootstrap_select_dist_css_bootstrap_select_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__optionsParser__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__jira__ = __webpack_require__(22);
 
 
 //import 'jquery-ui-bundle';
@@ -15530,8 +15642,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+
 var options = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_9__optionsParser__["a" /* default */])({"serviceDisplayName" : "service engagements"});
-const jiraServerHost = 'jira.hybris.com';
 
 console.info("Form options",options);
 
@@ -15546,105 +15658,6 @@ function bindDOM() {
     }
 	});
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()(".service-display-name").text(options.serviceDisplayName);
-
-	function getJiraServer() {
-		return __WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* ajax */]("/rest/createjiracontent/1.0/get-jira-servers")
-		.then( function(servers) {
-			var matchingJiraServer = __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.grep(servers, function (value, idx) {
-				return value.url.indexOf(jiraServerHost)>0;
-			});
-			if (matchingJiraServer.length>0) {
-				return matchingJiraServer[0];
-			}
-			var msg="No jira server server with url "+jiraServerHost+" found";
-			console.error(msg);
-			throw msg;
-		} )
-		.then ( function (jiraServer) {
-			return jiraServer.id;
-		});
-	}
-
-	function getJiraProject(jiraServerP, projectKey) {
-		var jiraServerP = getJiraServer();
-		return jiraServerP.then(function(serverId) {
-			return __WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* ajax */]("/rest/jira-integration/1.0/servers/"+serverId+"/projects")
-		}).then(function (result) {
-			for (var i=0;i<result.length;i++) {
-				if (result[i].key === projectKey) {
-					return result[i];
-				}
-			}
-			var msg="No project '"+projectKey+"' found on JIRA server";
-			console.error(msg);
-			throw msg;
-		});
-	}
-
-	function getIssueTypeId(jiraProject, issueTypeName) {
-		return jiraProject.then( function (project) {
-			for (var i=0;i<project.issuetypes.length;i++) {
-				if (project.issuetypes[i].name=== issueTypeName) {
-					return project.issuetypes[i];
-				}
-			}
-			var msg="No issue type '"+issueTypeName+"' for project "+project.key;
-			console.error(msg);
-			throw msg;
-		}).then (function(issueType) {
-			return issueType.id;
-		});
-	}
-
-	/** Returns a promise for the issueKey */
-	function createIssue(projectKey, issueTypeName, summary, description) {
-		var jiraServerP = getJiraServer();
-		var jiraProjectP = getJiraProject(jiraServerP, projectKey);
-		var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
-		return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when(jiraServerP, jiraProjectP, issueTypeIdP)
-			.then(function(jiraServer, jiraProject, issueTypeId) {
-				return __WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* ajax */]({
-					url: "/rest/jira-integration/1.0/issues?applicationId="+jiraServer,
-					contentType: "application/json;charset=UTF-8",
-					type: "POST",
-					data: JSON.stringify(
-						{ "issues":[
-							{
-								"fields": {
-									"project": {"id": jiraProject.id},
-									"issuetype":{"id":issueTypeId},
-									"summary":summary,
-									"description":description
-								}
-							}
-						]}
-					)
-				});
-			})
-			.then( function (result) {
-				if (result && result.errors && result.errors.length>0) {
-					var msg=JSON.stringify(result.errors[0].elementErrors.errors);
-					console.error(msg);
-					throw msg;
-				}
-				if (result && result.issues && result.issues.length>0) {
-					var issue = result.issues[0];
-					if (!issue.issue.key) {
-						throw new "Expecting an issue.key property in the response";
-					}
-					return issue.issue.key;
-				}
-				var msg="Unknown JIRA ticket creation error, " + JSON.stringify(result);
-				console.error(msg);
-				throw msg;
-			});
-	}
-
-	createIssue("ESPLM","Improvement","Hello world","my desc")
-		.then(
-			function(issueKey) { console.log(issueKey);}
-			, console.error );
-
 	var submitBtn=__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#wizard-submit");
 	var submitProgress=__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#progress-indicator');
 	submitBtn.click( function() {
@@ -15653,14 +15666,24 @@ function bindDOM() {
 			return true;
 		} else {
 
+			__WEBPACK_IMPORTED_MODULE_10__jira__["a" /* createIssue */](options.jiraProjectKey,options.issueType, options.issueComponent,__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#summary").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#description").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#priority").val())
+				.then(
+					function(issueKey) {
+						// RESET FORM
+						__WEBPACK_IMPORTED_MODULE_0_jquery___default()("input[type=text], textarea").val("");
+						__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#priority").val("Minor");
+						__WEBPACK_IMPORTED_MODULE_0_jquery___default()('.selectpicker').selectpicker('refresh')
 
-			// proxy.ajax({
-			// 	url : 'https://jira.hybris.com/rest/api/2/search?jql=assignee=%22adrien.missemer%40hybris.com%22',
-			//
-			// 	})
-			// .then(console.log,console.log);
+						submitBtn.prop('disabled', false);
+						submitProgress.hide();
+						__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#resultPanel").show();
+						console.log("Created JIRA Issue "+issueKey);
+						__WEBPACK_IMPORTED_MODULE_0_jquery___default()(".issueKeyCreated").attr("href","https://jira.hybris.com/browse/"+encodeURIComponent(issueKey)).text(issueKey);
+					},
+					onSubmitError);
 
 			submitBtn.prop('disabled', true);
+			__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#resultPanel").hide();
 			submitProgress.show();
 			__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#error-display').hide();
 		}
