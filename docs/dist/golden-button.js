@@ -10562,7 +10562,15 @@ function wireButton(options) {
 
 function wireCreateJiraButton(options) {
 
-  $(options.cssSelector).addClass("cibutton");
+  var el = $(options.cssSelector);
+  var currentText = el.text();
+  el.addClass("cibutton btn btn-lg btn-warning")
+  .html('\
+    <span class="fa-stack">\
+      <i class="fa fa-comment-o fa-stack-2x"></i>\
+      <i class="fa fa-lightbulb-o fa-stack-1x"></i>\
+    </span><span class="text">'+currentText+'</span>\
+  ');
   return genericButton(options, 'create-jira.html');
 }
 
