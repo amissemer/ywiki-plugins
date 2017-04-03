@@ -24,10 +24,6 @@
   content:" *";
   color:red;
 }
-.service-display-name {
-  font-weight: bold;
-}
-
 #progress-indicator {
 	display: none;
 	margin-left: 10px;
