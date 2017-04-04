@@ -35,7 +35,7 @@ function bindDOM() {
 			return true;
 		} else {
 
-			jira.createIssue(options.jiraProjectKey,options.issueType, options.issueComponent,$("#summary").val(),$("#description").val(),$("#priority").val())
+			jira.createIssue(options.jiraProjectKey,options.issueType, options.issueComponent,$("#summary").val(),$("#description").val(),$("#priority").val(),$("#customer").val())
 				.then(
 					function(issueKey) {
 						// RESET FORM

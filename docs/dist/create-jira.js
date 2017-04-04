@@ -13632,10 +13632,9 @@ function getIssueTypeId(jiraProject, issueTypeName) {
 }
 
 /** Returns a promise for the issueKey */
-function createIssue(projectKey, issueTypeName, componentName, summary, description, priority) {
+function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, keywords) {
   var jiraServerP = getJiraServer();
-  //var jiraProjectP = getJiraProject(jiraServerP, projectKey);
-  //var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
+  keywords = keywords||"";
   return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when(jiraServerP)
     .then(function(jiraServer) {
       return __WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* ajax */]({
@@ -13651,7 +13650,8 @@ function createIssue(projectKey, issueTypeName, componentName, summary, descript
                 "components":[{"name": componentName}],
                 "summary":summary,
                 "description":description,
-                "priority": {"name": priority}
+                "priority": {"name": priority},
+                "customfield_10151": keywords
               }
             }
           ]}
@@ -15666,7 +15666,7 @@ function bindDOM() {
 			return true;
 		} else {
 
-			__WEBPACK_IMPORTED_MODULE_10__jira__["a" /* createIssue */](options.jiraProjectKey,options.issueType, options.issueComponent,__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#summary").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#description").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#priority").val())
+			__WEBPACK_IMPORTED_MODULE_10__jira__["a" /* createIssue */](options.jiraProjectKey,options.issueType, options.issueComponent,__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#summary").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#description").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#priority").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#customer").val())
 				.then(
 					function(issueKey) {
 						// RESET FORM

@@ -50,7 +50,7 @@ function bindDOM() {
 				region: $('#regionSelect').val(),
 				projectName: $('#projectName').val(),
 				targetEndDate: $('#targetEndDate').val()
-			});
+			}).fail(onSubmitError);
 			submitBtn.prop('disabled', true);
 			submitProgress.show();
 			$('#error-display').hide();
@@ -82,6 +82,10 @@ function bindDOM() {
 }
 
 function onSubmitError(error) {
+	var errorMsg=error;
+	if (errorMsg.length) {
+		errorMsg=errorMsg[0];
+	}
 	$('#error-display .msg').text(error);
 	$('#error-display').show();
 	$('#progress-indicator').hide();

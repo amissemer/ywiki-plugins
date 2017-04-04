@@ -98,7 +98,7 @@ function endCopyProcess(copiedPages) {
 }
 
 export function createWorkspace(workspaceOpts) {
-	optionsPromise.then( function (options) {
+	return optionsPromise.then( function (options) {
 		console.log("New Service Engagement...",workspaceOpts);
 	  if (workspaceOpts.region) {
 	    console.log("First creating Customer Page "+workspaceOpts.customer+" in region" + workspaceOpts.region);

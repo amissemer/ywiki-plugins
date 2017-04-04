@@ -13939,7 +13939,7 @@ function endCopyProcess(copiedPages) {
 }
 
 function createWorkspace(workspaceOpts) {
-	optionsPromise.then( function (options) {
+	return optionsPromise.then( function (options) {
 		console.log("New Service Engagement...",workspaceOpts);
 	  if (workspaceOpts.region) {
 	    console.log("First creating Customer Page "+workspaceOpts.customer+" in region" + workspaceOpts.region);
@@ -34988,7 +34988,7 @@ function bindDOM() {
 				region: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#regionSelect').val(),
 				projectName: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#projectName').val(),
 				targetEndDate: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#targetEndDate').val()
-			});
+			}).fail(onSubmitError);
 			submitBtn.prop('disabled', true);
 			submitProgress.show();
 			__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#error-display').hide();
@@ -35020,6 +35020,10 @@ function bindDOM() {
 }
 
 function onSubmitError(error) {
+	var errorMsg=error;
+	if (errorMsg.length) {
+		errorMsg=errorMsg[0];
+	}
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#error-display .msg').text(error);
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#error-display').show();
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#progress-indicator').hide();
