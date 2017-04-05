@@ -213,6 +213,9 @@
 	float: left;
 	position: relative;
 }
+.cibanner h1 {
+	font-family: DINWebPro,Arial,sans-serif;
+}
 .pullup {
 	top: -100px;
 	margin-bottom: -90px;
