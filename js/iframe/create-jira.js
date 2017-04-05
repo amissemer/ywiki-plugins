@@ -13,6 +13,7 @@ import optionsParser from './optionsParser';
 import * as jira from './jira';
 
 var options = optionsParser({"serviceDisplayName" : "service engagements"});
+var additionalLabel = "from-confluence";
 
 console.info("Form options",options);
 
@@ -34,8 +35,12 @@ function bindDOM() {
 		if (submitBtn.hasClass('disabled')) {
 			return true;
 		} else {
-
-			jira.createIssue(options.jiraProjectKey,options.issueType, options.issueComponent,$("#summary").val(),$("#description").val(),$("#priority").val(),$("#customer").val())
+			var labels = [additionalLabel];
+			var cust = $("#customer").val();
+			if (cust) {
+				labels.push(cust);
+			}
+			jira.createIssue(options.jiraProjectKey,options.issueType, options.issueComponent,$("#summary").val(),$("#description").val(),$("#priority").val(),labels)
 				.then(
 					function(issueKey) {
 						// RESET FORM

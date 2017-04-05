@@ -7,11 +7,13 @@ var options = optionsParser();
 var defaultProjectDocumentationRootPage='Project Documentation';
 var customerComboLimit=10;
 var defaultCustomerPageTemplate='.CI New Project Documentation Template';
+var additionalLabel='service-workspace';
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 
 if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
 	throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
 }
+options.addLabel=[options.addLabel,additionalLabel];
 var promise1=proxy.$metacontent('meta[name=ajs-page-id]')
 	.then(
 		function(val) { options.sourcePageId=val; },

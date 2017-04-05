@@ -54,9 +54,14 @@ function getIssueTypeId(jiraProject, issueTypeName) {
 }
 
 /** Returns a promise for the issueKey */
-export function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, keywords) {
+export function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, labels) {
   var jiraServerP = getJiraServer();
-  keywords = keywords||"";
+  //var jiraProjectP = getJiraProject(jiraServerP, projectKey);
+  //var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
+  if (typeof labels === "string") {
+    labels = [ labels ];
+  }
+  labels = labels || [];
   return $.when(jiraServerP)
     .then(function(jiraServer) {
       return proxy.ajax({
@@ -73,7 +78,7 @@ export function createIssue(projectKey, issueTypeName, componentName, summary, d
                 "summary":summary,
                 "description":description,
                 "priority": {"name": priority},
-                "customfield_10151": keywords
+                "labels": labels
               }
             }
           ]}

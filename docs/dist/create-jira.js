@@ -13632,9 +13632,14 @@ function getIssueTypeId(jiraProject, issueTypeName) {
 }
 
 /** Returns a promise for the issueKey */
-function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, keywords) {
+function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, labels) {
   var jiraServerP = getJiraServer();
-  keywords = keywords||"";
+  //var jiraProjectP = getJiraProject(jiraServerP, projectKey);
+  //var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
+  if (typeof labels === "string") {
+    labels = [ labels ];
+  }
+  labels = labels || [];
   return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when(jiraServerP)
     .then(function(jiraServer) {
       return __WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* ajax */]({
@@ -13651,7 +13656,7 @@ function createIssue(projectKey, issueTypeName, componentName, summary, descript
                 "summary":summary,
                 "description":description,
                 "priority": {"name": priority},
-                "customfield_10151": keywords
+                "labels": labels
               }
             }
           ]}
@@ -15644,6 +15649,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 var options = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_9__optionsParser__["a" /* default */])({"serviceDisplayName" : "service engagements"});
+var additionalLabel = "from-confluence";
 
 console.info("Form options",options);
 
@@ -15665,8 +15671,12 @@ function bindDOM() {
 		if (submitBtn.hasClass('disabled')) {
 			return true;
 		} else {
-
-			__WEBPACK_IMPORTED_MODULE_10__jira__["a" /* createIssue */](options.jiraProjectKey,options.issueType, options.issueComponent,__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#summary").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#description").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#priority").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#customer").val())
+			var labels = [additionalLabel];
+			var cust = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#customer").val();
+			if (cust) {
+				labels.push(cust);
+			}
+			__WEBPACK_IMPORTED_MODULE_10__jira__["a" /* createIssue */](options.jiraProjectKey,options.issueType, options.issueComponent,__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#summary").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#description").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#priority").val(),labels)
 				.then(
 					function(issueKey) {
 						// RESET FORM

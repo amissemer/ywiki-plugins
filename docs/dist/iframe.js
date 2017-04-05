@@ -13813,14 +13813,28 @@ function updateContent(page) {
       }).fail( errorLogger( "PUT page failed "+page.title ));
   }
 
+/** label can be a string or an array of strings to add as labels to the confluence PageId */
 function addLabel(pageId, label) {
-    return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](
-      {
-        url: '/rest/api/content/'+encodeURIComponent(pageId)+'/label',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify([{"prefix": "global","name": label}])
-      }).fail( errorLogger( "ADD label to page "+pageId+" failed" ));
+  var labels = [];
+  if (!label) return;
+  if (typeof label === "string") {
+    labels.push({"prefix": "global","name": label});
+  } else if (label.length) {
+    for (var i=0;i<label.length;i++) {
+      if (label[i]) {
+        labels.push({"prefix": "global","name": label[i]});
+      }
+    }
+  } else {
+    throw "Unknown type of label: "+label;
+  }
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](
+    {
+      url: '/rest/api/content/'+encodeURIComponent(pageId)+'/label',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(labels)
+    }).fail( errorLogger( "ADD label to page "+pageId+" failed" ));
 }
 
 
@@ -13848,11 +13862,13 @@ var options = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__optionsParser__
 var defaultProjectDocumentationRootPage='Project Documentation';
 var customerComboLimit=10;
 var defaultCustomerPageTemplate='.CI New Project Documentation Template';
+var additionalLabel='service-workspace';
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 
 if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
 	throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
 }
+options.addLabel=[options.addLabel,additionalLabel];
 var promise1=__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* $metacontent */]('meta[name=ajs-page-id]')
 	.then(
 		function(val) { options.sourcePageId=val; },
