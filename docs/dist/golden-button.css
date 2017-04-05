@@ -215,6 +215,7 @@
 }
 .cibanner h1 {
 	font-family: DINWebPro,Arial,sans-serif;
+	font-weight: normal;
 }
 .pullup {
 	top: -100px;
