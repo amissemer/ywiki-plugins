@@ -9,10 +9,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap-theme.min.css';
 import 'bootstrap-select/dist/css/bootstrap-select.min.css';
 import '../../css/create-jira.css';
-import optionsParser from './optionsParser';
+import {parseOptions} from '../common/optionsParser';
 import * as jira from './jira';
 
-var options = optionsParser({"serviceDisplayName" : "service engagements"});
+var options = parseOptions({"serviceDisplayName" : "service engagements"});
 var additionalLabel = "from-confluence";
 
 console.info("Form options",options);

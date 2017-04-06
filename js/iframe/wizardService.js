@@ -1,9 +1,9 @@
 import * as confluence from './confluence'
 import * as proxy from './proxy';
 import $ from 'jquery';
-import optionsParser from './optionsParser';
+import {parseOptions} from '../common/optionsParser';
 
-var options = optionsParser();
+var options = parseOptions();
 var defaultProjectDocumentationRootPage='Project Documentation';
 var customerComboLimit=10;
 var defaultCustomerPageTemplate='.CI New Project Documentation Template';

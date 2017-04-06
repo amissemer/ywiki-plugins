@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 33);
+/******/ 	return __webpack_require__(__webpack_require__.s = 42);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10331,7 +10331,7 @@ return jQuery;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(7);
 /* harmony export (immutable) */ __webpack_exports__["b"] = ajax;
 /* harmony export (immutable) */ __webpack_exports__["a"] = closeFrame;
 /* harmony export (immutable) */ __webpack_exports__["e"] = redirect;
@@ -10384,211 +10384,41 @@ function $text(el) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(3);
-/* harmony export (immutable) */ __webpack_exports__["a"] = iframeWrapper;
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return parseOptions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return encodeOptions; });
+function parseOptions(defaultOptions) {
 
+  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
+  var match;
+  var params = defaultOptions || {};
+  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
 
+  var hash = document.location.hash;
 
-/**
- * A generic iframeWrapper.
- *
- * The main goal is to bypass the CORS restriction: we want the iframe to be able to execute ajax requests on the domain of the main window, and since they are on different domains, this is not possible with some hack.
- * The hack here consists in using the window.postMessage function and a message listener to execute code from the iframe into the main frame.
- *
- * iframeWrappers provide a call("action", payload) function that can call named actions in another frame and return a promise for the asynchronous response.
- * The receiving frame must hook the named actions to actual actionHandlers, that must be attached to the iframeWrapper.
- *
- * Note: The iframeWrapperFactory requires jQuery and windowEventListener.
- * It must be loaded in the 2 frames (main window and iframe) to be able to use it to run Cross-Origin actions.
- * The factory parameters are different when loading the iframeWrapper from the iframe (in which case the target window is the parent and the target hostname is the wiki),
- * and when loading from the main frame (in which case the target window is the iframe window, and the targetHostname is the yWikiPlugins host).
- *
- * Example:
- * 1. Frame A attaches an actionHandler for a given action, like "ajax", and the action handler simply returns jQuery.ajax(params).
- * 2. Then the other frame B can call("ajax", params) to remotely execute the ajax request in Frame A and get the result back.
- *
- * This is all asynchronous and based on jQuery promises.
- *
- * From the iFrame, call iframeWrapper(parent, "https://wiki.hybris.com").
- * From the main Frame, call iframeWrapper($('iframe')[0].contentWindow, yWikiPlugins.getHost()).
- */
-function iframeWrapper( postToWindow, targetHostname ) {
-  var _correlationId=1;
-
-  /**
-   * Chainable function to attach action handlers.
-   * Handlers take a single argument and may return a promise or a result (or nothing)
-   * that will be used to send the response back to the other frame.
-   */
-  function attachActionHandler(actionName, handler) {
-
-    function requestListener(correlationId, payload) {
-      __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when( handler(payload) )
-      .done(function sendResponse(responsePayload) {
-        var responseMsg = {
-          correlationId: correlationId,
-          responsePayload: responsePayload
-        };
-        //console.log("Sending response:",responseMsg);
-        postToWindow.postMessage(responseMsg, targetHostname);
-      })
-      .fail(function sendError() {
-        var payload = arguments;
-        if (arguments && arguments.length && arguments.length>2) {// for ajax errors, the error handler gets (jqXHR, textStatus, errorThrown) but we can't pass the whole jqXHR through the postMessage API
-          payload={textStatus: arguments[1], errorThrown: arguments[2]};
-        }
-        var errorMsg = {
-          correlationId: correlationId,
-          errorPayload: payload
-        };
-        //console.log("Sending error response:",errorMsg);
-        postToWindow.postMessage(errorMsg, targetHostname);
-      });
-    }
-    __WEBPACK_IMPORTED_MODULE_1__windowEventListener__["a" /* default */].registerRequestListener(actionName, requestListener);
-    return this;
+  while (match = re.exec(hash)) {
+    params[decode(match[1])] = decode(match[2]);
   }
-
-  /**
-   * Calls an an action through the messaging system of frames and returns
-   * a jQuery promise that will get resolved once a response is received (also from the messaging system)
-   */
-  function call(action, payload) {
-    var defer = __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.Deferred();
-    var correlationId = _correlationId++;
-    __WEBPACK_IMPORTED_MODULE_1__windowEventListener__["a" /* default */].registerResponseListener(correlationId,
-      {
-        successHandler: function(successPayload) {
-          defer.resolve(successPayload);
-        },
-        errorHandler: function(errorPayload) {
-          defer.reject(errorPayload);
-        }
-      });
-    //console.log("payload",payload);
-    postToWindow.postMessage(
-      {
-        action: action,
-        payload: payload,
-        correlationId: correlationId
-      }, targetHostname);
-    return defer.promise();
-  }
-
-  return {
-    call: call,
-    attachActionHandler: attachActionHandler
-  }
+  return params;
 }
+
+function encodeOptions(options) {
+  var res = [];
+  for (var key in options) {
+    if (options.hasOwnProperty(key) && options[key]!==undefined) {
+        res.push(key+"="+encodeURIComponent(options[key]));
+    }
+  }
+  return res.join('&');
+}
+
+
 
 
 /***/ }),
 /* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-/**
- * Sets up a listener of all events received by the window, that dispatches:
- *   - those that have an action to the corresponding requestListeners
- *   - those that have a correlationId but no action, to the corresponding responseListeners
- * Exposes functions to (un)register listeners.
- */
-var windowEventListener = (function windowEventListener() {
-
-  // Start listening to messages (from other frames, typically)
-  var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-  var eventer = window[eventMethod];
-  var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-  var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
-  var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
-  eventer(messageEvent, eventCallback, false);
-
-  function eventCallback(e) {
-    if (e.data.action) {
-      // action data is in the form { action: "actionName", payload: object }
-      if (requestListeners[e.data.action]) {
-        requestListeners[e.data.action](e.data.correlationId, e.data.payload);
-      } else {
-        // no registered requestListener for this action
-        console.warn('No requestListeners for action: ', e.data.action);
-      }
-    } else if (e.data.correlationId) {
-      // response data is in the form { correlationId: theRequestCorrelationId, responsePayload: object, errorPayload: object }
-      if (responseListeners[e.data.correlationId]) {
-        // deregister (should be used only once for each correlationId)
-        var responseListener = responseListeners[e.data.correlationId];
-        responseListeners[e.data.correlationId] = null;
-        // delegate to the registered responseListener
-        if (e.data.errorPayload) {
-          responseListener.errorHandler(e.data.errorPayload);
-        } else {
-          responseListener.successHandler(e.data.responsePayload);
-        }
-      } else {
-        console.warn("No response listener for correlationId: ", e.data.correlationId);
-      }
-    } else {
-      // not an action message
-      console.log("Received non-request, non-response, message: ", e.data);
-    }
-  }
-
-  /**
-   * Func should be a function(correlationId, payload). The return value will be ignored.
-   * Consider this private and used solely by the iframeWrapper.
-   * Use iframeWrapper.attachActionHandler(action, handler) instead
-   */
-  function registerRequestListener( action, func ) {
-    if (typeof func != 'function') {
-      console.error("Cannot register request listener since not a function: ", func);
-    } else {
-      requestListeners[action] = func;
-    }
-  }
-  function unregisterRequestListener( action ) {
-    requestListeners[action] = null;
-  }
-  /**
-   *  The response listener must be an object in the form { successHandler: function(argument) {}, errorHandler: function(argument) {}}
-   *  where at least 1 of successHandler or errorHandler is defined.
-   *  successHandler and errorHandler, if defined, must be functions that take a single argument. Their returned value is ignored.
-   *  If one of the property is missing, a default handler is added that will simply log the result/error.
-   *
-   *  Note: There is no unregisterResponseListener because the unregistration is automatically done the first (and only) time the responseListener is used.
-   *  This is because for a given correlationId, only one response or one error will be returned.
-   */
-  function registerResponseListener( correlationId, listener ) {
-    if (!listener.successHandler && !listener.errorHandler) {
-      console.error("Cannot register response listener as it is missing a successHandler function or errorHandler function", listener);
-      return;
-    }
-    if (listener.successHandler && typeof listener.successHandler != 'function') {
-      console.error("Cannot register response listener as the successHandler is not a function", listener);
-      return;
-    }
-    if (listener.errorHandler && typeof listener.errorHandler != 'function') {
-      console.error("Cannot register response listener as the errorHandler is not a function", listener);
-      return;
-    }
-    listener.successHandler = listener.successHandler? listener.successHandler : defaultSuccessHandler;
-    listener.errorHandler = listener.errorHandler? listener.errorHandler : defaultErrorHandler;
-    responseListeners[correlationId] = listener;
-  }
-
-  function defaultSuccessHandler(responsePayload) { console.info("Default success handler: ", responsePayload); }
-  function defaultErrorHandler(errorPayload) { console.warn("Default error handler: ", errorPayload); }
-
-  return {
-    registerRequestListener: registerRequestListener,
-    unregisterRequestListener: unregisterRequestListener,
-    registerResponseListener: registerResponseListener
-  };
-})();
-
-/* harmony default export */ __webpack_exports__["a"] = (windowEventListener);
-
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 4 */
@@ -10598,12 +10428,6 @@ var windowEventListener = (function windowEventListener() {
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -11029,7 +10853,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -11053,25 +10877,214 @@ __webpack_require__(9)
 }.call(window));
 
 /***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(8);
+/* harmony export (immutable) */ __webpack_exports__["a"] = iframeWrapper;
+
+
+
+/**
+ * A generic iframeWrapper.
+ *
+ * The main goal is to bypass the CORS restriction: we want the iframe to be able to execute ajax requests on the domain of the main window, and since they are on different domains, this is not possible with some hack.
+ * The hack here consists in using the window.postMessage function and a message listener to execute code from the iframe into the main frame.
+ *
+ * iframeWrappers provide a call("action", payload) function that can call named actions in another frame and return a promise for the asynchronous response.
+ * The receiving frame must hook the named actions to actual actionHandlers, that must be attached to the iframeWrapper.
+ *
+ * Note: The iframeWrapperFactory requires jQuery and windowEventListener.
+ * It must be loaded in the 2 frames (main window and iframe) to be able to use it to run Cross-Origin actions.
+ * The factory parameters are different when loading the iframeWrapper from the iframe (in which case the target window is the parent and the target hostname is the wiki),
+ * and when loading from the main frame (in which case the target window is the iframe window, and the targetHostname is the yWikiPlugins host).
+ *
+ * Example:
+ * 1. Frame A attaches an actionHandler for a given action, like "ajax", and the action handler simply returns jQuery.ajax(params).
+ * 2. Then the other frame B can call("ajax", params) to remotely execute the ajax request in Frame A and get the result back.
+ *
+ * This is all asynchronous and based on jQuery promises.
+ *
+ * From the iFrame, call iframeWrapper(parent, "https://wiki.hybris.com").
+ * From the main Frame, call iframeWrapper($('iframe')[0].contentWindow, yWikiPlugins.getHost()).
+ */
+function iframeWrapper( postToWindow, targetHostname ) {
+  var _correlationId=1;
+
+  /**
+   * Chainable function to attach action handlers.
+   * Handlers take a single argument and may return a promise or a result (or nothing)
+   * that will be used to send the response back to the other frame.
+   */
+  function attachActionHandler(actionName, handler) {
+
+    function requestListener(correlationId, payload) {
+      __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when( handler(payload) )
+      .done(function sendResponse(responsePayload) {
+        var responseMsg = {
+          correlationId: correlationId,
+          responsePayload: responsePayload
+        };
+        //console.log("Sending response:",responseMsg);
+        postToWindow.postMessage(responseMsg, targetHostname);
+      })
+      .fail(function sendError() {
+        var payload = arguments;
+        if (arguments && arguments.length && arguments.length>2) {// for ajax errors, the error handler gets (jqXHR, textStatus, errorThrown) but we can't pass the whole jqXHR through the postMessage API
+          payload={textStatus: arguments[1], errorThrown: arguments[2]};
+        }
+        var errorMsg = {
+          correlationId: correlationId,
+          errorPayload: payload
+        };
+        //console.log("Sending error response:",errorMsg);
+        postToWindow.postMessage(errorMsg, targetHostname);
+      });
+    }
+    __WEBPACK_IMPORTED_MODULE_1__windowEventListener__["a" /* default */].registerRequestListener(actionName, requestListener);
+    return this;
+  }
+
+  /**
+   * Calls an an action through the messaging system of frames and returns
+   * a jQuery promise that will get resolved once a response is received (also from the messaging system)
+   */
+  function call(action, payload) {
+    var defer = __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.Deferred();
+    var correlationId = _correlationId++;
+    __WEBPACK_IMPORTED_MODULE_1__windowEventListener__["a" /* default */].registerResponseListener(correlationId,
+      {
+        successHandler: function(successPayload) {
+          defer.resolve(successPayload);
+        },
+        errorHandler: function(errorPayload) {
+          defer.reject(errorPayload);
+        }
+      });
+    //console.log("payload",payload);
+    postToWindow.postMessage(
+      {
+        action: action,
+        payload: payload,
+        correlationId: correlationId
+      }, targetHostname);
+    return defer.promise();
+  }
+
+  return {
+    call: call,
+    attachActionHandler: attachActionHandler
+  }
+}
+
+
+/***/ }),
 /* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = getOptionsFromLocationHash;
-function getOptionsFromLocationHash(defaultOptions) {
+/**
+ * Sets up a listener of all events received by the window, that dispatches:
+ *   - those that have an action to the corresponding requestListeners
+ *   - those that have a correlationId but no action, to the corresponding responseListeners
+ * Exposes functions to (un)register listeners.
+ */
+var windowEventListener = (function windowEventListener() {
 
-  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
-  var match;
-  var params = defaultOptions || {};
-  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
+  // Start listening to messages (from other frames, typically)
+  var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+  var eventer = window[eventMethod];
+  var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+  var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
+  var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
+  eventer(messageEvent, eventCallback, false);
 
-  var hash = document.location.hash;
-
-  while (match = re.exec(hash)) {
-    params[decode(match[1])] = decode(match[2]);
+  function eventCallback(e) {
+    if (e.data.action) {
+      // action data is in the form { action: "actionName", payload: object }
+      if (requestListeners[e.data.action]) {
+        requestListeners[e.data.action](e.data.correlationId, e.data.payload);
+      } else {
+        // no registered requestListener for this action
+        console.warn('No requestListeners for action: ', e.data.action);
+      }
+    } else if (e.data.correlationId) {
+      // response data is in the form { correlationId: theRequestCorrelationId, responsePayload: object, errorPayload: object }
+      if (responseListeners[e.data.correlationId]) {
+        // deregister (should be used only once for each correlationId)
+        var responseListener = responseListeners[e.data.correlationId];
+        responseListeners[e.data.correlationId] = null;
+        // delegate to the registered responseListener
+        if (e.data.errorPayload) {
+          responseListener.errorHandler(e.data.errorPayload);
+        } else {
+          responseListener.successHandler(e.data.responsePayload);
+        }
+      } else {
+        console.warn("No response listener for correlationId: ", e.data.correlationId);
+      }
+    } else {
+      // not an action message
+      console.log("Received non-request, non-response, message: ", e.data);
+    }
   }
-  return params;
-}
+
+  /**
+   * Func should be a function(correlationId, payload). The return value will be ignored.
+   * Consider this private and used solely by the iframeWrapper.
+   * Use iframeWrapper.attachActionHandler(action, handler) instead
+   */
+  function registerRequestListener( action, func ) {
+    if (typeof func != 'function') {
+      console.error("Cannot register request listener since not a function: ", func);
+    } else {
+      requestListeners[action] = func;
+    }
+  }
+  function unregisterRequestListener( action ) {
+    requestListeners[action] = null;
+  }
+  /**
+   *  The response listener must be an object in the form { successHandler: function(argument) {}, errorHandler: function(argument) {}}
+   *  where at least 1 of successHandler or errorHandler is defined.
+   *  successHandler and errorHandler, if defined, must be functions that take a single argument. Their returned value is ignored.
+   *  If one of the property is missing, a default handler is added that will simply log the result/error.
+   *
+   *  Note: There is no unregisterResponseListener because the unregistration is automatically done the first (and only) time the responseListener is used.
+   *  This is because for a given correlationId, only one response or one error will be returned.
+   */
+  function registerResponseListener( correlationId, listener ) {
+    if (!listener.successHandler && !listener.errorHandler) {
+      console.error("Cannot register response listener as it is missing a successHandler function or errorHandler function", listener);
+      return;
+    }
+    if (listener.successHandler && typeof listener.successHandler != 'function') {
+      console.error("Cannot register response listener as the successHandler is not a function", listener);
+      return;
+    }
+    if (listener.errorHandler && typeof listener.errorHandler != 'function') {
+      console.error("Cannot register response listener as the errorHandler is not a function", listener);
+      return;
+    }
+    listener.successHandler = listener.successHandler? listener.successHandler : defaultSuccessHandler;
+    listener.errorHandler = listener.errorHandler? listener.errorHandler : defaultErrorHandler;
+    responseListeners[correlationId] = listener;
+  }
+
+  function defaultSuccessHandler(responsePayload) { console.info("Default success handler: ", responsePayload); }
+  function defaultErrorHandler(errorPayload) { console.warn("Default error handler: ", errorPayload); }
+
+  return {
+    registerRequestListener: registerRequestListener,
+    unregisterRequestListener: unregisterRequestListener,
+    registerResponseListener: registerResponseListener
+  };
+})();
+
+/* harmony default export */ __webpack_exports__["a"] = (windowEventListener);
 
 
 /***/ }),
@@ -13567,7 +13580,10 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 21 */
+/* 21 */,
+/* 22 */,
+/* 23 */,
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13839,16 +13855,17 @@ function addLabel(pageId, label) {
 
 
 /***/ }),
-/* 22 */,
-/* 23 */
+/* 25 */,
+/* 26 */,
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluence__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluence__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__optionsParser__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_optionsParser__ = __webpack_require__(2);
 /* harmony export (immutable) */ __webpack_exports__["d"] = withOption;
 /* harmony export (immutable) */ __webpack_exports__["b"] = loadRegions;
 /* harmony export (immutable) */ __webpack_exports__["c"] = createWorkspace;
@@ -13858,7 +13875,7 @@ function addLabel(pageId, label) {
 
 
 
-var options = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__optionsParser__["a" /* default */])();
+var options = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__common_optionsParser__["a" /* parseOptions */])();
 var defaultProjectDocumentationRootPage='Project Documentation';
 var customerComboLimit=10;
 var defaultCustomerPageTemplate='.CI New Project Documentation Template';
@@ -14084,22 +14101,27 @@ function onlyTemplates(page) {
 
 
 /***/ }),
-/* 24 */,
-/* 25 */,
-/* 26 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 28 */,
-/* 29 */
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*** IMPORTS FROM imports-loader ***/
@@ -16210,8 +16232,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 30 */,
-/* 31 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! jQuery UI - v1.12.1 - 2017-03-19
@@ -34925,8 +34946,9 @@ var effectsEffectTransfer = effect;
 }));
 
 /***/ }),
-/* 32 */,
-/* 33 */
+/* 40 */,
+/* 41 */,
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -34934,23 +34956,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__confluence__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wizardService__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__confluence__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wizardService__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle__ = __webpack_require__(39);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_bootstrap__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_validator__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_validator__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_validator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_datepicker__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_datepicker__ = __webpack_require__(38);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_datepicker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_bootstrap_datepicker__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__css_form_css__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__css_form_css__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__css_form_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__css_form_css__);
 
 

@@ -2,7 +2,6 @@
   "name": "ywiki-plugins",
   "version": "1.0.0",
   "description": "The Golden Button wiki plugin",
-  "main": "index.js",
   "directories": {
     "doc": "docs"
   },
@@ -26,9 +25,12 @@
     "bootstrap-datepicker": "^1.6.4",
     "bootstrap-select": "^1.12.2",
     "bootstrap-validator": "^0.11.9",
+    "font-awesome": "^4.7.0",
     "imports-loader": "^0.7.1",
     "jquery": "^3.2.1",
-    "jquery-ui-bundle": "^1.12.1"
+    "jquery-ui-bundle": "^1.12.1",
+    "morris-data": "^0.5.1",
+    "raphael": "^2.2.7"
   },
   "devDependencies": {
     "css-loader": "^0.27.3",
