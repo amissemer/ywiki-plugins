@@ -3,7 +3,7 @@ iframe.dashboard {
   height: 6500px;
   border: none;
   position: relative;
-  top: -100px;
+  top: -50px;
   left: -1px;
   display: none;
 }

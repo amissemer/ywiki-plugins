@@ -10569,9 +10569,33 @@ bootstrap(__WEBPACK_IMPORTED_MODULE_3__plugin__["a" /* host */],__WEBPACK_IMPORT
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_optionsParser__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(7);
 
 
 
+
+
+function attachHandlersToIFrameWindow(host, myIFrame) {
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__["a" /* default */])(myIFrame[0].contentWindow, host)
+    .attachActionHandler("ajax", function (param) {
+      return jQuery.ajax(param);
+    })
+    .attachActionHandler("$text", function (e) {
+      return jQuery(e).text();
+    })
+    .attachActionHandler("$tableCellsGetHtml", function (e) {
+      return jQuery(e).get().map(function(row) {
+        return $(row).find('td').get().map(function(cell) {
+          return $(cell).html().trim();
+        });
+      });
+    })
+    .attachActionHandler("$arrayGetText", function (e) {
+      return jQuery(e).get().map(function(cell) {
+        return $(cell).text();
+      });
+    });
+}
 
 var dataAttributes=[
   'service-types-dataheaders',
@@ -10592,16 +10616,18 @@ function bootstrap(host, cacheBuster) {
     dataAttributes.forEach( function(attr) {
       options[attr] = jEl.data(attr);
     });
-    insertFrame(options);
+    insertFrame(host,options);
   });
 }
 
-function insertFrame(options) {
+function insertFrame(host,options) {
   console.log("iframe being added");
   $(options.element).after('<iframe class="dashboard" src="'+options.host+'/'+'dashboard.html#'+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__common_optionsParser__["b" /* encodeOptions */])(options)+'"></iframe>');
-  $("iframe.dashboard").bind('load', function() {
+  var iframe = $("iframe.dashboard");
+  iframe.bind('load', function() {
     $(this).fadeIn();
   });
+  attachHandlersToIFrameWindow(host,iframe);
 }
 
 bootstrap(__WEBPACK_IMPORTED_MODULE_0__plugin__["a" /* host */],__WEBPACK_IMPORTED_MODULE_0__plugin__["b" /* cacheBuster */]);

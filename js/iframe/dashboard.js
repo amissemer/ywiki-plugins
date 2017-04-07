@@ -21,6 +21,27 @@ $(document).ready( function () {
   $("#title").hide().text(options.title).fadeIn();
 });
 
+/**
+ * Reads the table from the main frame into an array of associative arrays [ {col1Name: row1Value1, col2Name:row1Value2 }, {col1Name: row2Value1, col2Name:row2Value2 } ]
+ * There must be 2 options set: tableName-dataheaders and  tableName-datasource, being the selectors of the header cells and the data rows respectively. */
+function getTable( tableName ) {
+  var headers=proxy.$arrayGetText(options[tableName+"-dataheaders"]);
+  var datasource=proxy.$tableCellsGetHtml(options[tableName+"-datasource"]);
+  var table=[];
+  return $.when(headers,datasource).then(function(headers,data) {
+    return data.map( function (row) {
+      var rowObj={};
+      for (var i=0;i<headers.length;i++) {
+        rowObj[headers[i]] = row[i];
+      }
+      return rowObj;
+    } );
+  });
+}
+getTable("service-types").then(console.log,console.error);
+getTable("improvement-ideas").then(console.log,console.error);
+getTable("service-engagements").then(console.log,console.error);
+
 //Loads the correct sidebar on window load,
 //collapses the sidebar on window resize.
 // Sets the min-height of #page-wrapper to window size

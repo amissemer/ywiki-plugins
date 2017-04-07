@@ -10332,11 +10332,13 @@ return jQuery;
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(7);
-/* harmony export (immutable) */ __webpack_exports__["b"] = ajax;
-/* harmony export (immutable) */ __webpack_exports__["a"] = closeFrame;
-/* harmony export (immutable) */ __webpack_exports__["e"] = redirect;
-/* harmony export (immutable) */ __webpack_exports__["c"] = $metacontent;
-/* harmony export (immutable) */ __webpack_exports__["d"] = $text;
+/* harmony export (immutable) */ __webpack_exports__["d"] = ajax;
+/* harmony export (immutable) */ __webpack_exports__["c"] = closeFrame;
+/* harmony export (immutable) */ __webpack_exports__["g"] = redirect;
+/* harmony export (immutable) */ __webpack_exports__["e"] = $metacontent;
+/* harmony export (immutable) */ __webpack_exports__["f"] = $text;
+/* harmony export (immutable) */ __webpack_exports__["a"] = $arrayGetText;
+/* harmony export (immutable) */ __webpack_exports__["b"] = $tableCellsGetHtml;
 
 
 /**
@@ -10376,6 +10378,14 @@ function $metacontent(el) {
  */
 function $text(el) {
   return wrapper.call("$text", el);
+}
+
+function $arrayGetText(cssSelector) {
+  return wrapper.call("$arrayGetText", cssSelector);
+}
+
+function $tableCellsGetHtml(cssSelector) {
+  return wrapper.call("$tableCellsGetHtml", cssSelector);
 }
 
 
@@ -13623,7 +13633,7 @@ function deletePageRecursive(spaceKey,pageTitle) {
   });
 }
 function deletePageById(pageId) {
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */]({
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */]({
     url: '/rest/api/content/'+encodeURIComponent(pageId),
     type: 'DELETE'
   }).fail(errorLogger( "DELETE page failed"));
@@ -13663,7 +13673,7 @@ function getContent(spaceKey,pageTitle,expand) {
   var defer = __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred();
   var url = '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
   console.log(url);
-  __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](url)
+  __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */](url)
   .done( function (response) {
     console.log("Filtering AJAX response",response);
     if (response.results && response.results.length>0) {
@@ -13687,7 +13697,7 @@ function getContentById(pageId, expand) {
   }
   var url = '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
   console.log(url);
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](url)
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */](url)
   .fail(errorLogger( "GET page by pageId failed"));
 }
 
@@ -13698,7 +13708,7 @@ function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
     limit=15;
   }
   var expandParam=(expand?"&expand="+encodeURIComponent(expand):"");
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */]('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */]('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
 }
 
 /**
@@ -13810,7 +13820,7 @@ function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
 }
 
 function postPage(page) {
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */](
     {
       url: '/rest/api/content',
       type: 'POST',
@@ -13820,7 +13830,7 @@ function postPage(page) {
 }
 
 function updateContent(page) {
-    return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](
+    return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */](
       {
         url: '/rest/api/content/'+encodeURIComponent(page.id),
         type: 'PUT',
@@ -13844,7 +13854,7 @@ function addLabel(pageId, label) {
   } else {
     throw "Unknown type of label: "+label;
   }
-  return __WEBPACK_IMPORTED_MODULE_0__proxy__["b" /* ajax */](
+  return __WEBPACK_IMPORTED_MODULE_0__proxy__["d" /* ajax */](
     {
       url: '/rest/api/content/'+encodeURIComponent(pageId)+'/label',
       type: 'POST',
@@ -13886,17 +13896,17 @@ if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel
 	throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
 }
 options.addLabel=[options.addLabel,additionalLabel];
-var promise1=__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* $metacontent */]('meta[name=ajs-page-id]')
+var promise1=__WEBPACK_IMPORTED_MODULE_1__proxy__["e" /* $metacontent */]('meta[name=ajs-page-id]')
 	.then(
 		function(val) { options.sourcePageId=val; },
 		function () { console.error("Could not read current pageId")}
 	);
-var promise2=__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* $metacontent */]('meta[name=ajs-remote-user-key]')
+var promise2=__WEBPACK_IMPORTED_MODULE_1__proxy__["e" /* $metacontent */]('meta[name=ajs-remote-user-key]')
 	.then(
 		function(val) { options.currentUserKey=val; },
 		function () { console.error("Could not resolve current userkey")}
 	);
-var promise3=__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* $metacontent */]('meta[name=confluence-space-key]')
+var promise3=__WEBPACK_IMPORTED_MODULE_1__proxy__["e" /* $metacontent */]('meta[name=confluence-space-key]')
 	.then(
 		function(val) { options.currentSpaceKey=val; },
 		function () { console.error("Could not resolve current spaceKey")}
@@ -13920,7 +13930,7 @@ function withOption(name) {
 
 
 function logCreation(logToPage, createdPage) {
-	__WEBPACK_IMPORTED_MODULE_1__proxy__["d" /* $text */](".confluenceTh:contains('Current Version') + .confluenceTd").done( function (version) {
+	__WEBPACK_IMPORTED_MODULE_1__proxy__["f" /* $text */](".confluenceTh:contains('Current Version') + .confluenceTd").done( function (version) {
 		logCreationWithVersion(version, logToPage, createdPage);
 	}).
 	fail( function () {
@@ -13968,7 +13978,7 @@ function loadRegions() {
 
 function endCopyProcess(copiedPages) {
   var workspaceURL = '/pages/viewpage.action?pageId='+copiedPages[0].id;
-  __WEBPACK_IMPORTED_MODULE_1__proxy__["e" /* redirect */](workspaceURL);
+  __WEBPACK_IMPORTED_MODULE_1__proxy__["g" /* redirect */](workspaceURL);
 }
 
 function createWorkspace(workspaceOpts) {
@@ -34991,11 +35001,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 function bindDOM() {
 
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#form-close").click( function() {
-		__WEBPACK_IMPORTED_MODULE_1__proxy__["a" /* closeFrame */]();
+		__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* closeFrame */]();
 	});
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).keyup(function(e) {
     if (e.keyCode == 27) { // ESC
-			 __WEBPACK_IMPORTED_MODULE_1__proxy__["a" /* closeFrame */]();
+			 __WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* closeFrame */]();
     }
 	});
 	var customerSelect = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#customerSelect');

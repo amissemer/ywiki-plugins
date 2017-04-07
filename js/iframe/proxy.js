@@ -38,3 +38,11 @@ export function $metacontent(el) {
 export function $text(el) {
   return wrapper.call("$text", el);
 }
+
+export function $arrayGetText(cssSelector) {
+  return wrapper.call("$arrayGetText", cssSelector);
+}
+
+export function $tableCellsGetHtml(cssSelector) {
+  return wrapper.call("$tableCellsGetHtml", cssSelector);
+}

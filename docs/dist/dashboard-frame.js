@@ -10332,11 +10332,13 @@ return jQuery;
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(7);
-/* harmony export (immutable) */ __webpack_exports__["b"] = ajax;
-/* harmony export (immutable) */ __webpack_exports__["a"] = closeFrame;
-/* harmony export (immutable) */ __webpack_exports__["e"] = redirect;
-/* harmony export (immutable) */ __webpack_exports__["c"] = $metacontent;
-/* harmony export (immutable) */ __webpack_exports__["d"] = $text;
+/* harmony export (immutable) */ __webpack_exports__["d"] = ajax;
+/* harmony export (immutable) */ __webpack_exports__["c"] = closeFrame;
+/* harmony export (immutable) */ __webpack_exports__["g"] = redirect;
+/* harmony export (immutable) */ __webpack_exports__["e"] = $metacontent;
+/* harmony export (immutable) */ __webpack_exports__["f"] = $text;
+/* harmony export (immutable) */ __webpack_exports__["a"] = $arrayGetText;
+/* harmony export (immutable) */ __webpack_exports__["b"] = $tableCellsGetHtml;
 
 
 /**
@@ -10376,6 +10378,14 @@ function $metacontent(el) {
  */
 function $text(el) {
   return wrapper.call("$text", el);
+}
+
+function $arrayGetText(cssSelector) {
+  return wrapper.call("$arrayGetText", cssSelector);
+}
+
+function $tableCellsGetHtml(cssSelector) {
+  return wrapper.call("$tableCellsGetHtml", cssSelector);
 }
 
 
@@ -17712,6 +17722,27 @@ var options = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_13__common_options
 __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready( function () {
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#title").hide().text(options.title).fadeIn();
 });
+
+/**
+ * Reads the table from the main frame into an array of associative arrays [ {col1Name: row1Value1, col2Name:row1Value2 }, {col1Name: row2Value1, col2Name:row2Value2 } ]
+ * There must be 2 options set: tableName-dataheaders and  tableName-datasource, being the selectors of the header cells and the data rows respectively. */
+function getTable( tableName ) {
+  var headers=__WEBPACK_IMPORTED_MODULE_1__proxy__["a" /* $arrayGetText */](options[tableName+"-dataheaders"]);
+  var datasource=__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $tableCellsGetHtml */](options[tableName+"-datasource"]);
+  var table=[];
+  return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when(headers,datasource).then(function(headers,data) {
+    return data.map( function (row) {
+      var rowObj={};
+      for (var i=0;i<headers.length;i++) {
+        rowObj[headers[i]] = row[i];
+      }
+      return rowObj;
+    } );
+  });
+}
+getTable("service-types").then(console.log,console.error);
+getTable("improvement-ideas").then(console.log,console.error);
+getTable("service-engagements").then(console.log,console.error);
 
 //Loads the correct sidebar on window load,
 //collapses the sidebar on window resize.

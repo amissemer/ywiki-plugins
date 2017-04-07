@@ -10332,11 +10332,13 @@ return jQuery;
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(7);
-/* harmony export (immutable) */ __webpack_exports__["b"] = ajax;
-/* harmony export (immutable) */ __webpack_exports__["a"] = closeFrame;
-/* harmony export (immutable) */ __webpack_exports__["e"] = redirect;
-/* harmony export (immutable) */ __webpack_exports__["c"] = $metacontent;
-/* harmony export (immutable) */ __webpack_exports__["d"] = $text;
+/* harmony export (immutable) */ __webpack_exports__["d"] = ajax;
+/* harmony export (immutable) */ __webpack_exports__["c"] = closeFrame;
+/* harmony export (immutable) */ __webpack_exports__["g"] = redirect;
+/* harmony export (immutable) */ __webpack_exports__["e"] = $metacontent;
+/* harmony export (immutable) */ __webpack_exports__["f"] = $text;
+/* harmony export (immutable) */ __webpack_exports__["a"] = $arrayGetText;
+/* harmony export (immutable) */ __webpack_exports__["b"] = $tableCellsGetHtml;
 
 
 /**
@@ -10376,6 +10378,14 @@ function $metacontent(el) {
  */
 function $text(el) {
   return wrapper.call("$text", el);
+}
+
+function $arrayGetText(cssSelector) {
+  return wrapper.call("$arrayGetText", cssSelector);
+}
+
+function $tableCellsGetHtml(cssSelector) {
+  return wrapper.call("$tableCellsGetHtml", cssSelector);
 }
 
 
@@ -15511,7 +15521,7 @@ var $ = __webpack_require__(0);
 const jiraServerHost = 'jira.hybris.com';
 
 function getJiraServer() {
-  return __WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* ajax */]("/rest/createjiracontent/1.0/get-jira-servers")
+  return __WEBPACK_IMPORTED_MODULE_1__proxy__["d" /* ajax */]("/rest/createjiracontent/1.0/get-jira-servers")
   .then( function(servers) {
     var matchingJiraServer = __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.grep(servers, function (value, idx) {
       return value.url.indexOf(jiraServerHost)>0;
@@ -15531,7 +15541,7 @@ function getJiraServer() {
 function getJiraProject(jiraServerP, projectKey) {
   var jiraServerP = getJiraServer();
   return jiraServerP.then(function(serverId) {
-    return __WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* ajax */]("/rest/jira-integration/1.0/servers/"+serverId+"/projects")
+    return __WEBPACK_IMPORTED_MODULE_1__proxy__["d" /* ajax */]("/rest/jira-integration/1.0/servers/"+serverId+"/projects")
   }).then(function (result) {
     for (var i=0;i<result.length;i++) {
       if (result[i].key === projectKey) {
@@ -15571,7 +15581,7 @@ function createIssue(projectKey, issueTypeName, componentName, summary, descript
   labels = labels || [];
   return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when(jiraServerP)
     .then(function(jiraServer) {
-      return __WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* ajax */]({
+      return __WEBPACK_IMPORTED_MODULE_1__proxy__["d" /* ajax */]({
         url: "/rest/jira-integration/1.0/issues?applicationId="+jiraServer,
         contentType: "application/json;charset=UTF-8",
         type: "POST",
@@ -15677,11 +15687,11 @@ console.info("Form options",options);
 function bindDOM() {
 
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#form-close").click( function() {
-		__WEBPACK_IMPORTED_MODULE_1__proxy__["a" /* closeFrame */]();
+		__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* closeFrame */]();
 	});
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).keyup(function(e) {
     if (e.keyCode == 27) { // ESC
-			 __WEBPACK_IMPORTED_MODULE_1__proxy__["a" /* closeFrame */]();
+			 __WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* closeFrame */]();
     }
 	});
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()(".service-display-name").text(options.serviceDisplayName);
