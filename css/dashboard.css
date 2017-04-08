@@ -387,3 +387,6 @@ table.dataTable thead .sorting:after {
     border-left-width: 0;
   }
 }
+.fa-2_5x {
+    font-size: 2.5em;
+}

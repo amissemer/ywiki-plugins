@@ -17734,16 +17734,55 @@ function getTable( tableName ) {
     return data.map( function (row) {
       var rowObj={};
       for (var i=0;i<headers.length;i++) {
-        rowObj[headers[i]] = row[i];
+        rowObj[headers[i].toLowerCase().replace(/\W+/g, "_")] = row[i];
       }
       return rowObj;
     } );
   });
 }
-getTable("service-types").then(console.log,console.error);
-getTable("improvement-ideas").then(console.log,console.error);
-getTable("service-engagements").then(console.log,console.error);
+var serviceTypes = getTable("service-types");
+var improvementIdeas = getTable("improvement-ideas");
+var serviceEngagements = getTable("service-engagements");
 
+function countUnique(arr) {
+  var counts = {};
+  for(var i = 0; i< arr.length; i++) {
+      var num = arr[i];
+      counts[num] = counts[num] ? counts[num]+1 : 1;
+  }
+  return counts;
+}
+function setKPI(cssSelector, value) {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(cssSelector).hide().text(value).fadeIn();
+}
+improvementIdeas.done( function (ideas) {
+  var participantCounts = countUnique([].concat.apply([], ideas.map( function(idea) {
+    return idea.participants.split(" ");
+  } )));
+  var participants = [];
+  for (var email in participantCounts) {
+    if (participantCounts.hasOwnProperty(email)) {
+      participants.push({email: email, count: participantCounts[email]});
+    }
+  }
+  participants.sort(function(el1,el2) {
+    return el1.count<el2.count;
+  });
+
+  console.log("participants", participants);
+  setKPI("#submitted-ideas", ideas.length);
+  var peopleTableBody = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#people-tickets-number tbody");
+  participants.forEach( function (participant) {
+    peopleTableBody.append('<tr><td>'+participant.email.split('@')[0]+'</td><td>'+participant.count+'</td></tr>');
+  });
+  setKPI("#people-using", peopleTableBody.find("tr").length);
+});
+serviceTypes.done( function (services) {
+  setKPI("#services-under-ci", services.length);
+});
+serviceEngagements.done(function (engagements) {
+  setKPI("#engagements-count", engagements.length);
+});
 //Loads the correct sidebar on window load,
 //collapses the sidebar on window resize.
 // Sets the min-height of #page-wrapper to window size
