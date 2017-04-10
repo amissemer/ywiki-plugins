@@ -15513,7 +15513,7 @@ var $ = __webpack_require__(0);
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(1);
 /* harmony export (immutable) */ __webpack_exports__["a"] = createIssue;
 
 
@@ -15521,7 +15521,7 @@ var $ = __webpack_require__(0);
 const jiraServerHost = 'jira.hybris.com';
 
 function getJiraServer() {
-  return __WEBPACK_IMPORTED_MODULE_1__proxy__["d" /* ajax */]("/rest/createjiracontent/1.0/get-jira-servers")
+  return __WEBPACK_IMPORTED_MODULE_1__proxyService__["d" /* ajax */]("/rest/createjiracontent/1.0/get-jira-servers")
   .then( function(servers) {
     var matchingJiraServer = __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.grep(servers, function (value, idx) {
       return value.url.indexOf(jiraServerHost)>0;
@@ -15541,7 +15541,7 @@ function getJiraServer() {
 function getJiraProject(jiraServerP, projectKey) {
   var jiraServerP = getJiraServer();
   return jiraServerP.then(function(serverId) {
-    return __WEBPACK_IMPORTED_MODULE_1__proxy__["d" /* ajax */]("/rest/jira-integration/1.0/servers/"+serverId+"/projects")
+    return __WEBPACK_IMPORTED_MODULE_1__proxyService__["d" /* ajax */]("/rest/jira-integration/1.0/servers/"+serverId+"/projects")
   }).then(function (result) {
     for (var i=0;i<result.length;i++) {
       if (result[i].key === projectKey) {
@@ -15581,7 +15581,7 @@ function createIssue(projectKey, issueTypeName, componentName, summary, descript
   labels = labels || [];
   return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when(jiraServerP)
     .then(function(jiraServer) {
-      return __WEBPACK_IMPORTED_MODULE_1__proxy__["d" /* ajax */]({
+      return __WEBPACK_IMPORTED_MODULE_1__proxyService__["d" /* ajax */]({
         url: "/rest/jira-integration/1.0/issues?applicationId="+jiraServer,
         contentType: "application/json;charset=UTF-8",
         type: "POST",
@@ -15648,7 +15648,7 @@ function createIssue(projectKey, issueTypeName, componentName, summary, descript
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_bootstrap__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_bootstrap__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap_validator__ = __webpack_require__(6);
@@ -15664,7 +15664,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__common_optionsParser__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__jira__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__jiraService__ = __webpack_require__(26);
 
 
 //import 'jquery-ui-bundle';
@@ -15687,15 +15687,15 @@ console.info("Form options",options);
 function bindDOM() {
 
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#form-close").click( function() {
-		__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* closeFrame */]();
+		__WEBPACK_IMPORTED_MODULE_1__proxyService__["c" /* closeFrame */]();
 	});
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).keyup(function(e) {
     if (e.keyCode == 27) { // ESC
-			 __WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* closeFrame */]();
+			 __WEBPACK_IMPORTED_MODULE_1__proxyService__["c" /* closeFrame */]();
     }
 	});
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#cancelBtn").click( function() {
-		__WEBPACK_IMPORTED_MODULE_1__proxy__["c" /* closeFrame */]();
+		__WEBPACK_IMPORTED_MODULE_1__proxyService__["c" /* closeFrame */]();
 	});
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()(".service-display-name").text(options.serviceDisplayName);
 	var submitBtn=__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#wizard-submit");
@@ -15710,7 +15710,7 @@ function bindDOM() {
 			if (cust) {
 				labels.push(cust);
 			}
-			__WEBPACK_IMPORTED_MODULE_10__jira__["a" /* createIssue */](options.jiraProjectKey,options.issueType, options.issueComponent,__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#summary").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#description").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#priority").val(),labels)
+			__WEBPACK_IMPORTED_MODULE_10__jiraService__["a" /* createIssue */](options.jiraProjectKey,options.issueType, options.issueComponent,__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#summary").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#description").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#priority").val(),labels)
 				.then(
 					function(issueKey) {
 						// RESET FORM
@@ -15750,4 +15750,4 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=create-jira.js.map
+//# sourceMappingURL=create-jira-form.js.map

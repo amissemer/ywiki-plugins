@@ -1,3 +1,3 @@
 import './stylesheetPlugin';
-import './buttonPlugin';
+import './goldenButtonPlugin';
 import './dashboardPlugin';

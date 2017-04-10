@@ -5,8 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="dist/iframe.css" />
-        <script src="dist/iframe.js"></script>
+        <link rel="stylesheet" href="dist/golden-form.css" />
+        <script src="dist/golden-form.js"></script>
 
     </head>
     <body>
@@ -88,11 +88,14 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-sm-12">
+                  <div class="col-sm-12 mb-spacer">
                     <button id="wizard-submit" type="submit" class="btn btn-primary">Submit</button>
+                    <button type="button" class="btn" id="cancelBtn">Cancel</button>
                     <img id="progress-indicator" src="progress.gif" />
-                    <div class="alert alert-danger" role="alert" id="error-display"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        <span class="sr-only">Error:</span><span class="msg"></span></div>
+                    <div class="alert alert-danger" role="alert" id="error-display">
+                      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                      <span class="sr-only">Error:</span><span class="msg"></span>
+                    </div>
                   </div>
                 </div>
             </form>

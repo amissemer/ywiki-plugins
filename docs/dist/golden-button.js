@@ -10393,12 +10393,86 @@ console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pluginCommon__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_optionsParser__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(3);
+
+
+
+
+
+function attachHandlersToIFrameWindow(host, myIFrame) {
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__["a" /* default */])(myIFrame[0].contentWindow, host)
+    .attachActionHandler("ajax", function (param) {
+      return jQuery.ajax(param);
+    })
+    .attachActionHandler("$text", function (e) {
+      return jQuery(e).text();
+    })
+    .attachActionHandler("$tableCellsGetHtml", function (e) {
+      return jQuery(e).get().map(function(row) {
+        return $(row).find('td').get().map(function(cell) {
+          return $(cell).html().trim();
+        });
+      });
+    })
+    .attachActionHandler("$arrayGetText", function (e) {
+      return jQuery(e).get().map(function(cell) {
+        return $(cell).text();
+      });
+    });
+}
+
+var dataAttributes=[
+  'service-types-dataheaders',
+  'service-types-datasource',
+  'service-engagements-dataheaders',
+  'service-engagements-datasource',
+  'improvement-ideas-dataheaders',
+  'improvement-ideas-datasource'];
+
+function bootstrap(host, cacheBuster) {
+  $('[data-activate="dashboard"]').each( function() {
+    var jEl=$(this);
+    var options={
+      host: host,
+      cacheBuster: cacheBuster,
+      title: $("#title-text").text(),
+      element: this};
+    dataAttributes.forEach( function(attr) {
+      options[attr] = jEl.data(attr);
+    });
+    insertFrame(host,options);
+  });
+}
+
+function insertFrame(host,options) {
+  console.log("iframe being added");
+  $(options.element).after('<iframe class="dashboard" src="'+options.host+'/'+'dashboard.html#'+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__common_optionsParser__["b" /* encodeOptions */])(options)+'"></iframe>');
+  var iframe = $("iframe.dashboard");
+  iframe.bind('load', function() {
+    $(this).fadeIn();
+  });
+  attachHandlersToIFrameWindow(host,iframe);
+}
+
+bootstrap(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["b" /* cacheBuster */]);
+
+
+/***/ }),
+
+/***/ 29:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__css_professors_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_iframeWrapper__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__plugin__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pluginCommon__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__common_optionsParser__ = __webpack_require__(2);
 
 
@@ -10502,7 +10576,7 @@ function genericButton(options, formPath) {
 /** The main entrypoint for the plugin, which receives all options, loads the dependencies,
 creates the iframe element, attach the click event to the main button to load the iframe */
 function wireButton(options) {
-  return genericButton(options, 'form.html');
+  return genericButton(options, 'golden-form.html');
 }
 
 function wireCreateJiraButton(options) {
@@ -10516,7 +10590,7 @@ function wireCreateJiraButton(options) {
       <i class="fa fa-lightbulb-o fa-stack-1x"></i>\
     </span><span class="text">'+currentText+'</span>\
   ');
-  return genericButton(options, 'create-jira.html');
+  return genericButton(options, 'create-jira-form.html');
 }
 
 function insertFrame() {
@@ -10556,81 +10630,7 @@ function bootstrap(host, cacheBuster) {
   });
 }
 
-bootstrap(__WEBPACK_IMPORTED_MODULE_3__plugin__["a" /* host */],__WEBPACK_IMPORTED_MODULE_3__plugin__["b" /* cacheBuster */]);
-
-
-/***/ }),
-
-/***/ 29:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__plugin__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_optionsParser__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(44);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(3);
-
-
-
-
-
-function attachHandlersToIFrameWindow(host, myIFrame) {
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__["a" /* default */])(myIFrame[0].contentWindow, host)
-    .attachActionHandler("ajax", function (param) {
-      return jQuery.ajax(param);
-    })
-    .attachActionHandler("$text", function (e) {
-      return jQuery(e).text();
-    })
-    .attachActionHandler("$tableCellsGetHtml", function (e) {
-      return jQuery(e).get().map(function(row) {
-        return $(row).find('td').get().map(function(cell) {
-          return $(cell).html().trim();
-        });
-      });
-    })
-    .attachActionHandler("$arrayGetText", function (e) {
-      return jQuery(e).get().map(function(cell) {
-        return $(cell).text();
-      });
-    });
-}
-
-var dataAttributes=[
-  'service-types-dataheaders',
-  'service-types-datasource',
-  'service-engagements-dataheaders',
-  'service-engagements-datasource',
-  'improvement-ideas-dataheaders',
-  'improvement-ideas-datasource'];
-
-function bootstrap(host, cacheBuster) {
-  $('[data-activate="dashboard"]').each( function() {
-    var jEl=$(this);
-    var options={
-      host: host,
-      cacheBuster: cacheBuster,
-      title: $("#title-text").text(),
-      element: this};
-    dataAttributes.forEach( function(attr) {
-      options[attr] = jEl.data(attr);
-    });
-    insertFrame(host,options);
-  });
-}
-
-function insertFrame(host,options) {
-  console.log("iframe being added");
-  $(options.element).after('<iframe class="dashboard" src="'+options.host+'/'+'dashboard.html#'+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__common_optionsParser__["b" /* encodeOptions */])(options)+'"></iframe>');
-  var iframe = $("iframe.dashboard");
-  iframe.bind('load', function() {
-    $(this).fadeIn();
-  });
-  attachHandlersToIFrameWindow(host,iframe);
-}
-
-bootstrap(__WEBPACK_IMPORTED_MODULE_0__plugin__["a" /* host */],__WEBPACK_IMPORTED_MODULE_0__plugin__["b" /* cacheBuster */]);
+bootstrap(__WEBPACK_IMPORTED_MODULE_3__pluginCommon__["a" /* host */],__WEBPACK_IMPORTED_MODULE_3__pluginCommon__["b" /* cacheBuster */]);
 
 
 /***/ }),
@@ -10745,7 +10745,7 @@ function iframeWrapper( postToWindow, targetHostname ) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__plugin__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pluginCommon__ = __webpack_require__(23);
 
 
 // Loads a stylesheet at url. Url can be relative to the configured host.
@@ -10761,7 +10761,7 @@ function loadStyleSheet(host, url) {
   console.log('style loaded');
 }
 
-loadStyleSheet(__WEBPACK_IMPORTED_MODULE_0__plugin__["a" /* host */],'dist/golden-button.css'+__WEBPACK_IMPORTED_MODULE_0__plugin__["b" /* cacheBuster */]);
+loadStyleSheet(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],'dist/golden-button.css'+__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["b" /* cacheBuster */]);
 
 
 /***/ }),
@@ -10772,8 +10772,8 @@ loadStyleSheet(__WEBPACK_IMPORTED_MODULE_0__plugin__["a" /* host */],'dist/golde
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__stylesheetPlugin__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__buttonPlugin__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__dashboardPlugin__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__goldenButtonPlugin__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__dashboardPlugin__ = __webpack_require__(28);
 
 
 

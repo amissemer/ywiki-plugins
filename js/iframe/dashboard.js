@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import * as proxy from './proxy';
+import * as proxy from './proxyService';
 //import 'jquery-ui-bundle';
 import 'bootstrap';
 import 'bootstrap-validator';

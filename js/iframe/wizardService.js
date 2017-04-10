@@ -1,5 +1,5 @@
-import * as confluence from './confluence'
-import * as proxy from './proxy';
+import * as confluence from './confluenceService'
+import * as proxy from './proxyService';
 import $ from 'jquery';
 import {parseOptions} from '../common/optionsParser';
 

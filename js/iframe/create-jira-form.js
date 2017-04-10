@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import * as proxy from './proxy';
+import * as proxy from './proxyService';
 //import 'jquery-ui-bundle';
 import 'bootstrap';
 import 'bootstrap-validator';
@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap-theme.min.css';
 import 'bootstrap-select/dist/css/bootstrap-select.min.css';
 import '../../css/create-jira.css';
 import {parseOptions} from '../common/optionsParser';
-import * as jira from './jira';
+import * as jira from './jiraService';
 
 var options = parseOptions({"serviceDisplayName" : "service engagements"});
 var additionalLabel = "from-confluence";

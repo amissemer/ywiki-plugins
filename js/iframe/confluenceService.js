@@ -1,4 +1,4 @@
-import * as proxy from './proxy';
+import * as proxy from './proxyService';
 import $ from 'jquery';
 
 /**

@@ -17676,7 +17676,7 @@ Licensed under the BSD-2-Clause License.
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxy__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_bootstrap__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_bootstrap__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap_validator__ = __webpack_require__(6);
@@ -17727,8 +17727,8 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready( function () {
  * Reads the table from the main frame into an array of associative arrays [ {col1Name: row1Value1, col2Name:row1Value2 }, {col1Name: row2Value1, col2Name:row2Value2 } ]
  * There must be 2 options set: tableName-dataheaders and  tableName-datasource, being the selectors of the header cells and the data rows respectively. */
 function getTable( tableName ) {
-  var headers=__WEBPACK_IMPORTED_MODULE_1__proxy__["a" /* $arrayGetText */](options[tableName+"-dataheaders"]);
-  var datasource=__WEBPACK_IMPORTED_MODULE_1__proxy__["b" /* $tableCellsGetHtml */](options[tableName+"-datasource"]);
+  var headers=__WEBPACK_IMPORTED_MODULE_1__proxyService__["a" /* $arrayGetText */](options[tableName+"-dataheaders"]);
+  var datasource=__WEBPACK_IMPORTED_MODULE_1__proxyService__["b" /* $tableCellsGetHtml */](options[tableName+"-datasource"]);
   var table=[];
   return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when(headers,datasource).then(function(headers,data) {
     return data.map( function (row) {

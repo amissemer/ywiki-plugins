@@ -1,7 +1,7 @@
 import '../../css/professors.css';
 import '../../css/golden-button.css';
 import iframeWrapper from '../common/iframeWrapper';
-import * as plugin from './plugin';
+import * as plugin from './pluginCommon';
 import {encodeOptions} from '../common/optionsParser'
 
 function closeIFrame(iframeElt) {
@@ -100,7 +100,7 @@ function genericButton(options, formPath) {
 /** The main entrypoint for the plugin, which receives all options, loads the dependencies,
 creates the iframe element, attach the click event to the main button to load the iframe */
 function wireButton(options) {
-  return genericButton(options, 'form.html');
+  return genericButton(options, 'golden-form.html');
 }
 
 function wireCreateJiraButton(options) {
@@ -114,7 +114,7 @@ function wireCreateJiraButton(options) {
       <i class="fa fa-lightbulb-o fa-stack-1x"></i>\
     </span><span class="text">'+currentText+'</span>\
   ');
-  return genericButton(options, 'create-jira.html');
+  return genericButton(options, 'create-jira-form.html');
 }
 
 function insertFrame() {

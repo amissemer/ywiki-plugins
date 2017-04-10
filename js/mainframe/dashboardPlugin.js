@@ -1,4 +1,4 @@
-import * as plugin from './plugin';
+import * as plugin from './pluginCommon';
 import {encodeOptions} from '../common/optionsParser'
 import '../../css/dashboard-page.css';
 import iframeWrapper from '../common/iframeWrapper';

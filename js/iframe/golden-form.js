@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import * as proxy from './proxy';
-import * as confluence from './confluence';
+import * as proxy from './proxyService';
+import * as confluence from './confluenceService';
 import * as wizardService from './wizardService';
 import 'jquery-ui-bundle';
 import 'bootstrap';
@@ -10,7 +10,7 @@ import 'bootstrap-datepicker';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap-theme.min.css';
 import 'bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css';
-import '../../css/form.css';
+import '../../css/golden-form.css';
 
 function bindDOM() {
 
@@ -21,6 +21,9 @@ function bindDOM() {
     if (e.keyCode == 27) { // ESC
 			 proxy.closeFrame();
     }
+	});
+	$("#cancelBtn").click( function() {
+		proxy.closeFrame();
 	});
 	var customerSelect = $('#customerSelect');
 	var customerProgress = $('#customer-progress');

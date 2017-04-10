@@ -4,9 +4,9 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   entry: {
     // create a bundle for the iframe and a separate bundle for the main frame (the wiki page)
-    "iframe": './js/iframe/form.js',
-    "create-jira": './js/iframe/create-jira.js',
     "golden-button": './js/mainframe/main.js',
+    "golden-form": './js/iframe/golden-form.js',
+    "create-jira-form": './js/iframe/create-jira-form.js',
     "dashboard-frame": './js/iframe/dashboard.js',
   },
   output: {

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import * as proxy from './proxy';
+import * as proxy from './proxyService';
 
 const jiraServerHost = 'jira.hybris.com';
 

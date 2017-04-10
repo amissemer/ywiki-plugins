@@ -1,4 +1,4 @@
-import * as plugin from './plugin';
+import * as plugin from './pluginCommon';
 
 // Loads a stylesheet at url. Url can be relative to the configured host.
 function loadStyleSheet(host, url) {
