@@ -119,10 +119,15 @@ function createCustomerPage(region,customer) {
 
 function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
-  return confluence.getContentById(options.sourcePageId,'space')
-  .then(function(sourcePage) {
+	var customerPage = confluence.getContent(options.targetSpace,workspaceOpts.customer,'ancestors');
+	var rootPageToCopy = confluence.getContentById(options.sourcePageId,'space');
+	var regionNames = loadRegions();
+  return $.when(customerPage, rootPageToCopy, regionNames)
+  .then(function(customerPage, sourcePage, regionNames) {
+		var regionName = findRegionInAncestors(customerPage.ancestors, regionNames);
     return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
     {
+			"Region": regionName,
       "Customer": workspaceOpts.customer,
       "ProjectName": workspaceOpts.projectName,
       "TargetEndDate": workspaceOpts.targetEndDate
@@ -145,6 +150,19 @@ function createJustWorkspace(workspaceOpts) {
   .fail(function() {
     console.error("Copy failed",arguments);
   });
+}
+
+function findRegionInAncestors(ancestors, regionNames) {
+	console.log("findRegionInAncestors", ancestors, regionNames);
+	for (var a=0;a<ancestors.length;a++) {
+		console.log("Matching page name",ancestors[a].title);
+		if (regionNames.indexOf(ancestors[a].title)>=0) {
+			console.log("Found");
+			return ancestors[a].title;
+		}
+	};
+	console.error ("The selected customer page is not under a valid region");
+	return "";
 }
 
 export function findCustomer(term) {

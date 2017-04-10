@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import * as proxy from './proxyService';
-import * as confluence from './confluenceService';
 import * as wizardService from './wizardService';
 import 'jquery-ui-bundle';
 import 'bootstrap';

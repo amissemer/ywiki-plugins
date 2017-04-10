@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 42);
+/******/ 	return __webpack_require__(__webpack_require__.s = 43);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10331,6 +10331,41 @@ return jQuery;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return parseOptions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return encodeOptions; });
+function parseOptions(defaultOptions) {
+
+  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
+  var match;
+  var params = defaultOptions || {};
+  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
+
+  var hash = document.location.hash;
+
+  while (match = re.exec(hash)) {
+    params[decode(match[1])] = decode(match[2]);
+  }
+  return params;
+}
+
+function encodeOptions(options) {
+  var res = [];
+  for (var key in options) {
+    if (options.hasOwnProperty(key) && options[key]!==undefined) {
+        res.push(key+"="+encodeURIComponent(options[key]));
+    }
+  }
+  return res.join('&');
+}
+
+
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(3);
 /* harmony export (immutable) */ __webpack_exports__["d"] = ajax;
 /* harmony export (immutable) */ __webpack_exports__["c"] = closeFrame;
@@ -10387,41 +10422,6 @@ function $arrayGetText(cssSelector) {
 function $tableCellsGetHtml(cssSelector) {
   return wrapper.call("$tableCellsGetHtml", cssSelector);
 }
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return parseOptions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return encodeOptions; });
-function parseOptions(defaultOptions) {
-
-  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
-  var match;
-  var params = defaultOptions || {};
-  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
-
-  var hash = document.location.hash;
-
-  while (match = re.exec(hash)) {
-    params[decode(match[1])] = decode(match[2]);
-  }
-  return params;
-}
-
-function encodeOptions(options) {
-  var res = [];
-  for (var key in options) {
-    if (options.hasOwnProperty(key) && options[key]!==undefined) {
-        res.push(key+"="+encodeURIComponent(options[key]));
-    }
-  }
-  return res.join('&');
-}
-
-
 
 
 /***/ }),
@@ -13593,289 +13593,18 @@ var $ = __webpack_require__(0);
 /* 21 */,
 /* 22 */,
 /* 23 */,
-/* 24 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxyService__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
-/* unused harmony export deletePage */
-/* unused harmony export deletePageRecursive */
-/* unused harmony export deletePageById */
-/* harmony export (immutable) */ __webpack_exports__["a"] = getContent;
-/* harmony export (immutable) */ __webpack_exports__["d"] = getContentById;
-/* harmony export (immutable) */ __webpack_exports__["g"] = searchPagesWithCQL;
-/* harmony export (immutable) */ __webpack_exports__["c"] = copyPage;
-/* harmony export (immutable) */ __webpack_exports__["e"] = copyPageRecursive;
-/* unused harmony export createPage */
-/* unused harmony export createPageUnderPageId */
-/* unused harmony export postPage */
-/* harmony export (immutable) */ __webpack_exports__["b"] = updateContent;
-/* harmony export (immutable) */ __webpack_exports__["f"] = addLabel;
-
-
-
-/**
- * An API for confluence that runs ajax queries through the proxy object to bypass the CORS restriction.
- */
-
-function deletePage(spaceKey,pageTitle) {
-  return getContent(spaceKey,pageTitle)
-  .then( function (page) {
-    return deletePageById(page.id);
-  });
-}
-function deletePageRecursive(spaceKey,pageTitle) {
-  return getContent(spaceKey,pageTitle)
-  .then( function (page) {
-    return deletePageRecursiveInternal( page.id );
-  });
-}
-function deletePageById(pageId) {
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */]({
-    url: '/rest/api/content/'+encodeURIComponent(pageId),
-    type: 'DELETE'
-  }).fail(errorLogger( "DELETE page failed"));
-}
-
-function deletePageRecursiveInternal(pageId) {
-  return getContentById(pageId, 'children.page')
-  .then( function (page) {
-    // first delete children
-    var childrenPromises = [];
-    console.log("In deletePageRecursiveInternal for ", page.title);
-    if (page.children && page.children.page && page.children.page.results) {
-      page.children.page.results.forEach( function (child) {
-        childrenPromises.push(deletePageRecursiveInternal(child.id));
-      });
-    }
-    // when all children are deleted
-    return __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.when.apply(__WEBPACK_IMPORTED_MODULE_1_jquery___default.a,childrenPromises)
-    // delete the current page
-    .then( function() {
-      return deletePageById(pageId);
-    });
-  });
-}
-
-/**
-* Get a page by spaceKey and title from Confluence and returns a deferred for that page.
-* See $.ajax().done()
-* Failures are logged and ignored.
-* The deferred is resolved with the first matching page is any, else it is rejected.
-*/
-function getContent(spaceKey,pageTitle,expand) {
-  var expandParam="";
-  if (expand) {
-    expandParam = '&expand='+encodeURIComponent(expand);
-  }
-  var defer = __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred();
-  var url = '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
-  console.log(url);
-  __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](url)
-  .done( function (response) {
-    console.log("Filtering AJAX response",response);
-    if (response.results && response.results.length>0) {
-      var page = response.results[0];
-      console.log("Returning ",page);
-      defer.resolve(page);
-    } else {
-      defer.reject("Page Not found: '"+spaceKey+":"+pageTitle+"'");
-    }
-  })
-  .fail( function (jqr, status, error) {
-    defer.reject(status, error, jqr);
-  });
-  return defer.promise();
-}
-
-function getContentById(pageId, expand) {
-  var expandParam="";
-  if (expand) {
-    expandParam = '?expand='+encodeURIComponent(expand);
-  }
-  var url = '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
-  console.log(url);
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](url)
-  .fail(errorLogger( "GET page by pageId failed"));
-}
-
-/** search for content with CQL
-for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
-function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
-  if (!limit || limit<0) {
-    limit=15;
-  }
-  var expandParam=(expand?"&expand="+encodeURIComponent(expand):"");
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */]('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
-}
-
-/**
-* Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
-* and do a placeholder replacement in each page title using the titleReplacements.
-*/
-function copyPage(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, titleReplacements) {
-  return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage')
-  .then(function(pageToCopy) {
-    transformPage(pageToCopy, titleReplacements);
-    // Create the new page under toPageTitle
-    return createPage(pageToCopy,toSpaceKey,toPageTitle);
-  }
-  );
-}
-
-function transformPage(page, replacements) {
-  console.log("Found page to Copy",page);
-  page.title = replacePlaceholders(page.title,replacements);
-  console.log("New Title for target page: "+page.title);
-  if (typeof replacements!=='string') {
-    page.body.storage.value = replacePlaceholders(page.body.storage.value,replacements);
-  }
-}
-
-function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, filter, titleReplacements, copiedPages) {
-  var sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
-  var targetPagePromise = getContent(toSpaceKey,toPageTitle, 'space');
-  return __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.when( sourcePagePromise, targetPagePromise )
-  .then(function(sourcePage, targetPage) {
-    return copyPageRecursiveInternal( sourcePage.id, targetPage.space.key, targetPage.id, filter, titleReplacements, copiedPages);
-  });
-}
-
-function copyPageRecursiveInternal(sourcePageId, targetSpaceKey, targetPageId, filter, titleReplacements, copiedPages) {
-  return getContentById(sourcePageId, 'space,body.storage,children.page')
-  .then(function (pageToCopy) {
-    if (filter(pageToCopy)) {
-      transformPage(pageToCopy, titleReplacements);
-
-      // Create the new page under targetSpaceKey:targetPageId
-      return createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId)
-        .then( function(copiedPage) {
-          copiedPages.push(copiedPage);
-          return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, filter, titleReplacements,copiedPages);
-        });
-    } else {
-      console.log("Page is not a template, not copied, but children will be copied: ",pageToCopy.title);
-      return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, filter, titleReplacements,copiedPages);
-    }
-
-  })
-}
-
-function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, filter, titleReplacements, copiedPages) {
-  // recursively copy all children
-  var childrenPromises = [];
-  console.log("In copyAllChildren", pageToCopy,targetPageId);
-  if (pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results) {
-    pageToCopy.children.page.results.forEach( function (child) {
-      childrenPromises.push(copyPageRecursiveInternal(child.id, targetSpaceKey, targetPageId, filter, titleReplacements,copiedPages));
-    });
-  }
-  // return the combination of all children copy promises
-  return __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.when.apply(__WEBPACK_IMPORTED_MODULE_1_jquery___default.a,childrenPromises);
-}
-
-// returns a function that will log all the arguments on the console as an error, preprended with a message.
-function errorLogger(message) {
-  return function() {
-    console.error(message,arguments);
-  }
-}
-/** if replacements is not provided, returns the template.
-if replacements is a simple string, returns that string
-if replacements is a map, for each (key,value) pair in the map, replaces [key] placeholders with value. */
-function replacePlaceholders(template, replacements) {
-  if (typeof replacements === undefined) return template;
-  if (typeof replacements === 'string') return replacements;
-  var result = template;
-  for (var key in replacements) {
-    if (replacements.hasOwnProperty(key)) {
-      var varStr = '['+key+']';
-      if (result.indexOf(varStr) == -1) {
-        console.warn(varStr + " is not used in template",template);
-      }
-      var result = result.split(varStr).join(replacements[key]);
-    }
-  }
-  if (result.indexOf('[')!=-1) {
-    console.warn("title still has uninterpolated variables",result);
-  }
-  return result;
-}
-
-function createPage(page, targetSpaceKey, targetParentTitle) {
-  return getContent(targetSpaceKey,targetParentTitle,'space')
-  .then(function(targetParentPage) {
-    console.log("targetParentPage: space=",targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
-    return createPageUnderPageId(page, targetParentPage.space.key, targetParentPage.id);
-  });
-}
-
-function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
-  page.ancestors=[ { id: targetPageId } ];
-  console.log("New Page",page);
-  page.space={ key: targetSpaceKey };
-  return postPage(page);
-}
-
-function postPage(page) {
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](
-    {
-      url: '/rest/api/content',
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify(page)
-    }).fail( errorLogger( "POST new page failed" ));
-}
-
-function updateContent(page) {
-    return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](
-      {
-        url: '/rest/api/content/'+encodeURIComponent(page.id),
-        type: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(page)
-      }).fail( errorLogger( "PUT page failed "+page.title ));
-  }
-
-/** label can be a string or an array of strings to add as labels to the confluence PageId */
-function addLabel(pageId, label) {
-  var labels = [];
-  if (!label) return;
-  if (typeof label === "string") {
-    labels.push({"prefix": "global","name": label});
-  } else if (label.length) {
-    for (var i=0;i<label.length;i++) {
-      if (label[i]) {
-        labels.push({"prefix": "global","name": label[i]});
-      }
-    }
-  } else {
-    throw "Unknown type of label: "+label;
-  }
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](
-    {
-      url: '/rest/api/content/'+encodeURIComponent(pageId)+'/label',
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify(labels)
-    }).fail( errorLogger( "ADD label to page "+pageId+" failed" ));
-}
-
-
-/***/ }),
+/* 24 */,
 /* 25 */,
 /* 26 */,
 /* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluenceService__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluenceService__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_optionsParser__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_optionsParser__ = __webpack_require__(1);
 /* harmony export (immutable) */ __webpack_exports__["d"] = withOption;
 /* harmony export (immutable) */ __webpack_exports__["b"] = loadRegions;
 /* harmony export (immutable) */ __webpack_exports__["c"] = createWorkspace;
@@ -14001,10 +13730,15 @@ function createCustomerPage(region,customer) {
 
 function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
-  return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["d" /* getContentById */](options.sourcePageId,'space')
-  .then(function(sourcePage) {
+	var customerPage = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["a" /* getContent */](options.targetSpace,workspaceOpts.customer,'ancestors');
+	var rootPageToCopy = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["d" /* getContentById */](options.sourcePageId,'space');
+	var regionNames = loadRegions();
+  return __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.when(customerPage, rootPageToCopy, regionNames)
+  .then(function(customerPage, sourcePage, regionNames) {
+		var regionName = findRegionInAncestors(customerPage.ancestors, regionNames);
     return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["e" /* copyPageRecursive */](sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
     {
+			"Region": regionName,
       "Customer": workspaceOpts.customer,
       "ProjectName": workspaceOpts.projectName,
       "TargetEndDate": workspaceOpts.targetEndDate
@@ -14027,6 +13761,19 @@ function createJustWorkspace(workspaceOpts) {
   .fail(function() {
     console.error("Copy failed",arguments);
   });
+}
+
+function findRegionInAncestors(ancestors, regionNames) {
+	console.log("findRegionInAncestors", ancestors, regionNames);
+	for (var a=0;a<ancestors.length;a++) {
+		console.log("Matching page name",ancestors[a].title);
+		if (regionNames.indexOf(ancestors[a].title)>=0) {
+			console.log("Found");
+			return ancestors[a].title;
+		}
+	};
+	console.error ("The selected customer page is not under a valid region");
+	return "";
 }
 
 function findCustomer(term) {
@@ -34956,35 +34703,305 @@ var effectsEffectTransfer = effect;
 }));
 
 /***/ }),
-/* 40 */,
+/* 40 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxyService__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
+/* unused harmony export deletePage */
+/* unused harmony export deletePageRecursive */
+/* unused harmony export deletePageById */
+/* harmony export (immutable) */ __webpack_exports__["a"] = getContent;
+/* harmony export (immutable) */ __webpack_exports__["d"] = getContentById;
+/* harmony export (immutable) */ __webpack_exports__["g"] = searchPagesWithCQL;
+/* harmony export (immutable) */ __webpack_exports__["c"] = copyPage;
+/* harmony export (immutable) */ __webpack_exports__["e"] = copyPageRecursive;
+/* unused harmony export createPage */
+/* unused harmony export createPageUnderPageId */
+/* unused harmony export postPage */
+/* harmony export (immutable) */ __webpack_exports__["b"] = updateContent;
+/* harmony export (immutable) */ __webpack_exports__["f"] = addLabel;
+
+
+
+/**
+ * An API for confluence that runs ajax queries through the proxy object to bypass the CORS restriction.
+ */
+
+function deletePage(spaceKey,pageTitle) {
+  return getContent(spaceKey,pageTitle)
+  .then( function (page) {
+    return deletePageById(page.id);
+  });
+}
+function deletePageRecursive(spaceKey,pageTitle) {
+  return getContent(spaceKey,pageTitle)
+  .then( function (page) {
+    return deletePageRecursiveInternal( page.id );
+  });
+}
+function deletePageById(pageId) {
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */]({
+    url: '/rest/api/content/'+encodeURIComponent(pageId),
+    type: 'DELETE'
+  }).fail(errorLogger( "DELETE page failed"));
+}
+
+function deletePageRecursiveInternal(pageId) {
+  return getContentById(pageId, 'children.page')
+  .then( function (page) {
+    // first delete children
+    var childrenPromises = [];
+    console.log("In deletePageRecursiveInternal for ", page.title);
+    if (page.children && page.children.page && page.children.page.results) {
+      page.children.page.results.forEach( function (child) {
+        childrenPromises.push(deletePageRecursiveInternal(child.id));
+      });
+    }
+    // when all children are deleted
+    return __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.when.apply(__WEBPACK_IMPORTED_MODULE_1_jquery___default.a,childrenPromises)
+    // delete the current page
+    .then( function() {
+      return deletePageById(pageId);
+    });
+  });
+}
+
+/**
+* Get a page by spaceKey and title from Confluence and returns a deferred for that page.
+* See $.ajax().done()
+* Failures are logged and ignored.
+* The deferred is resolved with the first matching page is any, else it is rejected.
+*/
+function getContent(spaceKey,pageTitle,expand) {
+  var expandParam="";
+  if (expand) {
+    expandParam = '&expand='+encodeURIComponent(expand);
+  }
+  var defer = __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred();
+  var url = '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
+  console.log(url);
+  __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](url)
+  .done( function (response) {
+    console.log("Filtering AJAX response",response);
+    if (response.results && response.results.length>0) {
+      var page = response.results[0];
+      console.log("Returning ",page);
+      defer.resolve(page);
+    } else {
+      defer.reject("Page Not found: '"+spaceKey+":"+pageTitle+"'");
+    }
+  })
+  .fail( function (jqr, status, error) {
+    defer.reject(status, error, jqr);
+  });
+  return defer.promise();
+}
+
+function getContentById(pageId, expand) {
+  var expandParam="";
+  if (expand) {
+    expandParam = '?expand='+encodeURIComponent(expand);
+  }
+  var url = '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
+  console.log(url);
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](url)
+  .fail(errorLogger( "GET page by pageId failed"));
+}
+
+/** search for content with CQL
+for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
+function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
+  if (!limit || limit<0) {
+    limit=15;
+  }
+  var expandParam=(expand?"&expand="+encodeURIComponent(expand):"");
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */]('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
+}
+
+/**
+* Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
+* and do a placeholder replacement in each page title using the titleReplacements.
+*/
+function copyPage(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, titleReplacements) {
+  return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage')
+  .then(function(pageToCopy) {
+    transformPage(pageToCopy, titleReplacements);
+    // Create the new page under toPageTitle
+    return createPage(pageToCopy,toSpaceKey,toPageTitle);
+  }
+  );
+}
+
+function transformPage(page, replacements) {
+  console.log("Found page to Copy",page);
+  page.title = replacePlaceholders(page.title,replacements);
+  console.log("New Title for target page: "+page.title);
+  if (typeof replacements!=='string') {
+    page.body.storage.value = replacePlaceholders(page.body.storage.value,replacements);
+  }
+}
+
+function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, filter, titleReplacements, copiedPages) {
+  var sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
+  var targetPagePromise = getContent(toSpaceKey,toPageTitle, 'space');
+  return __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.when( sourcePagePromise, targetPagePromise )
+  .then(function(sourcePage, targetPage) {
+    return copyPageRecursiveInternal( sourcePage.id, targetPage.space.key, targetPage.id, filter, titleReplacements, copiedPages);
+  });
+}
+
+function copyPageRecursiveInternal(sourcePageId, targetSpaceKey, targetPageId, filter, titleReplacements, copiedPages) {
+  return getContentById(sourcePageId, 'space,body.storage,children.page')
+  .then(function (pageToCopy) {
+    if (filter(pageToCopy)) {
+      transformPage(pageToCopy, titleReplacements);
+
+      // Create the new page under targetSpaceKey:targetPageId
+      return createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId)
+        .then( function(copiedPage) {
+          copiedPages.push(copiedPage);
+          return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, filter, titleReplacements,copiedPages);
+        });
+    } else {
+      console.log("Page is not a template, not copied, but children will be copied: ",pageToCopy.title);
+      return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, filter, titleReplacements,copiedPages);
+    }
+
+  })
+}
+
+function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, filter, titleReplacements, copiedPages) {
+  // recursively copy all children
+  var childrenPromises = [];
+  console.log("In copyAllChildren", pageToCopy,targetPageId);
+  if (pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results) {
+    pageToCopy.children.page.results.forEach( function (child) {
+      childrenPromises.push(copyPageRecursiveInternal(child.id, targetSpaceKey, targetPageId, filter, titleReplacements,copiedPages));
+    });
+  }
+  // return the combination of all children copy promises
+  return __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.when.apply(__WEBPACK_IMPORTED_MODULE_1_jquery___default.a,childrenPromises);
+}
+
+// returns a function that will log all the arguments on the console as an error, preprended with a message.
+function errorLogger(message) {
+  return function() {
+    console.error(message,arguments);
+  }
+}
+/** if replacements is not provided, returns the template.
+if replacements is a simple string, returns that string
+if replacements is a map, for each (key,value) pair in the map, replaces [key] placeholders with value. */
+function replacePlaceholders(template, replacements) {
+  if (typeof replacements === undefined) return template;
+  if (typeof replacements === 'string') return replacements;
+  var result = template;
+  for (var key in replacements) {
+    if (replacements.hasOwnProperty(key)) {
+      var varStr = '['+key+']';
+      if (result.indexOf(varStr) == -1) {
+        console.warn(varStr + " is not used in template",template);
+      }
+      var result = result.split(varStr).join(replacements[key]);
+    }
+  }
+  if (result.indexOf('[')!=-1) {
+    console.warn("title still has uninterpolated variables",result);
+  }
+  return result;
+}
+
+function createPage(page, targetSpaceKey, targetParentTitle) {
+  return getContent(targetSpaceKey,targetParentTitle,'space')
+  .then(function(targetParentPage) {
+    console.log("targetParentPage: space=",targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
+    return createPageUnderPageId(page, targetParentPage.space.key, targetParentPage.id);
+  });
+}
+
+function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
+  page.ancestors=[ { id: targetPageId } ];
+  console.log("New Page",page);
+  page.space={ key: targetSpaceKey };
+  return postPage(page);
+}
+
+function postPage(page) {
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](
+    {
+      url: '/rest/api/content',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(page)
+    }).fail( errorLogger( "POST new page failed" ));
+}
+
+function updateContent(page) {
+    return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](
+      {
+        url: '/rest/api/content/'+encodeURIComponent(page.id),
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(page)
+      }).fail( errorLogger( "PUT page failed "+page.title ));
+  }
+
+/** label can be a string or an array of strings to add as labels to the confluence PageId */
+function addLabel(pageId, label) {
+  var labels = [];
+  if (!label) return;
+  if (typeof label === "string") {
+    labels.push({"prefix": "global","name": label});
+  } else if (label.length) {
+    for (var i=0;i<label.length;i++) {
+      if (label[i]) {
+        labels.push({"prefix": "global","name": label[i]});
+      }
+    }
+  } else {
+    throw "Unknown type of label: "+label;
+  }
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](
+    {
+      url: '/rest/api/content/'+encodeURIComponent(pageId)+'/label',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(labels)
+    }).fail( errorLogger( "ADD label to page "+pageId+" failed" ));
+}
+
+
+/***/ }),
 /* 41 */,
-/* 42 */
+/* 42 */,
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__confluenceService__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__wizardService__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_jquery_ui_bundle__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_bootstrap__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_validator__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_validator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_datepicker__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_datepicker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_bootstrap_datepicker__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_bootstrap_dist_css_bootstrap_theme_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__css_golden_form_css__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__css_golden_form_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__css_golden_form_css__);
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wizardService__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery_ui_bundle__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery_ui_bundle___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_jquery_ui_bundle__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_bootstrap__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_validator__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_bootstrap_validator__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_datepicker__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_datepicker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_datepicker__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_min_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_theme_min_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__css_golden_form_css__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__css_golden_form_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__css_golden_form_css__);
 
 
 
@@ -35017,7 +35034,7 @@ function bindDOM() {
 		minLength: 3,
 		autoFocus: true,
 		source: function(request,responseCallback) {
-			__WEBPACK_IMPORTED_MODULE_3__wizardService__["a" /* findCustomer */](request.term).done(responseCallback);
+			__WEBPACK_IMPORTED_MODULE_2__wizardService__["a" /* findCustomer */](request.term).done(responseCallback);
 		},
 		search: function(event, ui) {
 			 customerProgress.show();
@@ -35026,7 +35043,7 @@ function bindDOM() {
 			 customerProgress.hide();
 	 }
 	});
-	__WEBPACK_IMPORTED_MODULE_3__wizardService__["b" /* loadRegions */]().done(setRegionNames);
+	__WEBPACK_IMPORTED_MODULE_2__wizardService__["b" /* loadRegions */]().done(setRegionNames);
 	var submitBtn=__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#wizard-submit");
 	var submitProgress=__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#progress-indicator');
 	submitBtn.click( function() {
@@ -35034,7 +35051,7 @@ function bindDOM() {
 		if (submitBtn.hasClass('disabled')) {
 			return true;
 		} else {
-			__WEBPACK_IMPORTED_MODULE_3__wizardService__["c" /* createWorkspace */]({
+			__WEBPACK_IMPORTED_MODULE_2__wizardService__["c" /* createWorkspace */]({
 				customer: customerSelect.val(),
 				region: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#regionSelect').val(),
 				projectName: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#projectName').val(),
@@ -35047,7 +35064,7 @@ function bindDOM() {
 		return false;
 	});
 
-	__WEBPACK_IMPORTED_MODULE_3__wizardService__["d" /* withOption */]('newInstanceDisplayName').done(
+	__WEBPACK_IMPORTED_MODULE_2__wizardService__["d" /* withOption */]('newInstanceDisplayName').done(
 		function (value) {
 			__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#mainTitle').text("New " + value);
 		}

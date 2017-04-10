@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import * as proxy from './proxyService';
 //import 'jquery-ui-bundle';
 import 'bootstrap';
 import 'bootstrap-validator';
@@ -15,95 +14,56 @@ import 'raphael';
 import 'morris-data/morris.js';
 import 'morris-data/morris.css';
 import {parseOptions} from '../common/optionsParser';
+import * as utils from './dashboard-utils.js';
+
 var options = parseOptions();
 
 $(document).ready( function () {
   $("#title").hide().text(options.title).fadeIn();
 });
 
-/**
- * Reads the table from the main frame into an array of associative arrays [ {col1Name: row1Value1, col2Name:row1Value2 }, {col1Name: row2Value1, col2Name:row2Value2 } ]
- * There must be 2 options set: tableName-dataheaders and  tableName-datasource, being the selectors of the header cells and the data rows respectively. */
-function getTable( tableName ) {
-  var headers=proxy.$arrayGetText(options[tableName+"-dataheaders"]);
-  var datasource=proxy.$tableCellsGetHtml(options[tableName+"-datasource"]);
-  var table=[];
-  return $.when(headers,datasource).then(function(headers,data) {
-    return data.map( function (row) {
-      var rowObj={};
-      for (var i=0;i<headers.length;i++) {
-        rowObj[headers[i].toLowerCase().replace(/\W+/g, "_")] = row[i];
-      }
-      return rowObj;
-    } );
-  });
-}
-var serviceTypes = getTable("service-types");
-var improvementIdeas = getTable("improvement-ideas");
-var serviceEngagements = getTable("service-engagements");
+var serviceTypes = utils.getTable(options, "service-types");
+var improvementIdeas = utils.getTable(options, "improvement-ideas");
+var serviceEngagements = utils.getTable(options, "service-engagements");
 
-function countUnique(arr) {
-  var counts = {};
-  for(var i = 0; i< arr.length; i++) {
-      var num = arr[i];
-      counts[num] = counts[num] ? counts[num]+1 : 1;
-  }
-  return counts;
-}
 function setKPI(cssSelector, value) {
   $(cssSelector).hide().text(value).fadeIn();
 }
+
 improvementIdeas.done( function (ideas) {
-  var participantCounts = countUnique([].concat.apply([], ideas.map( function(idea) {
+  var participants = utils.sortMapByValue( utils.countUnique( ideas.map( function(idea) {
     return idea.participants.split(" ");
   } )));
-  var participants = [];
-  for (var email in participantCounts) {
-    if (participantCounts.hasOwnProperty(email)) {
-      participants.push({email: email, count: participantCounts[email]});
-    }
-  }
-  participants.sort(function(el1,el2) {
-    return el1.count<el2.count;
-  });
-
-  console.log("participants", participants);
   setKPI("#submitted-ideas", ideas.length);
   var peopleTableBody = $("#people-tickets-number tbody");
   participants.forEach( function (participant) {
-    peopleTableBody.append('<tr><td>'+participant.email.split('@')[0]+'</td><td>'+participant.count+'</td></tr>');
+    peopleTableBody.append(utils.row(participant.key.split('@')[0], participant.value));
   });
   setKPI("#people-using", peopleTableBody.find("tr").length);
 });
 serviceTypes.done( function (services) {
   setKPI("#services-under-ci", services.length);
+  var servicesCountByPractice = utils.sortMapByValue (utils.countUnique ( services.map ( function(service) {
+    return service.practice;
+  } )));
+  var servicesTableBody = $("#services-and-practices tbody");
+  servicesCountByPractice.forEach( function (service) {
+    servicesTableBody.append(utils.row(service.key,service.value));
+  });
 });
 serviceEngagements.done(function (engagements) {
   setKPI("#engagements-count", engagements.length);
-});
-//Loads the correct sidebar on window load,
-//collapses the sidebar on window resize.
-// Sets the min-height of #page-wrapper to window size
-$(function() {
-
-    var url = window.location;
-    // var element = $('ul.nav a').filter(function() {
-    //     return this.href == url;
-    // }).addClass('active').parent().parent().addClass('in').parent();
-    var element = $('ul.nav a').filter(function() {
-        return this.href == url;
-    }).addClass('active').parent();
-
-    while (true) {
-        if (element.is('li')) {
-            element = element.parent().addClass('in').parent();
-        } else {
-            break;
-        }
-    }
+  var workspacesByServiceTable = $("#workspaces-by-service tbody");
+  var workspacesByPracticeCount = utils.sortMapByValue (utils.countUnique ( engagements.map ( function (eng) {
+    return {service:eng.service,region:eng.region};
+  })));
+  workspacesByPracticeCount.forEach( function (ws) {
+    workspacesByServiceTable.append(utils.row(ws.key.service,ws.key.region,ws.value));
+  });
 });
 
 
+//////////////////// CHARTS ///////////////
 $(function() {
 
     Morris.Area({
