@@ -55,3 +55,6 @@ button.close {
     /* symbol for "collapsed" panels */
     content: "\e080";    /* adjust as needed, taken from bootstrap.css */
 }
+#wizard-submit {
+	margin-bottom: 15px;
+}

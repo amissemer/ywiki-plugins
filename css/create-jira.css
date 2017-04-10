@@ -21,3 +21,6 @@
 #resultPanel {
 	display: none;
 }
+.mb-spacer {
+	margin-bottom: 15px;
+}

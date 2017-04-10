@@ -27,6 +27,9 @@ function bindDOM() {
 			 proxy.closeFrame();
     }
 	});
+	$("#cancelBtn").click( function() {
+		proxy.closeFrame();
+	});
 	$(".service-display-name").text(options.serviceDisplayName);
 	var submitBtn=$("#wizard-submit");
 	var submitProgress=$('#progress-indicator');

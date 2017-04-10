@@ -10397,7 +10397,7 @@ console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__css_professors_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_iframeWrapper__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_iframeWrapper__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__plugin__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__common_optionsParser__ = __webpack_require__(2);
 
@@ -10569,7 +10569,7 @@ bootstrap(__WEBPACK_IMPORTED_MODULE_3__plugin__["a" /* host */],__WEBPACK_IMPORT
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_optionsParser__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(3);
 
 
 
@@ -10635,68 +10635,7 @@ bootstrap(__WEBPACK_IMPORTED_MODULE_0__plugin__["a" /* host */],__WEBPACK_IMPORT
 
 /***/ }),
 
-/***/ 30:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__plugin__ = __webpack_require__(23);
-
-
-// Loads a stylesheet at url. Url can be relative to the configured host.
-function loadStyleSheet(host, url) {
-  if (!url.startsWith('http')) {
-    url = host+'/'+url;
-  }
-  var link = document.createElement('link');
-  link.setAttribute('rel', 'stylesheet');
-  link.setAttribute('type', 'text/css');
-  link.setAttribute('href', url);
-  document.getElementsByTagName('head')[0].appendChild(link);
-  console.log('style loaded');
-}
-
-loadStyleSheet(__WEBPACK_IMPORTED_MODULE_0__plugin__["a" /* host */],'dist/golden-button.css'+__WEBPACK_IMPORTED_MODULE_0__plugin__["b" /* cacheBuster */]);
-
-
-/***/ }),
-
-/***/ 43:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__stylesheetPlugin__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__buttonPlugin__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__dashboardPlugin__ = __webpack_require__(29);
-
-
-
-
-
-/***/ }),
-
-/***/ 44:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 45:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 46:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 7:
+/***/ 3:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10799,6 +10738,67 @@ function iframeWrapper( postToWindow, targetHostname ) {
   }
 }
 
+
+/***/ }),
+
+/***/ 30:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__plugin__ = __webpack_require__(23);
+
+
+// Loads a stylesheet at url. Url can be relative to the configured host.
+function loadStyleSheet(host, url) {
+  if (!url.startsWith('http')) {
+    url = host+'/'+url;
+  }
+  var link = document.createElement('link');
+  link.setAttribute('rel', 'stylesheet');
+  link.setAttribute('type', 'text/css');
+  link.setAttribute('href', url);
+  document.getElementsByTagName('head')[0].appendChild(link);
+  console.log('style loaded');
+}
+
+loadStyleSheet(__WEBPACK_IMPORTED_MODULE_0__plugin__["a" /* host */],'dist/golden-button.css'+__WEBPACK_IMPORTED_MODULE_0__plugin__["b" /* cacheBuster */]);
+
+
+/***/ }),
+
+/***/ 43:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__stylesheetPlugin__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__buttonPlugin__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__dashboardPlugin__ = __webpack_require__(29);
+
+
+
+
+
+/***/ }),
+
+/***/ 44:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 45:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 46:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 
