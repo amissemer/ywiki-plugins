@@ -111,18 +111,19 @@
 	display:none;
 	z-index: 100;
 }
-.theOneButton {
+.ciaction .theOneButton {
 	position: absolute;
 	top: 22px;
 	left: 18px;
+}
+.theOneButton {
   display: inline-block;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  height: 48px;
   cursor: pointer;
 	margin: 10px auto 10px auto;
-  padding: 15px 18px 40px 18px;
+  padding: 14px 17px;
   outline: none;
   border: 0 none rgb(177,106,2);
   border-bottom: 4px solid rgb(177,106,2);
@@ -167,7 +168,6 @@
 
 
 .ciaction:active .theOneButton, .theOneButton:active {
-  height: 44px;
   margin: 14px 0 0 0;
   border: none;
   -webkit-border-radius: 7px;

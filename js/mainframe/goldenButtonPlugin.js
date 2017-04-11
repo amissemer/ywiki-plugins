@@ -140,6 +140,22 @@ function bootstrap(host, cacheBuster) {
       logToPage: jEl.data('log-to-page'),
     });
   });
+  $('[data-activate="golden-button"]').each( function() {
+    var jEl=$(this);
+    jEl.addClass("theOneButton");
+    wireButton({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      disablePullUp: jEl.data('disable-pull-up'),
+      buttonText: jEl.data('button-text'),
+      bannerText: jEl.data('banner-text'),
+      targetSpace: jEl.data('target-space'),
+      newInstanceDisplayName: jEl.data('new-instance-display-name'),
+      addLabel: jEl.data('add-label'),
+      logToPage: jEl.data('log-to-page'),
+    });
+  });
   $('[data-activate="issue-creator"]').each( function() {
     var jEl=$(this);
     wireCreateJiraButton({
