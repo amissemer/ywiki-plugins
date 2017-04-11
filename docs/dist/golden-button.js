@@ -10657,7 +10657,7 @@ function wireBanner(options) {
   $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
   .html('<div class="ciaction">\
               <img src="'+options.host+'/banner/clickme.png" />\
-              <div id="theOneButton">'+options.buttonText+'</div>\
+              <div class="theOneButton">'+options.buttonText+'</div>\
             </div>\
             <div class="cilogo">\
               <img src="'+options.host+'/banner/dashboard_figure.png" />\
@@ -10666,7 +10666,7 @@ function wireBanner(options) {
             <h1>'+options.bannerText+'</h1>\
             </div>\
           ');
-  options.cssSelector="#theOneButton";
+  options.cssSelector=".ciaction";
   wireButton(options);
 }
 
