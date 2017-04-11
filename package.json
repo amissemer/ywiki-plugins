@@ -25,6 +25,7 @@
     "bootstrap-datepicker": "^1.6.4",
     "bootstrap-select": "^1.12.2",
     "bootstrap-validator": "^0.11.9",
+    "datatables.net-rowgroup-bs": "^1.0.0",
     "font-awesome": "^4.7.0",
     "imports-loader": "^0.7.1",
     "jquery": "^3.2.1",

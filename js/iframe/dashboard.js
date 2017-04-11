@@ -15,52 +15,72 @@ import 'morris-data/morris.js';
 import 'morris-data/morris.css';
 import {parseOptions} from '../common/optionsParser';
 import * as utils from './dashboard-utils.js';
+import 'datatables.net-bs';
+import 'datatables.net-bs/css/dataTables.bootstrap.css';
+import 'datatables.net-rowgroup';
+import 'datatables.net-rowgroup-bs/css/rowGroup.bootstrap.css';
 
 var options = parseOptions();
-
-$(document).ready( function () {
-  $("#title").hide().text(options.title).fadeIn();
-});
-
 var serviceTypes = utils.getTable(options, "service-types");
 var improvementIdeas = utils.getTable(options, "improvement-ideas");
 var serviceEngagements = utils.getTable(options, "service-engagements");
+
+$(document).ready( function () {
+  $("#title").hide().text(options.title).fadeIn();
+  wireTables();
+});
 
 function setKPI(cssSelector, value) {
   $(cssSelector).hide().text(value).fadeIn();
 }
 
-improvementIdeas.done( function (ideas) {
-  var participants = utils.sortMapByValue( utils.countUnique( ideas.map( function(idea) {
-    return idea.participants.split(" ");
-  } )));
-  setKPI("#submitted-ideas", ideas.length);
-  var peopleTableBody = $("#people-tickets-number tbody");
-  participants.forEach( function (participant) {
-    peopleTableBody.append(utils.row(participant.key.split('@')[0], participant.value));
+function wireTables() {
+  improvementIdeas.done( function (ideas) {
+    var participants = utils.countGroupBy(ideas, function(idea) {
+      return idea.participants.split(" ").map(function(val) { return val.split('@')[0]; });
+    } );
+    console.log("participants",participants);
+    setKPI("#submitted-ideas", ideas.length);
+    setKPI("#people-using", participants.length);
+    $('#people-tickets-number').DataTable({
+        "order": [[ 1, "desc" ]],
+        data: participants,
+        columns: [
+            { title: "Person", data: "key" },
+            { title: "# Tickets Participated", data: "value" }
+        ]
+    });
   });
-  setKPI("#people-using", peopleTableBody.find("tr").length);
-});
-serviceTypes.done( function (services) {
-  setKPI("#services-under-ci", services.length);
-  var servicesCountByPractice = utils.sortMapByValue (utils.countUnique ( services.map ( function(service) {
-    return service.practice;
-  } )));
-  var servicesTableBody = $("#services-and-practices tbody");
-  servicesCountByPractice.forEach( function (service) {
-    servicesTableBody.append(utils.row(service.key,service.value));
+  serviceTypes.done( function (services) {
+    setKPI("#services-under-ci", services.length);
+    var servicesCountByPractice = utils.countGroupBy( services, function(service) {
+      return service.practice;
+    } );
+    $("#services-and-practices").DataTable({
+        "order": [[ 1, "desc" ]],
+        data: servicesCountByPractice,
+        columns: [
+            { title: "Practice", data: "key" },
+            { title: "# Service Baselines", data: "value" }
+        ]
+    });
   });
-});
-serviceEngagements.done(function (engagements) {
-  setKPI("#engagements-count", engagements.length);
-  var workspacesByServiceTable = $("#workspaces-by-service tbody");
-  var workspacesByPracticeCount = utils.sortMapByValue (utils.countUnique ( engagements.map ( function (eng) {
-    return {service:eng.service,region:eng.region};
-  })));
-  workspacesByPracticeCount.forEach( function (ws) {
-    workspacesByServiceTable.append(utils.row(ws.key.service,ws.key.region,ws.value));
+  serviceEngagements.done(function (engagements) {
+    setKPI("#engagements-count", engagements.length);
+    var workspacesByPracticeCount = utils.countGroupBy( engagements, function (eng) {
+      return {service:eng.service,region:eng.region};
+    });
+    $("#workspaces-by-service").DataTable({
+        "order": [[ 0, "asc" ],[ 1, "asc" ]],
+        data: workspacesByPracticeCount,
+        columns: [
+            { title: "Service", data: "key.service" },
+            { title: "Region", data: "key.region" },
+            { title: "# Workspaces", data: "value" }
+        ]
+    });
   });
-});
+}
 
 
 //////////////////// CHARTS ///////////////

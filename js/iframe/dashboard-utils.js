@@ -19,7 +19,7 @@ export function getTable( options, tableName ) {
   });
 }
 
-export function countUnique(arr) {
+function countUnique(arr) {
   var counts = {};
   if (arr.length>0) {
     // autodetect type
@@ -58,36 +58,29 @@ function buildKey(composite) {
   return keyComp.join(',');
 }
 
-/** Sort a map by its values, returning an ordered array of {key, value} pairs.
-asc is optional (defaults to false), if true, the results are sorted in ascending order, and descending otherwise. */
-export function sortMapByValue(myMap, asc) {
+/** Make the structure an unordered array. We could sort but DataTable will do it. */
+function toArray(myMap) {
   var list=[];
-  var orderFunc = DESC;
-  if (asc) {
-    orderFunc=ASC;
-  }
   for (var key in myMap) {
     if (myMap.hasOwnProperty(key)) {
       list.push(myMap[key]);
     }
   }
-  return list.sort(orderFunc);
+  return list;
 }
-function DESC(el1,el2) {
-  return el1.value<el2.value;
-}
-function ASC(el1,el2) {
-  return el1.value>el2.value;
-}
-export function flattenArrayOfArrays(arrayOfArrays) {
+function flattenArrayOfArrays(arrayOfArrays) {
   return [].concat.apply([], arrayOfArrays);
 }
-export function stripTags(htmlText) {
-  return htmlText.replace(/<[^>]*>/gm, '');
-}
-export function row() {
-  var args = Array.prototype.slice.call(arguments);
-  return '<tr>'+args.map( function (arg) {
-    return '<td>'+arg+'</td>';
-  }).join('')+'</tr>';
+
+// export function stripTags(htmlText) {
+//   return htmlText.replace(/<[^>]*>/gm, '');
+// }
+// function row() {
+//   var args = Array.prototype.slice.call(arguments);
+//   return '<tr>'+args.map( function (arg) {
+//     return '<td>'+arg+'</td>';
+//   }).join('')+'</tr>';
+// }
+export function countGroupBy(rawData, groupByExtractor) {
+  return toArray ( countUnique( rawData.map( groupByExtractor ) ) );
 }
