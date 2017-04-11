@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 43);
+/******/ 	return __webpack_require__(__webpack_require__.s = 49);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -13596,11 +13596,14 @@ var $ = __webpack_require__(0);
 /* 24 */,
 /* 25 */,
 /* 26 */,
-/* 27 */
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluenceService__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluenceService__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jquery__);
@@ -13858,27 +13861,30 @@ function onlyTemplates(page) {
 
 
 /***/ }),
-/* 28 */,
-/* 29 */,
-/* 30 */,
 /* 31 */,
 /* 32 */,
-/* 33 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
+/* 33 */,
+/* 34 */,
 /* 35 */,
 /* 36 */,
-/* 37 */,
+/* 37 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
 /* 38 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*** IMPORTS FROM imports-loader ***/
@@ -15989,7 +15995,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 39 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! jQuery UI - v1.12.1 - 2017-03-19
@@ -34703,7 +34709,7 @@ var effectsEffectTransfer = effect;
 }));
 
 /***/ }),
-/* 40 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -34975,9 +34981,9 @@ function addLabel(pageId, label) {
 
 
 /***/ }),
-/* 41 */,
-/* 42 */,
-/* 43 */
+/* 47 */,
+/* 48 */,
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -34985,22 +34991,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wizardService__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery_ui_bundle__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wizardService__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery_ui_bundle__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery_ui_bundle___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_jquery_ui_bundle__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_bootstrap__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_validator__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_bootstrap_validator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_datepicker__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_datepicker__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_datepicker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_datepicker__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_min_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_theme_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__(38);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__css_golden_form_css__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__css_golden_form_css__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__css_golden_form_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__css_golden_form_css__);
 
 

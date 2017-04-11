@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 41);
+/******/ 	return __webpack_require__(__webpack_require__.s = 47);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -15507,7 +15507,10 @@ var $ = __webpack_require__(0);
 /* 23 */,
 /* 24 */,
 /* 25 */,
-/* 26 */
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15623,26 +15626,29 @@ function createIssue(projectKey, issueTypeName, componentName, summary, descript
 
 
 /***/ }),
-/* 27 */,
-/* 28 */,
-/* 29 */,
 /* 30 */,
-/* 31 */
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
 /* 36 */,
 /* 37 */,
 /* 38 */,
 /* 39 */,
 /* 40 */,
-/* 41 */
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15662,10 +15668,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_select_dist_css_bootstrap_select_min_css__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_select_dist_css_bootstrap_select_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_bootstrap_select_dist_css_bootstrap_select_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__common_optionsParser__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__jiraService__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__jiraService__ = __webpack_require__(29);
 
 
 //import 'jquery-ui-bundle';
