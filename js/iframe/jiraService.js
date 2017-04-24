@@ -2,6 +2,7 @@ import $ from 'jquery';
 import * as proxy from './proxyService';
 
 const jiraServerHost = 'jira.hybris.com';
+//const jiraServerHost = 'jiratest.hybris.com';
 
 function getJiraServer() {
   return proxy.ajax("/rest/createjiracontent/1.0/get-jira-servers")
@@ -54,7 +55,7 @@ function getIssueTypeId(jiraProject, issueTypeName) {
 }
 
 /** Returns a promise for the issueKey */
-export function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, labels) {
+function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, labels) {
   var jiraServerP = getJiraServer();
   //var jiraProjectP = getJiraProject(jiraServerP, projectKey);
   //var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
@@ -103,3 +104,5 @@ export function createIssue(projectKey, issueTypeName, componentName, summary, d
       throw msg;
     });
 }
+
+export {createIssue, jiraServerHost};

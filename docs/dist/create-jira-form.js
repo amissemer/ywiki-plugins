@@ -10376,10 +10376,13 @@ function encodeOptions(options) {
 /* harmony export (immutable) */ __webpack_exports__["b"] = $tableCellsGetHtml;
 
 
+//const wikiHost = 'performancewiki2.hybris.com';
+const wikiHost = 'wiki.hybris.com';
+
 /**
  * A handy proxy for actions that can be executed in the parent frame bypassing CORS.
  */
-var wrapper = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__["a" /* default */])(parent, "https://wiki.hybris.com");
+var wrapper = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__["a" /* default */])(parent, "https://"+wikiHost);
 
 /**
  * Perform an ajax call in the parent frame and returns a promise that will get resolved or rejected with the data as seen by the parent frame.
@@ -15517,11 +15520,13 @@ var $ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
-/* harmony export (immutable) */ __webpack_exports__["a"] = createIssue;
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createIssue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return jiraServerHost; });
 
 
 
 const jiraServerHost = 'jira.hybris.com';
+//const jiraServerHost = 'jiratest.hybris.com';
 
 function getJiraServer() {
   return __WEBPACK_IMPORTED_MODULE_1__proxyService__["d" /* ajax */]("/rest/createjiracontent/1.0/get-jira-servers")
@@ -15625,6 +15630,8 @@ function createIssue(projectKey, issueTypeName, componentName, summary, descript
 }
 
 
+
+
 /***/ }),
 /* 30 */,
 /* 31 */,
@@ -15715,7 +15722,7 @@ function bindDOM() {
 			var labels = [additionalLabel];
 			var cust = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#customer").val();
 			if (cust) {
-				labels.push(cust);
+				labels.push(cust.replace(/[\W_]+/g,"-"));
 			}
 			__WEBPACK_IMPORTED_MODULE_10__jiraService__["a" /* createIssue */](options.jiraProjectKey,options.issueType, options.issueComponent,__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#summary").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#description").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#priority").val(),labels)
 				.then(
@@ -15729,7 +15736,7 @@ function bindDOM() {
 						submitProgress.hide();
 						__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#resultPanel").show();
 						console.log("Created JIRA Issue "+issueKey);
-						__WEBPACK_IMPORTED_MODULE_0_jquery___default()(".issueKeyCreated").attr("href","https://jira.hybris.com/browse/"+encodeURIComponent(issueKey)).text(issueKey);
+						__WEBPACK_IMPORTED_MODULE_0_jquery___default()(".issueKeyCreated").attr("href","https://"+__WEBPACK_IMPORTED_MODULE_10__jiraService__["b" /* jiraServerHost */]+"/browse/"+encodeURIComponent(issueKey)).text(issueKey);
 					},
 					onSubmitError);
 

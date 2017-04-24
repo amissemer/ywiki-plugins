@@ -41,7 +41,7 @@ function bindDOM() {
 			var labels = [additionalLabel];
 			var cust = $("#customer").val();
 			if (cust) {
-				labels.push(cust);
+				labels.push(cust.replace(/[\W_]+/g,"-"));
 			}
 			jira.createIssue(options.jiraProjectKey,options.issueType, options.issueComponent,$("#summary").val(),$("#description").val(),$("#priority").val(),labels)
 				.then(
@@ -55,7 +55,7 @@ function bindDOM() {
 						submitProgress.hide();
 						$("#resultPanel").show();
 						console.log("Created JIRA Issue "+issueKey);
-						$(".issueKeyCreated").attr("href","https://jira.hybris.com/browse/"+encodeURIComponent(issueKey)).text(issueKey);
+						$(".issueKeyCreated").attr("href","https://"+jira.jiraServerHost+"/browse/"+encodeURIComponent(issueKey)).text(issueKey);
 					},
 					onSubmitError);
 
