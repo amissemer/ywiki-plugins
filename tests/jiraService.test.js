@@ -1,5 +1,6 @@
 import { getJiraTicketKey } from '../js/iframe/jiraService';
 import { expect } from 'chai';
+import { JiraError } from '../js/iframe/jira-error';
 
 describe("getJiraTicketKey", function() {
   it('should handle errors', function() {
@@ -20,7 +21,44 @@ describe("getJiraTicketKey", function() {
             }
         ]
     };
-    expect( function() { getJiraTicketKey(payload)}  ).to.throw(Error);
+    expect( function() { getJiraTicketKey(payload)}  ).to.throw(JiraError);
+
+  });
+
+  it('should handle bad payload', function() {
+    var payload = {
+    };
+    expect( function() { getJiraTicketKey(payload)}  ).to.throw(JiraError);
+
+  });
+
+  it('should handle bad payload (2)', function() {
+    var payload = {
+      "errors": [
+          {
+              "status": 400,
+              "failedElementNumber": 0
+          }
+      ]
+    };
+    expect( function() { getJiraTicketKey(payload)}  ).to.throw(JiraError);
+
+  });
+
+  it('should handle bad payload (3)', function() {
+    var payload = {
+        "issues": [],
+        "errors": [
+            {
+                "status": 400,
+                "elementErrors": {
+                    "errors": []
+                },
+                "failedElementNumber": 0
+            }
+        ]
+    };
+    expect( function() { getJiraTicketKey(payload)}  ).to.throw(JiraError);
 
   });
 

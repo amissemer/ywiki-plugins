@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 50);
+/******/ 	return __webpack_require__(__webpack_require__.s = 51);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -10501,7 +10501,7 @@ function iframeWrapper( postToWindow, targetHostname ) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pluginCommon__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_optionsParser__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(3);
 
@@ -10573,9 +10573,9 @@ bootstrap(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],__WEBPACK_
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(54);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__css_professors_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__ = __webpack_require__(53);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_iframeWrapper__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pluginCommon__ = __webpack_require__(23);
@@ -10782,7 +10782,7 @@ loadStyleSheet(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],'dist
 
 /***/ }),
 
-/***/ 50:
+/***/ 51:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10797,13 +10797,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 
-/***/ 51:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
 /***/ 52:
 /***/ (function(module, exports) {
 
@@ -10812,6 +10805,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ }),
 
 /***/ 53:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 54:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

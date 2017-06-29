@@ -15523,6 +15523,8 @@ var $ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jira_error__ = __webpack_require__(50);
+
 
 
 
@@ -15540,7 +15542,7 @@ function getJiraServer() {
     }
     var msg="No jira server server with url "+jiraServerHost+" found";
     console.error(msg);
-    throw msg;
+    throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["a" /* JiraError */](msg);
   } )
   .then ( function (jiraServer) {
     return jiraServer.id;
@@ -15560,7 +15562,7 @@ function getJiraProject(jiraServerP, projectKey) {
     }
     var msg="No project '"+projectKey+"' found on JIRA server";
     console.error(msg);
-    throw msg;
+    throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["a" /* JiraError */](msg);
   });
 }
 
@@ -15573,7 +15575,7 @@ function getIssueTypeId(jiraProject, issueTypeName) {
     }
     var msg="No issue type '"+issueTypeName+"' for project "+project.key;
     console.error(msg);
-    throw msg;
+    throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["a" /* JiraError */](msg);
   }).then (function(issueType) {
     return issueType.id;
   });
@@ -15636,7 +15638,7 @@ function getJiraTicketKey(data) {
       }
     }
   }
-  throw new Error(errorMsg);
+  throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["a" /* JiraError */](errorMsg);
 }
 
 
@@ -15770,6 +15772,23 @@ function onSubmitError(error) {
 
 
 __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
+
+
+/***/ }),
+/* 48 */,
+/* 49 */,
+/* 50 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = JiraError;
+function JiraError(message) {
+  this.name = 'JiraError';
+  this.message = message;
+  this.stack = (new Error()).stack;
+}
+JiraError.prototype = Object.create(Error.prototype);
+JiraError.prototype.constructor = JiraError;
 
 
 /***/ })

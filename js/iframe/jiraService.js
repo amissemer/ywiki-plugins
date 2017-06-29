@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import * as proxy from './proxyService';
+import { JiraError} from './jira-error';
 
 const jiraServerHost = 'jira.hybris.com';
 //const jiraServerHost = 'jiratest.hybris.com';
@@ -15,7 +16,7 @@ function getJiraServer() {
     }
     var msg="No jira server server with url "+jiraServerHost+" found";
     console.error(msg);
-    throw msg;
+    throw new JiraError(msg);
   } )
   .then ( function (jiraServer) {
     return jiraServer.id;
@@ -35,7 +36,7 @@ function getJiraProject(jiraServerP, projectKey) {
     }
     var msg="No project '"+projectKey+"' found on JIRA server";
     console.error(msg);
-    throw msg;
+    throw new JiraError(msg);
   });
 }
 
@@ -48,7 +49,7 @@ function getIssueTypeId(jiraProject, issueTypeName) {
     }
     var msg="No issue type '"+issueTypeName+"' for project "+project.key;
     console.error(msg);
-    throw msg;
+    throw new JiraError(msg);
   }).then (function(issueType) {
     return issueType.id;
   });
@@ -111,7 +112,7 @@ function getJiraTicketKey(data) {
       }
     }
   }
-  throw new Error(errorMsg);
+  throw new JiraError(errorMsg);
 }
 
 export {createIssue, jiraServerHost, getJiraTicketKey};
