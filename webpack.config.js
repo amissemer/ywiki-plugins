@@ -3,7 +3,6 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: {
-    // create a bundle for the iframe and a separate bundle for the main frame (the wiki page)
     "golden-button": './js/mainframe/main.js',
     "golden-form": './js/iframe/golden-form.js',
     "create-jira-form": './js/iframe/create-jira-form.js',
@@ -26,7 +25,7 @@ module.exports = {
       { test: /\.(gif|eot|woff|woff2|svg|ttf)([\?]?.*)$/, loader: "file-loader" },
       // tweak to bundle bootstrap, which require jquery as a global variable
       { test: /bootstrap.+\.(jsx|js)$/, loader: 'imports-loader?jQuery=jquery,$=jquery,this=>window' },
-      { test: /morris\.js$/, loader: 'imports-loader?jQuery=jquery,$=jquery,Raphael=raphael,this=>window' },
+      { test: /morris\.js$/, loader: 'imports-loader?jQuery=jquery,$=jquery,Raphael=raphael,this=>window' }
     ]
   },
   // generate a separate bundled css file for each bundle

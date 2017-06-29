@@ -1,7 +1,7 @@
 import iframeWrapper from '../common/iframeWrapper';
 
-//const wikiHost = 'performancewiki2.hybris.com';
-const wikiHost = 'wiki.hybris.com';
+const wikiHost = 'performancewiki2.hybris.com';
+//const wikiHost = 'wiki.hybris.com';
 
 /**
  * A handy proxy for actions that can be executed in the parent frame bypassing CORS.

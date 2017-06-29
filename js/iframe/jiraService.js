@@ -86,23 +86,32 @@ function createIssue(projectKey, issueTypeName, componentName, summary, descript
         )
       });
     })
-    .then( function (result) {
-      if (result && result.errors && result.errors.length>0) {
-        var msg=JSON.stringify(result.errors[0].elementErrors.errors);
-        console.error(msg);
-        throw msg;
-      }
-      if (result && result.issues && result.issues.length>0) {
-        var issue = result.issues[0];
-        if (!issue.issue.key) {
-          throw new "Expecting an issue.key property in the response";
-        }
-        return issue.issue.key;
-      }
-      var msg="Unknown JIRA ticket creation error, " + JSON.stringify(result);
-      console.error(msg);
-      throw msg;
-    });
+    .then( getJiraTicketKey );
 }
 
-export {createIssue, jiraServerHost};
+function getJiraTicketKey(data) {
+  var key = data && data.issues && data.issues[0] && data.issues[0].issue && data.issues[0].issue.key;
+  if (key) {
+    return key;
+  }
+  var errorMsg = "Oops, something happened during ticket creation, please try again. ";
+  console.error("Error creating JIRA ticket, full response was: ",data);
+  if (data && data.errors && data.errors[0] && data.errors[0].elementErrors) {
+    if (data.errors[0].elementErrors.errorMessages && data.errors[0].elementErrors.errorMessages[0]) {
+      data.errors[0].elementErrors.errorMessages.forEach(function (msg) {
+        errorMsg += msg + ", ";
+      } );
+    }
+    var errors = data.errors[0].elementErrors.errors;
+    if (errors) {
+      for (var errKey in errors) {
+          if (errors.hasOwnProperty(errKey)) {
+            errorMsg += "For "+errKey + ": " + errors[errKey] + ", ";
+          }
+      }
+    }
+  }
+  throw new Error(errorMsg);
+}
+
+export {createIssue, jiraServerHost, getJiraTicketKey};

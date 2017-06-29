@@ -6,7 +6,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "devtest": "webpack-dev-server --config webpack.test.config.js & open http://localhost:4300/tests",
     "build": "webpack",
     "watch": "webpack --progress --watch"
   },
@@ -34,9 +34,13 @@
     "raphael": "^2.2.7"
   },
   "devDependencies": {
+    "chai": "^4.0.2",
     "css-loader": "^0.27.3",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.10.1",
-    "webpack": "^2.3.1"
+    "mocha": "^3.4.2",
+    "mocha-loader": "^1.1.1",
+    "webpack": "^2.3.1",
+    "webpack-dev-server": "^2.5.0"
   }
 }

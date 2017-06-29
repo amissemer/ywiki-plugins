@@ -6,9 +6,9 @@
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 49);
+/******/ 	return __webpack_require__(__webpack_require__.s = 68);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10331,42 +10331,6 @@ return jQuery;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return parseOptions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return encodeOptions; });
-function parseOptions(defaultOptions) {
-
-  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
-  var match;
-  var params = defaultOptions || {};
-  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
-
-  var hash = document.location.hash;
-
-  while (match = re.exec(hash)) {
-    params[decode(match[1])] = decode(match[2]);
-  }
-  return params;
-}
-
-function encodeOptions(options) {
-  var res = [];
-  for (var key in options) {
-    if (options.hasOwnProperty(key) && options[key]!==undefined) {
-        res.push(key+"="+encodeURIComponent(options[key]));
-    }
-  }
-  return res.join('&');
-}
-
-
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(3);
 /* harmony export (immutable) */ __webpack_exports__["d"] = ajax;
 /* harmony export (immutable) */ __webpack_exports__["c"] = closeFrame;
 /* harmony export (immutable) */ __webpack_exports__["g"] = redirect;
@@ -10374,10 +10338,11 @@ function encodeOptions(options) {
 /* harmony export (immutable) */ __webpack_exports__["f"] = $text;
 /* harmony export (immutable) */ __webpack_exports__["a"] = $arrayGetText;
 /* harmony export (immutable) */ __webpack_exports__["b"] = $tableCellsGetHtml;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(2);
 
 
-//const wikiHost = 'performancewiki2.hybris.com';
-const wikiHost = 'wiki.hybris.com';
+const wikiHost = 'performancewiki2.hybris.com';
+//const wikiHost = 'wiki.hybris.com';
 
 /**
  * A handy proxy for actions that can be executed in the parent frame bypassing CORS.
@@ -10428,14 +10393,14 @@ function $tableCellsGetHtml(cssSelector) {
 
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = iframeWrapper;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(8);
-/* harmony export (immutable) */ __webpack_exports__["a"] = iframeWrapper;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(5);
 
 
 
@@ -10533,19 +10498,161 @@ function iframeWrapper( postToWindow, targetHostname ) {
 
 
 /***/ }),
+/* 3 */,
 /* 4 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// removed by extract-text-webpack-plugin
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return parseOptions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return encodeOptions; });
+function parseOptions(defaultOptions) {
+
+  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
+  var match;
+  var params = defaultOptions || {};
+  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
+
+  var hash = document.location.hash;
+
+  while (match = re.exec(hash)) {
+    params[decode(match[1])] = decode(match[2]);
+  }
+  return params;
+}
+
+function encodeOptions(options) {
+  var res = [];
+  for (var key in options) {
+    if (options.hasOwnProperty(key) && options[key]!==undefined) {
+        res.push(key+"="+encodeURIComponent(options[key]));
+    }
+  }
+  return res.join('&');
+}
+
+
+
 
 /***/ }),
 /* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * Sets up a listener of all events received by the window, that dispatches:
+ *   - those that have an action to the corresponding requestListeners
+ *   - those that have a correlationId but no action, to the corresponding responseListeners
+ * Exposes functions to (un)register listeners.
+ */
+var windowEventListener = (function windowEventListener() {
+
+  // Start listening to messages (from other frames, typically)
+  var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+  var eventer = window[eventMethod];
+  var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+  var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
+  var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
+  eventer(messageEvent, eventCallback, false);
+
+  function eventCallback(e) {
+    if (e.data.action) {
+      // action data is in the form { action: "actionName", payload: object }
+      if (requestListeners[e.data.action]) {
+        requestListeners[e.data.action](e.data.correlationId, e.data.payload);
+      } else {
+        // no registered requestListener for this action
+        console.warn('No requestListeners for action: ', e.data.action);
+      }
+    } else if (e.data.correlationId) {
+      // response data is in the form { correlationId: theRequestCorrelationId, responsePayload: object, errorPayload: object }
+      if (responseListeners[e.data.correlationId]) {
+        // deregister (should be used only once for each correlationId)
+        var responseListener = responseListeners[e.data.correlationId];
+        responseListeners[e.data.correlationId] = null;
+        // delegate to the registered responseListener
+        if (e.data.errorPayload) {
+          responseListener.errorHandler(e.data.errorPayload);
+        } else {
+          responseListener.successHandler(e.data.responsePayload);
+        }
+      } else {
+        console.warn("No response listener for correlationId: ", e.data.correlationId);
+      }
+    } else {
+      // not an action message
+      console.log("Received non-request, non-response, message: ", e.data);
+    }
+  }
+
+  /**
+   * Func should be a function(correlationId, payload). The return value will be ignored.
+   * Consider this private and used solely by the iframeWrapper.
+   * Use iframeWrapper.attachActionHandler(action, handler) instead
+   */
+  function registerRequestListener( action, func ) {
+    if (typeof func != 'function') {
+      console.error("Cannot register request listener since not a function: ", func);
+    } else {
+      requestListeners[action] = func;
+    }
+  }
+  function unregisterRequestListener( action ) {
+    requestListeners[action] = null;
+  }
+  /**
+   *  The response listener must be an object in the form { successHandler: function(argument) {}, errorHandler: function(argument) {}}
+   *  where at least 1 of successHandler or errorHandler is defined.
+   *  successHandler and errorHandler, if defined, must be functions that take a single argument. Their returned value is ignored.
+   *  If one of the property is missing, a default handler is added that will simply log the result/error.
+   *
+   *  Note: There is no unregisterResponseListener because the unregistration is automatically done the first (and only) time the responseListener is used.
+   *  This is because for a given correlationId, only one response or one error will be returned.
+   */
+  function registerResponseListener( correlationId, listener ) {
+    if (!listener.successHandler && !listener.errorHandler) {
+      console.error("Cannot register response listener as it is missing a successHandler function or errorHandler function", listener);
+      return;
+    }
+    if (listener.successHandler && typeof listener.successHandler != 'function') {
+      console.error("Cannot register response listener as the successHandler is not a function", listener);
+      return;
+    }
+    if (listener.errorHandler && typeof listener.errorHandler != 'function') {
+      console.error("Cannot register response listener as the errorHandler is not a function", listener);
+      return;
+    }
+    listener.successHandler = listener.successHandler? listener.successHandler : defaultSuccessHandler;
+    listener.errorHandler = listener.errorHandler? listener.errorHandler : defaultErrorHandler;
+    responseListeners[correlationId] = listener;
+  }
+
+  function defaultSuccessHandler(responsePayload) { console.info("Default success handler: ", responsePayload); }
+  function defaultErrorHandler(errorPayload) { console.warn("Default error handler: ", errorPayload); }
+
+  return {
+    registerRequestListener: registerRequestListener,
+    unregisterRequestListener: unregisterRequestListener,
+    registerResponseListener: registerResponseListener
+  };
+})();
+
+/* harmony default export */ __webpack_exports__["a"] = (windowEventListener);
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 6 */
+/* 7 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -10971,7 +11078,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -10980,128 +11087,25 @@ var $ = __webpack_require__(0);
 (function() {
 
 // This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
-__webpack_require__(20)
-__webpack_require__(10)
-__webpack_require__(11)
-__webpack_require__(12)
-__webpack_require__(13)
+__webpack_require__(24)
 __webpack_require__(14)
 __webpack_require__(15)
-__webpack_require__(19)
 __webpack_require__(16)
 __webpack_require__(17)
 __webpack_require__(18)
-__webpack_require__(9)
+__webpack_require__(19)
+__webpack_require__(23)
+__webpack_require__(20)
+__webpack_require__(21)
+__webpack_require__(22)
+__webpack_require__(13)
 }.call(window));
 
 /***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/**
- * Sets up a listener of all events received by the window, that dispatches:
- *   - those that have an action to the corresponding requestListeners
- *   - those that have a correlationId but no action, to the corresponding responseListeners
- * Exposes functions to (un)register listeners.
- */
-var windowEventListener = (function windowEventListener() {
-
-  // Start listening to messages (from other frames, typically)
-  var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-  var eventer = window[eventMethod];
-  var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-  var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
-  var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
-  eventer(messageEvent, eventCallback, false);
-
-  function eventCallback(e) {
-    if (e.data.action) {
-      // action data is in the form { action: "actionName", payload: object }
-      if (requestListeners[e.data.action]) {
-        requestListeners[e.data.action](e.data.correlationId, e.data.payload);
-      } else {
-        // no registered requestListener for this action
-        console.warn('No requestListeners for action: ', e.data.action);
-      }
-    } else if (e.data.correlationId) {
-      // response data is in the form { correlationId: theRequestCorrelationId, responsePayload: object, errorPayload: object }
-      if (responseListeners[e.data.correlationId]) {
-        // deregister (should be used only once for each correlationId)
-        var responseListener = responseListeners[e.data.correlationId];
-        responseListeners[e.data.correlationId] = null;
-        // delegate to the registered responseListener
-        if (e.data.errorPayload) {
-          responseListener.errorHandler(e.data.errorPayload);
-        } else {
-          responseListener.successHandler(e.data.responsePayload);
-        }
-      } else {
-        console.warn("No response listener for correlationId: ", e.data.correlationId);
-      }
-    } else {
-      // not an action message
-      console.log("Received non-request, non-response, message: ", e.data);
-    }
-  }
-
-  /**
-   * Func should be a function(correlationId, payload). The return value will be ignored.
-   * Consider this private and used solely by the iframeWrapper.
-   * Use iframeWrapper.attachActionHandler(action, handler) instead
-   */
-  function registerRequestListener( action, func ) {
-    if (typeof func != 'function') {
-      console.error("Cannot register request listener since not a function: ", func);
-    } else {
-      requestListeners[action] = func;
-    }
-  }
-  function unregisterRequestListener( action ) {
-    requestListeners[action] = null;
-  }
-  /**
-   *  The response listener must be an object in the form { successHandler: function(argument) {}, errorHandler: function(argument) {}}
-   *  where at least 1 of successHandler or errorHandler is defined.
-   *  successHandler and errorHandler, if defined, must be functions that take a single argument. Their returned value is ignored.
-   *  If one of the property is missing, a default handler is added that will simply log the result/error.
-   *
-   *  Note: There is no unregisterResponseListener because the unregistration is automatically done the first (and only) time the responseListener is used.
-   *  This is because for a given correlationId, only one response or one error will be returned.
-   */
-  function registerResponseListener( correlationId, listener ) {
-    if (!listener.successHandler && !listener.errorHandler) {
-      console.error("Cannot register response listener as it is missing a successHandler function or errorHandler function", listener);
-      return;
-    }
-    if (listener.successHandler && typeof listener.successHandler != 'function') {
-      console.error("Cannot register response listener as the successHandler is not a function", listener);
-      return;
-    }
-    if (listener.errorHandler && typeof listener.errorHandler != 'function') {
-      console.error("Cannot register response listener as the errorHandler is not a function", listener);
-      return;
-    }
-    listener.successHandler = listener.successHandler? listener.successHandler : defaultSuccessHandler;
-    listener.errorHandler = listener.errorHandler? listener.errorHandler : defaultErrorHandler;
-    responseListeners[correlationId] = listener;
-  }
-
-  function defaultSuccessHandler(responsePayload) { console.info("Default success handler: ", responsePayload); }
-  function defaultErrorHandler(errorPayload) { console.warn("Default error handler: ", errorPayload); }
-
-  return {
-    registerRequestListener: registerRequestListener,
-    unregisterRequestListener: unregisterRequestListener,
-    registerResponseListener: registerResponseListener
-  };
-})();
-
-/* harmony default export */ __webpack_exports__["a"] = (windowEventListener);
-
-
-/***/ }),
-/* 9 */
+/* 10 */,
+/* 11 */,
+/* 12 */,
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -11275,7 +11279,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 10 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -11381,7 +11385,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 11 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -11518,7 +11522,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 12 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -11767,7 +11771,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 13 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -11991,7 +11995,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -12168,7 +12172,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 15 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -12519,7 +12523,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 16 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -12639,7 +12643,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 17 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -12823,7 +12827,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 18 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -12990,7 +12994,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 19 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -13522,7 +13526,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 20 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -13593,28 +13597,41 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 21 */,
-/* 22 */,
-/* 23 */,
-/* 24 */,
 /* 25 */,
 /* 26 */,
 /* 27 */,
 /* 28 */,
 /* 29 */,
-/* 30 */
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluenceService__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_optionsParser__ = __webpack_require__(1);
 /* harmony export (immutable) */ __webpack_exports__["d"] = withOption;
 /* harmony export (immutable) */ __webpack_exports__["b"] = loadRegions;
 /* harmony export (immutable) */ __webpack_exports__["c"] = createWorkspace;
 /* harmony export (immutable) */ __webpack_exports__["a"] = findCustomer;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluenceService__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_optionsParser__ = __webpack_require__(4);
 
 
 
@@ -13864,30 +13881,30 @@ function onlyTemplates(page) {
 
 
 /***/ }),
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 38 */
+/* 55 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*** IMPORTS FROM imports-loader ***/
@@ -13896,12 +13913,12 @@ var $ = __webpack_require__(0);
 (function() {
 
 /*!
- * Datepicker for Bootstrap v1.6.4 (https://github.com/eternicode/bootstrap-datepicker)
+ * Datepicker for Bootstrap v1.7.0 (https://github.com/uxsolutions/bootstrap-datepicker)
  *
- * Copyright 2012 Stefan Petre
- * Improvements by Andrew Rowls
  * Licensed under the Apache License v2.0 (http://www.apache.org/licenses/LICENSE-2.0)
- */(function(factory){
+ */
+
+(function(factory){
     if (true) {
         !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(0)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
@@ -13913,7 +13930,6 @@ var $ = __webpack_require__(0);
         factory(jQuery);
     }
 }(function($, undefined){
-
 	function UTCDate(){
 		return new Date(Date.UTC.apply(Date, arguments));
 	}
@@ -13928,8 +13944,12 @@ var $ = __webpack_require__(0);
 			date1.getUTCDate() === date2.getUTCDate()
 		);
 	}
-	function alias(method){
+	function alias(method, deprecationMsg){
 		return function(){
+			if (deprecationMsg !== undefined) {
+				$.fn.datepicker.deprecated(deprecationMsg);
+			}
+
 			return this[method].apply(this, arguments);
 		};
 	}
@@ -13947,7 +13967,8 @@ var $ = __webpack_require__(0);
 				// $.inArray doesn't work with Dates
 				var val = d && d.valueOf();
 				for (var i=0, l=this.length; i < l; i++)
-					if (this[i].valueOf() === val)
+          // Use date arithmetic to allow dates with different times to match
+          if (0 <= this[i].valueOf() - val && this[i].valueOf() - val < 1000*60*60*24)
 						return i;
 				return -1;
 			},
@@ -13984,7 +14005,7 @@ var $ = __webpack_require__(0);
 	// Picker object
 
 	var Datepicker = function(element, options){
-		$(element).data('datepicker', this);
+		$.data(element, 'datepicker', this);
 		this._process_options(options);
 
 		this.dates = new DateArray();
@@ -13995,7 +14016,6 @@ var $ = __webpack_require__(0);
 		this.isInput = this.element.is('input');
 		this.inputField = this.isInput ? this.element : this.element.find('input');
 		this.component = this.element.hasClass('date') ? this.element.find('.add-on, .input-group-addon, .btn') : false;
-		this.hasInput = this.component && this.inputField.length;
 		if (this.component && this.component.length === 0)
 			this.component = false;
 		this.isInline = !this.component && this.element.is('div');
@@ -14006,6 +14026,7 @@ var $ = __webpack_require__(0);
 		if (this._check_template(this.o.templates.leftArrow)) {
 			this.picker.find('.prev').html(this.o.templates.leftArrow);
 		}
+
 		if (this._check_template(this.o.templates.rightArrow)) {
 			this.picker.find('.next').html(this.o.templates.rightArrow);
 		}
@@ -14024,29 +14045,29 @@ var $ = __webpack_require__(0);
 			this.picker.addClass('datepicker-rtl');
 		}
 
-		this.viewMode = this.o.startView;
+		if (this.o.calendarWeeks) {
+			this.picker.find('.datepicker-days .datepicker-switch, thead .datepicker-title, tfoot .today, tfoot .clear')
+				.attr('colspan', function(i, val){
+					return Number(val) + 1;
+				});
+		}
 
-		if (this.o.calendarWeeks)
-			this.picker.find('thead .datepicker-title, tfoot .today, tfoot .clear')
-						.attr('colspan', function(i, val){
-							return parseInt(val) + 1;
-						});
+		this._process_options({
+			startDate: this._o.startDate,
+			endDate: this._o.endDate,
+			daysOfWeekDisabled: this.o.daysOfWeekDisabled,
+			daysOfWeekHighlighted: this.o.daysOfWeekHighlighted,
+			datesDisabled: this.o.datesDisabled
+		});
 
 		this._allow_update = false;
-
-		this.setStartDate(this._o.startDate);
-		this.setEndDate(this._o.endDate);
-		this.setDaysOfWeekDisabled(this.o.daysOfWeekDisabled);
-		this.setDaysOfWeekHighlighted(this.o.daysOfWeekHighlighted);
-		this.setDatesDisabled(this.o.datesDisabled);
+		this.setViewMode(this.o.startView);
+		this._allow_update = true;
 
 		this.fillDow();
 		this.fillMonths();
 
-		this._allow_update = true;
-
 		this.update();
-		this.showMode();
 
 		if (this.isInline){
 			this.show();
@@ -14056,23 +14077,21 @@ var $ = __webpack_require__(0);
 	Datepicker.prototype = {
 		constructor: Datepicker,
 
-		_resolveViewName: function(view, default_value){
-			if (view === 0 || view === 'days' || view === 'month') {
-				return 0;
-			}
-			if (view === 1 || view === 'months' || view === 'year') {
-				return 1;
-			}
-			if (view === 2 || view === 'years' || view === 'decade') {
-				return 2;
-			}
-			if (view === 3 || view === 'decades' || view === 'century') {
-				return 3;
-			}
-			if (view === 4 || view === 'centuries' || view === 'millennium') {
-				return 4;
-			}
-			return default_value === undefined ? false : default_value;
+		_resolveViewName: function(view){
+			$.each(DPGlobal.viewModes, function(i, viewMode){
+				if (view === i || $.inArray(view, viewMode.names) !== -1){
+					view = i;
+					return false;
+				}
+			});
+
+			return view;
+		},
+
+		_resolveDaysOfWeek: function(daysOfWeek){
+			if (!$.isArray(daysOfWeek))
+				daysOfWeek = daysOfWeek.split(/[,\s]*/);
+			return $.map(daysOfWeek, Number);
 		},
 
 		_check_template: function(tmp){
@@ -14111,13 +14130,12 @@ var $ = __webpack_require__(0);
 			o.language = lang;
 
 			// Retrieve view index from any aliases
-			o.startView = this._resolveViewName(o.startView, 0);
-			o.minViewMode = this._resolveViewName(o.minViewMode, 0);
-			o.maxViewMode = this._resolveViewName(o.maxViewMode, 4);
+			o.startView = this._resolveViewName(o.startView);
+			o.minViewMode = this._resolveViewName(o.minViewMode);
+			o.maxViewMode = this._resolveViewName(o.maxViewMode);
 
-			// Check that the start view is between min and max
-			o.startView = Math.min(o.startView, o.maxViewMode);
-			o.startView = Math.max(o.startView, o.minViewMode);
+			// Check view is between min and max
+			o.startView = Math.max(this.o.minViewMode, Math.min(this.o.maxViewMode, o.startView));
 
 			// true, false, or Number > 0
 			if (o.multidate !== true){
@@ -14154,27 +14172,14 @@ var $ = __webpack_require__(0);
 				}
 			}
 
-			o.daysOfWeekDisabled = o.daysOfWeekDisabled||[];
-			if (!$.isArray(o.daysOfWeekDisabled))
-				o.daysOfWeekDisabled = o.daysOfWeekDisabled.split(/[,\s]*/);
-			o.daysOfWeekDisabled = $.map(o.daysOfWeekDisabled, function(d){
-				return parseInt(d, 10);
-			});
-
-			o.daysOfWeekHighlighted = o.daysOfWeekHighlighted||[];
-			if (!$.isArray(o.daysOfWeekHighlighted))
-				o.daysOfWeekHighlighted = o.daysOfWeekHighlighted.split(/[,\s]*/);
-			o.daysOfWeekHighlighted = $.map(o.daysOfWeekHighlighted, function(d){
-				return parseInt(d, 10);
-			});
+			o.daysOfWeekDisabled = this._resolveDaysOfWeek(o.daysOfWeekDisabled||[]);
+			o.daysOfWeekHighlighted = this._resolveDaysOfWeek(o.daysOfWeekHighlighted||[]);
 
 			o.datesDisabled = o.datesDisabled||[];
 			if (!$.isArray(o.datesDisabled)) {
-				o.datesDisabled = [
-					o.datesDisabled
-				];
+				o.datesDisabled = o.datesDisabled.split(',');
 			}
-			o.datesDisabled = $.map(o.datesDisabled,function(d){
+			o.datesDisabled = $.map(o.datesDisabled, function(d){
 				return DPGlobal.parseDate(d, format, o.language, o.assumeNearbyYear);
 			});
 
@@ -14209,7 +14214,9 @@ var $ = __webpack_require__(0);
 				});
 				o.orientation.y = _plc[0] || 'auto';
 			}
-			if (o.defaultViewDate) {
+			if (o.defaultViewDate instanceof Date || typeof o.defaultViewDate === 'string') {
+				o.defaultViewDate = DPGlobal.parseDate(o.defaultViewDate, format, o.language, o.assumeNearbyYear);
+			} else if (o.defaultViewDate) {
 				var year = o.defaultViewDate.year || new Date().getFullYear();
 				var month = o.defaultViewDate.month || 0;
 				var day = o.defaultViewDate.day || 1;
@@ -14226,8 +14233,7 @@ var $ = __webpack_require__(0);
 				if (evs[i].length === 2){
 					ch = undefined;
 					ev = evs[i][1];
-				}
-				else if (evs[i].length === 3){
+				} else if (evs[i].length === 3){
 					ch = evs[i][1];
 					ev = evs[i][2];
 				}
@@ -14240,8 +14246,7 @@ var $ = __webpack_require__(0);
 				if (evs[i].length === 2){
 					ch = undefined;
 					ev = evs[i][1];
-				}
-				else if (evs[i].length === 3){
+				} else if (evs[i].length === 3){
 					ch = evs[i][1];
 					ev = evs[i][2];
 				}
@@ -14267,7 +14272,8 @@ var $ = __webpack_require__(0);
                     [this.element, events]
                 ];
             }
-            else if (this.component && this.hasInput) { // component: input + button
+            // component: input + button
+            else if (this.component && this.inputField.length) {
                 this._events = [
                     // For components that are not readonly, allow keyboard nav
                     [this.inputField, events],
@@ -14312,11 +14318,17 @@ var $ = __webpack_require__(0);
 				[this.picker, {
 					click: $.proxy(this.click, this)
 				}],
+				[this.picker, '.prev, .next', {
+					click: $.proxy(this.navArrowsClick, this)
+				}],
+				[this.picker, '.day:not(.disabled)', {
+					click: $.proxy(this.dayCellClick, this)
+				}],
 				[$(window), {
 					resize: $.proxy(this.place, this)
 				}],
 				[$(document), {
-					mousedown: $.proxy(function(e){
+					'mousedown touchstart': $.proxy(function(e){
 						// Clicked outside the datepicker, hide it
 						if (!(
 							this.element.is(e.target) ||
@@ -14352,13 +14364,13 @@ var $ = __webpack_require__(0);
 			this.element.trigger({
 				type: event,
 				date: local_date,
+				viewMode: this.viewMode,
 				dates: $.map(this.dates, this._utc_to_local),
 				format: $.proxy(function(ix, format){
 					if (arguments.length === 0){
 						ix = this.dates.length - 1;
 						format = this.o.format;
-					}
-					else if (typeof ix === 'string'){
+					} else if (typeof ix === 'string'){
 						format = ix;
 						ix = this.dates.length - 1;
 					}
@@ -14390,8 +14402,7 @@ var $ = __webpack_require__(0);
 			this.focusDate = null;
 			this.picker.hide().detach();
 			this._detachSecondaryEvents();
-			this.viewMode = this.o.startView;
-			this.showMode();
+			this.setViewMode(this.o.startView);
 
 			if (this.o.forceParse && this.inputField.val())
 				this.setValue();
@@ -14411,25 +14422,33 @@ var $ = __webpack_require__(0);
 			return this;
 		},
 
-		paste: function(evt){
+		paste: function(e){
 			var dateString;
-			if (evt.originalEvent.clipboardData && evt.originalEvent.clipboardData.types
-				&& $.inArray('text/plain', evt.originalEvent.clipboardData.types) !== -1) {
-				dateString = evt.originalEvent.clipboardData.getData('text/plain');
-			}
-			else if (window.clipboardData) {
+			if (e.originalEvent.clipboardData && e.originalEvent.clipboardData.types
+				&& $.inArray('text/plain', e.originalEvent.clipboardData.types) !== -1) {
+				dateString = e.originalEvent.clipboardData.getData('text/plain');
+			} else if (window.clipboardData) {
 				dateString = window.clipboardData.getData('Text');
-			}
-			else {
+			} else {
 				return;
 			}
 			this.setDate(dateString);
 			this.update();
-			evt.preventDefault();
+			e.preventDefault();
 		},
 
 		_utc_to_local: function(utc){
-			return utc && new Date(utc.getTime() + (utc.getTimezoneOffset()*60000));
+			if (!utc) {
+				return utc;
+			}
+
+			var local = new Date(utc.getTime() + (utc.getTimezoneOffset() * 60000));
+
+			if (local.getTimezoneOffset() !== utc.getTimezoneOffset()) {
+				local = new Date(utc.getTime() + (local.getTimezoneOffset() * 60000));
+			}
+
+			return local;
 		},
 		_local_to_utc: function(local){
 			return local && new Date(local.getTime() - (local.getTimezoneOffset()*60000));
@@ -14438,7 +14457,7 @@ var $ = __webpack_require__(0);
 			return local && new Date(local.getFullYear(), local.getMonth(), local.getDate());
 		},
 		_zero_utc_time: function(utc){
-			return utc && new Date(Date.UTC(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate()));
+			return utc && UTCDate(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate());
 		},
 
 		getDates: function(){
@@ -14457,7 +14476,7 @@ var $ = __webpack_require__(0);
 
 		getUTCDate: function(){
 			var selected_date = this.dates.get(-1);
-			if (typeof selected_date !== 'undefined') {
+			if (selected_date !== undefined) {
 				return new Date(selected_date);
 			} else {
 				return null;
@@ -14465,10 +14484,7 @@ var $ = __webpack_require__(0);
 		},
 
 		clearDates: function(){
-			if (this.inputField) {
-				this.inputField.val('');
-			}
-
+			this.inputField.val('');
 			this.update();
 			this._trigger('changeDate');
 
@@ -14476,6 +14492,7 @@ var $ = __webpack_require__(0);
 				this.hide();
 			}
 		},
+
 		setDates: function(){
 			var args = $.isArray(arguments[0]) ? arguments[0] : arguments;
 			this.update.apply(this, args);
@@ -14486,15 +14503,13 @@ var $ = __webpack_require__(0);
 
 		setUTCDates: function(){
 			var args = $.isArray(arguments[0]) ? arguments[0] : arguments;
-			this.update.apply(this, $.map(args, this._utc_to_local));
-			this._trigger('changeDate');
-			this.setValue();
+			this.setDates.apply(this, $.map(args, this._utc_to_local));
 			return this;
 		},
 
 		setDate: alias('setDates'),
 		setUTCDate: alias('setUTCDates'),
-		remove: alias('destroy'),
+		remove: alias('destroy', 'Method `remove` is deprecated and will be removed in version 2.0. Use `destroy` instead'),
 
 		setValue: function(){
 			var formatted = this.getFormattedDate();
@@ -14537,7 +14552,6 @@ var $ = __webpack_require__(0);
 		setDaysOfWeekDisabled: function(daysOfWeekDisabled){
 			this._process_options({daysOfWeekDisabled: daysOfWeekDisabled});
 			this.update();
-			this.updateNavArrows();
 			return this;
 		},
 
@@ -14550,7 +14564,7 @@ var $ = __webpack_require__(0);
 		setDatesDisabled: function(datesDisabled){
 			this._process_options({datesDisabled: datesDisabled});
 			this.update();
-			this.updateNavArrows();
+			return this;
 		},
 
 		place: function(){
@@ -14564,17 +14578,17 @@ var $ = __webpack_require__(0);
 				scrollTop = this.o.container === 'body' ? $(document).scrollTop() : container.scrollTop(),
 				appendOffset = container.offset();
 
-			var parentsZindex = [];
+			var parentsZindex = [0];
 			this.element.parents().each(function(){
 				var itemZIndex = $(this).css('z-index');
-				if (itemZIndex !== 'auto' && itemZIndex !== 0) parentsZindex.push(parseInt(itemZIndex));
+				if (itemZIndex !== 'auto' && Number(itemZIndex) !== 0) parentsZindex.push(Number(itemZIndex));
 			});
 			var zIndex = Math.max.apply(Math, parentsZindex) + this.o.zIndexOffset;
 			var offset = this.component ? this.component.parent().offset() : this.element.offset();
 			var height = this.component ? this.component.outerHeight(true) : this.element.outerHeight(false);
 			var width = this.component ? this.component.outerWidth(true) : this.element.outerWidth(false);
-			var left = offset.left - appendOffset.left,
-				top = offset.top - appendOffset.top;
+			var left = offset.left - appendOffset.left;
+			var top = offset.top - appendOffset.top;
 
 			if (this.o.container !== 'body') {
 				top += scrollTop;
@@ -14602,8 +14616,13 @@ var $ = __webpack_require__(0);
 					this.picker.addClass('datepicker-orient-right');
 					left += width - calendarWidth;
 				} else {
-					// Default to left
-					this.picker.addClass('datepicker-orient-left');
+					if (this.o.rtl) {
+						// Default to right
+						this.picker.addClass('datepicker-orient-right');
+					} else {
+						// Default to left
+						this.picker.addClass('datepicker-orient-left');
+					}
 				}
 			}
 
@@ -14654,8 +14673,7 @@ var $ = __webpack_require__(0);
 					dates.push(date);
 				}, this));
 				fromArgs = true;
-			}
-			else {
+			} else {
 				dates = this.isInput
 						? this.element.val()
 						: this.element.data('date') || this.inputField.val();
@@ -14677,59 +14695,63 @@ var $ = __webpack_require__(0);
 			}, this), true);
 			this.dates.replace(dates);
 
-			if (this.dates.length)
-				this.viewDate = new Date(this.dates.get(-1));
-			else if (this.viewDate < this.o.startDate)
-				this.viewDate = new Date(this.o.startDate);
-			else if (this.viewDate > this.o.endDate)
-				this.viewDate = new Date(this.o.endDate);
-			else
-				this.viewDate = this.o.defaultViewDate;
+			if (this.o.updateViewDate) {
+				if (this.dates.length)
+					this.viewDate = new Date(this.dates.get(-1));
+				else if (this.viewDate < this.o.startDate)
+					this.viewDate = new Date(this.o.startDate);
+				else if (this.viewDate > this.o.endDate)
+					this.viewDate = new Date(this.o.endDate);
+				else
+					this.viewDate = this.o.defaultViewDate;
+			}
 
 			if (fromArgs){
 				// setting date by clicking
 				this.setValue();
+				this.element.change();
 			}
-			else if (dates.length){
+			else if (this.dates.length){
 				// setting date by typing
-				if (String(oldDates) !== String(this.dates))
+				if (String(oldDates) !== String(this.dates) && fromArgs) {
 					this._trigger('changeDate');
+					this.element.change();
+				}
 			}
-			if (!this.dates.length && oldDates.length)
+			if (!this.dates.length && oldDates.length) {
 				this._trigger('clearDate');
+				this.element.change();
+			}
 
 			this.fill();
-			this.element.change();
 			return this;
 		},
 
 		fillDow: function(){
+      if (this.o.showWeekDays) {
 			var dowCnt = this.o.weekStart,
 				html = '<tr>';
 			if (this.o.calendarWeeks){
-				this.picker.find('.datepicker-days .datepicker-switch')
-					.attr('colspan', function(i, val){
-						return parseInt(val) + 1;
-					});
 				html += '<th class="cw">&#160;</th>';
 			}
 			while (dowCnt < this.o.weekStart + 7){
 				html += '<th class="dow';
-        if ($.inArray(dowCnt, this.o.daysOfWeekDisabled) > -1)
+        if ($.inArray(dowCnt, this.o.daysOfWeekDisabled) !== -1)
           html += ' disabled';
         html += '">'+dates[this.o.language].daysMin[(dowCnt++)%7]+'</th>';
 			}
 			html += '</tr>';
 			this.picker.find('.datepicker-days thead').append(html);
+      }
 		},
 
 		fillMonths: function(){
       var localDate = this._utc_to_local(this.viewDate);
-			var html = '',
-			i = 0;
-			while (i < 12){
-        var focused = localDate && localDate.getMonth() === i ? ' focused' : '';
-				html += '<span class="month' + focused + '">' + dates[this.o.language].monthsShort[i++]+'</span>';
+			var html = '';
+			var focused;
+			for (var i = 0; i < 12; i++){
+				focused = localDate && localDate.getMonth() === i ? ' focused' : '';
+				html += '<span class="month' + focused + '">' + dates[this.o.language].monthsShort[i] + '</span>';
 			}
 			this.picker.find('.datepicker-months td').html(html);
 		},
@@ -14748,20 +14770,16 @@ var $ = __webpack_require__(0);
 			var cls = [],
 				year = this.viewDate.getUTCFullYear(),
 				month = this.viewDate.getUTCMonth(),
-				today = new Date();
+				today = UTCToday();
 			if (date.getUTCFullYear() < year || (date.getUTCFullYear() === year && date.getUTCMonth() < month)){
 				cls.push('old');
-			}
-			else if (date.getUTCFullYear() > year || (date.getUTCFullYear() === year && date.getUTCMonth() > month)){
+			} else if (date.getUTCFullYear() > year || (date.getUTCFullYear() === year && date.getUTCMonth() > month)){
 				cls.push('new');
 			}
 			if (this.focusDate && date.valueOf() === this.focusDate.valueOf())
 				cls.push('focused');
-			// Compare internal UTC date with local today, not UTC today
-			if (this.o.todayHighlight &&
-				date.getUTCFullYear() === today.getFullYear() &&
-				date.getUTCMonth() === today.getMonth() &&
-				date.getUTCDate() === today.getDate()){
+			// Compare internal UTC date with UTC today, not local today
+			if (this.o.todayHighlight && isUTCEquals(date, today)) {
 				cls.push('today');
 			}
 			if (this.dates.contains(date) !== -1)
@@ -14770,8 +14788,8 @@ var $ = __webpack_require__(0);
 				cls.push('disabled');
 			}
 			if (this.dateIsDisabled(date)){
-				cls.push('disabled', 'disabled-date');	
-			} 
+				cls.push('disabled', 'disabled-date');
+			}
 			if ($.inArray(date.getUTCDay(), this.o.daysOfWeekHighlighted) !== -1){
 				cls.push('highlighted');
 			}
@@ -14793,47 +14811,44 @@ var $ = __webpack_require__(0);
 			return cls;
 		},
 
-		_fill_yearsView: function(selector, cssClass, factor, step, currentYear, startYear, endYear, callback){
-			var html, view, year, steps, startStep, endStep, thisYear, i, classes, tooltip, before;
-
-			html      = '';
-			view      = this.picker.find(selector);
-			year      = parseInt(currentYear / factor, 10) * factor;
-			startStep = parseInt(startYear / step, 10) * step;
-			endStep   = parseInt(endYear / step, 10) * step;
-			steps     = $.map(this.dates, function(d){
-				return parseInt(d.getUTCFullYear() / step, 10) * step;
+		_fill_yearsView: function(selector, cssClass, factor, year, startYear, endYear, beforeFn){
+			var html = '';
+			var step = factor / 10;
+			var view = this.picker.find(selector);
+			var startVal = Math.floor(year / factor) * factor;
+			var endVal = startVal + step * 9;
+			var focusedVal = Math.floor(this.viewDate.getFullYear() / step) * step;
+			var selected = $.map(this.dates, function(d){
+				return Math.floor(d.getUTCFullYear() / step) * step;
 			});
 
-			view.find('.datepicker-switch').text(year + '-' + (year + step * 9));
-
-			thisYear = year - step;
-			for (i = -1; i < 11; i += 1) {
+			var classes, tooltip, before;
+			for (var currVal = startVal - step; currVal <= endVal + step; currVal += step) {
 				classes = [cssClass];
 				tooltip = null;
 
-				if (i === -1) {
+				if (currVal === startVal - step) {
 					classes.push('old');
-				} else if (i === 10) {
+				} else if (currVal === endVal + step) {
 					classes.push('new');
 				}
-				if ($.inArray(thisYear, steps) !== -1) {
+				if ($.inArray(currVal, selected) !== -1) {
 					classes.push('active');
 				}
-				if (thisYear < startStep || thisYear > endStep) {
+				if (currVal < startYear || currVal > endYear) {
 					classes.push('disabled');
 				}
-        if (thisYear === this.viewDate.getFullYear()) {
+				if (currVal === focusedVal) {
 				  classes.push('focused');
         }
 
-				if (callback !== $.noop) {
-					before = callback(new Date(thisYear, 0, 1));
+				if (beforeFn !== $.noop) {
+					before = beforeFn(new Date(currVal, 0, 1));
 					if (before === undefined) {
 						before = {};
-					} else if (typeof(before) === 'boolean') {
+					} else if (typeof before === 'boolean') {
 						before = {enabled: before};
-					} else if (typeof(before) === 'string') {
+					} else if (typeof before === 'string') {
 						before = {classes: before};
 					}
 					if (before.enabled === false) {
@@ -14847,9 +14862,10 @@ var $ = __webpack_require__(0);
 					}
 				}
 
-				html += '<span class="' + classes.join(' ') + '"' + (tooltip ? ' title="' + tooltip + '"' : '') + '>' + thisYear + '</span>';
-				thisYear += step;
+				html += '<span class="' + classes.join(' ') + '"' + (tooltip ? ' title="' + tooltip + '"' : '') + '>' + currVal + '</span>';
 			}
+
+			view.find('.datepicker-switch').text(startVal + '-' + endVal);
 			view.find('td').html(html);
 		},
 
@@ -14872,18 +14888,17 @@ var $ = __webpack_require__(0);
 						.text(DPGlobal.formatDate(d, titleFormat, this.o.language));
 			this.picker.find('tfoot .today')
 						.text(todaytxt)
-						.toggle(this.o.todayBtn !== false);
+						.css('display', this.o.todayBtn === true || this.o.todayBtn === 'linked' ? 'table-cell' : 'none');
 			this.picker.find('tfoot .clear')
 						.text(cleartxt)
-						.toggle(this.o.clearBtn !== false);
+						.css('display', this.o.clearBtn === true ? 'table-cell' : 'none');
 			this.picker.find('thead .datepicker-title')
 						.text(this.o.title)
-						.toggle(this.o.title !== '');
+						.css('display', typeof this.o.title === 'string' && this.o.title !== '' ? 'table-cell' : 'none');
 			this.updateNavArrows();
 			this.fillMonths();
-			var prevMonth = UTCDate(year, month-1, 28),
-				day = DPGlobal.getDaysInMonth(prevMonth.getUTCFullYear(), prevMonth.getUTCMonth());
-			prevMonth.setUTCDate(day);
+			var prevMonth = UTCDate(year, month, 0),
+				day = prevMonth.getUTCDate();
 			prevMonth.setUTCDate(day - (prevMonth.getUTCDay() - this.o.weekStart + 7)%7);
 			var nextMonth = new Date(prevMonth);
 			if (prevMonth.getUTCFullYear() < 100){
@@ -14892,35 +14907,38 @@ var $ = __webpack_require__(0);
 			nextMonth.setUTCDate(nextMonth.getUTCDate() + 42);
 			nextMonth = nextMonth.valueOf();
 			var html = [];
-			var clsName;
+			var weekDay, clsName;
 			while (prevMonth.valueOf() < nextMonth){
-				if (prevMonth.getUTCDay() === this.o.weekStart){
+				weekDay = prevMonth.getUTCDay();
+				if (weekDay === this.o.weekStart){
 					html.push('<tr>');
 					if (this.o.calendarWeeks){
 						// ISO 8601: First week contains first thursday.
 						// ISO also states week starts on Monday, but we can be more abstract here.
 						var
 							// Start of current week: based on weekstart/current date
-							ws = new Date(+prevMonth + (this.o.weekStart - prevMonth.getUTCDay() - 7) % 7 * 864e5),
+							ws = new Date(+prevMonth + (this.o.weekStart - weekDay - 7) % 7 * 864e5),
 							// Thursday of this week
 							th = new Date(Number(ws) + (7 + 4 - ws.getUTCDay()) % 7 * 864e5),
 							// First Thursday of year, year from thursday
-							yth = new Date(Number(yth = UTCDate(th.getUTCFullYear(), 0, 1)) + (7 + 4 - yth.getUTCDay())%7*864e5),
+							yth = new Date(Number(yth = UTCDate(th.getUTCFullYear(), 0, 1)) + (7 + 4 - yth.getUTCDay()) % 7 * 864e5),
 							// Calendar week: ms between thursdays, div ms per day, div 7 days
-							calWeek =  (th - yth) / 864e5 / 7 + 1;
+							calWeek = (th - yth) / 864e5 / 7 + 1;
 						html.push('<td class="cw">'+ calWeek +'</td>');
 					}
 				}
 				clsName = this.getClassNames(prevMonth);
 				clsName.push('day');
 
+				var content = prevMonth.getUTCDate();
+
 				if (this.o.beforeShowDay !== $.noop){
 					before = this.o.beforeShowDay(this._utc_to_local(prevMonth));
 					if (before === undefined)
 						before = {};
-					else if (typeof(before) === 'boolean')
+					else if (typeof before === 'boolean')
 						before = {enabled: before};
-					else if (typeof(before) === 'string')
+					else if (typeof before === 'string')
 						before = {classes: before};
 					if (before.enabled === false)
 						clsName.push('disabled');
@@ -14928,6 +14946,8 @@ var $ = __webpack_require__(0);
 						clsName = clsName.concat(before.classes.split(/\s+/));
 					if (before.tooltip)
 						tooltip = before.tooltip;
+					if (before.content)
+						content = before.content;
 				}
 
 				//Check if uniqueSort exists (supported by jquery >=1.12 and >=2.2)
@@ -14938,21 +14958,21 @@ var $ = __webpack_require__(0);
 					clsName = $.unique(clsName);
 				}
 
-				html.push('<td class="'+clsName.join(' ')+'"' + (tooltip ? ' title="'+tooltip+'"' : '') + '>'+prevMonth.getUTCDate() + '</td>');
+				html.push('<td class="'+clsName.join(' ')+'"' + (tooltip ? ' title="'+tooltip+'"' : '') + ' data-date="' + prevMonth.getTime().toString() + '">' + content + '</td>');
 				tooltip = null;
-				if (prevMonth.getUTCDay() === this.o.weekEnd){
+				if (weekDay === this.o.weekEnd){
 					html.push('</tr>');
 				}
-				prevMonth.setUTCDate(prevMonth.getUTCDate()+1);
+				prevMonth.setUTCDate(prevMonth.getUTCDate() + 1);
 			}
-			this.picker.find('.datepicker-days tbody').empty().append(html.join(''));
+			this.picker.find('.datepicker-days tbody').html(html.join(''));
 
 			var monthsTitle = dates[this.o.language].monthsTitle || dates['en'].monthsTitle || 'Months';
 			var months = this.picker.find('.datepicker-months')
 						.find('.datepicker-switch')
 							.text(this.o.maxViewMode < 2 ? monthsTitle : year)
 							.end()
-						.find('span').removeClass('active');
+						.find('tbody span').removeClass('active');
 
 			$.each(this.dates, function(i, d){
 				if (d.getUTCFullYear() === year)
@@ -14976,9 +14996,9 @@ var $ = __webpack_require__(0);
           var before = that.o.beforeShowMonth(moDate);
 					if (before === undefined)
 						before = {};
-					else if (typeof(before) === 'boolean')
+					else if (typeof before === 'boolean')
 						before = {enabled: before};
-					else if (typeof(before) === 'string')
+					else if (typeof before === 'string')
 						before = {classes: before};
 					if (before.enabled === false && !$(month).hasClass('disabled'))
 					    $(month).addClass('disabled');
@@ -14994,7 +15014,6 @@ var $ = __webpack_require__(0);
 				'.datepicker-years',
 				'year',
 				10,
-				1,
 				year,
 				startYear,
 				endYear,
@@ -15006,7 +15025,6 @@ var $ = __webpack_require__(0);
 				'.datepicker-decades',
 				'decade',
 				100,
-				10,
 				year,
 				startYear,
 				endYear,
@@ -15018,7 +15036,6 @@ var $ = __webpack_require__(0);
 				'.datepicker-centuries',
 				'century',
 				1000,
-				100,
 				year,
 				startYear,
 				endYear,
@@ -15032,73 +15049,53 @@ var $ = __webpack_require__(0);
 
 			var d = new Date(this.viewDate),
 				year = d.getUTCFullYear(),
-				month = d.getUTCMonth();
+				month = d.getUTCMonth(),
+				startYear = this.o.startDate !== -Infinity ? this.o.startDate.getUTCFullYear() : -Infinity,
+				startMonth = this.o.startDate !== -Infinity ? this.o.startDate.getUTCMonth() : -Infinity,
+				endYear = this.o.endDate !== Infinity ? this.o.endDate.getUTCFullYear() : Infinity,
+				endMonth = this.o.endDate !== Infinity ? this.o.endDate.getUTCMonth() : Infinity,
+				prevIsDisabled,
+				nextIsDisabled,
+				factor = 1;
 			switch (this.viewMode){
 				case 0:
-					if (this.o.startDate !== -Infinity && year <= this.o.startDate.getUTCFullYear() && month <= this.o.startDate.getUTCMonth()){
-						this.picker.find('.prev').css({visibility: 'hidden'});
-					}
-					else {
-						this.picker.find('.prev').css({visibility: 'visible'});
-					}
-					if (this.o.endDate !== Infinity && year >= this.o.endDate.getUTCFullYear() && month >= this.o.endDate.getUTCMonth()){
-						this.picker.find('.next').css({visibility: 'hidden'});
-					}
-					else {
-						this.picker.find('.next').css({visibility: 'visible'});
-					}
+					prevIsDisabled = year <= startYear && month <= startMonth;
+					nextIsDisabled = year >= endYear && month >= endMonth;
 					break;
-				case 1:
-				case 2:
-				case 3:
 				case 4:
-					if (this.o.startDate !== -Infinity && year <= this.o.startDate.getUTCFullYear() || this.o.maxViewMode < 2){
-						this.picker.find('.prev').css({visibility: 'hidden'});
-					}
-					else {
-						this.picker.find('.prev').css({visibility: 'visible'});
-					}
-					if (this.o.endDate !== Infinity && year >= this.o.endDate.getUTCFullYear() || this.o.maxViewMode < 2){
-						this.picker.find('.next').css({visibility: 'hidden'});
-					}
-					else {
-						this.picker.find('.next').css({visibility: 'visible'});
-					}
+					factor *= 10;
+					/* falls through */
+				case 3:
+					factor *= 10;
+					/* falls through */
+				case 2:
+					factor *= 10;
+					/* falls through */
+				case 1:
+					prevIsDisabled = Math.floor(year / factor) * factor <= startYear;
+					nextIsDisabled = Math.floor(year / factor) * factor + factor >= endYear;
 					break;
 			}
+
+			this.picker.find('.prev').toggleClass('disabled', prevIsDisabled);
+			this.picker.find('.next').toggleClass('disabled', nextIsDisabled);
 		},
 
 		click: function(e){
 			e.preventDefault();
 			e.stopPropagation();
 
-			var target, dir, day, year, month, monthChanged, yearChanged;
+			var target, dir, day, year, month;
 			target = $(e.target);
 
 			// Clicked on the switch
-			if (target.hasClass('datepicker-switch')){
-				this.showMode(1);
-			}
-
-			// Clicked on prev or next
-			var navArrow = target.closest('.prev, .next');
-			if (navArrow.length > 0) {
-				dir = DPGlobal.modes[this.viewMode].navStep * (navArrow.hasClass('prev') ? -1 : 1);
-				if (this.viewMode === 0){
-					this.viewDate = this.moveMonth(this.viewDate, dir);
-					this._trigger('changeMonth', this.viewDate);
-				} else {
-					this.viewDate = this.moveYear(this.viewDate, dir);
-					if (this.viewMode === 1){
-						this._trigger('changeYear', this.viewDate);
-					}
-				}
-				this.fill();
+			if (target.hasClass('datepicker-switch') && this.viewMode !== this.o.maxViewMode){
+				this.setViewMode(this.viewMode + 1);
 			}
 
 			// Clicked on today button
 			if (target.hasClass('today') && !target.hasClass('day')){
-				this.showMode(-2);
+				this.setViewMode(0);
 				this._setDate(UTCToday(), this.o.todayBtn === 'linked' ? null : 'view');
 			}
 
@@ -15108,102 +15105,68 @@ var $ = __webpack_require__(0);
 			}
 
 			if (!target.hasClass('disabled')){
-				// Clicked on a day
-				if (target.hasClass('day')){
-					day = parseInt(target.text(), 10) || 1;
-					year = this.viewDate.getUTCFullYear();
-					month = this.viewDate.getUTCMonth();
-
-					// From last month
-					if (target.hasClass('old')){
-						if (month === 0) {
-							month = 11;
-							year = year - 1;
-							monthChanged = true;
-							yearChanged = true;
-						} else {
-							month = month - 1;
-							monthChanged = true;
- 						}
- 					}
-
-					// From next month
-					if (target.hasClass('new')) {
-						if (month === 11){
-							month = 0;
-							year = year + 1;
-							monthChanged = true;
-							yearChanged = true;
- 						} else {
-							month = month + 1;
-							monthChanged = true;
- 						}
-					}
-					this._setDate(UTCDate(year, month, day));
-					if (yearChanged) {
-						this._trigger('changeYear', this.viewDate);
-					}
-					if (monthChanged) {
-						this._trigger('changeMonth', this.viewDate);
-					}
-				}
-
-				// Clicked on a month
-				if (target.hasClass('month')) {
-					this.viewDate.setUTCDate(1);
-					day = 1;
-					month = target.parent().find('span').index(target);
-					year = this.viewDate.getUTCFullYear();
-					this.viewDate.setUTCMonth(month);
-					this._trigger('changeMonth', this.viewDate);
-					if (this.o.minViewMode === 1){
-						this._setDate(UTCDate(year, month, day));
-						this.showMode();
-					} else {
-						this.showMode(-1);
-					}
-					this.fill();
-				}
-
-				// Clicked on a year
-				if (target.hasClass('year')
+				// Clicked on a month, year, decade, century
+				if (target.hasClass('month')
+						|| target.hasClass('year')
 						|| target.hasClass('decade')
 						|| target.hasClass('century')) {
 					this.viewDate.setUTCDate(1);
 
 					day = 1;
-					month = 0;
-					year = parseInt(target.text(), 10)||0;
-					this.viewDate.setUTCFullYear(year);
-
-					if (target.hasClass('year')){
-						this._trigger('changeYear', this.viewDate);
-						if (this.o.minViewMode === 2){
-							this._setDate(UTCDate(year, month, day));
-						}
-					}
-					if (target.hasClass('decade')){
-						this._trigger('changeDecade', this.viewDate);
-						if (this.o.minViewMode === 3){
-							this._setDate(UTCDate(year, month, day));
-						}
-					}
-					if (target.hasClass('century')){
-						this._trigger('changeCentury', this.viewDate);
-						if (this.o.minViewMode === 4){
-							this._setDate(UTCDate(year, month, day));
-						}
+					if (this.viewMode === 1){
+						month = target.parent().find('span').index(target);
+						year = this.viewDate.getUTCFullYear();
+						this.viewDate.setUTCMonth(month);
+					} else {
+						month = 0;
+						year = Number(target.text());
+						this.viewDate.setUTCFullYear(year);
 					}
 
-					this.showMode(-1);
-					this.fill();
+					this._trigger(DPGlobal.viewModes[this.viewMode - 1].e, this.viewDate);
+
+					if (this.viewMode === this.o.minViewMode){
+						this._setDate(UTCDate(year, month, day));
+					} else {
+						this.setViewMode(this.viewMode - 1);
+						this.fill();
+					}
 				}
 			}
 
 			if (this.picker.is(':visible') && this._focused_from){
-				$(this._focused_from).focus();
+				this._focused_from.focus();
 			}
 			delete this._focused_from;
+		},
+
+		dayCellClick: function(e){
+			var $target = $(e.currentTarget);
+			var timestamp = $target.data('date');
+			var date = new Date(timestamp);
+
+			if (this.o.updateViewDate) {
+				if (date.getUTCFullYear() !== this.viewDate.getUTCFullYear()) {
+					this._trigger('changeYear', this.viewDate);
+				}
+
+				if (date.getUTCMonth() !== this.viewDate.getUTCMonth()) {
+					this._trigger('changeMonth', this.viewDate);
+				}
+			}
+			this._setDate(date);
+		},
+
+		// Clicked on prev or next
+		navArrowsClick: function(e){
+			var $target = $(e.currentTarget);
+			var dir = $target.hasClass('prev') ? -1 : 1;
+			if (this.viewMode !== 0){
+				dir *= DPGlobal.viewModes[this.viewMode].navStep * 12;
+			}
+			this.viewDate = this.moveMonth(this.viewDate, dir);
+			this._trigger(DPGlobal.viewModes[this.viewMode].e, this.viewDate);
+			this.fill();
 		},
 
 		_toggle_multidate: function(date){
@@ -15232,7 +15195,7 @@ var $ = __webpack_require__(0);
 		_setDate: function(date, which){
 			if (!which || which === 'date')
 				this._toggle_multidate(date && new Date(date));
-			if (!which || which === 'view')
+			if ((!which && this.o.updateViewDate) || which === 'view')
 				this.viewDate = date && new Date(date);
 
 			this.fill();
@@ -15240,9 +15203,7 @@ var $ = __webpack_require__(0);
 			if (!which || which !== 'view') {
 				this._trigger('changeDate');
 			}
-			if (this.inputField){
-				this.inputField.change();
-			}
+			this.inputField.trigger('change');
 			if (this.o.autoclose && (!which || which === 'date')){
 				this.hide();
 			}
@@ -15285,8 +15246,7 @@ var $ = __webpack_require__(0);
 				new_month = month + dir;
 				new_date.setUTCMonth(new_month);
 				// Dec -> Jan (12) or Jan -> Dec (-1) -- limit expected date to 0-11
-				if (new_month < 0 || new_month > 11)
-					new_month = (new_month + 12) % 12;
+				new_month = (new_month + 12) % 12;
 			}
 			else {
 				// For magnitudes >1, move one month at a time...
@@ -15380,17 +15340,14 @@ var $ = __webpack_require__(0);
 
   						if (newViewDate)
   							this._trigger('changeYear', this.viewDate);
-  					}
-  					else if (e.shiftKey){
+  					} else if (e.shiftKey){
   						newViewDate = this.moveAvailableDate(focusDate, dir, 'moveMonth');
 
   						if (newViewDate)
   							this._trigger('changeMonth', this.viewDate);
-  					}
-  					else if (e.keyCode === 37 || e.keyCode === 39){
+  					} else if (e.keyCode === 37 || e.keyCode === 39){
   						newViewDate = this.moveAvailableDate(focusDate, dir, 'moveDay');
-  					}
-  					else if (!this.weekOfDateIsDisabled(focusDate)){
+  					} else if (!this.weekOfDateIsDisabled(focusDate)){
   						newViewDate = this.moveAvailableDate(focusDate, dir, 'moveWeek');
   					}
           } else if (this.viewMode === 1) {
@@ -15442,38 +15399,38 @@ var $ = __webpack_require__(0);
 					this._trigger('changeDate');
 				else
 					this._trigger('clearDate');
-				if (this.inputField){
-					this.inputField.change();
-				}
+				this.inputField.trigger('change');
 			}
 		},
 
-		showMode: function(dir){
-			if (dir){
-				this.viewMode = Math.max(this.o.minViewMode, Math.min(this.o.maxViewMode, this.viewMode + dir));
-			}
+		setViewMode: function(viewMode){
+			this.viewMode = viewMode;
 			this.picker
 				.children('div')
 				.hide()
-				.filter('.datepicker-' + DPGlobal.modes[this.viewMode].clsName)
+				.filter('.datepicker-' + DPGlobal.viewModes[this.viewMode].clsName)
 					.show();
 			this.updateNavArrows();
+      this._trigger('changeViewMode', new Date(this.viewDate));
 		}
 	};
 
 	var DateRangePicker = function(element, options){
-		$(element).data('datepicker', this);
+		$.data(element, 'datepicker', this);
 		this.element = $(element);
 		this.inputs = $.map(options.inputs, function(i){
 			return i.jquery ? i[0] : i;
 		});
 		delete options.inputs;
 
+		this.keepEmptyValues = options.keepEmptyValues;
+		delete options.keepEmptyValues;
+
 		datepickerPlugin.call($(this.inputs), options)
 			.on('changeDate', $.proxy(this.dateUpdated, this));
 
 		this.pickers = $.map(this.inputs, function(i){
-			return $(i).data('datepicker');
+			return $.data(i, 'datepicker');
 		});
 		this.updateDates();
 	};
@@ -15500,13 +15457,14 @@ var $ = __webpack_require__(0);
 				return;
 			this.updating = true;
 
-			var dp = $(e.target).data('datepicker');
+			var dp = $.data(e.target, 'datepicker');
 
-			if (typeof(dp) === "undefined") {
+			if (dp === undefined) {
 				return;
 			}
 
 			var new_date = dp.getUTCDate(),
+				keep_empty_values = this.keepEmptyValues,
 				i = $.inArray(e.target, this.inputs),
 				j = i - 1,
 				k = i + 1,
@@ -15515,7 +15473,7 @@ var $ = __webpack_require__(0);
 				return;
 
 			$.each(this.pickers, function(i, p){
-				if (!p.getUTCDate())
+				if (!p.getUTCDate() && (p === dp || !keep_empty_values))
 					p.setUTCDate(new_date);
 			});
 
@@ -15524,8 +15482,7 @@ var $ = __webpack_require__(0);
 				while (j >= 0 && new_date < this.dates[j]){
 					this.pickers[j--].setUTCDate(new_date);
 				}
-			}
-			else if (new_date > this.dates[k]){
+			} else if (new_date > this.dates[k]){
 				// Date being moved later/right
 				while (k < l && new_date > this.dates[k]){
 					this.pickers[k++].setUTCDate(new_date);
@@ -15535,10 +15492,12 @@ var $ = __webpack_require__(0);
 
 			delete this.updating;
 		},
-		remove: function(){
-			$.map(this.pickers, function(p){ p.remove(); });
+		destroy: function(){
+			$.map(this.pickers, function(p){ p.destroy(); });
+			$(this.inputs).off('changeDate', this.dateUpdated);
 			delete this.element.data().datepicker;
-		}
+		},
+		remove: alias('destroy', 'Method `remove` is deprecated and will be removed in version 2.0. Use `destroy` instead')
 	};
 
 	function opts_from_el(el, prefix){
@@ -15639,6 +15598,7 @@ var $ = __webpack_require__(0);
 		endDate: Infinity,
 		forceParse: true,
 		format: 'mm/dd/yyyy',
+		keepEmptyValues: false,
 		keyboardNavigation: true,
 		language: 'en',
 		minViewMode: 0,
@@ -15651,6 +15611,7 @@ var $ = __webpack_require__(0);
 		startView: 0,
 		todayBtn: false,
 		todayHighlight: false,
+		updateViewDate: true,
 		weekStart: 0,
 		disableTouchKeyboard: false,
 		enableOnReadonly: true,
@@ -15660,9 +15621,10 @@ var $ = __webpack_require__(0);
 		immediateUpdates: false,
 		title: '',
 		templates: {
-			leftArrow: '&laquo;',
-			rightArrow: '&raquo;'
-		}
+			leftArrow: '&#x00AB;',
+			rightArrow: '&#x00BB;'
+		},
+    showWeekDays: true
 	};
 	var locale_opts = $.fn.datepicker.locale_opts = [
 		'format',
@@ -15684,38 +15646,37 @@ var $ = __webpack_require__(0);
 	};
 
 	var DPGlobal = {
-		modes: [
+		viewModes: [
 			{
+				names: ['days', 'month'],
 				clsName: 'days',
-				navFnc: 'Month',
-				navStep: 1
+				e: 'changeMonth'
 			},
 			{
+				names: ['months', 'year'],
 				clsName: 'months',
-				navFnc: 'FullYear',
+				e: 'changeYear',
 				navStep: 1
 			},
 			{
+				names: ['years', 'decade'],
 				clsName: 'years',
-				navFnc: 'FullYear',
+				e: 'changeDecade',
 				navStep: 10
 			},
 			{
+				names: ['decades', 'century'],
 				clsName: 'decades',
-				navFnc: 'FullDecade',
+				e: 'changeCentury',
 				navStep: 100
 			},
 			{
+				names: ['centuries', 'millennium'],
 				clsName: 'centuries',
-				navFnc: 'FullCentury',
+				e: 'changeMillennium',
 				navStep: 1000
-		}],
-		isLeapYear: function(year){
-			return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
-		},
-		getDaysInMonth: function(year, month){
-			return [31, (DPGlobal.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
-		},
+			}
+		],
 		validParts: /dd?|DD?|mm?|MM?|yy(?:yy)?/g,
 		nonpunctuation: /[^ -\/:-@\u5e74\u6708\u65e5\[-`{-~\t\n\r]+/g,
 		parseFormat: function(format){
@@ -15738,10 +15699,8 @@ var $ = __webpack_require__(0);
 			if (typeof format === 'string')
 				format = DPGlobal.parseFormat(format);
 			if (format.toValue)
-                return format.toValue(date, format, language);
-            var part_re = /([\-+]\d+)([dmwy])/,
-				parts = date.match(/([\-+]\d+)([dmwy])/g),
-				fn_map = {
+				return format.toValue(date, format, language);
+			var fn_map = {
 					d: 'moveDay',
 					m: 'moveMonth',
 					w: 'moveWeek',
@@ -15752,37 +15711,23 @@ var $ = __webpack_require__(0);
 					today: '+0d',
 					tomorrow: '+1d'
 				},
-				part, dir, i, fn;
-			if (/^[\-+]\d+[dmwy]([\s,]+[\-+]\d+[dmwy])*$/.test(date)){
+				parts, part, dir, i, fn;
+			if (date in dateAliases){
+				date = dateAliases[date];
+			}
+			if (/^[\-+]\d+[dmwy]([\s,]+[\-+]\d+[dmwy])*$/i.test(date)){
+				parts = date.match(/([\-+]\d+)([dmwy])/gi);
 				date = new Date();
 				for (i=0; i < parts.length; i++){
-					part = part_re.exec(parts[i]);
-					dir = parseInt(part[1]);
-					fn = fn_map[part[2]];
+					part = parts[i].match(/([\-+]\d+)([dmwy])/i);
+					dir = Number(part[1]);
+					fn = fn_map[part[2].toLowerCase()];
 					date = Datepicker.prototype[fn](date, dir);
 				}
-				return UTCDate(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-			}
-
-			if (typeof dateAliases[date] !== 'undefined') {
-				date = dateAliases[date];
-				parts = date.match(/([\-+]\d+)([dmwy])/g);
-
-				if (/^[\-+]\d+[dmwy]([\s,]+[\-+]\d+[dmwy])*$/.test(date)){
-					date = new Date();
-				  	for (i=0; i < parts.length; i++){
-						part = part_re.exec(parts[i]);
-						dir = parseInt(part[1]);
-						fn = fn_map[part[2]];
-						date = Datepicker.prototype[fn](date, dir);
-				  	}
-
-			  		return UTCDate(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-				}
+				return Datepicker.prototype._zero_utc_time(date);
 			}
 
 			parts = date && date.match(this.nonpunctuation) || [];
-			date = new Date();
 
 			function applyNearbyYear(year, threshold){
 				if (threshold === true)
@@ -15806,9 +15751,6 @@ var $ = __webpack_require__(0);
 					yyyy: function(d,v){
 						return d.setUTCFullYear(assumeNearby ? applyNearbyYear(v, assumeNearby) : v);
 					},
-					yy: function(d,v){
-						return d.setUTCFullYear(assumeNearby ? applyNearbyYear(v, assumeNearby) : v);
-					},
 					m: function(d,v){
 						if (isNaN(d))
 							return d;
@@ -15825,6 +15767,7 @@ var $ = __webpack_require__(0);
 					}
 				},
 				val, filtered;
+			setters_map['yy'] = setters_map['yyyy'];
 			setters_map['M'] = setters_map['MM'] = setters_map['mm'] = setters_map['m'];
 			setters_map['dd'] = setters_map['d'];
 			date = UTCToday();
@@ -15906,9 +15849,9 @@ var $ = __webpack_require__(0);
 			                '<th colspan="7" class="datepicker-title"></th>'+
 			              '</tr>'+
 							'<tr>'+
-								'<th class="prev">&laquo;</th>'+
+								'<th class="prev">'+defaults.templates.leftArrow+'</th>'+
 								'<th colspan="5" class="datepicker-switch"></th>'+
-								'<th class="next">&raquo;</th>'+
+								'<th class="next">'+defaults.templates.rightArrow+'</th>'+
 							'</tr>'+
 						'</thead>',
 		contTemplate: '<tbody><tr><td colspan="7"></td></tr></tbody>',
@@ -15972,7 +15915,15 @@ var $ = __webpack_require__(0);
 
 	/* DATEPICKER VERSION
 	 * =================== */
-	$.fn.datepicker.version = '1.6.4';
+	$.fn.datepicker.version = '1.7.0';
+
+	$.fn.datepicker.deprecated = function(msg){
+		var console = window.console;
+		if (console && console.warn) {
+			console.warn('DEPRECATED: ' + msg);
+		}
+	};
+
 
 	/* DATEPICKER DATA-API
 	* ================== */
@@ -15998,7 +15949,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 45 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! jQuery UI - v1.12.1 - 2017-03-19
@@ -34712,13 +34663,12 @@ var effectsEffectTransfer = effect;
 }));
 
 /***/ }),
-/* 46 */
+/* 63 */,
+/* 64 */,
+/* 65 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxyService__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
 /* unused harmony export deletePage */
 /* unused harmony export deletePageRecursive */
 /* unused harmony export deletePageById */
@@ -34732,6 +34682,9 @@ var effectsEffectTransfer = effect;
 /* unused harmony export postPage */
 /* harmony export (immutable) */ __webpack_exports__["b"] = updateContent;
 /* harmony export (immutable) */ __webpack_exports__["f"] = addLabel;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxyService__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
 
 
 
@@ -34984,32 +34937,32 @@ function addLabel(pageId, label) {
 
 
 /***/ }),
-/* 47 */,
-/* 48 */,
-/* 49 */
+/* 66 */,
+/* 67 */,
+/* 68 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wizardService__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery_ui_bundle__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__wizardService__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery_ui_bundle__ = __webpack_require__(62);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery_ui_bundle___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_jquery_ui_bundle__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_bootstrap__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_validator__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_validator__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_bootstrap_validator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_datepicker__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_datepicker__ = __webpack_require__(61);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_datepicker___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_datepicker__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_bootstrap_dist_css_bootstrap_theme_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__(55);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__css_golden_form_css__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__css_golden_form_css__ = __webpack_require__(54);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__css_golden_form_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__css_golden_form_css__);
 
 
