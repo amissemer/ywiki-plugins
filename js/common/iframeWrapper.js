@@ -50,6 +50,11 @@ export default function iframeWrapper( postToWindow, targetHostname ) {
           payload={textStatus: arguments[1], errorThrown: arguments[2]};
           if (arguments[0] && arguments[0].responseText) {
             payload.responseText = arguments[0].responseText;
+            try {
+                payload.responseJson = JSON.parse(payload.responseText);
+            } catch(e) {
+              // ignore
+            }
           }
         }
         var errorMsg = {

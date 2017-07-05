@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 47);
+/******/ 	return __webpack_require__(__webpack_require__.s = 48);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10488,6 +10488,11 @@ function iframeWrapper( postToWindow, targetHostname ) {
           payload={textStatus: arguments[1], errorThrown: arguments[2]};
           if (arguments[0] && arguments[0].responseText) {
             payload.responseText = arguments[0].responseText;
+            try {
+                payload.responseJson = JSON.parse(payload.responseText);
+            } catch(e) {
+              // ignore
+            }
           }
         }
         var errorMsg = {
@@ -15526,7 +15531,7 @@ var $ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jira_error__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jira_error__ = __webpack_require__(51);
 
 
 
@@ -15653,13 +15658,13 @@ function getJiraTicketKey(data) {
 /* 32 */,
 /* 33 */,
 /* 34 */,
-/* 35 */
+/* 35 */,
+/* 36 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 36 */,
 /* 37 */,
 /* 38 */,
 /* 39 */,
@@ -15670,7 +15675,8 @@ function getJiraTicketKey(data) {
 /* 44 */,
 /* 45 */,
 /* 46 */,
-/* 47 */
+/* 47 */,
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15690,7 +15696,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_select_dist_css_bootstrap_select_min_css__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_select_dist_css_bootstrap_select_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_bootstrap_select_dist_css_bootstrap_select_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__ = __webpack_require__(36);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__common_optionsParser__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__jiraService__ = __webpack_require__(29);
@@ -15778,9 +15784,9 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
 
 
 /***/ }),
-/* 48 */,
 /* 49 */,
-/* 50 */
+/* 50 */,
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

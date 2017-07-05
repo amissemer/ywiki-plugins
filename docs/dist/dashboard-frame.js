@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 48);
+/******/ 	return __webpack_require__(__webpack_require__.s = 49);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10488,6 +10488,11 @@ function iframeWrapper( postToWindow, targetHostname ) {
           payload={textStatus: arguments[1], errorThrown: arguments[2]};
           if (arguments[0] && arguments[0].responseText) {
             payload.responseText = arguments[0].responseText;
+            try {
+                payload.responseJson = JSON.parse(payload.responseText);
+            } catch(e) {
+              // ignore
+            }
           }
         }
         var errorMsg = {
@@ -31189,7 +31194,8 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.fn.dataTable.Api.register( 'sum()
 /* 31 */,
 /* 32 */,
 /* 33 */,
-/* 34 */
+/* 34 */,
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! RowGroup 1.0.0
@@ -31582,21 +31588,15 @@ return RowGroup;
 
 
 /***/ }),
-/* 35 */,
-/* 36 */
+/* 36 */,
+/* 37 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 37 */,
 /* 38 */,
-/* 39 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
+/* 39 */,
 /* 40 */
 /***/ (function(module, exports) {
 
@@ -31616,6 +31616,12 @@ return RowGroup;
 
 /***/ }),
 /* 43 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -33741,11 +33747,11 @@ Licensed under the BSD-2-Clause License.
 }.call(window));
 
 /***/ }),
-/* 44 */,
 /* 45 */,
 /* 46 */,
 /* 47 */,
-/* 48 */
+/* 48 */,
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33764,25 +33770,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_bootstrap_dist_css_bootstrap_theme_min_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_select_dist_css_bootstrap_select_min_css__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_select_dist_css_bootstrap_select_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_select_dist_css_bootstrap_select_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__css_dashboard_css__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__css_dashboard_css__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__css_dashboard_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__css_dashboard_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_font_awesome_css_font_awesome_css__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_font_awesome_css_font_awesome_css__ = __webpack_require__(42);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_font_awesome_css_font_awesome_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_font_awesome_css_font_awesome_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_raphael__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_raphael___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_raphael__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_morris_data_morris_js__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_morris_data_morris_js__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_morris_data_morris_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_morris_data_morris_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_morris_data_morris_css__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_morris_data_morris_css__ = __webpack_require__(43);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_morris_data_morris_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_morris_data_morris_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__common_optionsParser__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__dashboard_utils_js__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_datatables_net_bs__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_datatables_net_bs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14_datatables_net_bs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15_datatables_net_bs_css_dataTables_bootstrap_css__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15_datatables_net_bs_css_dataTables_bootstrap_css__ = __webpack_require__(40);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15_datatables_net_bs_css_dataTables_bootstrap_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_15_datatables_net_bs_css_dataTables_bootstrap_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_datatables_net_rowgroup__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_datatables_net_rowgroup__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_datatables_net_rowgroup___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_16_datatables_net_rowgroup__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_datatables_net_rowgroup_bs_css_rowGroup_bootstrap_css__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_datatables_net_rowgroup_bs_css_rowGroup_bootstrap_css__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_datatables_net_rowgroup_bs_css_rowGroup_bootstrap_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_17_datatables_net_rowgroup_bs_css_rowGroup_bootstrap_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__datatable_sum_js__ = __webpack_require__(28);
 

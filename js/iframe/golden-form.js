@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import './polyfills';
 import * as proxy from './proxyService';
 import * as wizardService from './wizardService';
 import 'jquery-ui-bundle';
@@ -85,8 +86,14 @@ function bindDOM() {
 
 function onSubmitError(error) {
 	var errorMsg=error;
-	if (errorMsg.length) {
+	if (Array.isArray(errorMsg) && errorMsg[0]) {
 		errorMsg=errorMsg[0];
+	}
+	if (errorMsg.responseJson && errorMsg.responseJson.message) {
+		errorMsg = errorMsg.responseJson.message;
+	}
+	if (typeof errorMsg != "string") {
+		errorMsg = JSON.stringify(errorMsg);
 	}
 	console.error("Submit Error", error);
 	$('#error-display .msg').text(errorMsg);
