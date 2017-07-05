@@ -35035,7 +35035,8 @@ function onSubmitError(error) {
 	if (errorMsg.length) {
 		errorMsg=errorMsg[0];
 	}
-	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#error-display .msg').text(error);
+	console.error("Submit Error", error);
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#error-display .msg').text(errorMsg);
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#error-display').show();
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#progress-indicator').hide();
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#wizard-submit").prop('disabled', false);

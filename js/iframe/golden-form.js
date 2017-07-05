@@ -88,7 +88,8 @@ function onSubmitError(error) {
 	if (errorMsg.length) {
 		errorMsg=errorMsg[0];
 	}
-	$('#error-display .msg').text(error);
+	console.error("Submit Error", error);
+	$('#error-display .msg').text(errorMsg);
 	$('#error-display').show();
 	$('#progress-indicator').hide();
 	$("#wizard-submit").prop('disabled', false);
