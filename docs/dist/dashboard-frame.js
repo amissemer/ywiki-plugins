@@ -10486,6 +10486,9 @@ function iframeWrapper( postToWindow, targetHostname ) {
         var payload = arguments;
         if (arguments && arguments.length && arguments.length>2) {// for ajax errors, the error handler gets (jqXHR, textStatus, errorThrown) but we can't pass the whole jqXHR through the postMessage API
           payload={textStatus: arguments[1], errorThrown: arguments[2]};
+          if (arguments[0] && arguments[0].responseText) {
+            payload.responseText = arguments[0].responseText;
+          }
         }
         var errorMsg = {
           correlationId: correlationId,
