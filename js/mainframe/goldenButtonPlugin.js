@@ -117,6 +117,17 @@ function wireCreateJiraButton(options) {
   return genericButton(options, 'create-jira-form.html');
 }
 
+function wireMovePageButton(options) {
+
+  var el = $(options.cssSelector);
+  var btnText = el.text() || options.defaultText;
+  el.addClass("cibutton btn btn-lg btn-warning")
+  .html('\
+    <span class="text">'+btnText+'</span>\
+  ');
+  return genericButton(options, 'move-pages.html');
+}
+
 function insertFrame() {
   // insert the frame html after the current script tag
   var scripts = document.getElementsByTagName('script');
@@ -166,6 +177,15 @@ function bootstrap(host, cacheBuster) {
       serviceDisplayName: jEl.data('service-display-name'),
       issueType: jEl.data('issue-type'),
       issueComponent: jEl.data('issue-component'),
+    });
+  });
+  $('[data-activate="move-page-button"]').each( function() {
+    var jEl=$(this);
+    wireMovePageButton({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      defaultText: "Move Pages"
     });
   });
 }

@@ -34672,6 +34672,7 @@ var effectsEffectTransfer = effect;
 /* unused harmony export deletePage */
 /* unused harmony export deletePageRecursive */
 /* unused harmony export deletePageById */
+/* harmony export (immutable) */ __webpack_exports__["h"] = movePages;
 /* harmony export (immutable) */ __webpack_exports__["a"] = getContent;
 /* harmony export (immutable) */ __webpack_exports__["d"] = getContentById;
 /* harmony export (immutable) */ __webpack_exports__["g"] = searchPagesWithCQL;
@@ -34709,6 +34710,48 @@ function deletePageById(pageId) {
     url: '/rest/api/content/'+encodeURIComponent(pageId),
     type: 'DELETE'
   }).fail(errorLogger( "DELETE page failed"));
+}
+function movePages(sourceSpaceKey, sourcePageTitle,targetSpaceKey, targetParentTitle) {
+  if (sourceSpaceKey==targetSpaceKey) {
+    return new __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred().reject("You don't need a tool for that, just use the standard Move feature of Confluence").promise();
+  }
+  return getContent(sourceSpaceKey, sourcePageTitle)
+  .then( function (sourcePage) {
+    return movePagesRecursiveInternal( sourcePage.id, targetSpaceKey, targetParentTitle );
+  });
+}
+function getAtlToken() {
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["e" /* $metacontent */]('meta[name=ajs-atl-token]');
+}
+
+var atlToken;
+getAtlToken().then(function(value) {atlToken = value}, function() { console.error("Could not retrieve atl-token from Confluence"); });
+
+function movePagesRecursiveInternal( sourcePageId, targetSpaceKey, targetParentTitle) {
+  return getContentById( sourcePageId, 'children.page')
+  .then( function (sourcePage) {
+    // first move the current page
+    return moveOne( sourcePageId, targetSpaceKey, targetParentTitle )
+    .then( function () {
+      // then move the children
+      var childrenPromises = [];
+      console.log("In movePagesRecursiveInternal for ", sourcePage.title);
+      if (sourcePage.children && sourcePage.children.page && sourcePage.children.page.results) {
+        sourcePage.children.page.results.forEach( function (child) {
+          childrenPromises.push(movePagesRecursiveInternal( child.id, targetSpaceKey, sourcePage.title ));
+        });
+      }
+      // return when all children have been recursively moved
+      return __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.when.apply(__WEBPACK_IMPORTED_MODULE_1_jquery___default.a,childrenPromises);
+    });
+  });
+
+}
+
+function moveOne (sourcePageId, targetSpaceKey, targetParentTitle) {
+  var url = '/pages/movepage.action?pageId='+encodeURIComponent(sourcePageId)+'&spaceKey='+encodeURIComponent(targetSpaceKey)+'&targetTitle='+encodeURIComponent(targetParentTitle)+'&position=append&atl_token='+atlToken+'&_='+Math.random();
+  console.log("Moving page ",sourcePageId," under ",targetSpaceKey+":"+ targetParentTitle, url);
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](url);
 }
 
 function deletePageRecursiveInternal(pageId) {

@@ -23,6 +23,48 @@ export function deletePageById(pageId) {
     type: 'DELETE'
   }).fail(errorLogger( "DELETE page failed"));
 }
+export function movePages(sourceSpaceKey, sourcePageTitle,targetSpaceKey, targetParentTitle) {
+  if (sourceSpaceKey==targetSpaceKey) {
+    return new $.Deferred().reject("You don't need a tool for that, just use the standard Move feature of Confluence").promise();
+  }
+  return getContent(sourceSpaceKey, sourcePageTitle)
+  .then( function (sourcePage) {
+    return movePagesRecursiveInternal( sourcePage.id, targetSpaceKey, targetParentTitle );
+  });
+}
+function getAtlToken() {
+  return proxy.$metacontent('meta[name=ajs-atl-token]');
+}
+
+var atlToken;
+getAtlToken().then(function(value) {atlToken = value}, function() { console.error("Could not retrieve atl-token from Confluence"); });
+
+function movePagesRecursiveInternal( sourcePageId, targetSpaceKey, targetParentTitle) {
+  return getContentById( sourcePageId, 'children.page')
+  .then( function (sourcePage) {
+    // first move the current page
+    return moveOne( sourcePageId, targetSpaceKey, targetParentTitle )
+    .then( function () {
+      // then move the children
+      var childrenPromises = [];
+      console.log("In movePagesRecursiveInternal for ", sourcePage.title);
+      if (sourcePage.children && sourcePage.children.page && sourcePage.children.page.results) {
+        sourcePage.children.page.results.forEach( function (child) {
+          childrenPromises.push(movePagesRecursiveInternal( child.id, targetSpaceKey, sourcePage.title ));
+        });
+      }
+      // return when all children have been recursively moved
+      return $.when.apply($,childrenPromises);
+    });
+  });
+
+}
+
+function moveOne (sourcePageId, targetSpaceKey, targetParentTitle) {
+  var url = '/pages/movepage.action?pageId='+encodeURIComponent(sourcePageId)+'&spaceKey='+encodeURIComponent(targetSpaceKey)+'&targetTitle='+encodeURIComponent(targetParentTitle)+'&position=append&atl_token='+atlToken+'&_='+Math.random();
+  console.log("Moving page ",sourcePageId," under ",targetSpaceKey+":"+ targetParentTitle, url);
+  return proxy.ajax(url);
+}
 
 function deletePageRecursiveInternal(pageId) {
   return getContentById(pageId, 'children.page')

@@ -4,6 +4,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   entry: {
     "golden-button": './js/mainframe/main.js',
+    "move-pages-bundle": './js/iframe/move-pages.js',
     "golden-form": './js/iframe/golden-form.js',
     "create-jira-form": './js/iframe/create-jira-form.js',
     "dashboard-frame": './js/iframe/dashboard.js',
