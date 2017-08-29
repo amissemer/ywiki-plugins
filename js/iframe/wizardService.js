@@ -9,6 +9,7 @@ var customerComboLimit=10;
 var defaultCustomerPageTemplate='.CI New Project Documentation Template';
 var additionalLabel='service-workspace';
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
+const BASELINE_VERSION_CSS_SELECTOR = ".confluenceTd p:contains('Definition') + p";
 
 if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
 	throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
@@ -48,7 +49,7 @@ export function withOption(name) {
 
 
 function logCreation(logToPage, createdPage) {
-	proxy.$text(".confluenceTh:contains('Current Version') + .confluenceTd").done( function (version) {
+	proxy.$text(BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
 		logCreationWithVersion(version, logToPage, createdPage);
 	}).
 	fail( function () {
