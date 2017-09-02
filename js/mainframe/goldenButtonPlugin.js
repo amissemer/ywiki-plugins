@@ -1,8 +1,10 @@
 import '../../css/professors.css';
 import '../../css/golden-button.css';
+import '../../css/jira-issue-summary.css';
 import iframeWrapper from '../common/iframeWrapper';
 import * as plugin from './pluginCommon';
-import {encodeOptions} from '../common/optionsParser'
+import {encodeOptions} from '../common/optionsParser';
+import {DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL} from '../common/config';
 
 function closeIFrame(iframeElt) {
   iframeElt.unbind('load').fadeOut( function() {
@@ -103,6 +105,37 @@ function wireButton(options) {
   return genericButton(options, 'golden-form.html');
 }
 
+function wireJiraIssueSummary(options) {
+  // {
+  //   host,
+  //   cacheBuster,
+  //   cssSelector,
+  //   jiraLabel,
+  //   summaryType,
+  //   jiraIssueCount,
+  //   jiraColumns
+  // }
+  var el = $(options.cssSelector);
+  var jql = '( labels="'+options.jiraLabel+'" AND labels="'+MAIN_JIRA_LABEL+'") ';
+  if (options.summaryType=="done") {
+    jql+=' AND status IN (Resolved, "Verified/Closed", Done, Fixed, Complete)';
+  } else if (options.summaryType=="todo") {
+    jql+=' AND status NOT IN (Resolved, "Verified/Closed", Done, Fixed, Complete, Cancelled)';
+  }
+  var postQuery = '<ac:structured-macro ac:name="jira" ac:schema-version="1" ><ac:parameter ac:name="columns">'+options.jiraColumns+'</ac:parameter><ac:parameter ac:name="maximumIssues">'+options.jiraIssueCount+'</ac:parameter><ac:parameter ac:name="jqlQuery">'+jql+'</ac:parameter></ac:structured-macro>';
+  var reqPayload = {
+      wikiMarkup : encodeURIComponent( postQuery ),
+      clearCache:true
+  };
+  $.ajax({
+    url:"https://wiki.hybris.com/rest/jiraanywhere/1.0/jira/renderTable",
+    type: "POST",
+    data: JSON.stringify(reqPayload),
+    contentType: "application/json",
+    complete: function( data ) {el.html(JSON.parse(data.responseText).data);}
+  });
+}
+
 function wireCreateJiraButton(options) {
 
   var el = $(options.cssSelector);
@@ -177,6 +210,7 @@ function bootstrap(host, cacheBuster) {
       serviceDisplayName: jEl.data('service-display-name'),
       issueType: jEl.data('issue-type'),
       issueComponent: jEl.data('issue-component'),
+      issueLabel: jEl.data('issue-label'),
     });
   });
   $('[data-activate="move-page-button"]').each( function() {
@@ -186,6 +220,18 @@ function bootstrap(host, cacheBuster) {
       cacheBuster: cacheBuster,
       cssSelector: this,
       defaultText: "Move Pages"
+    });
+  });
+  $('[data-activate="issue-summary"]').each( function() {
+    var jEl=$(this);
+    wireJiraIssueSummary({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      jiraLabel : jEl.data('jira-label'),
+      summaryType: jEl.data('summary-type'),
+      jiraIssueCount: Number(jEl.data('jira-max-issues')) || DEFAULT_JIRA_ISSUE_COUNT,
+      jiraColumns: jEl.data('jira-columns') || DEFAULT_JIRA_COLUMNS
     });
   });
 }

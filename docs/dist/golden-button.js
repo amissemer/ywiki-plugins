@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 53);
+/******/ 	return __webpack_require__(__webpack_require__.s = 54);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -10359,7 +10359,7 @@ console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pluginCommon__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_optionsParser__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(55);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(6);
 
@@ -10431,13 +10431,18 @@ bootstrap(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],__WEBPACK_
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__css_professors_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__ = __webpack_require__(56);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_iframeWrapper__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pluginCommon__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__common_optionsParser__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pluginCommon__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_optionsParser__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__common_config__ = __webpack_require__(48);
+
+
 
 
 
@@ -10463,7 +10468,7 @@ function openIFrame(iframeElt, frameSrc, options) {
       iframeElt.fadeIn();
     });
   });
-  iframeElt.attr('src', frameSrc + '#' + __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__common_optionsParser__["b" /* encodeOptions */])(options));
+  iframeElt.attr('src', frameSrc + '#' + __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_5__common_optionsParser__["b" /* encodeOptions */])(options));
   $(document).keyup(function(e) {
     if (e.keyCode == 27) { // ESC
 			 closeIFrame(iframeElt);
@@ -10485,7 +10490,7 @@ function redirectTo(url) {
 }
 
 function attachHandlersToIFrameWindow(host, myIFrame) {
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__common_iframeWrapper__["a" /* default */])(myIFrame[0].contentWindow, host)
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__["a" /* default */])(myIFrame[0].contentWindow, host)
     .attachActionHandler("ajax", function (param) {
       return jQuery.ajax(param);
     })
@@ -10541,6 +10546,37 @@ function genericButton(options, formPath) {
 creates the iframe element, attach the click event to the main button to load the iframe */
 function wireButton(options) {
   return genericButton(options, 'golden-form.html');
+}
+
+function wireJiraIssueSummary(options) {
+  // {
+  //   host,
+  //   cacheBuster,
+  //   cssSelector,
+  //   jiraLabel,
+  //   summaryType,
+  //   jiraIssueCount,
+  //   jiraColumns
+  // }
+  var el = $(options.cssSelector);
+  var jql = '( labels="'+options.jiraLabel+'" AND labels="'+__WEBPACK_IMPORTED_MODULE_6__common_config__["a" /* MAIN_JIRA_LABEL */]+'") ';
+  if (options.summaryType=="done") {
+    jql+=' AND status IN (Resolved, "Verified/Closed", Done, Fixed, Complete)';
+  } else if (options.summaryType=="todo") {
+    jql+=' AND status NOT IN (Resolved, "Verified/Closed", Done, Fixed, Complete, Cancelled)';
+  }
+  var postQuery = '<ac:structured-macro ac:name="jira" ac:schema-version="1" ><ac:parameter ac:name="columns">'+options.jiraColumns+'</ac:parameter><ac:parameter ac:name="maximumIssues">'+options.jiraIssueCount+'</ac:parameter><ac:parameter ac:name="jqlQuery">'+jql+'</ac:parameter></ac:structured-macro>';
+  var reqPayload = {
+      wikiMarkup : encodeURIComponent( postQuery ),
+      clearCache:true
+  };
+  $.ajax({
+    url:"https://wiki.hybris.com/rest/jiraanywhere/1.0/jira/renderTable",
+    type: "POST",
+    data: JSON.stringify(reqPayload),
+    contentType: "application/json",
+    complete: function( data ) {el.html(JSON.parse(data.responseText).data);}
+  });
 }
 
 function wireCreateJiraButton(options) {
@@ -10617,6 +10653,7 @@ function bootstrap(host, cacheBuster) {
       serviceDisplayName: jEl.data('service-display-name'),
       issueType: jEl.data('issue-type'),
       issueComponent: jEl.data('issue-component'),
+      issueLabel: jEl.data('issue-label'),
     });
   });
   $('[data-activate="move-page-button"]').each( function() {
@@ -10628,9 +10665,21 @@ function bootstrap(host, cacheBuster) {
       defaultText: "Move Pages"
     });
   });
+  $('[data-activate="issue-summary"]').each( function() {
+    var jEl=$(this);
+    wireJiraIssueSummary({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      jiraLabel : jEl.data('jira-label'),
+      summaryType: jEl.data('summary-type'),
+      jiraIssueCount: Number(jEl.data('jira-max-issues')) || __WEBPACK_IMPORTED_MODULE_6__common_config__["b" /* DEFAULT_JIRA_ISSUE_COUNT */],
+      jiraColumns: jEl.data('jira-columns') || __WEBPACK_IMPORTED_MODULE_6__common_config__["c" /* DEFAULT_JIRA_COLUMNS */]
+    });
+  });
 }
 
-bootstrap(__WEBPACK_IMPORTED_MODULE_3__pluginCommon__["a" /* host */],__WEBPACK_IMPORTED_MODULE_3__pluginCommon__["b" /* cacheBuster */]);
+bootstrap(__WEBPACK_IMPORTED_MODULE_4__pluginCommon__["a" /* host */],__WEBPACK_IMPORTED_MODULE_4__pluginCommon__["b" /* cacheBuster */]);
 
 
 /***/ }),
@@ -10660,7 +10709,23 @@ loadStyleSheet(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],'dist
 
 /***/ }),
 
-/***/ 53:
+/***/ 48:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return DEFAULT_JIRA_COLUMNS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MAIN_JIRA_LABEL; });
+const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
+const DEFAULT_JIRA_ISSUE_COUNT = 10;
+const MAIN_JIRA_LABEL = "CI";
+
+
+
+
+/***/ }),
+
+/***/ 54:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10675,13 +10740,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 
-/***/ 54:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
 /***/ 55:
 /***/ (function(module, exports) {
 
@@ -10690,6 +10748,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ }),
 
 /***/ 56:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 57:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 58:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

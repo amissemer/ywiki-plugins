@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 48);
+/******/ 	return __webpack_require__(__webpack_require__.s = 49);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -15532,7 +15532,7 @@ var $ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jira_error__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jira_error__ = __webpack_require__(52);
 
 
 
@@ -15680,6 +15680,21 @@ function getJiraTicketKey(data) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return DEFAULT_JIRA_COLUMNS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MAIN_JIRA_LABEL; });
+const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
+const DEFAULT_JIRA_ISSUE_COUNT = 10;
+const MAIN_JIRA_LABEL = "CI";
+
+
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
@@ -15700,6 +15715,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__css_create_jira_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__css_create_jira_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__common_optionsParser__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__jiraService__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__common_config__ = __webpack_require__(48);
 
 
 //import 'jquery-ui-bundle';
@@ -15714,8 +15730,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+
 var options = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_9__common_optionsParser__["a" /* parseOptions */])({"serviceDisplayName" : "service engagements"});
-var additionalLabel = "from-confluence";
+
+var additionalLabel = __WEBPACK_IMPORTED_MODULE_11__common_config__["a" /* MAIN_JIRA_LABEL */];
 
 console.info("Form options",options);
 
@@ -15741,6 +15759,9 @@ function bindDOM() {
 			return true;
 		} else {
 			var labels = [additionalLabel];
+			if (options.issueLabel) {
+				labels.push(options.issueLabel);
+			}
 			var cust = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#customer").val();
 			if (cust) {
 				labels.push(cust.replace(/[\W_]+/g,"-"));
@@ -15784,9 +15805,9 @@ __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
 
 
 /***/ }),
-/* 49 */,
 /* 50 */,
-/* 51 */
+/* 51 */,
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

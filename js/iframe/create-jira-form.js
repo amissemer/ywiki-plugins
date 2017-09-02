@@ -11,9 +11,11 @@ import 'bootstrap-select/dist/css/bootstrap-select.min.css';
 import '../../css/create-jira.css';
 import {parseOptions} from '../common/optionsParser';
 import * as jira from './jiraService';
+import {MAIN_JIRA_LABEL} from '../common/config';
 
 var options = parseOptions({"serviceDisplayName" : "service engagements"});
-var additionalLabel = "from-confluence";
+
+var additionalLabel = MAIN_JIRA_LABEL;
 
 console.info("Form options",options);
 
@@ -39,6 +41,9 @@ function bindDOM() {
 			return true;
 		} else {
 			var labels = [additionalLabel];
+			if (options.issueLabel) {
+				labels.push(options.issueLabel);
+			}
 			var cust = $("#customer").val();
 			if (cust) {
 				labels.push(cust.replace(/[\W_]+/g,"-"));
