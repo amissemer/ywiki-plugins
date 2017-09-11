@@ -208,9 +208,9 @@ function bootstrap(host, cacheBuster) {
       cssSelector: this,
       jiraProjectKey: jEl.data('jira-project-key'),
       serviceDisplayName: jEl.data('service-display-name'),
-      issueType: jEl.data('issue-type'),
+      issueType: jEl.data('issue-type') || "Improvement",
       issueComponent: jEl.data('issue-component'),
-      issueLabel: jEl.data('issue-label'),
+      issueLabel: jEl.data('issue-label') || jEl.data('jira-label'),
     });
   });
   $('[data-activate="move-page-button"]').each( function() {
