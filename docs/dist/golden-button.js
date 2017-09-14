@@ -10539,7 +10539,7 @@ function wireBanner(options) {
               <div class="theOneButton">'+options.buttonText+'</div>\
             </div>\
             <div class="cilogo">\
-              <img src="'+options.host+'/banner/dashboard_figure.png" />\
+              <img src="'+options.host+'/banner/service_leads_2.png" />\
             </div>\
             <div class="cicenter">\
             <h1>'+options.bannerText+'</h1>\
