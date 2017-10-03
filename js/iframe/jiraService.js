@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import * as proxy from './proxyService';
 import { JiraError} from './jira-error';
-
+import {TAGS_FIELD} from '../common/config';
 const jiraServerHost = 'jira.hybris.com';
 //const jiraServerHost = 'jiratest.hybris.com';
 
@@ -56,7 +56,7 @@ function getIssueTypeId(jiraProject, issueTypeName) {
 }
 
 /** Returns a promise for the issueKey */
-function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, labels) {
+function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, feedbackType, labels) {
   var jiraServerP = getJiraServer();
   //var jiraProjectP = getJiraProject(jiraServerP, projectKey);
   //var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
@@ -64,27 +64,29 @@ function createIssue(projectKey, issueTypeName, componentName, summary, descript
     labels = [ labels ];
   }
   labels = labels || [];
+  console.log("FeedbackType:",feedbackType);
   return $.when(jiraServerP)
     .then(function(jiraServer) {
+      var issue =
+      {
+        "fields": {
+          "project": {"key": projectKey},
+          "issuetype":{"name": issueTypeName},
+          "components":[{"name": componentName}],
+          "summary":summary,
+          "description":description,
+          "priority": {"name": priority},
+          "labels": labels
+        }
+      };
+      if (typeof feedbackType === "string") {
+        issue.fields[TAGS_FIELD] = [ feedbackType];
+      }
       return proxy.ajax({
         url: "/rest/jira-integration/1.0/issues?applicationId="+jiraServer,
         contentType: "application/json;charset=UTF-8",
         type: "POST",
-        data: JSON.stringify(
-          { "issues":[
-            {
-              "fields": {
-                "project": {"key": projectKey},
-                "issuetype":{"name": issueTypeName},
-                "components":[{"name": componentName}],
-                "summary":summary,
-                "description":description,
-                "priority": {"name": priority},
-                "labels": labels
-              }
-            }
-          ]}
-        )
+        data: JSON.stringify( { "issues":[ issue ] })
       });
     })
     .then( getJiraTicketKey );

@@ -10333,12 +10333,14 @@ return jQuery;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return DEFAULT_JIRA_COLUMNS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return DEFAULT_JIRA_COLUMNS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MAIN_JIRA_LABEL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return TAGS_FIELD; });
 const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 const DEFAULT_JIRA_ISSUE_COUNT = 10;
 const MAIN_JIRA_LABEL = "CI";
+const TAGS_FIELD = "customfield_10032";
 
 
 
@@ -10689,8 +10691,8 @@ function bootstrap(host, cacheBuster) {
       cssSelector: this,
       jiraLabel : jEl.data('jira-label'),
       summaryType: jEl.data('summary-type'),
-      jiraIssueCount: Number(jEl.data('jira-max-issues')) || __WEBPACK_IMPORTED_MODULE_6__common_config__["b" /* DEFAULT_JIRA_ISSUE_COUNT */],
-      jiraColumns: jEl.data('jira-columns') || __WEBPACK_IMPORTED_MODULE_6__common_config__["c" /* DEFAULT_JIRA_COLUMNS */]
+      jiraIssueCount: Number(jEl.data('jira-max-issues')) || __WEBPACK_IMPORTED_MODULE_6__common_config__["c" /* DEFAULT_JIRA_ISSUE_COUNT */],
+      jiraColumns: jEl.data('jira-columns') || __WEBPACK_IMPORTED_MODULE_6__common_config__["d" /* DEFAULT_JIRA_COLUMNS */]
     });
   });
 }

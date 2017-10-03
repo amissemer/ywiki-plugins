@@ -15519,12 +15519,14 @@ var $ = __webpack_require__(0);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return DEFAULT_JIRA_COLUMNS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return DEFAULT_JIRA_COLUMNS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MAIN_JIRA_LABEL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return TAGS_FIELD; });
 const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 const DEFAULT_JIRA_ISSUE_COUNT = 10;
 const MAIN_JIRA_LABEL = "CI";
+const TAGS_FIELD = "customfield_10032";
 
 
 
@@ -15548,6 +15550,7 @@ const MAIN_JIRA_LABEL = "CI";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jira_error__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_config__ = __webpack_require__(23);
 
 
 
@@ -15606,7 +15609,7 @@ function getIssueTypeId(jiraProject, issueTypeName) {
 }
 
 /** Returns a promise for the issueKey */
-function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, labels) {
+function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, feedbackType, labels) {
   var jiraServerP = getJiraServer();
   //var jiraProjectP = getJiraProject(jiraServerP, projectKey);
   //var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
@@ -15614,27 +15617,29 @@ function createIssue(projectKey, issueTypeName, componentName, summary, descript
     labels = [ labels ];
   }
   labels = labels || [];
+  console.log("FeedbackType:",feedbackType);
   return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when(jiraServerP)
     .then(function(jiraServer) {
+      var issue =
+      {
+        "fields": {
+          "project": {"key": projectKey},
+          "issuetype":{"name": issueTypeName},
+          "components":[{"name": componentName}],
+          "summary":summary,
+          "description":description,
+          "priority": {"name": priority},
+          "labels": labels
+        }
+      };
+      if (typeof feedbackType === "string") {
+        issue.fields[__WEBPACK_IMPORTED_MODULE_3__common_config__["b" /* TAGS_FIELD */]] = [ feedbackType];
+      }
       return __WEBPACK_IMPORTED_MODULE_1__proxyService__["d" /* ajax */]({
         url: "/rest/jira-integration/1.0/issues?applicationId="+jiraServer,
         contentType: "application/json;charset=UTF-8",
         type: "POST",
-        data: JSON.stringify(
-          { "issues":[
-            {
-              "fields": {
-                "project": {"key": projectKey},
-                "issuetype":{"name": issueTypeName},
-                "components":[{"name": componentName}],
-                "summary":summary,
-                "description":description,
-                "priority": {"name": priority},
-                "labels": labels
-              }
-            }
-          ]}
-        )
+        data: JSON.stringify( { "issues":[ issue ] })
       });
     })
     .then( getJiraTicketKey );
@@ -15766,7 +15771,7 @@ function bindDOM() {
 			if (cust) {
 				labels.push(cust.replace(/[\W_]+/g,"-"));
 			}
-			__WEBPACK_IMPORTED_MODULE_10__jiraService__["a" /* createIssue */](options.jiraProjectKey,options.issueType, options.issueComponent,__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#summary").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#description").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#priority").val(),labels)
+			__WEBPACK_IMPORTED_MODULE_10__jiraService__["a" /* createIssue */](options.jiraProjectKey,options.issueType, options.issueComponent,__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#summary").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#description").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#priority").val(),__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#feedback-type").val(),labels)
 				.then(
 					function(issueKey) {
 						// RESET FORM
