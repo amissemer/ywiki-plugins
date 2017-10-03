@@ -48,7 +48,7 @@ function bindDOM() {
 			if (cust) {
 				labels.push(cust.replace(/[\W_]+/g,"-"));
 			}
-			jira.createIssue(options.jiraProjectKey,options.issueType, options.issueComponent,$("#summary").val(),$("#description").val(),$("#priority").val(),labels)
+			jira.createIssue(options.jiraProjectKey,options.issueType, options.issueComponent,$("#summary").val(),$("#description").val(),$("#priority").val(),$("#feedback-type").val(),labels)
 				.then(
 					function(issueKey) {
 						// RESET FORM
