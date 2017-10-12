@@ -10329,18 +10329,21 @@ return jQuery;
 
 /***/ }),
 
-/***/ 23:
+/***/ 2:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return DEFAULT_JIRA_COLUMNS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MAIN_JIRA_LABEL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return TAGS_FIELD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return DEFAULT_JIRA_COLUMNS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MAIN_JIRA_LABEL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TAGS_FIELD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WIKI_HOST; });
 const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 const DEFAULT_JIRA_ISSUE_COUNT = 10;
 const MAIN_JIRA_LABEL = "CI";
 const TAGS_FIELD = "customfield_10032";
+//const WIKI_HOST = 'wiki.hybris.com';
+const WIKI_HOST = 'performancewiki2.hybris.com';
 
 
 
@@ -10376,10 +10379,10 @@ console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pluginCommon__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_optionsParser__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_optionsParser__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(55);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(7);
 
 
 
@@ -10455,10 +10458,10 @@ bootstrap(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],__WEBPACK_
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css__ = __webpack_require__(57);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pluginCommon__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_optionsParser__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__common_config__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_optionsParser__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__common_config__ = __webpack_require__(2);
 
 
 
@@ -10577,7 +10580,7 @@ function wireJiraIssueSummary(options) {
   //   jiraColumns
   // }
   var el = $(options.cssSelector);
-  var jql = '( labels="'+options.jiraLabel+'" AND labels="'+__WEBPACK_IMPORTED_MODULE_6__common_config__["a" /* MAIN_JIRA_LABEL */]+'") ';
+  var jql = '( labels="'+options.jiraLabel+'" AND labels="'+__WEBPACK_IMPORTED_MODULE_6__common_config__["b" /* MAIN_JIRA_LABEL */]+'") ';
   if (options.summaryType=="done") {
     jql+=' AND status IN (Resolved, "Verified/Closed", Done, Fixed, Complete)';
   } else if (options.summaryType=="todo") {
@@ -10589,7 +10592,7 @@ function wireJiraIssueSummary(options) {
       clearCache:true
   };
   $.ajax({
-    url:"https://wiki.hybris.com/rest/jiraanywhere/1.0/jira/renderTable",
+    url:"https://"+__WEBPACK_IMPORTED_MODULE_6__common_config__["a" /* WIKI_HOST */]+"/rest/jiraanywhere/1.0/jira/renderTable",
     type: "POST",
     data: JSON.stringify(reqPayload),
     contentType: "application/json",
@@ -10691,8 +10694,8 @@ function bootstrap(host, cacheBuster) {
       cssSelector: this,
       jiraLabel : jEl.data('jira-label'),
       summaryType: jEl.data('summary-type'),
-      jiraIssueCount: Number(jEl.data('jira-max-issues')) || __WEBPACK_IMPORTED_MODULE_6__common_config__["c" /* DEFAULT_JIRA_ISSUE_COUNT */],
-      jiraColumns: jEl.data('jira-columns') || __WEBPACK_IMPORTED_MODULE_6__common_config__["d" /* DEFAULT_JIRA_COLUMNS */]
+      jiraIssueCount: Number(jEl.data('jira-max-issues')) || __WEBPACK_IMPORTED_MODULE_6__common_config__["d" /* DEFAULT_JIRA_ISSUE_COUNT */],
+      jiraColumns: jEl.data('jira-columns') || __WEBPACK_IMPORTED_MODULE_6__common_config__["e" /* DEFAULT_JIRA_COLUMNS */]
     });
   });
 }
@@ -10770,14 +10773,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 
-/***/ 6:
+/***/ 7:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = iframeWrapper;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(9);
 
 
 
@@ -10884,7 +10887,7 @@ function iframeWrapper( postToWindow, targetHostname ) {
 
 /***/ }),
 
-/***/ 7:
+/***/ 8:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10920,7 +10923,7 @@ function encodeOptions(options) {
 
 /***/ }),
 
-/***/ 8:
+/***/ 9:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
