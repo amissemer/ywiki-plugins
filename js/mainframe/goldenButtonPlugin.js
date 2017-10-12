@@ -4,7 +4,7 @@ import '../../css/jira-issue-summary.css';
 import iframeWrapper from '../common/iframeWrapper';
 import * as plugin from './pluginCommon';
 import {encodeOptions} from '../common/optionsParser';
-import {DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL} from '../common/config';
+import {DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, WIKI_HOST} from '../common/config';
 
 function closeIFrame(iframeElt) {
   iframeElt.unbind('load').fadeOut( function() {
@@ -128,7 +128,7 @@ function wireJiraIssueSummary(options) {
       clearCache:true
   };
   $.ajax({
-    url:"https://wiki.hybris.com/rest/jiraanywhere/1.0/jira/renderTable",
+    url:"https://"+WIKI_HOST+"/rest/jiraanywhere/1.0/jira/renderTable",
     type: "POST",
     data: JSON.stringify(reqPayload),
     contentType: "application/json",
