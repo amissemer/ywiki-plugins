@@ -229,7 +229,7 @@ function getRegions(spaceKey, projectDocumentationRootPage) {
 function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTitle, limit) {
     return getRegions(spaceKey, projectDocumentationRootPage)
     .then(function (regionResults) {
-      var titleRestriction = (partialTitle?' and (title~"'+encodeURIComponent(partialTitle)+'" OR title~"'+encodeURIComponent(partialTitle)+'*")':"");
+      var titleRestriction = (partialTitle?' and (title~"'+stripQuote(partialTitle)+'" OR title~"'+stripQuote(partialTitle)+'*")':"");
       return confluence.searchPagesWithCQL(spaceKey, parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
     })
     .then(function (searchResponse) {
@@ -244,4 +244,8 @@ function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTit
 // Filters pages that contain [placeholders]
 function onlyTemplates(page) {
   return template_pattern.test(page.title);
+}
+
+function stripQuote(str) {
+	return str.replace(/"/g, "");
 }
