@@ -10,6 +10,7 @@ var defaultCustomerPageTemplate='.CI New Project Documentation Template';
 var additionalLabel='service-workspace';
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 const BASELINE_VERSION_CSS_SELECTOR = ".confluenceTd p:contains('Definition') + p";
+const EXPAND_LABELS = "metadata.labels";
 
 if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
 	throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})"
@@ -217,7 +218,20 @@ function getRegions(spaceKey, projectDocumentationRootPage) {
       cachedProjectDocumentationRootPageResult = rootPage;
       if (cachedRegionResults) return cachedRegionResults;
       // get all the direct children of the root (the region pages) (there are around 10 of them but we use a limit of 50 to make sure we have them all)
-      return confluence.searchPagesWithCQL(spaceKey, "label!='project-documentation-pages' AND parent="+cachedProjectDocumentationRootPageResult.id, 50);
+      return confluence.searchPagesWithCQL(spaceKey, "label!='project-documentation-pages' AND parent="+cachedProjectDocumentationRootPageResult.id, 50, EXPAND_LABELS)
+          .then(function (level1Results) {
+            var regionsWithSubRegions = [cachedProjectDocumentationRootPageResult.id];
+            level1Results.results.forEach(function( page ) {
+              if (page.metadata && page.metadata.labels && page.metadata.labels.results) {
+                page.metadata.labels.results.forEach(function (label) {
+                  if (label.name=="ci-has-subregions") {
+                    regionsWithSubRegions.push(page.id);
+                  }
+                });
+              }
+          });
+          return confluence.searchPagesWithCQL(spaceKey, "label!='project-documentation-pages' AND "+parentQuery(regionsWithSubRegions), 50);
+        });
     })
     .then(function (regionResults) {
       cachedRegionResults = regionResults;
@@ -230,7 +244,7 @@ function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTit
     return getRegions(spaceKey, projectDocumentationRootPage)
     .then(function (regionResults) {
       var titleRestriction = (partialTitle?' and (title~"'+stripQuote(partialTitle)+'" OR title~"'+stripQuote(partialTitle)+'*")':"");
-      return confluence.searchPagesWithCQL(spaceKey, parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
+      return confluence.searchPagesWithCQL(spaceKey, "label!='ci-region' AND " + parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
     })
     .then(function (searchResponse) {
       var customers=[];
