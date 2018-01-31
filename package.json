@@ -31,7 +31,8 @@
     "jquery": "^3.2.1",
     "jquery-ui-bundle": "^1.12.1",
     "morris-data": "^0.5.1",
-    "raphael": "^2.2.7"
+    "raphael": "^2.2.7",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "chai": "^4.0.2",
