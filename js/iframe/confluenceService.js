@@ -1,5 +1,7 @@
 import * as proxy from './proxyService';
 import $ from 'jquery';
+import rateLimit from '../common/rate-limit';
+import {MAX_WIKI_PAGE_CREATION_RATE} from '../common/config';
 
 /**
  * An API for confluence that runs ajax queries through the proxy object to bypass the CORS restriction.
@@ -243,10 +245,11 @@ export function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
   page.ancestors=[ { id: targetPageId } ];
   console.log("New Page",page);
   page.space={ key: targetSpaceKey };
-  return postPage(page);
+  return postPageRateLimited(page);
 }
 
-export function postPage(page) {
+var postPageRateLimited = rateLimit(postPage, MAX_WIKI_PAGE_CREATION_RATE);
+function postPage(page) {
   return proxy.ajax(
     {
       url: '/rest/api/content',
