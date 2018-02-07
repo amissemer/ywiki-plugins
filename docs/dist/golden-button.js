@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 54);
+/******/ 	return __webpack_require__(__webpack_require__.s = 56);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -10329,7 +10329,7 @@ return jQuery;
 
 /***/ }),
 
-/***/ 2:
+/***/ 1:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10352,7 +10352,7 @@ const MAX_WIKI_PAGE_CREATION_RATE = 200; // (in millis) The wiki seems to have t
 
 /***/ }),
 
-/***/ 25:
+/***/ 26:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10377,13 +10377,13 @@ console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
 
 /***/ }),
 
-/***/ 34:
+/***/ 36:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pluginCommon__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pluginCommon__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_optionsParser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(57);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(7);
 
@@ -10451,20 +10451,20 @@ bootstrap(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],__WEBPACK_
 
 /***/ }),
 
-/***/ 35:
+/***/ 37:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(60);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__css_professors_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css__ = __webpack_require__(59);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pluginCommon__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pluginCommon__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_optionsParser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__common_config__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__common_config__ = __webpack_require__(1);
 
 
 
@@ -10708,11 +10708,11 @@ bootstrap(__WEBPACK_IMPORTED_MODULE_4__pluginCommon__["a" /* host */],__WEBPACK_
 
 /***/ }),
 
-/***/ 36:
+/***/ 38:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pluginCommon__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pluginCommon__ = __webpack_require__(26);
 
 
 // Loads a stylesheet at url. Url can be relative to the configured host.
@@ -10733,32 +10733,18 @@ loadStyleSheet(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],'dist
 
 /***/ }),
 
-/***/ 54:
+/***/ 56:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__stylesheetPlugin__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__goldenButtonPlugin__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__dashboardPlugin__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__stylesheetPlugin__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__goldenButtonPlugin__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__dashboardPlugin__ = __webpack_require__(36);
 
 
 
 
-
-/***/ }),
-
-/***/ 55:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 56:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
 
 /***/ }),
 
@@ -10770,6 +10756,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ }),
 
 /***/ 58:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 59:
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ 60:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

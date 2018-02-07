@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import * as proxy from './proxyService';
-import { JiraError} from './jira-error';
+import { JiraError, JiraAuthError} from './jira-error';
 import {TAGS_FIELD} from '../common/config';
 const jiraServerHost = 'jira.hybris.com';
 //const jiraServerHost = 'jiratest.hybris.com';
@@ -99,6 +99,11 @@ function getJiraTicketKey(data) {
   }
   var errorMsg = "Oops, something happened during ticket creation, please try again. ";
   console.error("Error creating JIRA ticket, full response was: ",data);
+  if (data && data.errors && data.errors[0] && data.errors[0].exceptionName == 'com.atlassian.integration.jira.JiraAuthenticationRequiredException') {
+    throw new JiraAuthError(data.errors[0].authenticationUri);
+  } else if (data && data.errors && data.errors[0] && data.errors[0].message) {
+    errorMsg = data.errors[0].message;
+  }
   if (data && data.errors && data.errors[0] && data.errors[0].elementErrors) {
     if (data.errors[0].elementErrors.errorMessages && data.errors[0].elementErrors.errorMessages[0]) {
       data.errors[0].elementErrors.errorMessages.forEach(function (msg) {

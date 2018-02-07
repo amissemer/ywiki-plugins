@@ -4,7 +4,7 @@ import * as proxy from './proxyService';
 import 'bootstrap';
 import 'bootstrap-validator';
 import 'bootstrap-select';
-
+import {JiraAuthError} from './jira-error';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap-theme.min.css';
 import 'bootstrap-select/dist/css/bootstrap-select.min.css';
@@ -31,6 +31,9 @@ function bindDOM() {
 	});
 	$("#cancelBtn").click( function() {
 		proxy.closeFrame();
+	});
+	$("#authenticateWarning a.authenticateWarningLink").click( function() {
+		$("#authenticateWarning").fadeOut();
 	});
 	$(".service-display-name").text(options.serviceDisplayName);
 	var submitBtn=$("#wizard-submit");
@@ -76,8 +79,13 @@ function bindDOM() {
 }
 
 function onSubmitError(error) {
-	$('#error-display .msg').text(error);
-	$('#error-display').show();
+	if (error instanceof JiraAuthError) {
+		$('#authenticateWarning a.authenticateWarningLink').attr("href",error.authenticationUri);
+		$('#authenticateWarning').show();
+	} else {
+		$('#error-display .msg').text(error);
+		$('#error-display').show();
+	}
 	$('#progress-indicator').hide();
 	$("#wizard-submit").prop('disabled', false);
 }

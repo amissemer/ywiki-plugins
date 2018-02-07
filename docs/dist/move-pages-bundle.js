@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 53);
+/******/ 	return __webpack_require__(__webpack_require__.s = 55);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10331,6 +10331,28 @@ return jQuery;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return MAX_WIKI_PAGE_CREATION_RATE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return DEFAULT_JIRA_COLUMNS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MAIN_JIRA_LABEL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TAGS_FIELD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WIKI_HOST; });
+const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
+const DEFAULT_JIRA_ISSUE_COUNT = 10;
+const MAIN_JIRA_LABEL = "CI";
+const TAGS_FIELD = "customfield_10032";
+const WIKI_HOST = 'wiki.hybris.com';
+const MAX_WIKI_PAGE_CREATION_RATE = 200; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
+//const WIKI_HOST = 'performancewiki2.hybris.com';
+
+
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (immutable) */ __webpack_exports__["d"] = ajax;
 /* harmony export (immutable) */ __webpack_exports__["c"] = closeFrame;
 /* harmony export (immutable) */ __webpack_exports__["g"] = redirect;
@@ -10339,7 +10361,7 @@ return jQuery;
 /* harmony export (immutable) */ __webpack_exports__["a"] = $arrayGetText;
 /* harmony export (immutable) */ __webpack_exports__["b"] = $tableCellsGetHtml;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_config__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_config__ = __webpack_require__(1);
 
 
 
@@ -10389,28 +10411,6 @@ function $arrayGetText(cssSelector) {
 function $tableCellsGetHtml(cssSelector) {
   return wrapper.call("$tableCellsGetHtml", cssSelector);
 }
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return MAX_WIKI_PAGE_CREATION_RATE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return DEFAULT_JIRA_COLUMNS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MAIN_JIRA_LABEL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TAGS_FIELD; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WIKI_HOST; });
-const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
-const DEFAULT_JIRA_ISSUE_COUNT = 10;
-const MAIN_JIRA_LABEL = "CI";
-const TAGS_FIELD = "customfield_10032";
-const WIKI_HOST = 'wiki.hybris.com';
-const MAX_WIKI_PAGE_CREATION_RATE = 200; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
-//const WIKI_HOST = 'performancewiki2.hybris.com';
-
-
 
 
 /***/ }),
@@ -13607,11 +13607,11 @@ var $ = __webpack_require__(0);
 /* unused harmony export createPageUnderPageId */
 /* harmony export (immutable) */ __webpack_exports__["b"] = updateContent;
 /* harmony export (immutable) */ __webpack_exports__["f"] = addLabel;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxyService__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxyService__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_rate_limit__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_config__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_rate_limit__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_config__ = __webpack_require__(1);
 
 
 
@@ -13909,127 +13909,73 @@ function addLabel(pageId, label) {
 
 
 /***/ }),
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__confluenceService__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__proxyService__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_bootstrap__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_validator__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_bootstrap_validator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_dist_css_bootstrap_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_bootstrap_dist_css_bootstrap_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css__);
+/* harmony export (immutable) */ __webpack_exports__["a"] = rateLimit;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
 
 
 
+/* Extend the Underscore object with the following methods */
 
+// Rate limit ensures a function is never called more than every [rate]ms
+// Unlike underscore's _.throttle function, function calls are queued so that
+//   requests are never lost and simply deferred until some other time
+//
+// Parameters
+// * func - function to rate limit
+// * rate - minimum time to wait between function calls
+// Example
+// function showStatus(i) {
+//   console.log(i);
+// }
+// var showStatusRateLimited = _.rateLimit(showStatus, 200);
+// for (var i = 0; i < 10; i++) {
+//   showStatusRateLimited(i);
+// }
+//
+// Dependencies
+// * underscore.js
+//
+function rateLimit(func, rate) {
+    var queue = [];
+    var timeOutRef = false;
+    var currentlyEmptyingQueue = false;
+    
+    var emptyQueue = function() {
+        if (queue.length) {
+            currentlyEmptyingQueue = true;
+            __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_underscore__["delay"])(function() {
+                __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_underscore__["defer"])(function() { queue.shift().call(); });
+                emptyQueue();
+            }, rate);
+        } else {
+            currentlyEmptyingQueue = false;
+        }
+    };
+    
+    return function() {
+        var defer = __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred();
+        var args = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_underscore__["map"])(arguments, function(e) { return e; }); // get arguments into an array
+        queue.push( function() {
+            var result = __WEBPACK_IMPORTED_MODULE_0_underscore__["bind"].apply(this, [func, this].concat(args))();
+            __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.when(result).then( defer.resolve, defer.reject, defer.notify );
+         } ); // call apply so that we can pass in arguments as parameters as opposed to an array
+        if (!currentlyEmptyingQueue) { emptyQueue(); }
+        return defer.promise();
+    };
+};
 
-
-
-
-
-__WEBPACK_IMPORTED_MODULE_2__proxyService__["e" /* $metacontent */]('meta[name=confluence-space-key]')
-	.then(
-		function(value) { __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#source-space").val(value); },
-		function () { console.error("Could not resolve current spaceKey")}
-);
-
-function bindDOM() {
-  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).keyup(function(e) {
-    if (e.keyCode == 27) { // ESC
-			 __WEBPACK_IMPORTED_MODULE_2__proxyService__["c" /* closeFrame */]();
-    }
-	});
-	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#cancel-move").click( function() {
-		__WEBPACK_IMPORTED_MODULE_2__proxyService__["c" /* closeFrame */]();
-	});
-	var submitBtn=__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#submit-move");
-	submitBtn.click( function() {
-		if (submitBtn.hasClass('disabled')) {
-			return true;
-    }
-    console.log("Submit");
-    submitBtn.prop('disabled', true);
-    var sourceSpaceKey = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#source-space").val();
-    var sourcePageTitle = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#source-page").val();
-    var targetSpaceKey = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#target-space").val();
-    var targetParentTitle = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#target-parent").val();
-    __WEBPACK_IMPORTED_MODULE_1__confluenceService__["h" /* movePages */](sourceSpaceKey, sourcePageTitle, targetSpaceKey, targetParentTitle)
-       .then(
-         function() {
-           submitBtn.prop('disabled', false);
-           __WEBPACK_IMPORTED_MODULE_1__confluenceService__["a" /* getContent */](targetSpaceKey, sourcePageTitle).then( endMoveProcess );
-         });
-  });
-}
-
-function endMoveProcess(rootPage) {
-  __WEBPACK_IMPORTED_MODULE_2__proxyService__["g" /* redirect */](rootPage._links.webui);
-}
-
-__WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
 
 
 /***/ }),
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */,
-/* 68 */,
-/* 69 */,
-/* 70 */,
-/* 71 */,
-/* 72 */,
-/* 73 */,
-/* 74 */,
-/* 75 */,
-/* 76 */,
-/* 77 */
+/* 26 */,
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -15584,68 +15530,99 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
 
 /***/ }),
-/* 78 */
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = rateLimit;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(77);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__confluenceService__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__proxyService__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_bootstrap__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_validator__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_bootstrap_validator__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_bootstrap_dist_css_bootstrap_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_bootstrap_dist_css_bootstrap_min_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_theme_min_css__);
 
 
 
-/* Extend the Underscore object with the following methods */
 
-// Rate limit ensures a function is never called more than every [rate]ms
-// Unlike underscore's _.throttle function, function calls are queued so that
-//   requests are never lost and simply deferred until some other time
-//
-// Parameters
-// * func - function to rate limit
-// * rate - minimum time to wait between function calls
-// Example
-// function showStatus(i) {
-//   console.log(i);
-// }
-// var showStatusRateLimited = _.rateLimit(showStatus, 200);
-// for (var i = 0; i < 10; i++) {
-//   showStatusRateLimited(i);
-// }
-//
-// Dependencies
-// * underscore.js
-//
-function rateLimit(func, rate) {
-    var queue = [];
-    var timeOutRef = false;
-    var currentlyEmptyingQueue = false;
-    
-    var emptyQueue = function() {
-        if (queue.length) {
-            currentlyEmptyingQueue = true;
-            __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_underscore__["delay"])(function() {
-                __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_underscore__["defer"])(function() { queue.shift().call(); });
-                emptyQueue();
-            }, rate);
-        } else {
-            currentlyEmptyingQueue = false;
-        }
-    };
-    
-    return function() {
-        var defer = __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred();
-        var args = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_underscore__["map"])(arguments, function(e) { return e; }); // get arguments into an array
-        queue.push( function() {
-            var result = __WEBPACK_IMPORTED_MODULE_0_underscore__["bind"].apply(this, [func, this].concat(args))();
-            __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.when(result).then( defer.resolve, defer.reject, defer.notify );
-         } ); // call apply so that we can pass in arguments as parameters as opposed to an array
-        if (!currentlyEmptyingQueue) { emptyQueue(); }
-        return defer.promise();
-    };
-};
 
+
+
+
+
+__WEBPACK_IMPORTED_MODULE_2__proxyService__["e" /* $metacontent */]('meta[name=confluence-space-key]')
+	.then(
+		function(value) { __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#source-space").val(value); },
+		function () { console.error("Could not resolve current spaceKey")}
+);
+
+function bindDOM() {
+  __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).keyup(function(e) {
+    if (e.keyCode == 27) { // ESC
+			 __WEBPACK_IMPORTED_MODULE_2__proxyService__["c" /* closeFrame */]();
+    }
+	});
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#cancel-move").click( function() {
+		__WEBPACK_IMPORTED_MODULE_2__proxyService__["c" /* closeFrame */]();
+	});
+	var submitBtn=__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#submit-move");
+	submitBtn.click( function() {
+		if (submitBtn.hasClass('disabled')) {
+			return true;
+    }
+    console.log("Submit");
+    submitBtn.prop('disabled', true);
+    var sourceSpaceKey = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#source-space").val();
+    var sourcePageTitle = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#source-page").val();
+    var targetSpaceKey = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#target-space").val();
+    var targetParentTitle = __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#target-parent").val();
+    __WEBPACK_IMPORTED_MODULE_1__confluenceService__["h" /* movePages */](sourceSpaceKey, sourcePageTitle, targetSpaceKey, targetParentTitle)
+       .then(
+         function() {
+           submitBtn.prop('disabled', false);
+           __WEBPACK_IMPORTED_MODULE_1__confluenceService__["a" /* getContent */](targetSpaceKey, sourcePageTitle).then( endMoveProcess );
+         });
+  });
+}
+
+function endMoveProcess(rootPage) {
+  __WEBPACK_IMPORTED_MODULE_2__proxyService__["g" /* redirect */](rootPage._links.webui);
+}
+
+__WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
 
 
 /***/ })
