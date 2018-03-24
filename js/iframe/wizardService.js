@@ -2,6 +2,7 @@ import * as confluence from './confluenceService'
 import * as proxy from './proxyService';
 import $ from 'jquery';
 import {parseOptions} from '../common/optionsParser';
+import {SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY} from '../common/config.js';
 
 var options = parseOptions();
 var defaultProjectDocumentationRootPage='Project Documentation';
@@ -98,7 +99,9 @@ export function loadRegions() {
 
 function endCopyProcess(copiedPages) {
   var workspaceURL = '/pages/viewpage.action?pageId='+copiedPages[0].id;
-  proxy.redirect(workspaceURL);
+  var delay = 0;
+  if (copiedPages.length==1) delay = SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY;// add a delay when only a single page was copied, for ESPLM-846
+  setTimeout(function() { proxy.redirect(workspaceURL); }, delay);
 }
 
 export function createWorkspace(workspaceOpts) {
