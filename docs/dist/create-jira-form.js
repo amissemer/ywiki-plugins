@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 51);
+/******/ 	return __webpack_require__(__webpack_require__.s = 52);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10331,9 +10331,10 @@ return jQuery;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return MAX_WIKI_PAGE_CREATION_RATE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return DEFAULT_JIRA_COLUMNS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return MAX_WIKI_PAGE_CREATION_RATE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return DEFAULT_JIRA_COLUMNS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MAIN_JIRA_LABEL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TAGS_FIELD; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WIKI_HOST; });
@@ -10343,6 +10344,7 @@ const MAIN_JIRA_LABEL = "CI";
 const TAGS_FIELD = "customfield_10032";
 const WIKI_HOST = 'wiki.hybris.com';
 const MAX_WIKI_PAGE_CREATION_RATE = 200; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
+const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
 //const WIKI_HOST = 'performancewiki2.hybris.com';
 
 
@@ -15540,12 +15542,38 @@ var $ = __webpack_require__(0);
 /* 25 */,
 /* 26 */,
 /* 27 */,
-/* 28 */,
+/* 28 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = JiraError;
+/* harmony export (immutable) */ __webpack_exports__["a"] = JiraAuthError;
+function JiraError(message) {
+  this.name = 'JiraError';
+  this.message = message;
+  this.stack = (new Error()).stack;
+}
+JiraError.prototype = Object.create(Error.prototype);
+JiraError.prototype.constructor = JiraError;
+
+
+function JiraAuthError(authenticationUri) {
+  this.name = 'JiraAuthError';
+  this.message = 'Please authenticate with JIRA';
+  this.authenticationUri = authenticationUri;
+  this.stack = (new Error()).stack;
+}
+JiraAuthError.prototype = Object.create(Error.prototype);
+JiraAuthError.prototype.constructor = JiraAuthError;
+
+
+/***/ }),
 /* 29 */,
 /* 30 */,
 /* 31 */,
 /* 32 */,
-/* 33 */
+/* 33 */,
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15555,7 +15583,7 @@ var $ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jira_error__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jira_error__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_config__ = __webpack_require__(1);
 
 
@@ -15685,19 +15713,18 @@ function getJiraTicketKey(data) {
 
 
 /***/ }),
-/* 34 */,
 /* 35 */,
 /* 36 */,
 /* 37 */,
 /* 38 */,
 /* 39 */,
-/* 40 */
+/* 40 */,
+/* 41 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 41 */,
 /* 42 */,
 /* 43 */,
 /* 44 */,
@@ -15707,7 +15734,8 @@ function getJiraTicketKey(data) {
 /* 48 */,
 /* 49 */,
 /* 50 */,
-/* 51 */
+/* 51 */,
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15721,17 +15749,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_bootstrap_validator__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_select__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_select___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_bootstrap_select__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__jira_error__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__jira_error__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_min_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_theme_min_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_select_dist_css_bootstrap_select_min_css__ = __webpack_require__(22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_select_dist_css_bootstrap_select_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_bootstrap_select_dist_css_bootstrap_select_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__css_create_jira_css__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__css_create_jira_css__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__css_create_jira_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__css_create_jira_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__common_optionsParser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__jiraService__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__jiraService__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__common_config__ = __webpack_require__(1);
 
 
@@ -15827,34 +15855,6 @@ function onSubmitError(error) {
 
 
 __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
-
-
-/***/ }),
-/* 52 */,
-/* 53 */,
-/* 54 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = JiraError;
-/* harmony export (immutable) */ __webpack_exports__["a"] = JiraAuthError;
-function JiraError(message) {
-  this.name = 'JiraError';
-  this.message = message;
-  this.stack = (new Error()).stack;
-}
-JiraError.prototype = Object.create(Error.prototype);
-JiraError.prototype.constructor = JiraError;
-
-
-function JiraAuthError(authenticationUri) {
-  this.name = 'JiraAuthError';
-  this.message = 'Please authenticate with JIRA';
-  this.authenticationUri = authenticationUri;
-  this.stack = (new Error()).stack;
-}
-JiraAuthError.prototype = Object.create(Error.prototype);
-JiraAuthError.prototype.constructor = JiraAuthError;
 
 
 /***/ })

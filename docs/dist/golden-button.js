@@ -10333,9 +10333,10 @@ return jQuery;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return MAX_WIKI_PAGE_CREATION_RATE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return DEFAULT_JIRA_COLUMNS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return MAX_WIKI_PAGE_CREATION_RATE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return DEFAULT_JIRA_COLUMNS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MAIN_JIRA_LABEL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TAGS_FIELD; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WIKI_HOST; });
@@ -10345,6 +10346,7 @@ const MAIN_JIRA_LABEL = "CI";
 const TAGS_FIELD = "customfield_10032";
 const WIKI_HOST = 'wiki.hybris.com';
 const MAX_WIKI_PAGE_CREATION_RATE = 200; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
+const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
 //const WIKI_HOST = 'performancewiki2.hybris.com';
 
 
@@ -10377,7 +10379,7 @@ console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
 
 /***/ }),
 
-/***/ 36:
+/***/ 37:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10451,7 +10453,7 @@ bootstrap(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],__WEBPACK_
 
 /***/ }),
 
-/***/ 37:
+/***/ 38:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10697,8 +10699,8 @@ function bootstrap(host, cacheBuster) {
       cssSelector: this,
       jiraLabel : jEl.data('jira-label'),
       summaryType: jEl.data('summary-type'),
-      jiraIssueCount: Number(jEl.data('jira-max-issues')) || __WEBPACK_IMPORTED_MODULE_6__common_config__["e" /* DEFAULT_JIRA_ISSUE_COUNT */],
-      jiraColumns: jEl.data('jira-columns') || __WEBPACK_IMPORTED_MODULE_6__common_config__["f" /* DEFAULT_JIRA_COLUMNS */]
+      jiraIssueCount: Number(jEl.data('jira-max-issues')) || __WEBPACK_IMPORTED_MODULE_6__common_config__["f" /* DEFAULT_JIRA_ISSUE_COUNT */],
+      jiraColumns: jEl.data('jira-columns') || __WEBPACK_IMPORTED_MODULE_6__common_config__["g" /* DEFAULT_JIRA_COLUMNS */]
     });
   });
 }
@@ -10708,7 +10710,7 @@ bootstrap(__WEBPACK_IMPORTED_MODULE_4__pluginCommon__["a" /* host */],__WEBPACK_
 
 /***/ }),
 
-/***/ 38:
+/***/ 39:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10738,9 +10740,9 @@ loadStyleSheet(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],'dist
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__stylesheetPlugin__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__goldenButtonPlugin__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__dashboardPlugin__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__stylesheetPlugin__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__goldenButtonPlugin__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__dashboardPlugin__ = __webpack_require__(37);
 
 
 
