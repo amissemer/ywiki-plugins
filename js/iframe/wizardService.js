@@ -2,12 +2,10 @@ import * as confluence from './confluenceService'
 import * as proxy from './proxyService';
 import $ from 'jquery';
 import {parseOptions} from '../common/optionsParser';
-import {SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY} from '../common/config.js';
+import {SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE} from '../common/config.js';
 
 var options = parseOptions();
-var defaultProjectDocumentationRootPage='Project Documentation';
 var customerComboLimit=10;
-var defaultCustomerPageTemplate='.CI New Project Documentation Template';
 var additionalLabel='service-workspace';
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 const BASELINE_VERSION_CSS_SELECTOR = ".confluenceTd p:contains('Definition') + p";
@@ -26,24 +24,48 @@ var promise2=proxy.$metacontent('meta[name=ajs-remote-user-key]')
 	.then(
 		function(val) { options.currentUserKey=val; },
 		function () { console.error("Could not resolve current userkey")}
-	);
+  );
 var promise3=proxy.$metacontent('meta[name=confluence-space-key]')
 	.then(
 		function(val) { options.currentSpaceKey=val; },
 		function () { console.error("Could not resolve current spaceKey")}
 );
-var optionsPromise = $.when(promise1,promise2,promise3).then( postProcessOptions );
+var promise4=proxy.$metacontent('meta[name=ajs-remote-user]')
+  .then(
+    function(val) { options.currentUser=val; },
+    function () { console.error("Could not resolve current user")}
+);
+var optionsPromise = $.when(promise1,promise2,promise3,promise4).then( postProcessOptions );
 optionsPromise.then(function (options) { console.log("yWiki Options: ",options);});
 
 function postProcessOptions() {
 	// set defaults for missing options
-	options.projectDocumentationRootPage = options.projectDocumentationRootPage || defaultProjectDocumentationRootPage;
-	options.customerPageTemplate = options.customerPageTemplate || defaultCustomerPageTemplate;
+	options.projectDocumentationRootPage = options.projectDocumentationRootPage || DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE;
+	options.customerPageTemplate = options.customerPageTemplate || DEFAULT_CUSTOMER_PAGE_TEMPLATE;
 	options.openInNewTab= !!options.openInNewTab;
 	options.targetSpace = options.targetSpace || options.currentSpaceKey;
 	return options;
 }
 
+export function savePreferredRegion(region) {
+  return proxy.localStorageSetItem(PREFIX+PREFERRED_REGION_KEY,region);
+}
+/** returns a promise for the region name (the region is typed as a simple String) */
+function getPreferredRegion() {
+  return proxy.localStorageGetItem(PREFIX+PREFERRED_REGION_KEY)
+}
+
+/** returns a promise for 3 params, the list of region names, the map of consultant regions in the form { email:regionName, email:regionName }, and the preferred region name */
+export function getDeliveryRegionSettings() {
+  var dataPage = DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE;
+    return confluence.getContent(options.targetSpace, dataPage)
+    .then(function (page) {
+      var consultantList = confluence.getAttachment(page.id, 'cached-employee-default-regions.json');
+      var regionList = confluence.getAttachment(page.id, 'cached-regions.json');
+      var preferredRegion = getPreferredRegion();
+      return $.when(regionList, consultantList, preferredRegion);
+    });
+}
 
 export function withOption(name) {
   return optionsPromise.then( function (options) { return options[name]; } );
@@ -58,6 +80,9 @@ function logCreation(logToPage, createdPage) {
 		log.warning("Could not retrieve baseline version, make sure you have a meta-data table with a 'Current Version' row.");
 		logCreationWithVersion(null, logToPage, createdPage);
 	});
+}
+export function getCurrentUser() {
+  return options.currentUser;
 }
 function logCreationWithVersion(version, logToPage, createdPage) {
 	var versionMsg="";
@@ -126,13 +151,13 @@ function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
 	var customerPage = confluence.getContent(options.targetSpace,workspaceOpts.customer,'ancestors');
 	var rootPageToCopy = confluence.getContentById(options.sourcePageId,'space');
-	var regionNames = loadRegions();
-  return $.when(customerPage, rootPageToCopy, regionNames)
-  .then(function(customerPage, sourcePage, regionNames) {
-		var regionName = findRegionInAncestors(customerPage.ancestors, regionNames);
+	//var regionNames = loadRegions();
+  return $.when(customerPage, rootPageToCopy)
+  .then(function(customerPage, sourcePage) {
+		//var regionName = findRegionInAncestors(customerPage.ancestors, regionNames);
     return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
     {
-			"Region": regionName,
+			"Region": workspaceOpts.reportingRegion,
       "Customer": workspaceOpts.customer,
       "ProjectName": workspaceOpts.projectName,
       "TargetEndDate": workspaceOpts.targetEndDate
@@ -157,6 +182,7 @@ function createJustWorkspace(workspaceOpts) {
   });
 }
 
+/* deprecated */
 function findRegionInAncestors(ancestors, regionNames) {
 	console.log("findRegionInAncestors", ancestors, regionNames);
 	for (var a=0;a<ancestors.length;a++) {

@@ -10333,23 +10333,40 @@ return jQuery;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return MAX_WIKI_PAGE_CREATION_RATE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return DEFAULT_JIRA_COLUMNS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MAIN_JIRA_LABEL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TAGS_FIELD; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WIKI_HOST; });
 const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
+/* harmony export (immutable) */ __webpack_exports__["k"] = DEFAULT_JIRA_COLUMNS;
+
 const DEFAULT_JIRA_ISSUE_COUNT = 10;
+/* harmony export (immutable) */ __webpack_exports__["j"] = DEFAULT_JIRA_ISSUE_COUNT;
+
 const MAIN_JIRA_LABEL = "CI";
+/* harmony export (immutable) */ __webpack_exports__["b"] = MAIN_JIRA_LABEL;
+
 const TAGS_FIELD = "customfield_10032";
+/* harmony export (immutable) */ __webpack_exports__["c"] = TAGS_FIELD;
+
 const WIKI_HOST = 'wiki.hybris.com';
-const MAX_WIKI_PAGE_CREATION_RATE = 200; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
-const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
-//const WIKI_HOST = 'performancewiki2.hybris.com';
+/* harmony export (immutable) */ __webpack_exports__["a"] = WIKI_HOST;
 
+const MAX_WIKI_PAGE_CREATION_RATE = 200;
+/* harmony export (immutable) */ __webpack_exports__["i"] = MAX_WIKI_PAGE_CREATION_RATE;
+ // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
+const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500;
+/* harmony export (immutable) */ __webpack_exports__["h"] = SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY;
+ // (in millis) for ESPLM-846
+const PREFIX = "ywiki-plugins";
+/* harmony export (immutable) */ __webpack_exports__["f"] = PREFIX;
 
+const PREFERRED_REGION_KEY = "preferred.region";
+/* harmony export (immutable) */ __webpack_exports__["g"] = PREFERRED_REGION_KEY;
+
+const DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
+/* harmony export (immutable) */ __webpack_exports__["d"] = DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE;
+
+const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
+/* harmony export (immutable) */ __webpack_exports__["e"] = DEFAULT_CUSTOMER_PAGE_TEMPLATE;
+
+// export const WIKI_HOST = 'performancewiki2.hybris.com';
 
 
 /***/ }),
@@ -10529,6 +10546,12 @@ function attachHandlersToIFrameWindow(host, myIFrame) {
     .attachActionHandler("$metacontent", function (e) {
       return jQuery(e).attr("content");
     })
+    .attachActionHandler("localStorageSetItem", function (e) {
+      return window.localStorage.setItem(e.key, e.value);
+    })
+    .attachActionHandler("localStorageGetItem", function (e) {
+      return window.localStorage.getItem(e);
+    })
     .attachActionHandler("$text", function (e) {
       return jQuery(e).text();
     });
@@ -10699,8 +10722,8 @@ function bootstrap(host, cacheBuster) {
       cssSelector: this,
       jiraLabel : jEl.data('jira-label'),
       summaryType: jEl.data('summary-type'),
-      jiraIssueCount: Number(jEl.data('jira-max-issues')) || __WEBPACK_IMPORTED_MODULE_6__common_config__["f" /* DEFAULT_JIRA_ISSUE_COUNT */],
-      jiraColumns: jEl.data('jira-columns') || __WEBPACK_IMPORTED_MODULE_6__common_config__["g" /* DEFAULT_JIRA_COLUMNS */]
+      jiraIssueCount: Number(jEl.data('jira-max-issues')) || __WEBPACK_IMPORTED_MODULE_6__common_config__["j" /* DEFAULT_JIRA_ISSUE_COUNT */],
+      jiraColumns: jEl.data('jira-columns') || __WEBPACK_IMPORTED_MODULE_6__common_config__["k" /* DEFAULT_JIRA_COLUMNS */]
     });
   });
 }

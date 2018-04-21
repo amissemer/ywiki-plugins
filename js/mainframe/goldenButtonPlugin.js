@@ -60,6 +60,12 @@ function attachHandlersToIFrameWindow(host, myIFrame) {
     .attachActionHandler("$metacontent", function (e) {
       return jQuery(e).attr("content");
     })
+    .attachActionHandler("localStorageSetItem", function (e) {
+      return window.localStorage.setItem(e.key, e.value);
+    })
+    .attachActionHandler("localStorageGetItem", function (e) {
+      return window.localStorage.getItem(e);
+    })
     .attachActionHandler("$text", function (e) {
       return jQuery(e).text();
     });

@@ -1,10 +1,12 @@
-const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
-const DEFAULT_JIRA_ISSUE_COUNT = 10;
-const MAIN_JIRA_LABEL = "CI";
-const TAGS_FIELD = "customfield_10032";
-const WIKI_HOST = 'wiki.hybris.com';
-const MAX_WIKI_PAGE_CREATION_RATE = 200; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
-const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
-//const WIKI_HOST = 'performancewiki2.hybris.com';
-
-export {SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, MAX_WIKI_PAGE_CREATION_RATE ,DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL,TAGS_FIELD,WIKI_HOST};
+export const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
+export const DEFAULT_JIRA_ISSUE_COUNT = 10;
+export const MAIN_JIRA_LABEL = "CI";
+export const TAGS_FIELD = "customfield_10032";
+export const WIKI_HOST = 'wiki.hybris.com';
+export const MAX_WIKI_PAGE_CREATION_RATE = 200; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
+export const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
+export const PREFIX = "ywiki-plugins";
+export const PREFERRED_REGION_KEY = "preferred.region";
+export const DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
+export const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
+// export const WIKI_HOST = 'performancewiki2.hybris.com';

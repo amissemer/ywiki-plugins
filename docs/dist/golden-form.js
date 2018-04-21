@@ -10331,23 +10331,40 @@ return jQuery;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return MAX_WIKI_PAGE_CREATION_RATE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return DEFAULT_JIRA_COLUMNS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MAIN_JIRA_LABEL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return TAGS_FIELD; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return WIKI_HOST; });
 const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
+/* harmony export (immutable) */ __webpack_exports__["k"] = DEFAULT_JIRA_COLUMNS;
+
 const DEFAULT_JIRA_ISSUE_COUNT = 10;
+/* harmony export (immutable) */ __webpack_exports__["j"] = DEFAULT_JIRA_ISSUE_COUNT;
+
 const MAIN_JIRA_LABEL = "CI";
+/* harmony export (immutable) */ __webpack_exports__["b"] = MAIN_JIRA_LABEL;
+
 const TAGS_FIELD = "customfield_10032";
+/* harmony export (immutable) */ __webpack_exports__["c"] = TAGS_FIELD;
+
 const WIKI_HOST = 'wiki.hybris.com';
-const MAX_WIKI_PAGE_CREATION_RATE = 200; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
-const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
-//const WIKI_HOST = 'performancewiki2.hybris.com';
+/* harmony export (immutable) */ __webpack_exports__["a"] = WIKI_HOST;
 
+const MAX_WIKI_PAGE_CREATION_RATE = 200;
+/* harmony export (immutable) */ __webpack_exports__["i"] = MAX_WIKI_PAGE_CREATION_RATE;
+ // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
+const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500;
+/* harmony export (immutable) */ __webpack_exports__["h"] = SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY;
+ // (in millis) for ESPLM-846
+const PREFIX = "ywiki-plugins";
+/* harmony export (immutable) */ __webpack_exports__["f"] = PREFIX;
 
+const PREFERRED_REGION_KEY = "preferred.region";
+/* harmony export (immutable) */ __webpack_exports__["g"] = PREFERRED_REGION_KEY;
+
+const DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
+/* harmony export (immutable) */ __webpack_exports__["d"] = DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE;
+
+const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
+/* harmony export (immutable) */ __webpack_exports__["e"] = DEFAULT_CUSTOMER_PAGE_TEMPLATE;
+
+// export const WIKI_HOST = 'performancewiki2.hybris.com';
 
 
 /***/ }),
@@ -10356,10 +10373,12 @@ const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["d"] = ajax;
+/* harmony export (immutable) */ __webpack_exports__["f"] = localStorageSetItem;
+/* harmony export (immutable) */ __webpack_exports__["g"] = localStorageGetItem;
 /* harmony export (immutable) */ __webpack_exports__["c"] = closeFrame;
-/* harmony export (immutable) */ __webpack_exports__["g"] = redirect;
+/* harmony export (immutable) */ __webpack_exports__["i"] = redirect;
 /* harmony export (immutable) */ __webpack_exports__["e"] = $metacontent;
-/* harmony export (immutable) */ __webpack_exports__["f"] = $text;
+/* harmony export (immutable) */ __webpack_exports__["h"] = $text;
 /* harmony export (immutable) */ __webpack_exports__["a"] = $arrayGetText;
 /* harmony export (immutable) */ __webpack_exports__["b"] = $tableCellsGetHtml;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(7);
@@ -10378,6 +10397,13 @@ var wrapper = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common_iframeWr
  */
 function ajax(param) {
   return wrapper.call("ajax", param);
+}
+
+function localStorageSetItem(key, value) {
+  return wrapper.call("localStorageSetItem", {key:key, value:value})
+}
+function localStorageGetItem(key) {
+  return wrapper.call("localStorageGetItem", key)
 }
 /**
  * Closes the iframe from inside the iframe.
@@ -13632,17 +13658,18 @@ var $ = __webpack_require__(0);
 "use strict";
 /* unused harmony export deletePage */
 /* unused harmony export deletePageRecursive */
+/* harmony export (immutable) */ __webpack_exports__["b"] = getAttachment;
 /* unused harmony export deletePageById */
-/* harmony export (immutable) */ __webpack_exports__["h"] = movePages;
+/* harmony export (immutable) */ __webpack_exports__["i"] = movePages;
 /* harmony export (immutable) */ __webpack_exports__["a"] = getContent;
-/* harmony export (immutable) */ __webpack_exports__["d"] = getContentById;
-/* harmony export (immutable) */ __webpack_exports__["g"] = searchPagesWithCQL;
-/* harmony export (immutable) */ __webpack_exports__["c"] = copyPage;
-/* harmony export (immutable) */ __webpack_exports__["e"] = copyPageRecursive;
+/* harmony export (immutable) */ __webpack_exports__["e"] = getContentById;
+/* harmony export (immutable) */ __webpack_exports__["h"] = searchPagesWithCQL;
+/* harmony export (immutable) */ __webpack_exports__["d"] = copyPage;
+/* harmony export (immutable) */ __webpack_exports__["f"] = copyPageRecursive;
 /* unused harmony export createPage */
 /* unused harmony export createPageUnderPageId */
-/* harmony export (immutable) */ __webpack_exports__["b"] = updateContent;
-/* harmony export (immutable) */ __webpack_exports__["f"] = addLabel;
+/* harmony export (immutable) */ __webpack_exports__["c"] = updateContent;
+/* harmony export (immutable) */ __webpack_exports__["g"] = addLabel;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxyService__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
@@ -13668,6 +13695,9 @@ function deletePageRecursive(spaceKey,pageTitle) {
   .then( function (page) {
     return deletePageRecursiveInternal( page.id );
   });
+}
+function getAttachment(pageId, attachmentName) {
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */]("/download/attachments/" + pageId + "/" + attachmentName + "?api=v2");
 }
 function deletePageById(pageId) {
   return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */]({
@@ -13898,7 +13928,7 @@ function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
   return postPageRateLimited(page);
 }
 
-var postPageRateLimited = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__common_rate_limit__["a" /* default */])(postPage, __WEBPACK_IMPORTED_MODULE_3__common_config__["e" /* MAX_WIKI_PAGE_CREATION_RATE */]);
+var postPageRateLimited = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__common_rate_limit__["a" /* default */])(postPage, __WEBPACK_IMPORTED_MODULE_3__common_config__["i" /* MAX_WIKI_PAGE_CREATION_RATE */]);
 function postPage(page) {
   return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](
     {
@@ -15588,9 +15618,12 @@ if(!Array.isArray) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["d"] = withOption;
+/* harmony export (immutable) */ __webpack_exports__["d"] = savePreferredRegion;
+/* harmony export (immutable) */ __webpack_exports__["c"] = getDeliveryRegionSettings;
+/* harmony export (immutable) */ __webpack_exports__["f"] = withOption;
+/* harmony export (immutable) */ __webpack_exports__["g"] = getCurrentUser;
 /* harmony export (immutable) */ __webpack_exports__["b"] = loadRegions;
-/* harmony export (immutable) */ __webpack_exports__["c"] = createWorkspace;
+/* harmony export (immutable) */ __webpack_exports__["e"] = createWorkspace;
 /* harmony export (immutable) */ __webpack_exports__["a"] = findCustomer;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluenceService__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
@@ -15605,9 +15638,7 @@ if(!Array.isArray) {
 
 
 var options = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__common_optionsParser__["a" /* parseOptions */])();
-var defaultProjectDocumentationRootPage='Project Documentation';
 var customerComboLimit=10;
-var defaultCustomerPageTemplate='.CI New Project Documentation Template';
 var additionalLabel='service-workspace';
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 const BASELINE_VERSION_CSS_SELECTOR = ".confluenceTd p:contains('Definition') + p";
@@ -15626,24 +15657,48 @@ var promise2=__WEBPACK_IMPORTED_MODULE_1__proxyService__["e" /* $metacontent */]
 	.then(
 		function(val) { options.currentUserKey=val; },
 		function () { console.error("Could not resolve current userkey")}
-	);
+  );
 var promise3=__WEBPACK_IMPORTED_MODULE_1__proxyService__["e" /* $metacontent */]('meta[name=confluence-space-key]')
 	.then(
 		function(val) { options.currentSpaceKey=val; },
 		function () { console.error("Could not resolve current spaceKey")}
 );
-var optionsPromise = __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.when(promise1,promise2,promise3).then( postProcessOptions );
+var promise4=__WEBPACK_IMPORTED_MODULE_1__proxyService__["e" /* $metacontent */]('meta[name=ajs-remote-user]')
+  .then(
+    function(val) { options.currentUser=val; },
+    function () { console.error("Could not resolve current user")}
+);
+var optionsPromise = __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.when(promise1,promise2,promise3,promise4).then( postProcessOptions );
 optionsPromise.then(function (options) { console.log("yWiki Options: ",options);});
 
 function postProcessOptions() {
 	// set defaults for missing options
-	options.projectDocumentationRootPage = options.projectDocumentationRootPage || defaultProjectDocumentationRootPage;
-	options.customerPageTemplate = options.customerPageTemplate || defaultCustomerPageTemplate;
+	options.projectDocumentationRootPage = options.projectDocumentationRootPage || __WEBPACK_IMPORTED_MODULE_4__common_config_js__["d" /* DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE */];
+	options.customerPageTemplate = options.customerPageTemplate || __WEBPACK_IMPORTED_MODULE_4__common_config_js__["e" /* DEFAULT_CUSTOMER_PAGE_TEMPLATE */];
 	options.openInNewTab= !!options.openInNewTab;
 	options.targetSpace = options.targetSpace || options.currentSpaceKey;
 	return options;
 }
 
+function savePreferredRegion(region) {
+  return __WEBPACK_IMPORTED_MODULE_1__proxyService__["f" /* localStorageSetItem */](__WEBPACK_IMPORTED_MODULE_4__common_config_js__["f" /* PREFIX */]+__WEBPACK_IMPORTED_MODULE_4__common_config_js__["g" /* PREFERRED_REGION_KEY */],region);
+}
+/** returns a promise for the region name (the region is typed as a simple String) */
+function getPreferredRegion() {
+  return __WEBPACK_IMPORTED_MODULE_1__proxyService__["g" /* localStorageGetItem */](__WEBPACK_IMPORTED_MODULE_4__common_config_js__["f" /* PREFIX */]+__WEBPACK_IMPORTED_MODULE_4__common_config_js__["g" /* PREFERRED_REGION_KEY */])
+}
+
+/** returns a promise for 3 params, the list of region names, the map of consultant regions in the form { email:regionName, email:regionName }, and the preferred region name */
+function getDeliveryRegionSettings() {
+  var dataPage = __WEBPACK_IMPORTED_MODULE_4__common_config_js__["d" /* DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE */];
+    return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["a" /* getContent */](options.targetSpace, dataPage)
+    .then(function (page) {
+      var consultantList = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["b" /* getAttachment */](page.id, 'cached-employee-default-regions.json');
+      var regionList = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["b" /* getAttachment */](page.id, 'cached-regions.json');
+      var preferredRegion = getPreferredRegion();
+      return __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.when(regionList, consultantList, preferredRegion);
+    });
+}
 
 function withOption(name) {
   return optionsPromise.then( function (options) { return options[name]; } );
@@ -15651,13 +15706,16 @@ function withOption(name) {
 
 
 function logCreation(logToPage, createdPage) {
-	__WEBPACK_IMPORTED_MODULE_1__proxyService__["f" /* $text */](BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
+	__WEBPACK_IMPORTED_MODULE_1__proxyService__["h" /* $text */](BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
 		logCreationWithVersion(version, logToPage, createdPage);
 	}).
 	fail( function () {
 		log.warning("Could not retrieve baseline version, make sure you have a meta-data table with a 'Current Version' row.");
 		logCreationWithVersion(null, logToPage, createdPage);
 	});
+}
+function getCurrentUser() {
+  return options.currentUser;
 }
 function logCreationWithVersion(version, logToPage, createdPage) {
 	var versionMsg="";
@@ -15679,7 +15737,7 @@ function logCreationWithVersion(version, logToPage, createdPage) {
 				logPageJson.body.storage.value=bodyContent.replace('</ul>',logLine+'</ul>');
 				logPageJson.version.minorEdit=false;
 				logPageJson.version.number+=1;
-				return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["b" /* updateContent */](logPageJson);
+				return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["c" /* updateContent */](logPageJson);
 			}
 		});
 	} else {
@@ -15700,8 +15758,8 @@ function loadRegions() {
 function endCopyProcess(copiedPages) {
   var workspaceURL = '/pages/viewpage.action?pageId='+copiedPages[0].id;
   var delay = 0;
-  if (copiedPages.length==1) delay = __WEBPACK_IMPORTED_MODULE_4__common_config_js__["d" /* SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY */];// add a delay when only a single page was copied, for ESPLM-846
-  setTimeout(function() { __WEBPACK_IMPORTED_MODULE_1__proxyService__["g" /* redirect */](workspaceURL); }, delay);
+  if (copiedPages.length==1) delay = __WEBPACK_IMPORTED_MODULE_4__common_config_js__["h" /* SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY */];// add a delay when only a single page was copied, for ESPLM-846
+  setTimeout(function() { __WEBPACK_IMPORTED_MODULE_1__proxyService__["i" /* redirect */](workspaceURL); }, delay);
 }
 
 function createWorkspace(workspaceOpts) {
@@ -15719,20 +15777,20 @@ function createWorkspace(workspaceOpts) {
 }
 
 function createCustomerPage(region,customer) {
- return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["c" /* copyPage */](options.targetSpace, options.customerPageTemplate, options.targetSpace, region, customer);
+ return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["d" /* copyPage */](options.targetSpace, options.customerPageTemplate, options.targetSpace, region, customer);
 }
 
 function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
 	var customerPage = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["a" /* getContent */](options.targetSpace,workspaceOpts.customer,'ancestors');
-	var rootPageToCopy = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["d" /* getContentById */](options.sourcePageId,'space');
-	var regionNames = loadRegions();
-  return __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.when(customerPage, rootPageToCopy, regionNames)
-  .then(function(customerPage, sourcePage, regionNames) {
-		var regionName = findRegionInAncestors(customerPage.ancestors, regionNames);
-    return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["e" /* copyPageRecursive */](sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
+	var rootPageToCopy = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["e" /* getContentById */](options.sourcePageId,'space');
+	//var regionNames = loadRegions();
+  return __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.when(customerPage, rootPageToCopy)
+  .then(function(customerPage, sourcePage) {
+		//var regionName = findRegionInAncestors(customerPage.ancestors, regionNames);
+    return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["f" /* copyPageRecursive */](sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
     {
-			"Region": regionName,
+			"Region": workspaceOpts.reportingRegion,
       "Customer": workspaceOpts.customer,
       "ProjectName": workspaceOpts.projectName,
       "TargetEndDate": workspaceOpts.targetEndDate
@@ -15742,7 +15800,7 @@ function createJustWorkspace(workspaceOpts) {
     if (copiedPages.length==0) {
       return __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.Deferred().reject("No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern);
     }
-    return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["f" /* addLabel */](copiedPages[0].id, options.addLabel);
+    return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["g" /* addLabel */](copiedPages[0].id, options.addLabel);
   })
   .then(function() {
     return logCreation(options.logToPage,copiedPages[0]);
@@ -15757,6 +15815,7 @@ function createJustWorkspace(workspaceOpts) {
   });
 }
 
+/* deprecated */
 function findRegionInAncestors(ancestors, regionNames) {
 	console.log("findRegionInAncestors", ancestors, regionNames);
 	for (var a=0;a<ancestors.length;a++) {
@@ -15821,7 +15880,7 @@ function getRegions(spaceKey, projectDocumentationRootPage) {
       cachedProjectDocumentationRootPageResult = rootPage;
       if (cachedRegionResults) return cachedRegionResults;
       // get all the direct children of the root (the region pages) (there are around 10 of them but we use a limit of 50 to make sure we have them all)
-      return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["g" /* searchPagesWithCQL */](spaceKey, "label!='project-documentation-pages' AND parent="+cachedProjectDocumentationRootPageResult.id, 50, EXPAND_LABELS)
+      return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["h" /* searchPagesWithCQL */](spaceKey, "label!='project-documentation-pages' AND parent="+cachedProjectDocumentationRootPageResult.id, 50, EXPAND_LABELS)
           .then(function (level1Results) {
             var regionsWithSubRegions = [cachedProjectDocumentationRootPageResult.id];
             level1Results.results.forEach(function( page ) {
@@ -15833,7 +15892,7 @@ function getRegions(spaceKey, projectDocumentationRootPage) {
                 });
               }
           });
-          return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["g" /* searchPagesWithCQL */](spaceKey, "label!='project-documentation-pages' AND "+parentQuery(regionsWithSubRegions), 50);
+          return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["h" /* searchPagesWithCQL */](spaceKey, "label!='project-documentation-pages' AND "+parentQuery(regionsWithSubRegions), 50);
         });
     })
     .then(function (regionResults) {
@@ -15847,7 +15906,7 @@ function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTit
     return getRegions(spaceKey, projectDocumentationRootPage)
     .then(function (regionResults) {
       var titleRestriction = (partialTitle?' and (title~"'+stripQuote(partialTitle)+'" OR title~"'+stripQuote(partialTitle)+'*")':"");
-      return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["g" /* searchPagesWithCQL */](spaceKey, "label!='ci-region' AND " + parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
+      return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["h" /* searchPagesWithCQL */](spaceKey, "label!='ci-region' AND " + parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
     })
     .then(function (searchResponse) {
       var customers=[];
@@ -36722,7 +36781,17 @@ function bindDOM() {
 			 customerProgress.hide();
 	 }
 	});
+
+	// toggle the glyphicon of the collapsible deliveryRegion panel
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#collapseDeliveryRegion.collapse').on('shown.bs.collapse', function () {
+		__WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).prev().find(".glyphicon").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+	});
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#collapseDeliveryRegion.collapse').on('hidden.bs.collapse', function () {
+		__WEBPACK_IMPORTED_MODULE_0_jquery___default()(this).prev().find(".glyphicon").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+	});
+
 	__WEBPACK_IMPORTED_MODULE_3__wizardService__["b" /* loadRegions */]().done(setRegionNames);
+	__WEBPACK_IMPORTED_MODULE_3__wizardService__["c" /* getDeliveryRegionSettings */]().then(onDeliveryRegionSettingsUpdated);
 	var submitBtn=__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#wizard-submit");
 	var submitProgress=__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#progress-indicator');
 	submitBtn.click( function() {
@@ -36730,9 +36799,15 @@ function bindDOM() {
 		if (submitBtn.hasClass('disabled')) {
 			return true;
 		} else {
-			__WEBPACK_IMPORTED_MODULE_3__wizardService__["c" /* createWorkspace */]({
+			if (__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#rememberReportingRegion").is(':checked')) {
+				__WEBPACK_IMPORTED_MODULE_3__wizardService__["d" /* savePreferredRegion */](__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#reportingRegion').val());
+			} else {
+				__WEBPACK_IMPORTED_MODULE_3__wizardService__["d" /* savePreferredRegion */]("");
+			}
+			__WEBPACK_IMPORTED_MODULE_3__wizardService__["e" /* createWorkspace */]({
 				customer: customerSelect.val(),
 				region: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#regionSelect').val(),
+				reportingRegion: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#reportingRegion').val(),
 				projectName: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#projectName').val(),
 				targetEndDate: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#targetEndDate').val()
 			}).fail(onSubmitError);
@@ -36743,7 +36818,7 @@ function bindDOM() {
 		return false;
 	});
 
-	__WEBPACK_IMPORTED_MODULE_3__wizardService__["d" /* withOption */]('newInstanceDisplayName').done(
+	__WEBPACK_IMPORTED_MODULE_3__wizardService__["f" /* withOption */]('newInstanceDisplayName').done(
 		function (value) {
 			__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#mainTitle').text("New " + value);
 		}
@@ -36784,15 +36859,37 @@ function onSubmitError(error) {
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#wizard-submit").prop('disabled', false);
 }
 function setRegionNames(regionNames) {
+	var regionSelect = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#regionSelect');
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.each(regionNames.sort(), function (i, item) {
-	    __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#regionSelect').append(__WEBPACK_IMPORTED_MODULE_0_jquery___default()('<option>', {
+	    regionSelect.append(__WEBPACK_IMPORTED_MODULE_0_jquery___default()('<option>', {
 	        value: item,
 	        text : item
 	    }));
 	});
 }
+function onDeliveryRegionSettingsUpdated(deliveryRegions, consultantsRegion, preferredRegion) {
+	var deliveryRegionSelect = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#reportingRegion');
+	var userKey = __WEBPACK_IMPORTED_MODULE_3__wizardService__["g" /* getCurrentUser */]();
+	var userRegion = consultantsRegion[userKey];
+	__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.each(deliveryRegions.sort(), function (i, item) {
+	    deliveryRegionSelect.append(__WEBPACK_IMPORTED_MODULE_0_jquery___default()('<option>', {
+	        value: item,
+	        text : item
+		}));
+	});
+	if (preferredRegion && deliveryRegions.indexOf(preferredRegion)>=0) {
+		__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#rememberReportingRegion').prop('checked', true);
+		deliveryRegionSelect.val(preferredRegion);
+	} else if (userRegion && deliveryRegions.indexOf(userRegion)>=0) {
+		__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#rememberReportingRegion').prop('checked', true);
+		deliveryRegionSelect.val(userRegion);
+	} else {
+		__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#collapseDeliveryRegion').collapse('show');
+	}
+}
 
 __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
+
 
 
 /***/ })

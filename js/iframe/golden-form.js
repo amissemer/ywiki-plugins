@@ -40,7 +40,17 @@ function bindDOM() {
 			 customerProgress.hide();
 	 }
 	});
+
+	// toggle the glyphicon of the collapsible deliveryRegion panel
+	$('#collapseDeliveryRegion.collapse').on('shown.bs.collapse', function () {
+		$(this).prev().find(".glyphicon").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+	});
+	$('#collapseDeliveryRegion.collapse').on('hidden.bs.collapse', function () {
+		$(this).prev().find(".glyphicon").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+	});
+
 	wizardService.loadRegions().done(setRegionNames);
+	wizardService.getDeliveryRegionSettings().then(onDeliveryRegionSettingsUpdated);
 	var submitBtn=$("#wizard-submit");
 	var submitProgress=$('#progress-indicator');
 	submitBtn.click( function() {
@@ -48,9 +58,15 @@ function bindDOM() {
 		if (submitBtn.hasClass('disabled')) {
 			return true;
 		} else {
+			if ($("#rememberReportingRegion").is(':checked')) {
+				wizardService.savePreferredRegion($('#reportingRegion').val());
+			} else {
+				wizardService.savePreferredRegion("");
+			}
 			wizardService.createWorkspace({
 				customer: customerSelect.val(),
 				region: $('#regionSelect').val(),
+				reportingRegion: $('#reportingRegion').val(),
 				projectName: $('#projectName').val(),
 				targetEndDate: $('#targetEndDate').val()
 			}).fail(onSubmitError);
@@ -102,12 +118,34 @@ function onSubmitError(error) {
 	$("#wizard-submit").prop('disabled', false);
 }
 function setRegionNames(regionNames) {
+	var regionSelect = $('#regionSelect');
 	$.each(regionNames.sort(), function (i, item) {
-	    $('#regionSelect').append($('<option>', {
+	    regionSelect.append($('<option>', {
 	        value: item,
 	        text : item
 	    }));
 	});
 }
+function onDeliveryRegionSettingsUpdated(deliveryRegions, consultantsRegion, preferredRegion) {
+	var deliveryRegionSelect = $('#reportingRegion');
+	var userKey = wizardService.getCurrentUser();
+	var userRegion = consultantsRegion[userKey];
+	$.each(deliveryRegions.sort(), function (i, item) {
+	    deliveryRegionSelect.append($('<option>', {
+	        value: item,
+	        text : item
+		}));
+	});
+	if (preferredRegion && deliveryRegions.indexOf(preferredRegion)>=0) {
+		$('#rememberReportingRegion').prop('checked', true);
+		deliveryRegionSelect.val(preferredRegion);
+	} else if (userRegion && deliveryRegions.indexOf(userRegion)>=0) {
+		$('#rememberReportingRegion').prop('checked', true);
+		deliveryRegionSelect.val(userRegion);
+	} else {
+		$('#collapseDeliveryRegion').collapse('show');
+	}
+}
 
 $(document).ready(bindDOM);
+

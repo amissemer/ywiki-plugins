@@ -18,6 +18,14 @@
 	margin-top: 8px;
 }
 
+label.less-important {
+  font-weight: inherit;
+}
+a label {
+  color: rgb(51, 51, 51);
+  cursor: pointer;
+}
+
 .ui-autocomplete {
     position: absolute;
     z-index: 1000;
