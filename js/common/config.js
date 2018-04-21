@@ -8,5 +8,6 @@ export const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPL
 export const PREFIX = "ywiki-plugins";
 export const PREFERRED_REGION_KEY = "preferred.region";
 export const DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
+export const CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
 export const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
 // export const WIKI_HOST = 'performancewiki2.hybris.com';

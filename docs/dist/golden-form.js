@@ -10332,10 +10332,10 @@ return jQuery;
 
 "use strict";
 const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
-/* harmony export (immutable) */ __webpack_exports__["k"] = DEFAULT_JIRA_COLUMNS;
+/* harmony export (immutable) */ __webpack_exports__["l"] = DEFAULT_JIRA_COLUMNS;
 
 const DEFAULT_JIRA_ISSUE_COUNT = 10;
-/* harmony export (immutable) */ __webpack_exports__["j"] = DEFAULT_JIRA_ISSUE_COUNT;
+/* harmony export (immutable) */ __webpack_exports__["k"] = DEFAULT_JIRA_ISSUE_COUNT;
 
 const MAIN_JIRA_LABEL = "CI";
 /* harmony export (immutable) */ __webpack_exports__["b"] = MAIN_JIRA_LABEL;
@@ -10347,10 +10347,10 @@ const WIKI_HOST = 'wiki.hybris.com';
 /* harmony export (immutable) */ __webpack_exports__["a"] = WIKI_HOST;
 
 const MAX_WIKI_PAGE_CREATION_RATE = 200;
-/* harmony export (immutable) */ __webpack_exports__["i"] = MAX_WIKI_PAGE_CREATION_RATE;
+/* harmony export (immutable) */ __webpack_exports__["j"] = MAX_WIKI_PAGE_CREATION_RATE;
  // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
 const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500;
-/* harmony export (immutable) */ __webpack_exports__["h"] = SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY;
+/* harmony export (immutable) */ __webpack_exports__["i"] = SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY;
  // (in millis) for ESPLM-846
 const PREFIX = "ywiki-plugins";
 /* harmony export (immutable) */ __webpack_exports__["f"] = PREFIX;
@@ -10360,6 +10360,9 @@ const PREFERRED_REGION_KEY = "preferred.region";
 
 const DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
 /* harmony export (immutable) */ __webpack_exports__["d"] = DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE;
+
+const CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
+/* harmony export (immutable) */ __webpack_exports__["h"] = CISTATS_DATA_PAGE;
 
 const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
 /* harmony export (immutable) */ __webpack_exports__["e"] = DEFAULT_CUSTOMER_PAGE_TEMPLATE;
@@ -13928,7 +13931,7 @@ function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
   return postPageRateLimited(page);
 }
 
-var postPageRateLimited = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__common_rate_limit__["a" /* default */])(postPage, __WEBPACK_IMPORTED_MODULE_3__common_config__["i" /* MAX_WIKI_PAGE_CREATION_RATE */]);
+var postPageRateLimited = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__common_rate_limit__["a" /* default */])(postPage, __WEBPACK_IMPORTED_MODULE_3__common_config__["j" /* MAX_WIKI_PAGE_CREATION_RATE */]);
 function postPage(page) {
   return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](
     {
@@ -15690,7 +15693,7 @@ function getPreferredRegion() {
 
 /** returns a promise for 3 params, the list of region names, the map of consultant regions in the form { email:regionName, email:regionName }, and the preferred region name */
 function getDeliveryRegionSettings() {
-  var dataPage = __WEBPACK_IMPORTED_MODULE_4__common_config_js__["d" /* DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE */];
+  var dataPage = __WEBPACK_IMPORTED_MODULE_4__common_config_js__["h" /* CISTATS_DATA_PAGE */];
     return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["a" /* getContent */](options.targetSpace, dataPage)
     .then(function (page) {
       var consultantList = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["b" /* getAttachment */](page.id, 'cached-employee-default-regions.json');
@@ -15758,7 +15761,7 @@ function loadRegions() {
 function endCopyProcess(copiedPages) {
   var workspaceURL = '/pages/viewpage.action?pageId='+copiedPages[0].id;
   var delay = 0;
-  if (copiedPages.length==1) delay = __WEBPACK_IMPORTED_MODULE_4__common_config_js__["h" /* SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY */];// add a delay when only a single page was copied, for ESPLM-846
+  if (copiedPages.length==1) delay = __WEBPACK_IMPORTED_MODULE_4__common_config_js__["i" /* SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY */];// add a delay when only a single page was copied, for ESPLM-846
   setTimeout(function() { __WEBPACK_IMPORTED_MODULE_1__proxyService__["i" /* redirect */](workspaceURL); }, delay);
 }
 

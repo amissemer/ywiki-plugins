@@ -2,7 +2,7 @@ import * as confluence from './confluenceService'
 import * as proxy from './proxyService';
 import $ from 'jquery';
 import {parseOptions} from '../common/optionsParser';
-import {SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE} from '../common/config.js';
+import {SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, CISTATS_DATA_PAGE} from '../common/config.js';
 
 var options = parseOptions();
 var customerComboLimit=10;
@@ -57,7 +57,7 @@ function getPreferredRegion() {
 
 /** returns a promise for 3 params, the list of region names, the map of consultant regions in the form { email:regionName, email:regionName }, and the preferred region name */
 export function getDeliveryRegionSettings() {
-  var dataPage = DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE;
+  var dataPage = CISTATS_DATA_PAGE;
     return confluence.getContent(options.targetSpace, dataPage)
     .then(function (page) {
       var consultantList = confluence.getAttachment(page.id, 'cached-employee-default-regions.json');
