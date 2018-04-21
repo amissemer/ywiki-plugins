@@ -15694,7 +15694,8 @@ function getPreferredRegion() {
 /** returns a promise for 3 params, the list of region names, the map of consultant regions in the form { email:regionName, email:regionName }, and the preferred region name */
 function getDeliveryRegionSettings() {
   var dataPage = __WEBPACK_IMPORTED_MODULE_4__common_config_js__["h" /* CISTATS_DATA_PAGE */];
-    return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["a" /* getContent */](options.targetSpace, dataPage)
+  return withOption("targetSpace")
+    .then(function(targetSpace) { return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["a" /* getContent */](targetSpace, dataPage);})
     .then(function (page) {
       var consultantList = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["b" /* getAttachment */](page.id, 'cached-employee-default-regions.json');
       var regionList = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["b" /* getAttachment */](page.id, 'cached-regions.json');

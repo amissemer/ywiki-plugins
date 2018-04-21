@@ -58,7 +58,8 @@ function getPreferredRegion() {
 /** returns a promise for 3 params, the list of region names, the map of consultant regions in the form { email:regionName, email:regionName }, and the preferred region name */
 export function getDeliveryRegionSettings() {
   var dataPage = CISTATS_DATA_PAGE;
-    return confluence.getContent(options.targetSpace, dataPage)
+  return withOption("targetSpace")
+    .then(function(targetSpace) { return confluence.getContent(targetSpace, dataPage);})
     .then(function (page) {
       var consultantList = confluence.getAttachment(page.id, 'cached-employee-default-regions.json');
       var regionList = confluence.getAttachment(page.id, 'cached-regions.json');
