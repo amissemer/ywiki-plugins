@@ -10354,7 +10354,7 @@ const MAX_WIKI_PAGE_CREATION_RATE = 200;
 const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500;
 /* harmony export (immutable) */ __webpack_exports__["i"] = SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY;
  // (in millis) for ESPLM-846
-const PREFIX = "ywiki-plugins";
+const PREFIX = "ywiki-plugins.";
 /* harmony export (immutable) */ __webpack_exports__["f"] = PREFIX;
 
 const PREFERRED_REGION_KEY = "preferred.region";
