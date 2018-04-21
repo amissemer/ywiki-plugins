@@ -64,7 +64,7 @@ function bindDOM() {
 				wizardService.savePreferredRegion("");
 			}
 			wizardService.createWorkspace({
-				customer: customerSelect.val(),
+				customer: wizardService.stripRegionFromCustomerLabel(customerSelect.val()),
 				region: $('#regionSelect').val(),
 				reportingRegion: $('#reportingRegion').val(),
 				projectName: $('#projectName').val(),
@@ -93,12 +93,14 @@ function bindDOM() {
 
 	var customerElements = $(".copyCustomerName");
 	function copyCustomerName(fromElt) {
-		customerElements.val($(fromElt).val());
+		customerElements.val(wizardService.stripRegionFromCustomerLabel($(fromElt).val()));
 	}
 	customerElements
 		.keyup (function() { copyCustomerName(this); } )
 		.change(function() { copyCustomerName(this); } );
 }
+
+
 
 function onSubmitError(error) {
 	var errorMsg=error;

@@ -15623,11 +15623,12 @@ if(!Array.isArray) {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["d"] = savePreferredRegion;
 /* harmony export (immutable) */ __webpack_exports__["c"] = getDeliveryRegionSettings;
-/* harmony export (immutable) */ __webpack_exports__["f"] = withOption;
-/* harmony export (immutable) */ __webpack_exports__["g"] = getCurrentUser;
+/* harmony export (immutable) */ __webpack_exports__["g"] = withOption;
+/* harmony export (immutable) */ __webpack_exports__["h"] = getCurrentUser;
 /* harmony export (immutable) */ __webpack_exports__["b"] = loadRegions;
 /* harmony export (immutable) */ __webpack_exports__["e"] = createWorkspace;
 /* harmony export (immutable) */ __webpack_exports__["a"] = findCustomer;
+/* harmony export (immutable) */ __webpack_exports__["f"] = stripRegionFromCustomerLabel;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluenceService__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery__ = __webpack_require__(0);
@@ -15754,9 +15755,11 @@ function loadRegions() {
 	.then( function (options) {
 	  return getRegions(options.targetSpace , options.projectDocumentationRootPage);
 	})
-  .then(function (regionResults) {
-    return regionResults.results.map(function(regionPage) {return regionPage.title;});
-  });
+  .then(filterTitlesFromResults);
+}
+
+function filterTitlesFromResults(pageResults) {
+  return pageResults.results.map(function(page) {return page.title;});
 }
 
 function endCopyProcess(copiedPages) {
@@ -15786,21 +15789,19 @@ function createCustomerPage(region,customer) {
 
 function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
-	var customerPage = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["a" /* getContent */](options.targetSpace,workspaceOpts.customer,'ancestors');
-	var rootPageToCopy = __WEBPACK_IMPORTED_MODULE_0__confluenceService__["e" /* getContentById */](options.sourcePageId,'space');
-	//var regionNames = loadRegions();
-  return __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.when(customerPage, rootPageToCopy)
-  .then(function(customerPage, sourcePage) {
-		//var regionName = findRegionInAncestors(customerPage.ancestors, regionNames);
+  __WEBPACK_IMPORTED_MODULE_0__confluenceService__["e" /* getContentById */](options.sourcePageId,'space')
+  .then(function(sourcePage) {
     return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["f" /* copyPageRecursive */](sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
-    {
-			"Region": workspaceOpts.reportingRegion,
-      "Customer": workspaceOpts.customer,
-      "ProjectName": workspaceOpts.projectName,
-      "TargetEndDate": workspaceOpts.targetEndDate
-    }
-    ,copiedPages
-  )}).then( function() {
+      {
+        "Region": workspaceOpts.reportingRegion,
+        "Customer": workspaceOpts.customer,
+        "ProjectName": workspaceOpts.projectName,
+        "TargetEndDate": workspaceOpts.targetEndDate
+      }
+      ,copiedPages
+    );
+  })
+  .then( function() {
     if (copiedPages.length==0) {
       return __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.Deferred().reject("No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern);
     }
@@ -15819,18 +15820,15 @@ function createJustWorkspace(workspaceOpts) {
   });
 }
 
-/* deprecated */
-function findRegionInAncestors(ancestors, regionNames) {
-	console.log("findRegionInAncestors", ancestors, regionNames);
+function findRegionsInAncestors(ancestors, regionNames) {
+  console.log("findRegionsInAncestors", ancestors, regionNames);
+  var regions = [];
 	for (var a=0;a<ancestors.length;a++) {
-		console.log("Matching page name",ancestors[a].title);
 		if (regionNames.indexOf(ancestors[a].title)>=0) {
-			console.log("Found");
-			return ancestors[a].title;
+			regions.push(ancestors[a].title);
 		}
 	};
-	console.error ("The selected customer page is not under a valid region");
-	return "";
+	return regions;
 }
 
 function findCustomer(term) {
@@ -15856,11 +15854,11 @@ function formattedDate() {
 var cachedProjectDocumentationRootPageResult=null;
 var cachedRegionResults=null;
 function extractPageIds(searchAPIResponse) {
-  var pageIds=[];
+  var res=[];
   searchAPIResponse.results.forEach(function( page ) {
-    pageIds.push(page.id);
+    res.push(page.id);
   });
-  return pageIds;
+  return res;
 }
 
 function parentQuery(pageIds) {
@@ -15910,15 +15908,36 @@ function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTit
     return getRegions(spaceKey, projectDocumentationRootPage)
     .then(function (regionResults) {
       var titleRestriction = (partialTitle?' and (title~"'+stripQuote(partialTitle)+'" OR title~"'+stripQuote(partialTitle)+'*")':"");
-      return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["h" /* searchPagesWithCQL */](spaceKey, "label!='ci-region' AND " + parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
+      return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["h" /* searchPagesWithCQL */](spaceKey, "label!='ci-region' AND " + parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit, "ancestors");
     })
     .then(function (searchResponse) {
+      var regionTitles = filterTitlesFromResults(cachedRegionResults);
       var customers=[];
        searchResponse.results.forEach(function(page) {
-         customers.push(page.title);
+         customers.push(buildCustomerLabel(page, regionTitles));
        });
        return customers
     });
+}
+
+/* builds the label to show as the customer name in the golden form. See also stripRegionFromCustomerLabel */
+function buildCustomerLabel(page, regionTitles) {
+  var regionStr = "";
+  if (page.ancestors) {
+    var regions = findRegionsInAncestors(page.ancestors, regionTitles);
+    if (regions) {
+      regionStr = regions.join(" > ");
+    }
+  }
+  return page.title + (regionStr ? " ["+regionStr+"]" : "");
+}
+/* removes the last occurrence of " [Region]". Reverse of buildCustomerLabel */
+function stripRegionFromCustomerLabel(label) {
+	var pos = label.lastIndexOf(" [");
+	if (pos>=0) {
+		return label.substring(0, pos);
+	}
+	return label;
 }
 
 // Filters pages that contain [placeholders]
@@ -36809,7 +36828,7 @@ function bindDOM() {
 				__WEBPACK_IMPORTED_MODULE_3__wizardService__["d" /* savePreferredRegion */]("");
 			}
 			__WEBPACK_IMPORTED_MODULE_3__wizardService__["e" /* createWorkspace */]({
-				customer: customerSelect.val(),
+				customer: __WEBPACK_IMPORTED_MODULE_3__wizardService__["f" /* stripRegionFromCustomerLabel */](customerSelect.val()),
 				region: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#regionSelect').val(),
 				reportingRegion: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#reportingRegion').val(),
 				projectName: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#projectName').val(),
@@ -36822,7 +36841,7 @@ function bindDOM() {
 		return false;
 	});
 
-	__WEBPACK_IMPORTED_MODULE_3__wizardService__["f" /* withOption */]('newInstanceDisplayName').done(
+	__WEBPACK_IMPORTED_MODULE_3__wizardService__["g" /* withOption */]('newInstanceDisplayName').done(
 		function (value) {
 			__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#mainTitle').text("New " + value);
 		}
@@ -36838,12 +36857,14 @@ function bindDOM() {
 
 	var customerElements = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".copyCustomerName");
 	function copyCustomerName(fromElt) {
-		customerElements.val(__WEBPACK_IMPORTED_MODULE_0_jquery___default()(fromElt).val());
+		customerElements.val(__WEBPACK_IMPORTED_MODULE_3__wizardService__["f" /* stripRegionFromCustomerLabel */](__WEBPACK_IMPORTED_MODULE_0_jquery___default()(fromElt).val()));
 	}
 	customerElements
 		.keyup (function() { copyCustomerName(this); } )
 		.change(function() { copyCustomerName(this); } );
 }
+
+
 
 function onSubmitError(error) {
 	var errorMsg=error;
@@ -36873,7 +36894,7 @@ function setRegionNames(regionNames) {
 }
 function onDeliveryRegionSettingsUpdated(deliveryRegions, consultantsRegion, preferredRegion) {
 	var deliveryRegionSelect = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#reportingRegion');
-	var userKey = __WEBPACK_IMPORTED_MODULE_3__wizardService__["g" /* getCurrentUser */]();
+	var userKey = __WEBPACK_IMPORTED_MODULE_3__wizardService__["h" /* getCurrentUser */]();
 	var userRegion = consultantsRegion[userKey];
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.each(deliveryRegions.sort(), function (i, item) {
 	    deliveryRegionSelect.append(__WEBPACK_IMPORTED_MODULE_0_jquery___default()('<option>', {

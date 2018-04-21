@@ -118,9 +118,11 @@ export function loadRegions() {
 	.then( function (options) {
 	  return getRegions(options.targetSpace , options.projectDocumentationRootPage);
 	})
-  .then(function (regionResults) {
-    return regionResults.results.map(function(regionPage) {return regionPage.title;});
-  });
+  .then(filterTitlesFromResults);
+}
+
+function filterTitlesFromResults(pageResults) {
+  return pageResults.results.map(function(page) {return page.title;});
 }
 
 function endCopyProcess(copiedPages) {
@@ -150,21 +152,19 @@ function createCustomerPage(region,customer) {
 
 function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
-	var customerPage = confluence.getContent(options.targetSpace,workspaceOpts.customer,'ancestors');
-	var rootPageToCopy = confluence.getContentById(options.sourcePageId,'space');
-	//var regionNames = loadRegions();
-  return $.when(customerPage, rootPageToCopy)
-  .then(function(customerPage, sourcePage) {
-		//var regionName = findRegionInAncestors(customerPage.ancestors, regionNames);
+  confluence.getContentById(options.sourcePageId,'space')
+  .then(function(sourcePage) {
     return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
-    {
-			"Region": workspaceOpts.reportingRegion,
-      "Customer": workspaceOpts.customer,
-      "ProjectName": workspaceOpts.projectName,
-      "TargetEndDate": workspaceOpts.targetEndDate
-    }
-    ,copiedPages
-  )}).then( function() {
+      {
+        "Region": workspaceOpts.reportingRegion,
+        "Customer": workspaceOpts.customer,
+        "ProjectName": workspaceOpts.projectName,
+        "TargetEndDate": workspaceOpts.targetEndDate
+      }
+      ,copiedPages
+    );
+  })
+  .then( function() {
     if (copiedPages.length==0) {
       return $.Deferred().reject("No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern);
     }
@@ -183,18 +183,15 @@ function createJustWorkspace(workspaceOpts) {
   });
 }
 
-/* deprecated */
-function findRegionInAncestors(ancestors, regionNames) {
-	console.log("findRegionInAncestors", ancestors, regionNames);
+function findRegionsInAncestors(ancestors, regionNames) {
+  console.log("findRegionsInAncestors", ancestors, regionNames);
+  var regions = [];
 	for (var a=0;a<ancestors.length;a++) {
-		console.log("Matching page name",ancestors[a].title);
 		if (regionNames.indexOf(ancestors[a].title)>=0) {
-			console.log("Found");
-			return ancestors[a].title;
+			regions.push(ancestors[a].title);
 		}
 	};
-	console.error ("The selected customer page is not under a valid region");
-	return "";
+	return regions;
 }
 
 export function findCustomer(term) {
@@ -220,11 +217,11 @@ function formattedDate() {
 var cachedProjectDocumentationRootPageResult=null;
 var cachedRegionResults=null;
 function extractPageIds(searchAPIResponse) {
-  var pageIds=[];
+  var res=[];
   searchAPIResponse.results.forEach(function( page ) {
-    pageIds.push(page.id);
+    res.push(page.id);
   });
-  return pageIds;
+  return res;
 }
 
 function parentQuery(pageIds) {
@@ -274,15 +271,36 @@ function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTit
     return getRegions(spaceKey, projectDocumentationRootPage)
     .then(function (regionResults) {
       var titleRestriction = (partialTitle?' and (title~"'+stripQuote(partialTitle)+'" OR title~"'+stripQuote(partialTitle)+'*")':"");
-      return confluence.searchPagesWithCQL(spaceKey, "label!='ci-region' AND " + parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
+      return confluence.searchPagesWithCQL(spaceKey, "label!='ci-region' AND " + parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit, "ancestors");
     })
     .then(function (searchResponse) {
+      var regionTitles = filterTitlesFromResults(cachedRegionResults);
       var customers=[];
        searchResponse.results.forEach(function(page) {
-         customers.push(page.title);
+         customers.push(buildCustomerLabel(page, regionTitles));
        });
        return customers
     });
+}
+
+/* builds the label to show as the customer name in the golden form. See also stripRegionFromCustomerLabel */
+function buildCustomerLabel(page, regionTitles) {
+  var regionStr = "";
+  if (page.ancestors) {
+    var regions = findRegionsInAncestors(page.ancestors, regionTitles);
+    if (regions) {
+      regionStr = regions.join(" > ");
+    }
+  }
+  return page.title + (regionStr ? " ["+regionStr+"]" : "");
+}
+/* removes the last occurrence of " [Region]". Reverse of buildCustomerLabel */
+export function stripRegionFromCustomerLabel(label) {
+	var pos = label.lastIndexOf(" [");
+	if (pos>=0) {
+		return label.substring(0, pos);
+	}
+	return label;
 }
 
 // Filters pages that contain [placeholders]
