@@ -15623,12 +15623,11 @@ if(!Array.isArray) {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["d"] = savePreferredRegion;
 /* harmony export (immutable) */ __webpack_exports__["c"] = getDeliveryRegionSettings;
-/* harmony export (immutable) */ __webpack_exports__["g"] = withOption;
-/* harmony export (immutable) */ __webpack_exports__["h"] = getCurrentUser;
+/* harmony export (immutable) */ __webpack_exports__["f"] = withOption;
+/* harmony export (immutable) */ __webpack_exports__["g"] = getCurrentUser;
 /* harmony export (immutable) */ __webpack_exports__["b"] = loadRegions;
 /* harmony export (immutable) */ __webpack_exports__["e"] = createWorkspace;
 /* harmony export (immutable) */ __webpack_exports__["a"] = findCustomer;
-/* harmony export (immutable) */ __webpack_exports__["f"] = stripRegionFromCustomerLabel;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__confluenceService__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_jquery__ = __webpack_require__(0);
@@ -15821,11 +15820,14 @@ function createJustWorkspace(workspaceOpts) {
 }
 
 function findRegionsInAncestors(ancestors, regionNames) {
+  if (!ancestors) return [];
   console.log("findRegionsInAncestors", ancestors, regionNames);
   var regions = [];
 	for (var a=0;a<ancestors.length;a++) {
-		if (regionNames.indexOf(ancestors[a].title)>=0) {
-			regions.push(ancestors[a].title);
+    var newRegion = ancestors[a].title;
+    // if it is really an existing regionNames which is not already in the regions list
+		if (regionNames.indexOf(newRegion)>=0 && regions.indexOf(newRegion)<0) {
+			regions.push(newRegion);
 		}
 	};
 	return regions;
@@ -15914,30 +15916,18 @@ function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTit
       var regionTitles = filterTitlesFromResults(cachedRegionResults);
       var customers=[];
        searchResponse.results.forEach(function(page) {
-         customers.push(buildCustomerLabel(page, regionTitles));
+         customers.push(buildCustomerAutoCompleteData(page, regionTitles));
        });
        return customers
     });
 }
 
-/* builds the label to show as the customer name in the golden form. See also stripRegionFromCustomerLabel */
-function buildCustomerLabel(page, regionTitles) {
-  var regionStr = "";
-  if (page.ancestors) {
-    var regions = findRegionsInAncestors(page.ancestors, regionTitles);
-    if (regions) {
-      regionStr = regions.join(" > ");
-    }
-  }
-  return page.title + (regionStr ? " ["+regionStr+"]" : "");
-}
-/* removes the last occurrence of " [Region]". Reverse of buildCustomerLabel */
-function stripRegionFromCustomerLabel(label) {
-	var pos = label.lastIndexOf(" [");
-	if (pos>=0) {
-		return label.substring(0, pos);
-	}
-	return label;
+/* builds the data to show in the autocomplete customer input on the golden form */
+function buildCustomerAutoCompleteData(page, regionTitles) {
+  return { 
+    label: page.title, 
+    regions:  findRegionsInAncestors(page.ancestors, regionTitles) 
+  };
 }
 
 // Filters pages that contain [placeholders]
@@ -36799,11 +36789,24 @@ function bindDOM() {
 		},
 		search: function(event, ui) {
 			 customerProgress.show();
-	 },
-	 response: function(event, ui) {
+	 	},
+	 	response: function(event, ui) {
 			 customerProgress.hide();
-	 }
-	});
+		 },
+		select: function( event, ui ) {
+			customerSelect.val( ui.item.label );
+			return false;
+		}
+	})
+	.autocomplete( "instance" )._renderItem = function( ul, item ) {
+		var regionStr="";
+		if (item.regions) {
+			regionStr=" <span class='text-muted'>[" + item.regions.join(" > ") + "]</span>";
+		}
+		return __WEBPACK_IMPORTED_MODULE_0_jquery___default()( "<li>" )
+			.append( "<div><strong>" + item.label + "</strong>" + regionStr + "</div>" )
+			.appendTo( ul );
+	};
 
 	// toggle the glyphicon of the collapsible deliveryRegion panel
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#collapseDeliveryRegion.collapse').on('shown.bs.collapse', function () {
@@ -36828,7 +36831,7 @@ function bindDOM() {
 				__WEBPACK_IMPORTED_MODULE_3__wizardService__["d" /* savePreferredRegion */]("");
 			}
 			__WEBPACK_IMPORTED_MODULE_3__wizardService__["e" /* createWorkspace */]({
-				customer: __WEBPACK_IMPORTED_MODULE_3__wizardService__["f" /* stripRegionFromCustomerLabel */](customerSelect.val()),
+				customer: (customerSelect.val()),
 				region: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#regionSelect').val(),
 				reportingRegion: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#reportingRegion').val(),
 				projectName: __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#projectName').val(),
@@ -36841,7 +36844,7 @@ function bindDOM() {
 		return false;
 	});
 
-	__WEBPACK_IMPORTED_MODULE_3__wizardService__["g" /* withOption */]('newInstanceDisplayName').done(
+	__WEBPACK_IMPORTED_MODULE_3__wizardService__["f" /* withOption */]('newInstanceDisplayName').done(
 		function (value) {
 			__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#mainTitle').text("New " + value);
 		}
@@ -36857,7 +36860,7 @@ function bindDOM() {
 
 	var customerElements = __WEBPACK_IMPORTED_MODULE_0_jquery___default()(".copyCustomerName");
 	function copyCustomerName(fromElt) {
-		customerElements.val(__WEBPACK_IMPORTED_MODULE_3__wizardService__["f" /* stripRegionFromCustomerLabel */](__WEBPACK_IMPORTED_MODULE_0_jquery___default()(fromElt).val()));
+		customerElements.val((__WEBPACK_IMPORTED_MODULE_0_jquery___default()(fromElt).val()));
 	}
 	customerElements
 		.keyup (function() { copyCustomerName(this); } )
@@ -36894,7 +36897,7 @@ function setRegionNames(regionNames) {
 }
 function onDeliveryRegionSettingsUpdated(deliveryRegions, consultantsRegion, preferredRegion) {
 	var deliveryRegionSelect = __WEBPACK_IMPORTED_MODULE_0_jquery___default()('#reportingRegion');
-	var userKey = __WEBPACK_IMPORTED_MODULE_3__wizardService__["h" /* getCurrentUser */]();
+	var userKey = __WEBPACK_IMPORTED_MODULE_3__wizardService__["g" /* getCurrentUser */]();
 	var userRegion = consultantsRegion[userKey];
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default.a.each(deliveryRegions.sort(), function (i, item) {
 	    deliveryRegionSelect.append(__WEBPACK_IMPORTED_MODULE_0_jquery___default()('<option>', {

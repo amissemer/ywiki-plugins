@@ -184,11 +184,14 @@ function createJustWorkspace(workspaceOpts) {
 }
 
 function findRegionsInAncestors(ancestors, regionNames) {
+  if (!ancestors) return [];
   console.log("findRegionsInAncestors", ancestors, regionNames);
   var regions = [];
 	for (var a=0;a<ancestors.length;a++) {
-		if (regionNames.indexOf(ancestors[a].title)>=0) {
-			regions.push(ancestors[a].title);
+    var newRegion = ancestors[a].title;
+    // if it is really an existing regionNames which is not already in the regions list
+		if (regionNames.indexOf(newRegion)>=0 && regions.indexOf(newRegion)<0) {
+			regions.push(newRegion);
 		}
 	};
 	return regions;
@@ -277,30 +280,18 @@ function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTit
       var regionTitles = filterTitlesFromResults(cachedRegionResults);
       var customers=[];
        searchResponse.results.forEach(function(page) {
-         customers.push(buildCustomerLabel(page, regionTitles));
+         customers.push(buildCustomerAutoCompleteData(page, regionTitles));
        });
        return customers
     });
 }
 
-/* builds the label to show as the customer name in the golden form. See also stripRegionFromCustomerLabel */
-function buildCustomerLabel(page, regionTitles) {
-  var regionStr = "";
-  if (page.ancestors) {
-    var regions = findRegionsInAncestors(page.ancestors, regionTitles);
-    if (regions) {
-      regionStr = regions.join(" > ");
-    }
-  }
-  return page.title + (regionStr ? " ["+regionStr+"]" : "");
-}
-/* removes the last occurrence of " [Region]". Reverse of buildCustomerLabel */
-export function stripRegionFromCustomerLabel(label) {
-	var pos = label.lastIndexOf(" [");
-	if (pos>=0) {
-		return label.substring(0, pos);
-	}
-	return label;
+/* builds the data to show in the autocomplete customer input on the golden form */
+function buildCustomerAutoCompleteData(page, regionTitles) {
+  return { 
+    label: page.title, 
+    regions:  findRegionsInAncestors(page.ancestors, regionTitles) 
+  };
 }
 
 // Filters pages that contain [placeholders]

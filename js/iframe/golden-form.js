@@ -35,11 +35,24 @@ function bindDOM() {
 		},
 		search: function(event, ui) {
 			 customerProgress.show();
-	 },
-	 response: function(event, ui) {
+	 	},
+	 	response: function(event, ui) {
 			 customerProgress.hide();
-	 }
-	});
+		 },
+		select: function( event, ui ) {
+			customerSelect.val( ui.item.label );
+			return false;
+		}
+	})
+	.autocomplete( "instance" )._renderItem = function( ul, item ) {
+		var regionStr="";
+		if (item.regions) {
+			regionStr=" <span class='text-muted'>[" + item.regions.join(" > ") + "]</span>";
+		}
+		return $( "<li>" )
+			.append( "<div><strong>" + item.label + "</strong>" + regionStr + "</div>" )
+			.appendTo( ul );
+	};
 
 	// toggle the glyphicon of the collapsible deliveryRegion panel
 	$('#collapseDeliveryRegion.collapse').on('shown.bs.collapse', function () {
@@ -64,7 +77,7 @@ function bindDOM() {
 				wizardService.savePreferredRegion("");
 			}
 			wizardService.createWorkspace({
-				customer: wizardService.stripRegionFromCustomerLabel(customerSelect.val()),
+				customer: (customerSelect.val()),
 				region: $('#regionSelect').val(),
 				reportingRegion: $('#reportingRegion').val(),
 				projectName: $('#projectName').val(),
@@ -93,7 +106,7 @@ function bindDOM() {
 
 	var customerElements = $(".copyCustomerName");
 	function copyCustomerName(fromElt) {
-		customerElements.val(wizardService.stripRegionFromCustomerLabel($(fromElt).val()));
+		customerElements.val(($(fromElt).val()));
 	}
 	customerElements
 		.keyup (function() { copyCustomerName(this); } )
