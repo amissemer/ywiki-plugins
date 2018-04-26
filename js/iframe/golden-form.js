@@ -158,7 +158,9 @@ function onDeliveryRegionSettingsUpdated(deliveryRegions, consultantsRegion, pre
 		$('#rememberReportingRegion').prop('checked', true);
 		deliveryRegionSelect.val(userRegion);
 	} else {
-		$('#collapseDeliveryRegion').collapse('show');
+		$('#forecastEndDatePicker').switchClass('','col-md-3');
+		$('#deliveryRegionSelector').switchClass('hidden','col-sm-6 col-md-3');
+		$('#deliveryRegionSelector').fadeIn();
 	}
 }
 

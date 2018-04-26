@@ -76,7 +76,7 @@
                     <input class="form-control" id="projectName" placeholder="Provide a name for the engagement like 'Release 2' or 'October 2016'..." required />
                     <span class="help-block">The "Project Name" will be used in the page title of your workspace and will help differentiate multiple engagements for the same Customer and Service Package.</span>
                   </div>
-                 <div class="form-group col-sm-6 col-md-3">
+                 <div id="forecastEndDatePicker" class="form-group col-sm-6">
                     <label for="targetEndDate">Forecast End Date</label>
                     <div class="input-group date datepicker">
                       <input type="text" id="targetEndDate" class="form-control" />
@@ -86,22 +86,20 @@
                     </div>
                     <span class="help-block">Your best current estimate as to when the engagement should end. It can be updated later.</span>
                   </div>
-                  <div class="col-sm-6 col-md-3">
-                        <a href="#collapseDeliveryRegion" role="button" data-toggle="collapse" ><label class="control-label" aria-expanded="false" aria-controls="collapseDeliveryRegion">Delivery Region <span class="glyphicon glyphicon-plus"></span></label></a>
-                        <div class="collapse" id="collapseDeliveryRegion">
-                            <div class="form-group">
-                                <select class="form-control selectpicker" id="reportingRegion" required>
-                                <option value="" data-default selected disabled hidden>Select the delivery region</option>
-                                </select>
-                                <span class="help-block">The region which owns the engagement, for reporting purpose.</span>
-                            </div>
-                            <div class="form-group">
-                                <div class="form-check">
-                                  <input type="checkbox" class="form-check-input" id="rememberReportingRegion">
-                                  <label class="form-check-label less-important" for="rememberReportingRegion">Use this region next time</label>
-                                </div>
-                              </div>                      
+                  <div id="deliveryRegionSelector" class="hidden">
+                        <label for="reportingRegion">Delivery Region</label>
+                        <div class="form-group">
+                            <select class="form-control selectpicker" id="reportingRegion" required>
+                            <option value="" data-default selected disabled hidden>Select the region</option>
+                            </select>
+                            <span class="help-block">The region which owns the engagement, for reporting purpose.</span>
                         </div>
+                        <div class="form-group">
+                            <div class="form-check">
+                              <input type="checkbox" class="form-check-input" id="rememberReportingRegion">
+                              <label class="form-check-label less-important" for="rememberReportingRegion">Use this region next time</label>
+                            </div>
+                        </div>                      
                   </div>                     
                 </div>
                 <div class="row">

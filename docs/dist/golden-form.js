@@ -36912,7 +36912,9 @@ function onDeliveryRegionSettingsUpdated(deliveryRegions, consultantsRegion, pre
 		__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#rememberReportingRegion').prop('checked', true);
 		deliveryRegionSelect.val(userRegion);
 	} else {
-		__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#collapseDeliveryRegion').collapse('show');
+		__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#forecastEndDatePicker').switchClass('','col-md-3');
+		__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#deliveryRegionSelector').switchClass('hidden','col-sm-6 col-md-3');
+		__WEBPACK_IMPORTED_MODULE_0_jquery___default()('#deliveryRegionSelector').fadeIn();
 	}
 }
 
