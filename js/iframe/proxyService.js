@@ -13,6 +13,13 @@ var wrapper = iframeWrapper(parent, "https://"+WIKI_HOST);
 export function ajax(param) {
   return wrapper.call("ajax", param);
 }
+
+export function localStorageSetItem(key, value) {
+  return wrapper.call("localStorageSetItem", {key:key, value:value})
+}
+export function localStorageGetItem(key) {
+  return wrapper.call("localStorageGetItem", key)
+}
 /**
  * Closes the iframe from inside the iframe.
  * It actually asks the parent window to nicely close the iframe.

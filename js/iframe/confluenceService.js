@@ -19,6 +19,9 @@ export function deletePageRecursive(spaceKey,pageTitle) {
     return deletePageRecursiveInternal( page.id );
   });
 }
+export function getAttachment(pageId, attachmentName) {
+  return proxy.ajax("/download/attachments/" + pageId + "/" + attachmentName + "?api=v2");
+}
 export function deletePageById(pageId) {
   return proxy.ajax({
     url: '/rest/api/content/'+encodeURIComponent(pageId),

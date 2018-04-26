@@ -2,12 +2,10 @@ import * as confluence from './confluenceService'
 import * as proxy from './proxyService';
 import $ from 'jquery';
 import {parseOptions} from '../common/optionsParser';
-import {SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY} from '../common/config.js';
+import {SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, CISTATS_DATA_PAGE} from '../common/config.js';
 
 var options = parseOptions();
-var defaultProjectDocumentationRootPage='Project Documentation';
 var customerComboLimit=10;
-var defaultCustomerPageTemplate='.CI New Project Documentation Template';
 var additionalLabel='service-workspace';
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 const BASELINE_VERSION_CSS_SELECTOR = ".confluenceTd p:contains('Definition') + p";
@@ -26,24 +24,49 @@ var promise2=proxy.$metacontent('meta[name=ajs-remote-user-key]')
 	.then(
 		function(val) { options.currentUserKey=val; },
 		function () { console.error("Could not resolve current userkey")}
-	);
+  );
 var promise3=proxy.$metacontent('meta[name=confluence-space-key]')
 	.then(
 		function(val) { options.currentSpaceKey=val; },
 		function () { console.error("Could not resolve current spaceKey")}
 );
-var optionsPromise = $.when(promise1,promise2,promise3).then( postProcessOptions );
+var promise4=proxy.$metacontent('meta[name=ajs-remote-user]')
+  .then(
+    function(val) { options.currentUser=val; },
+    function () { console.error("Could not resolve current user")}
+);
+var optionsPromise = $.when(promise1,promise2,promise3,promise4).then( postProcessOptions );
 optionsPromise.then(function (options) { console.log("yWiki Options: ",options);});
 
 function postProcessOptions() {
 	// set defaults for missing options
-	options.projectDocumentationRootPage = options.projectDocumentationRootPage || defaultProjectDocumentationRootPage;
-	options.customerPageTemplate = options.customerPageTemplate || defaultCustomerPageTemplate;
+	options.projectDocumentationRootPage = options.projectDocumentationRootPage || DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE;
+	options.customerPageTemplate = options.customerPageTemplate || DEFAULT_CUSTOMER_PAGE_TEMPLATE;
 	options.openInNewTab= !!options.openInNewTab;
 	options.targetSpace = options.targetSpace || options.currentSpaceKey;
 	return options;
 }
 
+export function savePreferredRegion(region) {
+  return proxy.localStorageSetItem(PREFIX+PREFERRED_REGION_KEY,region);
+}
+/** returns a promise for the region name (the region is typed as a simple String) */
+function getPreferredRegion() {
+  return proxy.localStorageGetItem(PREFIX+PREFERRED_REGION_KEY)
+}
+
+/** returns a promise for 3 params, the list of region names, the map of consultant regions in the form { email:regionName, email:regionName }, and the preferred region name */
+export function getDeliveryRegionSettings() {
+  var dataPage = CISTATS_DATA_PAGE;
+  return withOption("targetSpace")
+    .then(function(targetSpace) { return confluence.getContent(targetSpace, dataPage);})
+    .then(function (page) {
+      var consultantList = confluence.getAttachment(page.id, 'cached-employee-default-regions.json');
+      var regionList = confluence.getAttachment(page.id, 'cached-regions.json');
+      var preferredRegion = getPreferredRegion();
+      return $.when(regionList, consultantList, preferredRegion);
+    });
+}
 
 export function withOption(name) {
   return optionsPromise.then( function (options) { return options[name]; } );
@@ -58,6 +81,9 @@ function logCreation(logToPage, createdPage) {
 		log.warning("Could not retrieve baseline version, make sure you have a meta-data table with a 'Current Version' row.");
 		logCreationWithVersion(null, logToPage, createdPage);
 	});
+}
+export function getCurrentUser() {
+  return options.currentUser;
 }
 function logCreationWithVersion(version, logToPage, createdPage) {
 	var versionMsg="";
@@ -92,9 +118,11 @@ export function loadRegions() {
 	.then( function (options) {
 	  return getRegions(options.targetSpace , options.projectDocumentationRootPage);
 	})
-  .then(function (regionResults) {
-    return regionResults.results.map(function(regionPage) {return regionPage.title;});
-  });
+  .then(filterTitlesFromResults);
+}
+
+function filterTitlesFromResults(pageResults) {
+  return pageResults.results.map(function(page) {return page.title;});
 }
 
 function endCopyProcess(copiedPages) {
@@ -124,21 +152,19 @@ function createCustomerPage(region,customer) {
 
 function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
-	var customerPage = confluence.getContent(options.targetSpace,workspaceOpts.customer,'ancestors');
-	var rootPageToCopy = confluence.getContentById(options.sourcePageId,'space');
-	var regionNames = loadRegions();
-  return $.when(customerPage, rootPageToCopy, regionNames)
-  .then(function(customerPage, sourcePage, regionNames) {
-		var regionName = findRegionInAncestors(customerPage.ancestors, regionNames);
+  confluence.getContentById(options.sourcePageId,'space')
+  .then(function(sourcePage) {
     return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
-    {
-			"Region": regionName,
-      "Customer": workspaceOpts.customer,
-      "ProjectName": workspaceOpts.projectName,
-      "TargetEndDate": workspaceOpts.targetEndDate
-    }
-    ,copiedPages
-  )}).then( function() {
+      {
+        "Region": workspaceOpts.reportingRegion,
+        "Customer": workspaceOpts.customer,
+        "ProjectName": workspaceOpts.projectName,
+        "TargetEndDate": workspaceOpts.targetEndDate
+      }
+      ,copiedPages
+    );
+  })
+  .then( function() {
     if (copiedPages.length==0) {
       return $.Deferred().reject("No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern "+template_pattern);
     }
@@ -157,17 +183,18 @@ function createJustWorkspace(workspaceOpts) {
   });
 }
 
-function findRegionInAncestors(ancestors, regionNames) {
-	console.log("findRegionInAncestors", ancestors, regionNames);
+function findRegionsInAncestors(ancestors, regionNames) {
+  if (!ancestors) return [];
+  console.log("findRegionsInAncestors", ancestors, regionNames);
+  var regions = [];
 	for (var a=0;a<ancestors.length;a++) {
-		console.log("Matching page name",ancestors[a].title);
-		if (regionNames.indexOf(ancestors[a].title)>=0) {
-			console.log("Found");
-			return ancestors[a].title;
+    var newRegion = ancestors[a].title;
+    // if it is really an existing regionNames which is not already in the regions list
+		if (regionNames.indexOf(newRegion)>=0 && regions.indexOf(newRegion)<0) {
+			regions.push(newRegion);
 		}
 	};
-	console.error ("The selected customer page is not under a valid region");
-	return "";
+	return regions;
 }
 
 export function findCustomer(term) {
@@ -193,11 +220,11 @@ function formattedDate() {
 var cachedProjectDocumentationRootPageResult=null;
 var cachedRegionResults=null;
 function extractPageIds(searchAPIResponse) {
-  var pageIds=[];
+  var res=[];
   searchAPIResponse.results.forEach(function( page ) {
-    pageIds.push(page.id);
+    res.push(page.id);
   });
-  return pageIds;
+  return res;
 }
 
 function parentQuery(pageIds) {
@@ -247,15 +274,24 @@ function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTit
     return getRegions(spaceKey, projectDocumentationRootPage)
     .then(function (regionResults) {
       var titleRestriction = (partialTitle?' and (title~"'+stripQuote(partialTitle)+'" OR title~"'+stripQuote(partialTitle)+'*")':"");
-      return confluence.searchPagesWithCQL(spaceKey, "label!='ci-region' AND " + parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit);
+      return confluence.searchPagesWithCQL(spaceKey, "label!='ci-region' AND " + parentQuery(extractPageIds(cachedRegionResults))+titleRestriction, limit, "ancestors");
     })
     .then(function (searchResponse) {
+      var regionTitles = filterTitlesFromResults(cachedRegionResults);
       var customers=[];
        searchResponse.results.forEach(function(page) {
-         customers.push(page.title);
+         customers.push(buildCustomerAutoCompleteData(page, regionTitles));
        });
        return customers
     });
+}
+
+/* builds the data to show in the autocomplete customer input on the golden form */
+function buildCustomerAutoCompleteData(page, regionTitles) {
+  return { 
+    label: page.title, 
+    regions:  findRegionsInAncestors(page.ancestors, regionTitles) 
+  };
 }
 
 // Filters pages that contain [placeholders]
