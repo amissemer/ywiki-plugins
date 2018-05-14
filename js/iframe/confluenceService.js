@@ -162,7 +162,7 @@ function transformPage(page, replacements) {
   page.title = replacePlaceholders(page.title,replacements);
   console.log("New Title for target page: "+page.title);
   if (typeof replacements!=='string') {
-    page.body.storage.value = replacePlaceholders(page.body.storage.value,replacements);
+    page.body.storage.value = replacePlaceholders(page.body.storage.value,replacements, true);
   }
 }
 
@@ -217,7 +217,7 @@ function errorLogger(message) {
 /** if replacements is not provided, returns the template.
 if replacements is a simple string, returns that string
 if replacements is a map, for each (key,value) pair in the map, replaces [key] placeholders with value. */
-function replacePlaceholders(template, replacements) {
+function replacePlaceholders(template, replacements, escapeHtml) {
   if (typeof replacements === undefined) return template;
   if (typeof replacements === 'string') return replacements;
   var result = template;
@@ -227,7 +227,11 @@ function replacePlaceholders(template, replacements) {
       if (result.indexOf(varStr) == -1) {
         console.warn(varStr + " is not used in template",template);
       }
-      var result = result.split(varStr).join(replacements[key]);
+      var replacementValue = replacements[key];
+      if (escapeHtml) {
+        replacementValue = $("<div>").text(replacementValue).html();
+      }
+      var result = result.split(varStr).join(replacementValue);
     }
   }
   if (result.indexOf('[')!=-1) {
