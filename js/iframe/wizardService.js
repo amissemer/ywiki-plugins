@@ -74,7 +74,7 @@ export function withOption(name) {
 
 
 function logCreation(logToPage, createdPage) {
-	proxy.$text(BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
+	return proxy.$text(BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
 		return logCreationWithVersion(version, logToPage, createdPage);
 	}).
 	fail( function () {

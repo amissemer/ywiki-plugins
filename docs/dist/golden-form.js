@@ -15714,7 +15714,7 @@ function withOption(name) {
 
 
 function logCreation(logToPage, createdPage) {
-	__WEBPACK_IMPORTED_MODULE_1__proxyService__["h" /* $text */](BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
+	return __WEBPACK_IMPORTED_MODULE_1__proxyService__["h" /* $text */](BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
 		return logCreationWithVersion(version, logToPage, createdPage);
 	}).
 	fail( function () {
