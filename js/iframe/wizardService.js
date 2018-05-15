@@ -74,12 +74,12 @@ export function withOption(name) {
 
 
 function logCreation(logToPage, createdPage) {
-	return proxy.$text(BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
-		return logCreationWithVersion(version, logToPage, createdPage);
-	}).
-	fail( function () {
+	return proxy.$text(BASELINE_VERSION_CSS_SELECTOR)
+	.catch( function () {
 		log.warning("Could not retrieve baseline version, make sure you have a meta-data table with a 'Current Version' row.");
-		return logCreationWithVersion(null, logToPage, createdPage);
+		return null;
+	}).then( function (version) {
+		return logCreationWithVersion(version, logToPage, createdPage);
 	});
 }
 export function getCurrentUser() {
@@ -152,7 +152,7 @@ function createCustomerPage(region,customer) {
 
 function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
-  confluence.getContentById(options.sourcePageId,'space')
+  return confluence.getContentById(options.sourcePageId,'space')
   .then(function(sourcePage) {
     return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
       {
@@ -171,15 +171,14 @@ function createJustWorkspace(workspaceOpts) {
     return confluence.addLabel(copiedPages[0].id, options.addLabel);
   })
   .then(function() {
-    return logCreation(options.logToPage,copiedPages[0]);
-  })
-  .done(function() {
-    console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages);
-    // Now open new tab or redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
-    endCopyProcess(copiedPages);
-  })
-  .fail(function() {
-    console.error("Copy failed",arguments);
+    return logCreation(options.logToPage,copiedPages[0]).then(function() {
+      console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages);
+      // Now open new tab or redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
+      endCopyProcess(copiedPages);
+    }, function(e) {
+      console.error("Copy failed",arguments);
+      return $.Deferred().reject(e);
+    });
   });
 }
 
