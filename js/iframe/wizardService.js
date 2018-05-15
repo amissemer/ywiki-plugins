@@ -74,12 +74,12 @@ export function withOption(name) {
 
 
 function logCreation(logToPage, createdPage) {
-	proxy.$text(BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
-		logCreationWithVersion(version, logToPage, createdPage);
+	return proxy.$text(BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
+		return logCreationWithVersion(version, logToPage, createdPage);
 	}).
 	fail( function () {
 		log.warning("Could not retrieve baseline version, make sure you have a meta-data table with a 'Current Version' row.");
-		logCreationWithVersion(null, logToPage, createdPage);
+		return logCreationWithVersion(null, logToPage, createdPage);
 	});
 }
 export function getCurrentUser() {

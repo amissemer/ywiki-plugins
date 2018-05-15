@@ -15714,12 +15714,12 @@ function withOption(name) {
 
 
 function logCreation(logToPage, createdPage) {
-	__WEBPACK_IMPORTED_MODULE_1__proxyService__["h" /* $text */](BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
-		logCreationWithVersion(version, logToPage, createdPage);
+	return __WEBPACK_IMPORTED_MODULE_1__proxyService__["h" /* $text */](BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
+		return logCreationWithVersion(version, logToPage, createdPage);
 	}).
 	fail( function () {
 		log.warning("Could not retrieve baseline version, make sure you have a meta-data table with a 'Current Version' row.");
-		logCreationWithVersion(null, logToPage, createdPage);
+		return logCreationWithVersion(null, logToPage, createdPage);
 	});
 }
 function getCurrentUser() {
