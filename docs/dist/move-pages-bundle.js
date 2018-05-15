@@ -13748,25 +13748,20 @@ function getContent(spaceKey,pageTitle,expand) {
   if (expand) {
     expandParam = '&expand='+encodeURIComponent(expand);
   }
-  var defer = __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred();
   var url = '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
-  console.log(url);
-  __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](url)
-  .done( function (response) {
+  console.log("Getting page content from " + url);
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](url)
+  .then( function (response) {
     console.log("Filtering AJAX response",response);
     if (response.results && response.results.length>0) {
       var page = response.results[0];
       console.log("Returning ",page);
-      defer.resolve(page);
+      return page;
     } else {
-      defer.reject("Page Not found: '"+spaceKey+":"+pageTitle+"'");
+      console.warn("Page Not found: '"+spaceKey+":"+pageTitle+"'");
+      return __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred().reject("Page Not found: '"+spaceKey+":"+pageTitle+"'");
     }
-  })
-  .fail( function (jqr, status, error) {
-    console.warn("Failed getContent promise", status, error);
-    defer.reject(status, error, jqr);
-  });
-  return defer.promise();
+  }, errorLogger("Failed getContent promise") );
 }
 
 function getContentById(pageId, expand) {
