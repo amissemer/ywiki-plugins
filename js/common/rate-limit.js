@@ -31,7 +31,7 @@ export default function rateLimit(func, rate) {
         if (queue.length) {
             currentlyEmptyingQueue = true;
             delay(function() {
-                defer(function() { queue.shift().call(); });
+                defer(function() { var f = queue.shift(); if (f) f.call(); });
                 emptyQueue();
             }, rate);
         } else {
@@ -42,9 +42,9 @@ export default function rateLimit(func, rate) {
     return function() {
         var defer = $.Deferred();
         var args = map(arguments, function(e) { return e; }); // get arguments into an array
+
         queue.push( function() {
-            var result = bind.apply(this, [func, this].concat(args))();
-            $.when(result).then( defer.resolve, defer.reject, defer.notify );
+            $.when(func.apply({}, args)).then( defer.resolve, defer.reject, defer.notify );
          } ); // call apply so that we can pass in arguments as parameters as opposed to an array
         if (!currentlyEmptyingQueue) { emptyQueue(); }
         return defer.promise();
