@@ -13797,6 +13797,7 @@ function getContent(spaceKey,pageTitle,expand) {
     }
   })
   .fail( function (jqr, status, error) {
+    console.warn("Failed getContent promise", status, error);
     defer.reject(status, error, jqr);
   });
   return defer.promise();
@@ -13892,6 +13893,7 @@ function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, filter, title
 function errorLogger(message) {
   return function() {
     console.error(message,arguments);
+    return __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred().reject(arguments);
   }
 }
 /** if replacements is not provided, returns the template.
@@ -15714,12 +15716,12 @@ function withOption(name) {
 
 
 function logCreation(logToPage, createdPage) {
-	return __WEBPACK_IMPORTED_MODULE_1__proxyService__["h" /* $text */](BASELINE_VERSION_CSS_SELECTOR).done( function (version) {
-		return logCreationWithVersion(version, logToPage, createdPage);
-	}).
-	fail( function () {
+	return __WEBPACK_IMPORTED_MODULE_1__proxyService__["h" /* $text */](BASELINE_VERSION_CSS_SELECTOR)
+	.catch( function () {
 		log.warning("Could not retrieve baseline version, make sure you have a meta-data table with a 'Current Version' row.");
-		return logCreationWithVersion(null, logToPage, createdPage);
+		return null;
+	}).then( function (version) {
+		return logCreationWithVersion(version, logToPage, createdPage);
 	});
 }
 function getCurrentUser() {
@@ -15792,7 +15794,7 @@ function createCustomerPage(region,customer) {
 
 function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
-  __WEBPACK_IMPORTED_MODULE_0__confluenceService__["e" /* getContentById */](options.sourcePageId,'space')
+  return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["e" /* getContentById */](options.sourcePageId,'space')
   .then(function(sourcePage) {
     return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["f" /* copyPageRecursive */](sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
       {
@@ -15811,15 +15813,14 @@ function createJustWorkspace(workspaceOpts) {
     return __WEBPACK_IMPORTED_MODULE_0__confluenceService__["g" /* addLabel */](copiedPages[0].id, options.addLabel);
   })
   .then(function() {
-    return logCreation(options.logToPage,copiedPages[0]);
-  })
-  .done(function() {
-    console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages);
-    // Now open new tab or redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
-    endCopyProcess(copiedPages);
-  })
-  .fail(function() {
-    console.error("Copy failed",arguments);
+    return logCreation(options.logToPage,copiedPages[0]).then(function() {
+      console.log("Copy Successful, "+copiedPages.length+" page(s)",copiedPages);
+      // Now open new tab or redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
+      endCopyProcess(copiedPages);
+    }, function(e) {
+      console.error("Copy failed",arguments);
+      return __WEBPACK_IMPORTED_MODULE_2_jquery___default.a.Deferred().reject(e);
+    });
   });
 }
 

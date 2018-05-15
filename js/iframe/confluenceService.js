@@ -117,6 +117,7 @@ export function getContent(spaceKey,pageTitle,expand) {
     }
   })
   .fail( function (jqr, status, error) {
+    console.warn("Failed getContent promise", status, error);
     defer.reject(status, error, jqr);
   });
   return defer.promise();
@@ -212,6 +213,7 @@ function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, filter, title
 function errorLogger(message) {
   return function() {
     console.error(message,arguments);
+    return $.Deferred().reject(arguments);
   }
 }
 /** if replacements is not provided, returns the template.
