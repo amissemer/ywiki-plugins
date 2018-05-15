@@ -14024,7 +14024,7 @@ function rateLimit(func, rate) {
         if (queue.length) {
             currentlyEmptyingQueue = true;
             __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_underscore__["delay"])(function() {
-                __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_underscore__["defer"])(function() { queue.shift().call(); });
+                __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_underscore__["defer"])(function() { var f = queue.shift(); if (f) f.call(); });
                 emptyQueue();
             }, rate);
         } else {
@@ -14035,9 +14035,9 @@ function rateLimit(func, rate) {
     return function() {
         var defer = __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.Deferred();
         var args = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0_underscore__["map"])(arguments, function(e) { return e; }); // get arguments into an array
+
         queue.push( function() {
-            var result = __WEBPACK_IMPORTED_MODULE_0_underscore__["bind"].apply(this, [func, this].concat(args))();
-            __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.when(result).then( defer.resolve, defer.reject, defer.notify );
+            __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.when(func.apply({}, args)).then( defer.resolve, defer.reject, defer.notify );
          } ); // call apply so that we can pass in arguments as parameters as opposed to an array
         if (!currentlyEmptyingQueue) { emptyQueue(); }
         return defer.promise();
