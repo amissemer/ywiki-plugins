@@ -1,7 +1,8 @@
 var path = require('path');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
+  mode: 'development',
   entry: {
     "golden-button": './js/mainframe/main.js',
     "move-pages-bundle": './js/iframe/move-pages.js',
@@ -18,9 +19,10 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-            use: 'css-loader'
-        })
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader"
+        ]
       },
       { test: /\.(gif|eot|woff|woff2|svg|ttf)([\?]?.*)$/, loader: "file-loader" },
       // tweak to bundle bootstrap, which require jquery as a global variable
@@ -30,7 +32,12 @@ module.exports = {
   },
   // generate a separate bundled css file for each bundle
   plugins: [
-     new ExtractTextPlugin('[name].css'),
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: "[name].css",
+      chunkFilename: "[id].css"
+    }),
 
   ]
 };

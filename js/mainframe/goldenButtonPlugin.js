@@ -172,6 +172,21 @@ function insertFrame() {
   var scripts = document.getElementsByTagName('script');
   $(scripts[scripts.length-1]).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
 }
+function readOptions(el) {
+  var groups = [];
+  function defaultNotFalse(v) {
+    return (v!==undefined && v!==null && v!==false && v!=="false"); 
+  }
+  el.children('options').each(function() {
+    var name = $(this).attr("name");
+    var options = [];
+    $(this).children('option').each(function() {
+      options.push({name: name, value: $(this).attr("value"), label: $(this).html(), default: defaultNotFalse($(this).attr("default")) });
+    });
+    groups.push({name: name, options: options});
+  });
+  return groups;
+}
 
 function bootstrap(host, cacheBuster) {
   insertFrame();
@@ -188,6 +203,7 @@ function bootstrap(host, cacheBuster) {
       newInstanceDisplayName: jEl.data('new-instance-display-name'),
       addLabel: jEl.data('add-label'),
       logToPage: jEl.data('log-to-page'),
+      variantOptions: readOptions(jEl),
     });
   });
   $('[data-activate="golden-button"]').each( function() {
@@ -204,6 +220,7 @@ function bootstrap(host, cacheBuster) {
       newInstanceDisplayName: jEl.data('new-instance-display-name'),
       addLabel: jEl.data('add-label'),
       logToPage: jEl.data('log-to-page'),
+      variantOptions: readOptions(jEl),
     });
   });
   $('[data-activate="issue-creator"]').each( function() {

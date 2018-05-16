@@ -63,6 +63,7 @@
     -webkit-box-shadow: 0 0 0;
 	height: 145px;
 }
+
 #iframecontainer {
 	top: 0;
 	bottom: 0;
@@ -320,10 +321,12 @@
 	vertical-align: middle;
 	margin-left: 5px;
 }
+
 /* Styles the dynamic JIRA Issue summary of the CI dashboards */
 
 [data-activate="issue-summary"] .refresh-action-group {
   display: none;
 }
+
 
 /*# sourceMappingURL=golden-button.css.map*/

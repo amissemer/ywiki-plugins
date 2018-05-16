@@ -3,11 +3,11 @@ import * as proxy from './proxyService';
 import $ from 'jquery';
 import {parseOptions} from '../common/optionsParser';
 import {SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, CISTATS_DATA_PAGE} from '../common/config.js';
+import {TemplateProcessor} from './templateProcessor';
 
 var options = parseOptions();
 var customerComboLimit=10;
 var additionalLabel='service-workspace';
-var template_pattern = /\[Customer\]|\[ProjectName\]/;
 const BASELINE_VERSION_CSS_SELECTOR = ".confluenceTd p:contains('Definition') + p";
 const EXPAND_LABELS = "metadata.labels";
 
@@ -147,22 +147,21 @@ export function createWorkspace(workspaceOpts) {
 }
 
 function createCustomerPage(region,customer) {
- return confluence.copyPage(options.targetSpace, options.customerPageTemplate, options.targetSpace, region, customer);
+ return confluence.copyPage(options.targetSpace, options.customerPageTemplate, options.targetSpace, region, TemplateProcessor(customer));
 }
 
 function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
+  var templateProcessor = TemplateProcessor({
+    "Region": workspaceOpts.reportingRegion,
+    "Customer": workspaceOpts.customer,
+    "ProjectName": workspaceOpts.projectName,
+    "TargetEndDate": workspaceOpts.targetEndDate
+  }, workspaceOpts.variantOptions );
+
   return confluence.getContentById(options.sourcePageId,'space')
   .then(function(sourcePage) {
-    return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, onlyTemplates,
-      {
-        "Region": workspaceOpts.reportingRegion,
-        "Customer": workspaceOpts.customer,
-        "ProjectName": workspaceOpts.projectName,
-        "TargetEndDate": workspaceOpts.targetEndDate
-      }
-      ,copiedPages
-    );
+    return confluence.copyPageRecursive(sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, templateProcessor, copiedPages);
   })
   .then( function() {
     if (copiedPages.length==0) {
@@ -291,11 +290,6 @@ function buildCustomerAutoCompleteData(page, regionTitles) {
     label: page.title, 
     regions:  findRegionsInAncestors(page.ancestors, regionTitles) 
   };
-}
-
-// Filters pages that contain [placeholders]
-function onlyTemplates(page) {
-  return template_pattern.test(page.title);
 }
 
 function stripQuote(str) {

@@ -128,7 +128,7 @@ export function getContentById(pageId, expand) {
   return proxy.ajax(url)
   .fail(errorLogger( "GET page by pageId failed"));
 }
-
+ 
 /** search for content with CQL
 for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
 export function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
@@ -141,63 +141,54 @@ export function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
 
 /**
 * Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
-* and do a placeholder replacement in each page title using the titleReplacements.
+* and do a placeholder replacement the page title using the templateProcessor.
 */
-export function copyPage(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, titleReplacements) {
-  return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage')
+export function copyPage(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor) {
+  return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage,metadata.labels')
   .then(function(pageToCopy) {
-    transformPage(pageToCopy, titleReplacements);
+    templateProcessor.transformPage(pageToCopy);
     // Create the new page under toPageTitle
     return createPage(pageToCopy,toSpaceKey,toPageTitle);
   }
   );
 }
 
-function transformPage(page, replacements) {
-  console.log("Found page to Copy",page);
-  page.title = replacePlaceholders(page.title,replacements);
-  console.log("New Title for target page: "+page.title);
-  if (typeof replacements!=='string') {
-    page.body.storage.value = replacePlaceholders(page.body.storage.value,replacements, true);
-  }
-}
-
-export function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, filter, titleReplacements, copiedPages) {
+export function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor, copiedPages) {
   var sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
   var targetPagePromise = getContent(toSpaceKey,toPageTitle, 'space');
   return $.when( sourcePagePromise, targetPagePromise )
   .then(function(sourcePage, targetPage) {
-    return copyPageRecursiveInternal( sourcePage.id, targetPage.space.key, targetPage.id, filter, titleReplacements, copiedPages);
+    return copyPageRecursiveInternal( sourcePage.id, targetPage.space.key, targetPage.id, templateProcessor, copiedPages);
   });
 }
 
-function copyPageRecursiveInternal(sourcePageId, targetSpaceKey, targetPageId, filter, titleReplacements, copiedPages) {
-  return getContentById(sourcePageId, 'space,body.storage,children.page')
+function copyPageRecursiveInternal(sourcePageId, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
+  return getContentById(sourcePageId, 'space,body.storage,children.page,metadata.labels')
   .then(function (pageToCopy) {
-    if (filter(pageToCopy)) {
-      transformPage(pageToCopy, titleReplacements);
+    if (templateProcessor.isApplicableTemplatePage(pageToCopy)) {
+      templateProcessor.transformPage(pageToCopy);
 
       // Create the new page under targetSpaceKey:targetPageId
       return createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId)
         .then( function(copiedPage) {
           copiedPages.push(copiedPage);
-          return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, filter, titleReplacements,copiedPages);
+          return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
         });
     } else {
       console.log("Page is not a template, not copied, but children will be copied: ",pageToCopy.title);
-      return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, filter, titleReplacements,copiedPages);
+      return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
     }
 
   })
 }
 
-function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, filter, titleReplacements, copiedPages) {
+function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
   // recursively copy all children
   var childrenPromises = [];
   console.log("In copyAllChildren", pageToCopy,targetPageId);
   if (pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results) {
     pageToCopy.children.page.results.forEach( function (child) {
-      childrenPromises.push(copyPageRecursiveInternal(child.id, targetSpaceKey, targetPageId, filter, titleReplacements,copiedPages));
+      childrenPromises.push(copyPageRecursiveInternal(child.id, targetSpaceKey, targetPageId, templateProcessor, copiedPages));
     });
   }
   // return the combination of all children copy promises
@@ -211,31 +202,7 @@ function errorLogger(message) {
     return $.Deferred().reject(arguments);
   }
 }
-/** if replacements is not provided, returns the template.
-if replacements is a simple string, returns that string
-if replacements is a map, for each (key,value) pair in the map, replaces [key] placeholders with value. */
-function replacePlaceholders(template, replacements, escapeHtml) {
-  if (typeof replacements === undefined) return template;
-  if (typeof replacements === 'string') return replacements;
-  var result = template;
-  for (var key in replacements) {
-    if (replacements.hasOwnProperty(key)) {
-      var varStr = '['+key+']';
-      if (result.indexOf(varStr) == -1) {
-        console.warn(varStr + " is not used in template",template);
-      }
-      var replacementValue = replacements[key];
-      if (escapeHtml) {
-        replacementValue = $("<div>").text(replacementValue).html();
-      }
-      var result = result.split(varStr).join(replacementValue);
-    }
-  }
-  if (result.indexOf('[')!=-1) {
-    console.warn("title still has uninterpolated variables",result);
-  }
-  return result;
-}
+
 
 export function createPage(page, targetSpaceKey, targetParentTitle) {
   return getContent(targetSpaceKey,targetParentTitle,'space')
