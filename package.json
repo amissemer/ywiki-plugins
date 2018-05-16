@@ -8,7 +8,8 @@
   "scripts": {
     "devtest": "webpack-dev-server --config webpack.test.config.js & open http://localhost:4300/tests",
     "build": "webpack",
-    "watch": "webpack --progress --watch"
+    "watch": "webpack --progress --watch",
+    "dev" : "webpack-dev-server --https --port 8083"
   },
   "repository": {
     "type": "git",
@@ -25,13 +26,10 @@
     "bootstrap-datepicker": "^1.6.4",
     "bootstrap-select": "^1.12.2",
     "bootstrap-validator": "^0.11.9",
-    "datatables.net-rowgroup-bs": "^1.0.0",
     "font-awesome": "^4.7.0",
     "imports-loader": "^0.7.1",
     "jquery": "^3.2.1",
     "jquery-ui-bundle": "^1.12.1",
-    "morris-data": "^0.5.1",
-    "raphael": "^2.2.7",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

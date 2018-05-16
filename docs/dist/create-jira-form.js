@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 52);
+/******/ 	return __webpack_require__(__webpack_require__.s = 39);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10338,13 +10338,13 @@ const DEFAULT_JIRA_ISSUE_COUNT = 10;
 /* harmony export (immutable) */ __webpack_exports__["k"] = DEFAULT_JIRA_ISSUE_COUNT;
 
 const MAIN_JIRA_LABEL = "CI";
-/* harmony export (immutable) */ __webpack_exports__["b"] = MAIN_JIRA_LABEL;
+/* harmony export (immutable) */ __webpack_exports__["a"] = MAIN_JIRA_LABEL;
 
 const TAGS_FIELD = "customfield_10032";
-/* harmony export (immutable) */ __webpack_exports__["c"] = TAGS_FIELD;
+/* harmony export (immutable) */ __webpack_exports__["b"] = TAGS_FIELD;
 
 const WIKI_HOST = 'wiki.hybris.com';
-/* harmony export (immutable) */ __webpack_exports__["a"] = WIKI_HOST;
+/* harmony export (immutable) */ __webpack_exports__["c"] = WIKI_HOST;
 
 const MAX_WIKI_PAGE_CREATION_RATE = 200;
 /* harmony export (immutable) */ __webpack_exports__["j"] = MAX_WIKI_PAGE_CREATION_RATE;
@@ -10375,15 +10375,15 @@ const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["d"] = ajax;
-/* harmony export (immutable) */ __webpack_exports__["f"] = localStorageSetItem;
-/* harmony export (immutable) */ __webpack_exports__["g"] = localStorageGetItem;
-/* harmony export (immutable) */ __webpack_exports__["c"] = closeFrame;
-/* harmony export (immutable) */ __webpack_exports__["i"] = redirect;
-/* harmony export (immutable) */ __webpack_exports__["e"] = $metacontent;
-/* harmony export (immutable) */ __webpack_exports__["h"] = $text;
-/* harmony export (immutable) */ __webpack_exports__["a"] = $arrayGetText;
-/* harmony export (immutable) */ __webpack_exports__["b"] = $tableCellsGetHtml;
+/* harmony export (immutable) */ __webpack_exports__["b"] = ajax;
+/* harmony export (immutable) */ __webpack_exports__["d"] = localStorageSetItem;
+/* harmony export (immutable) */ __webpack_exports__["e"] = localStorageGetItem;
+/* harmony export (immutable) */ __webpack_exports__["a"] = closeFrame;
+/* harmony export (immutable) */ __webpack_exports__["g"] = redirect;
+/* harmony export (immutable) */ __webpack_exports__["c"] = $metacontent;
+/* harmony export (immutable) */ __webpack_exports__["f"] = $text;
+/* unused harmony export $arrayGetText */
+/* unused harmony export $tableCellsGetHtml */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_config__ = __webpack_require__(1);
 
@@ -10392,7 +10392,7 @@ const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
 /**
  * A handy proxy for actions that can be executed in the parent frame bypassing CORS.
  */
-var wrapper = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__["a" /* default */])(parent, "https://"+__WEBPACK_IMPORTED_MODULE_1__common_config__["a" /* WIKI_HOST */]);
+var wrapper = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__["a" /* default */])(parent, "https://"+__WEBPACK_IMPORTED_MODULE_1__common_config__["c" /* WIKI_HOST */]);
 
 /**
  * Perform an ajax call in the parent frame and returns a promise that will get resolved or rejected with the data as seen by the parent frame.
@@ -10914,7 +10914,7 @@ __webpack_require__(10)
 /* harmony export (immutable) */ __webpack_exports__["a"] = iframeWrapper;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(8);
 
 
 
@@ -11024,41 +11024,6 @@ function iframeWrapper( postToWindow, targetHostname ) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return parseOptions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return encodeOptions; });
-function parseOptions(defaultOptions) {
-
-  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
-  var match;
-  var params = defaultOptions || {};
-  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
-
-  var hash = document.location.hash;
-
-  while (match = re.exec(hash)) {
-    params[decode(match[1])] = decode(match[2]);
-  }
-  return params;
-}
-
-function encodeOptions(options) {
-  var res = [];
-  for (var key in options) {
-    if (options.hasOwnProperty(key) && options[key]!==undefined) {
-        res.push(key+"="+encodeURIComponent(options[key]));
-    }
-  }
-  return res.join('&');
-}
-
-
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /**
  * Sets up a listener of all events received by the window, that dispatches:
  *   - those that have an action to the corresponding requestListeners
@@ -11158,6 +11123,41 @@ var windowEventListener = (function windowEventListener() {
 })();
 
 /* harmony default export */ __webpack_exports__["a"] = (windowEventListener);
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return parseOptions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return encodeOptions; });
+function parseOptions(defaultOptions) {
+
+  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
+  var match;
+  var params = defaultOptions || {};
+  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
+
+  var hash = document.location.hash;
+
+  while (match = re.exec(hash)) {
+    params[decode(match[1])] = decode(match[2]);
+  }
+  return params;
+}
+
+function encodeOptions(options) {
+  var res = [];
+  for (var key in options) {
+    if (options.hasOwnProperty(key) && options[key]!==undefined) {
+        res.push(key+"="+encodeURIComponent(options[key]));
+    }
+  }
+  return res.join('&');
+}
+
+
 
 
 /***/ }),
@@ -13653,13 +13653,196 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 22 */
+/* 22 */,
+/* 23 */,
+/* 24 */,
+/* 25 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = JiraError;
+/* harmony export (immutable) */ __webpack_exports__["a"] = JiraAuthError;
+function JiraError(message) {
+  this.name = 'JiraError';
+  this.message = message;
+  this.stack = (new Error()).stack;
+}
+JiraError.prototype = Object.create(Error.prototype);
+JiraError.prototype.constructor = JiraError;
+
+
+function JiraAuthError(authenticationUri) {
+  this.name = 'JiraAuthError';
+  this.message = 'Please authenticate with JIRA';
+  this.authenticationUri = authenticationUri;
+  this.stack = (new Error()).stack;
+}
+JiraAuthError.prototype = Object.create(Error.prototype);
+JiraAuthError.prototype.constructor = JiraAuthError;
+
+
+/***/ }),
+/* 26 */,
+/* 27 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createIssue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return jiraServerHost; });
+/* unused harmony export getJiraTicketKey */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jira_error__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_config__ = __webpack_require__(1);
+
+
+
+
+const jiraServerHost = 'jira.hybris.com';
+//const jiraServerHost = 'jiratest.hybris.com';
+
+function getJiraServer() {
+  return __WEBPACK_IMPORTED_MODULE_1__proxyService__["b" /* ajax */]("/rest/createjiracontent/1.0/get-jira-servers")
+  .then( function(servers) {
+    var matchingJiraServer = __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.grep(servers, function (value, idx) {
+      return value.url.indexOf(jiraServerHost)>0;
+    });
+    if (matchingJiraServer.length>0) {
+      return matchingJiraServer[0];
+    }
+    var msg="No jira server server with url "+jiraServerHost+" found";
+    console.error(msg);
+    throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["b" /* JiraError */](msg);
+  } )
+  .then ( function (jiraServer) {
+    return jiraServer.id;
+  });
+}
+
+function getJiraProject(jiraServerP, projectKey) {
+  var jiraServerP = getJiraServer();
+  return jiraServerP.then(function(serverId) {
+    return __WEBPACK_IMPORTED_MODULE_1__proxyService__["b" /* ajax */]("/rest/jira-integration/1.0/servers/"+serverId+"/projects")
+  }).then(function (result) {
+    for (var i=0;i<result.length;i++) {
+      if (result[i].key === projectKey) {
+        console.log("Project",result[i]);
+        return result[i];
+      }
+    }
+    var msg="No project '"+projectKey+"' found on JIRA server";
+    console.error(msg);
+    throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["b" /* JiraError */](msg);
+  });
+}
+
+function getIssueTypeId(jiraProject, issueTypeName) {
+  return jiraProject.then( function (project) {
+    for (var i=0;i<project.issuetypes.length;i++) {
+      if (project.issuetypes[i].name=== issueTypeName) {
+        return project.issuetypes[i];
+      }
+    }
+    var msg="No issue type '"+issueTypeName+"' for project "+project.key;
+    console.error(msg);
+    throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["b" /* JiraError */](msg);
+  }).then (function(issueType) {
+    return issueType.id;
+  });
+}
+
+/** Returns a promise for the issueKey */
+function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, feedbackType, labels) {
+  var jiraServerP = getJiraServer();
+  //var jiraProjectP = getJiraProject(jiraServerP, projectKey);
+  //var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
+  if (typeof labels === "string") {
+    labels = [ labels ];
+  }
+  labels = labels || [];
+  console.log("FeedbackType:",feedbackType);
+  return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when(jiraServerP)
+    .then(function(jiraServer) {
+      var issue =
+      {
+        "fields": {
+          "project": {"key": projectKey},
+          "issuetype":{"name": issueTypeName},
+          "components":[{"name": componentName}],
+          "summary":summary,
+          "description":description,
+          "priority": {"name": priority},
+          "labels": labels
+        }
+      };
+      if (typeof feedbackType === "string") {
+        issue.fields[__WEBPACK_IMPORTED_MODULE_3__common_config__["b" /* TAGS_FIELD */]] = [ feedbackType];
+      }
+      return __WEBPACK_IMPORTED_MODULE_1__proxyService__["b" /* ajax */]({
+        url: "/rest/jira-integration/1.0/issues?applicationId="+jiraServer,
+        contentType: "application/json;charset=UTF-8",
+        type: "POST",
+        data: JSON.stringify( { "issues":[ issue ] })
+      });
+    })
+    .then( getJiraTicketKey );
+}
+
+function getJiraTicketKey(data) {
+  var key = data && data.issues && data.issues[0] && data.issues[0].issue && data.issues[0].issue.key;
+  if (key) {
+    return key;
+  }
+  var errorMsg = "Oops, something happened during ticket creation, please try again. ";
+  console.error("Error creating JIRA ticket, full response was: ",data);
+  if (data && data.errors && data.errors[0] && data.errors[0].exceptionName == 'com.atlassian.integration.jira.JiraAuthenticationRequiredException') {
+    throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["a" /* JiraAuthError */](data.errors[0].authenticationUri);
+  } else if (data && data.errors && data.errors[0] && data.errors[0].message) {
+    errorMsg = data.errors[0].message;
+  }
+  if (data && data.errors && data.errors[0] && data.errors[0].elementErrors) {
+    if (data.errors[0].elementErrors.errorMessages && data.errors[0].elementErrors.errorMessages[0]) {
+      data.errors[0].elementErrors.errorMessages.forEach(function (msg) {
+        errorMsg += msg + ", ";
+      } );
+    }
+    var errors = data.errors[0].elementErrors.errors;
+    if (errors) {
+      for (var errKey in errors) {
+          if (errors.hasOwnProperty(errKey)) {
+            errorMsg += "For "+errKey + ": " + errors[errKey] + ", ";
+          }
+      }
+    }
+  }
+  throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["b" /* JiraError */](errorMsg);
+}
+
+
+
+
+/***/ }),
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 23 */
+/* 33 */,
+/* 34 */,
+/* 35 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 36 */,
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*** IMPORTS FROM imports-loader ***/
@@ -15567,204 +15750,8 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = JiraError;
-/* harmony export (immutable) */ __webpack_exports__["a"] = JiraAuthError;
-function JiraError(message) {
-  this.name = 'JiraError';
-  this.message = message;
-  this.stack = (new Error()).stack;
-}
-JiraError.prototype = Object.create(Error.prototype);
-JiraError.prototype.constructor = JiraError;
-
-
-function JiraAuthError(authenticationUri) {
-  this.name = 'JiraAuthError';
-  this.message = 'Please authenticate with JIRA';
-  this.authenticationUri = authenticationUri;
-  this.stack = (new Error()).stack;
-}
-JiraAuthError.prototype = Object.create(Error.prototype);
-JiraAuthError.prototype.constructor = JiraAuthError;
-
-
-/***/ }),
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return createIssue; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return jiraServerHost; });
-/* unused harmony export getJiraTicketKey */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__proxyService__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__jira_error__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_config__ = __webpack_require__(1);
-
-
-
-
-const jiraServerHost = 'jira.hybris.com';
-//const jiraServerHost = 'jiratest.hybris.com';
-
-function getJiraServer() {
-  return __WEBPACK_IMPORTED_MODULE_1__proxyService__["d" /* ajax */]("/rest/createjiracontent/1.0/get-jira-servers")
-  .then( function(servers) {
-    var matchingJiraServer = __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.grep(servers, function (value, idx) {
-      return value.url.indexOf(jiraServerHost)>0;
-    });
-    if (matchingJiraServer.length>0) {
-      return matchingJiraServer[0];
-    }
-    var msg="No jira server server with url "+jiraServerHost+" found";
-    console.error(msg);
-    throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["b" /* JiraError */](msg);
-  } )
-  .then ( function (jiraServer) {
-    return jiraServer.id;
-  });
-}
-
-function getJiraProject(jiraServerP, projectKey) {
-  var jiraServerP = getJiraServer();
-  return jiraServerP.then(function(serverId) {
-    return __WEBPACK_IMPORTED_MODULE_1__proxyService__["d" /* ajax */]("/rest/jira-integration/1.0/servers/"+serverId+"/projects")
-  }).then(function (result) {
-    for (var i=0;i<result.length;i++) {
-      if (result[i].key === projectKey) {
-        console.log("Project",result[i]);
-        return result[i];
-      }
-    }
-    var msg="No project '"+projectKey+"' found on JIRA server";
-    console.error(msg);
-    throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["b" /* JiraError */](msg);
-  });
-}
-
-function getIssueTypeId(jiraProject, issueTypeName) {
-  return jiraProject.then( function (project) {
-    for (var i=0;i<project.issuetypes.length;i++) {
-      if (project.issuetypes[i].name=== issueTypeName) {
-        return project.issuetypes[i];
-      }
-    }
-    var msg="No issue type '"+issueTypeName+"' for project "+project.key;
-    console.error(msg);
-    throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["b" /* JiraError */](msg);
-  }).then (function(issueType) {
-    return issueType.id;
-  });
-}
-
-/** Returns a promise for the issueKey */
-function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, feedbackType, labels) {
-  var jiraServerP = getJiraServer();
-  //var jiraProjectP = getJiraProject(jiraServerP, projectKey);
-  //var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
-  if (typeof labels === "string") {
-    labels = [ labels ];
-  }
-  labels = labels || [];
-  console.log("FeedbackType:",feedbackType);
-  return __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when(jiraServerP)
-    .then(function(jiraServer) {
-      var issue =
-      {
-        "fields": {
-          "project": {"key": projectKey},
-          "issuetype":{"name": issueTypeName},
-          "components":[{"name": componentName}],
-          "summary":summary,
-          "description":description,
-          "priority": {"name": priority},
-          "labels": labels
-        }
-      };
-      if (typeof feedbackType === "string") {
-        issue.fields[__WEBPACK_IMPORTED_MODULE_3__common_config__["c" /* TAGS_FIELD */]] = [ feedbackType];
-      }
-      return __WEBPACK_IMPORTED_MODULE_1__proxyService__["d" /* ajax */]({
-        url: "/rest/jira-integration/1.0/issues?applicationId="+jiraServer,
-        contentType: "application/json;charset=UTF-8",
-        type: "POST",
-        data: JSON.stringify( { "issues":[ issue ] })
-      });
-    })
-    .then( getJiraTicketKey );
-}
-
-function getJiraTicketKey(data) {
-  var key = data && data.issues && data.issues[0] && data.issues[0].issue && data.issues[0].issue.key;
-  if (key) {
-    return key;
-  }
-  var errorMsg = "Oops, something happened during ticket creation, please try again. ";
-  console.error("Error creating JIRA ticket, full response was: ",data);
-  if (data && data.errors && data.errors[0] && data.errors[0].exceptionName == 'com.atlassian.integration.jira.JiraAuthenticationRequiredException') {
-    throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["a" /* JiraAuthError */](data.errors[0].authenticationUri);
-  } else if (data && data.errors && data.errors[0] && data.errors[0].message) {
-    errorMsg = data.errors[0].message;
-  }
-  if (data && data.errors && data.errors[0] && data.errors[0].elementErrors) {
-    if (data.errors[0].elementErrors.errorMessages && data.errors[0].elementErrors.errorMessages[0]) {
-      data.errors[0].elementErrors.errorMessages.forEach(function (msg) {
-        errorMsg += msg + ", ";
-      } );
-    }
-    var errors = data.errors[0].elementErrors.errors;
-    if (errors) {
-      for (var errKey in errors) {
-          if (errors.hasOwnProperty(errKey)) {
-            errorMsg += "For "+errKey + ": " + errors[errKey] + ", ";
-          }
-      }
-    }
-  }
-  throw new __WEBPACK_IMPORTED_MODULE_2__jira_error__["b" /* JiraError */](errorMsg);
-}
-
-
-
-
-/***/ }),
-/* 35 */,
-/* 36 */,
-/* 37 */,
 /* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15776,19 +15763,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_bootstrap__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap_validator__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_bootstrap_validator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_select__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_select__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_bootstrap_select___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_bootstrap_select__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__jira_error__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__jira_error__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_min_css__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_bootstrap_dist_css_bootstrap_min_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_theme_min_css__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_theme_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_bootstrap_dist_css_bootstrap_theme_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_select_dist_css_bootstrap_select_min_css__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_select_dist_css_bootstrap_select_min_css__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_bootstrap_select_dist_css_bootstrap_select_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_bootstrap_select_dist_css_bootstrap_select_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__css_create_jira_css__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__css_create_jira_css__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__css_create_jira_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__css_create_jira_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__common_optionsParser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__jiraService__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__common_optionsParser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__jiraService__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__common_config__ = __webpack_require__(1);
 
 
@@ -15807,22 +15794,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 var options = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_10__common_optionsParser__["a" /* parseOptions */])({"serviceDisplayName" : "service engagements"});
 
-var additionalLabel = __WEBPACK_IMPORTED_MODULE_12__common_config__["b" /* MAIN_JIRA_LABEL */];
+var additionalLabel = __WEBPACK_IMPORTED_MODULE_12__common_config__["a" /* MAIN_JIRA_LABEL */];
 
 console.info("Form options",options);
 
 function bindDOM() {
 
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#form-close").click( function() {
-		__WEBPACK_IMPORTED_MODULE_1__proxyService__["c" /* closeFrame */]();
+		__WEBPACK_IMPORTED_MODULE_1__proxyService__["a" /* closeFrame */]();
 	});
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).keyup(function(e) {
     if (e.keyCode == 27) { // ESC
-			 __WEBPACK_IMPORTED_MODULE_1__proxyService__["c" /* closeFrame */]();
+			 __WEBPACK_IMPORTED_MODULE_1__proxyService__["a" /* closeFrame */]();
     }
 	});
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#cancelBtn").click( function() {
-		__WEBPACK_IMPORTED_MODULE_1__proxyService__["c" /* closeFrame */]();
+		__WEBPACK_IMPORTED_MODULE_1__proxyService__["a" /* closeFrame */]();
 	});
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#authenticateWarning a.authenticateWarningLink").click( function() {
 		__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#authenticateWarning").fadeOut();

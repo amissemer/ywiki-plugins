@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 55);
+/******/ 	return __webpack_require__(__webpack_require__.s = 41);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10338,13 +10338,13 @@ const DEFAULT_JIRA_ISSUE_COUNT = 10;
 /* harmony export (immutable) */ __webpack_exports__["k"] = DEFAULT_JIRA_ISSUE_COUNT;
 
 const MAIN_JIRA_LABEL = "CI";
-/* harmony export (immutable) */ __webpack_exports__["b"] = MAIN_JIRA_LABEL;
+/* harmony export (immutable) */ __webpack_exports__["a"] = MAIN_JIRA_LABEL;
 
 const TAGS_FIELD = "customfield_10032";
-/* harmony export (immutable) */ __webpack_exports__["c"] = TAGS_FIELD;
+/* harmony export (immutable) */ __webpack_exports__["b"] = TAGS_FIELD;
 
 const WIKI_HOST = 'wiki.hybris.com';
-/* harmony export (immutable) */ __webpack_exports__["a"] = WIKI_HOST;
+/* harmony export (immutable) */ __webpack_exports__["c"] = WIKI_HOST;
 
 const MAX_WIKI_PAGE_CREATION_RATE = 200;
 /* harmony export (immutable) */ __webpack_exports__["j"] = MAX_WIKI_PAGE_CREATION_RATE;
@@ -10375,15 +10375,15 @@ const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["d"] = ajax;
-/* harmony export (immutable) */ __webpack_exports__["f"] = localStorageSetItem;
-/* harmony export (immutable) */ __webpack_exports__["g"] = localStorageGetItem;
-/* harmony export (immutable) */ __webpack_exports__["c"] = closeFrame;
-/* harmony export (immutable) */ __webpack_exports__["i"] = redirect;
-/* harmony export (immutable) */ __webpack_exports__["e"] = $metacontent;
-/* harmony export (immutable) */ __webpack_exports__["h"] = $text;
-/* harmony export (immutable) */ __webpack_exports__["a"] = $arrayGetText;
-/* harmony export (immutable) */ __webpack_exports__["b"] = $tableCellsGetHtml;
+/* harmony export (immutable) */ __webpack_exports__["b"] = ajax;
+/* harmony export (immutable) */ __webpack_exports__["d"] = localStorageSetItem;
+/* harmony export (immutable) */ __webpack_exports__["e"] = localStorageGetItem;
+/* harmony export (immutable) */ __webpack_exports__["a"] = closeFrame;
+/* harmony export (immutable) */ __webpack_exports__["g"] = redirect;
+/* harmony export (immutable) */ __webpack_exports__["c"] = $metacontent;
+/* harmony export (immutable) */ __webpack_exports__["f"] = $text;
+/* unused harmony export $arrayGetText */
+/* unused harmony export $tableCellsGetHtml */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_config__ = __webpack_require__(1);
 
@@ -10392,7 +10392,7 @@ const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
 /**
  * A handy proxy for actions that can be executed in the parent frame bypassing CORS.
  */
-var wrapper = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__["a" /* default */])(parent, "https://"+__WEBPACK_IMPORTED_MODULE_1__common_config__["a" /* WIKI_HOST */]);
+var wrapper = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__common_iframeWrapper__["a" /* default */])(parent, "https://"+__WEBPACK_IMPORTED_MODULE_1__common_config__["c" /* WIKI_HOST */]);
 
 /**
  * Perform an ajax call in the parent frame and returns a promise that will get resolved or rejected with the data as seen by the parent frame.
@@ -10914,7 +10914,7 @@ __webpack_require__(10)
 /* harmony export (immutable) */ __webpack_exports__["a"] = iframeWrapper;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(8);
 
 
 
@@ -11020,8 +11020,7 @@ function iframeWrapper( postToWindow, targetHostname ) {
 
 
 /***/ }),
-/* 8 */,
-/* 9 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11127,6 +11126,7 @@ var windowEventListener = (function windowEventListener() {
 
 
 /***/ }),
+/* 9 */,
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13619,9 +13619,7 @@ var $ = __webpack_require__(0);
 }.call(window));
 
 /***/ }),
-/* 22 */,
-/* 23 */,
-/* 24 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13642,7 +13640,7 @@ var $ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__proxyService__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_rate_limit__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_rate_limit__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_config__ = __webpack_require__(1);
 
 
@@ -13666,10 +13664,10 @@ function deletePageRecursive(spaceKey,pageTitle) {
   });
 }
 function getAttachment(pageId, attachmentName) {
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */]("/download/attachments/" + pageId + "/" + attachmentName + "?api=v2");
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["b" /* ajax */]("/download/attachments/" + pageId + "/" + attachmentName + "?api=v2");
 }
 function deletePageById(pageId) {
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */]({
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["b" /* ajax */]({
     url: '/rest/api/content/'+encodeURIComponent(pageId),
     type: 'DELETE'
   }).fail(errorLogger( "DELETE page failed"));
@@ -13684,7 +13682,7 @@ function movePages(sourceSpaceKey, sourcePageTitle,targetSpaceKey, targetParentT
   });
 }
 function getAtlToken() {
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["e" /* $metacontent */]('meta[name=ajs-atl-token]');
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["c" /* $metacontent */]('meta[name=ajs-atl-token]');
 }
 
 var atlToken;
@@ -13714,7 +13712,7 @@ function movePagesRecursiveInternal( sourcePageId, targetSpaceKey, targetParentT
 function moveOne (sourcePageId, targetSpaceKey, targetParentTitle) {
   var url = '/pages/movepage.action?pageId='+encodeURIComponent(sourcePageId)+'&spaceKey='+encodeURIComponent(targetSpaceKey)+'&targetTitle='+encodeURIComponent(targetParentTitle)+'&position=append&atl_token='+atlToken+'&_='+Math.random();
   console.log("Moving page ",sourcePageId," under ",targetSpaceKey+":"+ targetParentTitle, url);
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](url);
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["b" /* ajax */](url);
 }
 
 function deletePageRecursiveInternal(pageId) {
@@ -13750,7 +13748,7 @@ function getContent(spaceKey,pageTitle,expand) {
   }
   var url = '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
   console.log("Getting page content from " + url);
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](url)
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["b" /* ajax */](url)
   .then( function (response) {
     console.log("Filtering AJAX response",response);
     if (response.results && response.results.length>0) {
@@ -13771,7 +13769,7 @@ function getContentById(pageId, expand) {
   }
   var url = '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
   console.log(url);
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](url)
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["b" /* ajax */](url)
   .fail(errorLogger( "GET page by pageId failed"));
 }
 
@@ -13782,7 +13780,7 @@ function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
     limit=15;
   }
   var expandParam=(expand?"&expand="+encodeURIComponent(expand):"");
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */]('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["b" /* ajax */]('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
 }
 
 /**
@@ -13900,7 +13898,7 @@ function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
 
 var postPageRateLimited = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__common_rate_limit__["a" /* default */])(postPage, __WEBPACK_IMPORTED_MODULE_3__common_config__["j" /* MAX_WIKI_PAGE_CREATION_RATE */]);
 function postPage(page) {
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["b" /* ajax */](
     {
       url: '/rest/api/content',
       type: 'POST',
@@ -13910,7 +13908,7 @@ function postPage(page) {
 }
 
 function updateContent(page) {
-    return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](
+    return __WEBPACK_IMPORTED_MODULE_0__proxyService__["b" /* ajax */](
       {
         url: '/rest/api/content/'+encodeURIComponent(page.id),
         type: 'PUT',
@@ -13934,7 +13932,7 @@ function addLabel(pageId, label) {
   } else {
     throw "Unknown type of label: "+label;
   }
-  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["d" /* ajax */](
+  return __WEBPACK_IMPORTED_MODULE_0__proxyService__["b" /* ajax */](
     {
       url: '/rest/api/content/'+encodeURIComponent(pageId)+'/label',
       type: 'POST',
@@ -13945,12 +13943,12 @@ function addLabel(pageId, label) {
 
 
 /***/ }),
-/* 25 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = rateLimit;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
@@ -14010,8 +14008,7 @@ function rateLimit(func, rate) {
 
 
 /***/ }),
-/* 26 */,
-/* 27 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -15566,6 +15563,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
 
 /***/ }),
+/* 25 */,
+/* 26 */,
+/* 27 */,
 /* 28 */,
 /* 29 */,
 /* 30 */,
@@ -15579,28 +15579,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 /* 38 */,
 /* 39 */,
 /* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__confluenceService__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__confluenceService__ = __webpack_require__(22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__proxyService__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_bootstrap___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_bootstrap__);
@@ -15619,7 +15605,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-__WEBPACK_IMPORTED_MODULE_2__proxyService__["e" /* $metacontent */]('meta[name=confluence-space-key]')
+__WEBPACK_IMPORTED_MODULE_2__proxyService__["c" /* $metacontent */]('meta[name=confluence-space-key]')
 	.then(
 		function(value) { __WEBPACK_IMPORTED_MODULE_0_jquery___default()("#source-space").val(value); },
 		function () { console.error("Could not resolve current spaceKey")}
@@ -15628,11 +15614,11 @@ __WEBPACK_IMPORTED_MODULE_2__proxyService__["e" /* $metacontent */]('meta[name=c
 function bindDOM() {
   __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).keyup(function(e) {
     if (e.keyCode == 27) { // ESC
-			 __WEBPACK_IMPORTED_MODULE_2__proxyService__["c" /* closeFrame */]();
+			 __WEBPACK_IMPORTED_MODULE_2__proxyService__["a" /* closeFrame */]();
     }
 	});
 	__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#cancel-move").click( function() {
-		__WEBPACK_IMPORTED_MODULE_2__proxyService__["c" /* closeFrame */]();
+		__WEBPACK_IMPORTED_MODULE_2__proxyService__["a" /* closeFrame */]();
 	});
 	var submitBtn=__WEBPACK_IMPORTED_MODULE_0_jquery___default()("#submit-move");
 	submitBtn.click( function() {
@@ -15655,7 +15641,7 @@ function bindDOM() {
 }
 
 function endMoveProcess(rootPage) {
-  __WEBPACK_IMPORTED_MODULE_2__proxyService__["i" /* redirect */](rootPage._links.webui);
+  __WEBPACK_IMPORTED_MODULE_2__proxyService__["g" /* redirect */](rootPage._links.webui);
 }
 
 __WEBPACK_IMPORTED_MODULE_0_jquery___default()(document).ready(bindDOM);
