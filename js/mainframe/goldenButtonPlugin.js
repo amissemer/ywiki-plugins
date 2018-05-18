@@ -177,10 +177,10 @@ function readOptions(el) {
   function defaultNotFalse(v) {
     return (v!==undefined && v!==null && v!==false && v!=="false"); 
   }
-  el.children('options').each(function() {
+  el.children('ci-options').each(function() {
     var name = $(this).attr("name");
     var options = [];
-    $(this).children('option').each(function() {
+    $(this).children('ci-option').each(function() {
       options.push({name: name, value: $(this).attr("value"), label: $(this).html(), default: defaultNotFalse($(this).attr("default")) });
     });
     groups.push({name: name, options: options});
@@ -222,6 +222,7 @@ function bootstrap(host, cacheBuster) {
       logToPage: jEl.data('log-to-page'),
       variantOptions: readOptions(jEl),
     });
+    jEl.html('Start');
   });
   $('[data-activate="issue-creator"]').each( function() {
     var jEl=$(this);

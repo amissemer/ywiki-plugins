@@ -261,7 +261,8 @@ function parseOptions(defaultOptions) {
 
   while (match = re.exec(hash)) {
     var value = decode(match[2]);
-    if ( (value.startsWith('{') && value.endsWith('}')) ||  (value.startsWith('[') && value.endsWith(']'))  ) { // assume JSON
+    if ( isJSON(value) ) { 
+      console.log("Parsing options: ",value);
       value = JSON.parse(value);
     }
     params[decode(match[1])] = value;
@@ -281,6 +282,11 @@ function encodeOptions(options) {
     }
   }
   return res.join('&');
+}
+
+function isJSON(value) {
+  // simplistic heuristic to detect serialized JSON
+  return ((value.startsWith('{') && value.endsWith('}')) ||  (value.startsWith('[') && value.endsWith(']')) ) && !(value.startsWith('[object'));
 }
 
 

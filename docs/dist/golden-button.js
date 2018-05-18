@@ -283,7 +283,8 @@ function parseOptions(defaultOptions) {
 
   while (match = re.exec(hash)) {
     var value = decode(match[2]);
-    if ( (value.startsWith('{') && value.endsWith('}')) ||  (value.startsWith('[') && value.endsWith(']'))  ) { // assume JSON
+    if ( isJSON(value) ) { 
+      console.log("Parsing options: ",value);
       value = JSON.parse(value);
     }
     params[decode(match[1])] = value;
@@ -303,6 +304,11 @@ function encodeOptions(options) {
     }
   }
   return res.join('&');
+}
+
+function isJSON(value) {
+  // simplistic heuristic to detect serialized JSON
+  return ((value.startsWith('{') && value.endsWith('}')) ||  (value.startsWith('[') && value.endsWith(']')) ) && !(value.startsWith('[object'));
 }
 
 
@@ -620,10 +626,10 @@ function readOptions(el) {
   function defaultNotFalse(v) {
     return (v!==undefined && v!==null && v!==false && v!=="false"); 
   }
-  el.children('options').each(function() {
+  el.children('ci-options').each(function() {
     var name = $(this).attr("name");
     var options = [];
-    $(this).children('option').each(function() {
+    $(this).children('ci-option').each(function() {
       options.push({name: name, value: $(this).attr("value"), label: $(this).html(), default: defaultNotFalse($(this).attr("default")) });
     });
     groups.push({name: name, options: options});
@@ -665,6 +671,7 @@ function bootstrap(host, cacheBuster) {
       logToPage: jEl.data('log-to-page'),
       variantOptions: readOptions(jEl),
     });
+    jEl.html('Start');
   });
   $('[data-activate="issue-creator"]').each( function() {
     var jEl=$(this);
