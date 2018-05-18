@@ -106,6 +106,7 @@
 import '../lib/polyfills';
 
 var ctx = {};
+var ERROR = window.ERROR = [];
 
 (function(cfg){
 	var defaults = {
@@ -156,11 +157,11 @@ var ctx = {};
 				,'function': cfg.name
 			};
 		}
-		ERROR.add(e)
+		ERROR.push(e)
 		switch (cfg.errors) {
 			case 'alert':
 					if(msg) alert(cfg.name + ":\r\n" + msg)
-					else ERROR.show(e)
+					else alert(e);
 				break;
 			case 'throw':
 					if(msg) throw new Error(cfg.name + ":\r\n" + msg)
@@ -792,6 +793,9 @@ var ctx = {};
 
 	// for (var i in pro) lib.prototype[i] = pro[i];
 	cfg.context[cfg.name] = new lib();
-})({context: ctx});
+})({
+		context: ctx,
+		errors: 'throw'
+	});
 
 export var jsxml = ctx.JSXML;

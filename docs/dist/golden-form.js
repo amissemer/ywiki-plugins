@@ -1231,7 +1231,11 @@ atlassianNamespacePrefixes.forEach(function(prefix) {
     ns.push('xmlns:'+prefix+'="confluence.'+prefix+'"');
 });
 function wrapStorageFormat(storageFormat) {
-    return '<?xml version="1.0" encoding="UTF-8"?><xml '+ns.join(' ')+'>' + storageFormat + '</xml>';
+    return '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" ['
+    + '<!ENTITY % HTMLlat1 PUBLIC "-//W3C//ENTITIES Latin 1 for XHTML//EN" "http://www.w3.org/MarkUp/DTD/xhtml-lat1.ent"> %HTMLlat1;'
+    + '<!ENTITY % HTMLsymbol PUBLIC "-//W3C//ENTITIES Symbols for XHTML//EN" "http://www.w3.org/MarkUp/DTD/xhtml-symbol.ent"> %HTMLsymbol;'
+    + '<!ENTITY % HTMLspecial PUBLIC "-//W3C//ENTITIES Special for XHTML//EN" "http://www.w3.org/MarkUp/DTD/xhtml-special.ent"> %HTMLspecial;'
+    + ']><xml '+ns.join(' ')+'>' + storageFormat + '</xml>';
 }
 var xmlPrologPattern = /^<xml[^>]*>/;
 var closingXmlTagPattern = /<\/xml>$/;
@@ -1245,7 +1249,7 @@ function variantOptionsTransform(text, options) {
     if (!options || options.length==0) return text;
     if (options.length>1) throw "Only one option is supported at this time";
     var option = options[0];
-    var xml = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].fromString(wrapStorageFormat( text ) );
+    var xml = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].fromString(wrapStorageFormat( text ));
     var xslt = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].fromString(xsl.format(option.name, option.value));
     return unwrapToStorageFormat ( _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].transReady(xml, xslt) );
 }
@@ -1697,6 +1701,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var ctx = {};
+var ERROR = window.ERROR = [];
 
 (function(cfg){
 	var defaults = {
@@ -1747,11 +1752,11 @@ var ctx = {};
 				,'function': cfg.name
 			};
 		}
-		ERROR.add(e)
+		ERROR.push(e)
 		switch (cfg.errors) {
 			case 'alert':
 					if(msg) alert(cfg.name + ":\r\n" + msg)
-					else ERROR.show(e)
+					else alert(e);
 				break;
 			case 'throw':
 					if(msg) throw new Error(cfg.name + ":\r\n" + msg)
@@ -2383,7 +2388,10 @@ var ctx = {};
 
 	// for (var i in pro) lib.prototype[i] = pro[i];
 	cfg.context[cfg.name] = new lib();
-})({context: ctx});
+})({
+		context: ctx,
+		errors: 'throw'
+	});
 
 var jsxml = ctx.JSXML;
 
