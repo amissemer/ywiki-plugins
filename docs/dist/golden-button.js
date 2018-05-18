@@ -530,19 +530,15 @@ function wireBanner(options) {
   options.bannerText = options.bannerText || $('#title-text').text().trim();
   $(".wiki-content .innerCell").css("overflow-x", "visible");
   $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
-  .html('<div class="ciaction">\
-              <img src="'+options.host+'/banner/clickme.png" />\
-              <div class="theOneButton">'+options.buttonText+'</div>\
-            </div>\
-            <div class="cilogo">\
+  .html('<div class="cilogo">\
               <img src="'+options.host+'/banner/service_leads_2.png" />\
             </div>\
             <div class="cicenter">\
             <h1>'+options.bannerText+'</h1>\
             </div>\
           ');
-  options.cssSelector=".ciaction";
-  wireButton(options);
+  //options.cssSelector=".ciaction";
+  //wireButton(options);
 }
 
 function genericButton(options, formPath) {
