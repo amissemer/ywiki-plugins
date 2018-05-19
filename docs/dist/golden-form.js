@@ -1261,11 +1261,17 @@ function variantOptionsTransform(text, options) {
     if (!options || options.length==0) return text;
     if (options.length>1) throw "Only one option is supported at this time";
     var option = options[0];
-    var xml = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].fromString(wrapStorageFormat( text ));
-    var xslt = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].fromString(xsl.format(option.name, option.value));
-    return unwrapToStorageFormat ( _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].transReady(xml, xslt) );
+    return unwrapToStorageFormat(xslt(wrapStorageFormat(text), xsl.format(option.name, option.value)));
 }
 
+function xslt(xmlTxt, xslTxt) {
+    var xml = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].fromString(xmlTxt);
+    var xslt = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].fromString(xslTxt);
+    console.log("About to XSL-Transform", xml, xslt);
+    var xsltResult = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].transReady(xml, xslt);
+    console.log("Result of XSL-Transform", xsltResult);
+    return xsltResult;
+}
 
 /***/ }),
 

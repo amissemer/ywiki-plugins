@@ -38,7 +38,14 @@ export default function variantOptionsTransform(text, options) {
     if (!options || options.length==0) return text;
     if (options.length>1) throw "Only one option is supported at this time";
     var option = options[0];
-    var xml = jsxml.fromString(wrapStorageFormat( text ));
-    var xslt = jsxml.fromString(xsl.format(option.name, option.value));
-    return unwrapToStorageFormat ( jsxml.transReady(xml, xslt) );
+    return unwrapToStorageFormat(xslt(wrapStorageFormat(text), xsl.format(option.name, option.value)));
+}
+
+function xslt(xmlTxt, xslTxt) {
+    var xml = jsxml.fromString(xmlTxt);
+    var xslt = jsxml.fromString(xslTxt);
+    console.log("About to XSL-Transform", xml, xslt);
+    var xsltResult = jsxml.transReady(xml, xslt);
+    console.log("Result of XSL-Transform", xsltResult);
+    return xsltResult;
 }
