@@ -2,7 +2,7 @@ var path = require('path');
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: {
     "golden-button": './js/mainframe/main.js',
     "move-pages-bundle": './js/iframe/move-pages.js',

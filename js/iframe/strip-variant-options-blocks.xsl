@@ -4,6 +4,7 @@
     <!-- Output the plain-text-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->
     <xsl:output method="xml" cdata-section-elements="ac:plain-text-body" />
 
+    <!-- We can't use &#10; inside concat() directly, as least not on Safari, but it works with a variable. -->
     <xsl:variable name="LF"><xsl:text>&#10;</xsl:text></xsl:variable>
 
     <!-- For selection option blocks, keep the rich-text content from inside the block -->

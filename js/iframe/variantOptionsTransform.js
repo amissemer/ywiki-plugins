@@ -1,6 +1,10 @@
 import {jsxml} from "../lib/jsxml";
 import '../lib/polyfills';
 var xsl = require('raw-loader!./strip-variant-options-blocks.xsl');
+var dtdEntities = '';
+dtdEntities+=require('raw-loader!../lib/xhtml-lat1.ent');
+dtdEntities+=require('raw-loader!../lib/xhtml-special.ent');
+dtdEntities+=require('raw-loader!../lib/xhtml-symbol.ent');
 
 var atlassianNamespacePrefixes = ['atlassian-content','ac','ri','atlassian-template','at'];
 var ns = [];
@@ -9,10 +13,10 @@ atlassianNamespacePrefixes.forEach(function(prefix) {
 });
 function wrapStorageFormat(storageFormat) {
     return '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" ['
-    + '<!ENTITY % HTMLlat1 PUBLIC "-//W3C//ENTITIES Latin 1 for XHTML//EN" "http://www.w3.org/MarkUp/DTD/xhtml-lat1.ent"> %HTMLlat1;'
-    + '<!ENTITY % HTMLsymbol PUBLIC "-//W3C//ENTITIES Symbols for XHTML//EN" "http://www.w3.org/MarkUp/DTD/xhtml-symbol.ent"> %HTMLsymbol;'
-    + '<!ENTITY % HTMLspecial PUBLIC "-//W3C//ENTITIES Special for XHTML//EN" "http://www.w3.org/MarkUp/DTD/xhtml-special.ent"> %HTMLspecial;'
-    + ']><xml '+ns.join(' ')+'>' + storageFormat + '</xml>';
+    + dtdEntities
+    + ']><xml '+ns.join(' ')+'>' 
+    + storageFormat 
+    + '</xml>';
 }
 var xmlPrologPattern = /^<xml[^>]*>/;
 var closingXmlTagPattern = /<\/xml>$/;
