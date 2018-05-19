@@ -1225,11 +1225,12 @@ __webpack_require__.r(__webpack_exports__);
 
 var xsl = __webpack_require__(/*! raw-loader!./strip-variant-options-blocks.xsl */ "./node_modules/raw-loader/index.js!./js/iframe/strip-variant-options-blocks.xsl");
 
-var atlassianNamespacePrefixes = ['atlassian-content','ac','ri','atlassian-template','at'];
-var ns = [];
-atlassianNamespacePrefixes.forEach(function(prefix) {
-    ns.push('xmlns:'+prefix+'="confluence.'+prefix+'"');
-});
+var ns = ['xmlns:ac="http://atlassian.com/content"',
+    'xmlns:atlassian-content="http://atlassian.com/content"',
+    'xmlns:ri="http://atlassian.com/resource/identifier"',
+    'xmlns:at="http://atlassian.com/template"',
+    'xmlns:atlassian-template="http://atlassian.com/template"'];
+
 function wrapStorageFormat(storageFormat) {
     return '<?xml version="1.0" encoding="UTF-8"?><xml '+ns.join(' ')+'>' 
     + escapeEntities(storageFormat)
@@ -1265,9 +1266,9 @@ function variantOptionsTransform(text, options) {
 }
 
 function xslt(xmlTxt, xslTxt) {
+    console.log("About to XSL-Transform", xmlTxt, xslTxt);
     var xml = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].fromString(xmlTxt);
     var xslt = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].fromString(xslTxt);
-    console.log("About to XSL-Transform", xml, xslt);
     var xsltResult = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].transReady(xml, xslt);
     console.log("Result of XSL-Transform", xsltResult);
     return xsltResult;
@@ -36659,7 +36660,7 @@ return jQuery;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:ac=\"confluence.ac\">\n\n    <!-- Output the plain-text-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->\n    <xsl:output method=\"xml\" cdata-section-elements=\"ac:plain-text-body\" />\n\n    <!-- We can't use &#10; inside concat() directly, as least not on Safari, but it works with a variable. -->\n    <xsl:variable name=\"LF\"><xsl:text>&#10;</xsl:text></xsl:variable>\n\n    <!-- For selection option blocks, keep the rich-text content from inside the block -->\n    <xsl:template match=\"ac:structured-macro[@ac:name='divbox' and ac:parameter[@ac:name='class' and text()='{0}-{1}']]\">\n        <xsl:apply-templates select=\"ac:rich-text-body/*\"/>\n    </xsl:template>\n\n    <!-- Completely strip the block and its content if it is for a non selected option -->\n    <xsl:template match=\"ac:structured-macro[@ac:name='divbox' and ac:parameter[@ac:name='class' and text()!='{0}-{1}' and starts-with(., '{0}-')]]\">\n    </xsl:template>\n\n    <!-- Add the option value as a metadata row in the metadata-list of the page if such macro exists on the page -->\n    <xsl:template match=\"ac:structured-macro[@ac:name='metadata-list']/ac:plain-text-body[contains(., 'ProjectName')]/text()\">\n        <xsl:value-of select=\"concat(., $LF, '|| {0} | {1} | ')\"/>\n    </xsl:template>\n        \n    <!-- Copy everything else as is -->   \n    <xsl:template match=\"@*|node()\">\n        <xsl:copy>\n        <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n</xsl:stylesheet>"
+module.exports = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:ac=\"http://atlassian.com/content\">\n\n    <!-- Output the plain-text-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->\n    <xsl:output method=\"xml\" cdata-section-elements=\"ac:plain-text-body\" />\n\n    <!-- We can't use &#10; inside concat() directly, as least not on Safari, but it works with a variable. -->\n    <xsl:variable name=\"LF\"><xsl:text>&#10;</xsl:text></xsl:variable>\n\n    <!-- For selection option blocks, keep the rich-text content from inside the block -->\n    <xsl:template match=\"ac:structured-macro[@ac:name='divbox' and ac:parameter[@ac:name='class' and text()='{0}-{1}']]\">\n        <xsl:apply-templates select=\"ac:rich-text-body/*\"/>\n    </xsl:template>\n\n    <!-- Completely strip the block and its content if it is for a non selected option -->\n    <xsl:template match=\"ac:structured-macro[@ac:name='divbox' and ac:parameter[@ac:name='class' and text()!='{0}-{1}' and starts-with(., '{0}-')]]\">\n    </xsl:template>\n\n    <!-- Add the option value as a metadata row in the metadata-list of the page if such macro exists on the page -->\n    <xsl:template match=\"ac:structured-macro[@ac:name='metadata-list']/ac:plain-text-body[contains(., 'ProjectName')]/text()\">\n        <xsl:value-of select=\"concat(., $LF, '|| {0} | {1} | ')\"/>\n    </xsl:template>\n        \n    <!-- Copy everything else as is -->   \n    <xsl:template match=\"@*|node()\">\n        <xsl:copy>\n        <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n</xsl:stylesheet>"
 
 /***/ }),
 

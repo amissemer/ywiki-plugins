@@ -2,11 +2,12 @@ import {jsxml} from "../lib/jsxml";
 import '../lib/polyfills';
 var xsl = require('raw-loader!./strip-variant-options-blocks.xsl');
 
-var atlassianNamespacePrefixes = ['atlassian-content','ac','ri','atlassian-template','at'];
-var ns = [];
-atlassianNamespacePrefixes.forEach(function(prefix) {
-    ns.push('xmlns:'+prefix+'="confluence.'+prefix+'"');
-});
+var ns = ['xmlns:ac="http://atlassian.com/content"',
+    'xmlns:atlassian-content="http://atlassian.com/content"',
+    'xmlns:ri="http://atlassian.com/resource/identifier"',
+    'xmlns:at="http://atlassian.com/template"',
+    'xmlns:atlassian-template="http://atlassian.com/template"'];
+
 function wrapStorageFormat(storageFormat) {
     return '<?xml version="1.0" encoding="UTF-8"?><xml '+ns.join(' ')+'>' 
     + escapeEntities(storageFormat)
@@ -42,9 +43,9 @@ export default function variantOptionsTransform(text, options) {
 }
 
 function xslt(xmlTxt, xslTxt) {
+    console.log("About to XSL-Transform", xmlTxt, xslTxt);
     var xml = jsxml.fromString(xmlTxt);
     var xslt = jsxml.fromString(xslTxt);
-    console.log("About to XSL-Transform", xml, xslt);
     var xsltResult = jsxml.transReady(xml, xslt);
     console.log("Result of XSL-Transform", xsltResult);
     return xsltResult;
