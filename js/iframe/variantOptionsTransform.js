@@ -44,9 +44,7 @@ export default function variantOptionsTransform(text, options) {
 
 function xslt(xmlTxt, xslTxt) {
     console.log("About to XSL-Transform", xmlTxt, xslTxt);
-    var xml = jsxml.fromString(xmlTxt);
-    var xslt = jsxml.fromString(xslTxt);
-    var xsltResult = jsxml.transReady(xml, xslt);
+    var xsltResult = jsxml.transReady(xmlTxt, xslTxt);
     console.log("Result of XSL-Transform", xsltResult);
     return xsltResult;
 }

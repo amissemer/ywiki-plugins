@@ -1267,9 +1267,7 @@ function variantOptionsTransform(text, options) {
 
 function xslt(xmlTxt, xslTxt) {
     console.log("About to XSL-Transform", xmlTxt, xslTxt);
-    var xml = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].fromString(xmlTxt);
-    var xslt = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].fromString(xslTxt);
-    var xsltResult = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].transReady(xml, xslt);
+    var xsltResult = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].transReady(xmlTxt, xslTxt);
     console.log("Result of XSL-Transform", xsltResult);
     return xsltResult;
 }
