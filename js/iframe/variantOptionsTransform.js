@@ -1,10 +1,6 @@
 import {jsxml} from "../lib/jsxml";
 import '../lib/polyfills';
 var xsl = require('raw-loader!./strip-variant-options-blocks.xsl');
-var dtdEntities = '';
-dtdEntities+=require('raw-loader!../lib/xhtml-lat1.ent');
-dtdEntities+=require('raw-loader!../lib/xhtml-special.ent');
-dtdEntities+=require('raw-loader!../lib/xhtml-symbol.ent');
 
 var atlassianNamespacePrefixes = ['atlassian-content','ac','ri','atlassian-template','at'];
 var ns = [];
@@ -12,17 +8,29 @@ atlassianNamespacePrefixes.forEach(function(prefix) {
     ns.push('xmlns:'+prefix+'="confluence.'+prefix+'"');
 });
 function wrapStorageFormat(storageFormat) {
-    return '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" ['
-    + dtdEntities
-    + ']><xml '+ns.join(' ')+'>' 
-    + storageFormat 
+    return '<?xml version="1.0" encoding="UTF-8"?><xml '+ns.join(' ')+'>' 
+    + escapeEntities(storageFormat)
     + '</xml>';
 }
 var xmlPrologPattern = /^<xml[^>]*>/;
 var closingXmlTagPattern = /<\/xml>$/;
 
 function unwrapToStorageFormat(xml) {
-    return xml.replace(xmlPrologPattern, '').replace(closingXmlTagPattern, '');
+    return unescapeEntities( xml.replace(xmlPrologPattern, '').replace(closingXmlTagPattern, '') );
+}
+// IE doesn't handle well the declaration of all the needed HTML entities like &nbsp; inline in the XML
+// so instead we just escape all & chars and unescape the returned documet before storing it back into Confluence
+function escapeEntities(xmlAsText) {
+    console.log("Before escape", xmlAsText);
+    var ret = xmlAsText.replace(/&/g,'&amp;');
+    console.log("After escape", ret);
+    return ret;
+}
+function unescapeEntities(escapedText) {
+    console.log("Before unescape", escapedText);
+    var ret = escapedText.replace(/&amp;/g,'&');
+    console.log("After unescape", ret);
+    return ret;
 }
 
 export default function variantOptionsTransform(text, options) {
