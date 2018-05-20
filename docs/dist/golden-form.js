@@ -250,6 +250,10 @@ function iframeWrapper( postToWindow, targetHostname ) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseOptions", function() { return parseOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "encodeOptions", function() { return encodeOptions; });
+/* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/polyfills */ "./js/lib/polyfills.js");
+/* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_lib_polyfills__WEBPACK_IMPORTED_MODULE_0__);
+
+
 function parseOptions(defaultOptions) {
 
   var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;

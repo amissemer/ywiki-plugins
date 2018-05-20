@@ -272,6 +272,10 @@ function iframeWrapper( postToWindow, targetHostname ) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseOptions", function() { return parseOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "encodeOptions", function() { return encodeOptions; });
+/* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/polyfills */ "./js/lib/polyfills.js");
+/* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_lib_polyfills__WEBPACK_IMPORTED_MODULE_0__);
+
+
 function parseOptions(defaultOptions) {
 
   var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
@@ -424,6 +428,55 @@ var windowEventListener = (function windowEventListener() {
 })();
 
 /* harmony default export */ __webpack_exports__["default"] = (windowEventListener);
+
+
+/***/ }),
+
+/***/ "./js/lib/polyfills.js":
+/*!*****************************!*\
+  !*** ./js/lib/polyfills.js ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+if(!Array.isArray) {
+  Array.isArray = function(arg) {
+    return Object.prototype.toString.call(arg) === '[object Array]';
+  };
+}
+
+if (!String.prototype.format) {
+  String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) { 
+      return typeof args[number] != 'undefined'
+        ? args[number]
+        : match
+      ;
+    });
+  };
+}
+
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function(searchString, position) {
+    position = position || 0;
+    return this.indexOf(searchString, position) === position;
+  };
+}
+
+
+if (!String.prototype.endsWith) {
+  String.prototype.endsWith = function(searchString, position) {
+    var subjectString = this.toString();
+    if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+      position = subjectString.length;
+    }
+    position -= searchString.length;
+    var lastIndex = subjectString.lastIndexOf(searchString, position);
+    return lastIndex !== -1 && lastIndex === position;
+  };
+}
+
 
 
 /***/ }),

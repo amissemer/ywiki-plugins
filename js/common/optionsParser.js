@@ -1,3 +1,5 @@
+import '../lib/polyfills';
+
 function parseOptions(defaultOptions) {
 
   var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
