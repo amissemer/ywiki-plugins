@@ -670,7 +670,8 @@ var ERROR = window.ERROR = [];
 		 * @member JSXML
 		 */
 		,transReady: function(xmlSrc, xslSrc, nativeResult, doc) {
-			var xmlSrc = this.fromStringOrObject(xmlSrc),
+			var 	_xmlSrc = typeof xmlSrc == 'string'? xmlSrc : this.stringify(xmlSrc),
+					xmlSrc = this.fromStringOrObject(xmlSrc),
 					_xslSrc = typeof xslSrc == 'string'? xslSrc : this.stringify(xslSrc),
 					xslSrc = this.fromStringOrObject(xslSrc),
 					r;
@@ -693,14 +694,16 @@ var ERROR = window.ERROR = [];
 				} else
 				// 3. Use function transform on the XsltProcessor used for IE9 (which doesn't support [transformNode] any more)
 				if (typeof(ActiveXObject) != 'undefined' || ActiveXObject instanceof Object) {
-					var xslt = new ActiveXObject("Msxml2.XSLTemplate");
-					var xslDoc = new ActiveXObject("Msxml2.FreeThreadedDOMDocument");
+
+					var srcTree = new ActiveXObject("Msxml2.DOMDocument");
+					srcTree.async=false;
+					srcTree.preserveWhiteSpace = true;
+					srcTree.loadXML(_xmlSrc); 
+					var xslDoc = new ActiveXObject("Msxml2.DOMDocument");
+					xslDoc.async = false;
+					xslDoc.preserveWhiteSpace = true;
 					xslDoc.loadXML(_xslSrc);
-					xslt.stylesheet = xslDoc;
-					var xslProc = xslt.createProcessor();
-					xslProc.input = xmlSrc;
-					xslProc.transform();
-					r = xslProc.output;
+					r = srcTree.transformNode(xslDoc);
 				}
 			} catch (e) {
 				_throw(this.lng.brokenxslt);
