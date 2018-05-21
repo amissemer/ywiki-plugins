@@ -81,19 +81,15 @@ function wireBanner(options) {
   options.bannerText = options.bannerText || $('#title-text').text().trim();
   $(".wiki-content .innerCell").css("overflow-x", "visible");
   $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
-  .html('<div class="ciaction">\
-              <img src="'+options.host+'/banner/clickme.png" />\
-              <div class="theOneButton">'+options.buttonText+'</div>\
-            </div>\
-            <div class="cilogo">\
+  .html('<div class="cilogo">\
               <img src="'+options.host+'/banner/service_leads_2.png" />\
             </div>\
             <div class="cicenter">\
             <h1>'+options.bannerText+'</h1>\
             </div>\
           ');
-  options.cssSelector=".ciaction";
-  wireButton(options);
+  //options.cssSelector=".ciaction";
+  //wireButton(options);
 }
 
 function genericButton(options, formPath) {
@@ -172,6 +168,21 @@ function insertFrame() {
   var scripts = document.getElementsByTagName('script');
   $(scripts[scripts.length-1]).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
 }
+function readOptions(el) {
+  var groups = [];
+  function defaultNotFalse(v) {
+    return (v!==undefined && v!==null && v!==false && v!=="false"); 
+  }
+  el.children('ci-options').each(function() {
+    var name = $(this).attr("name");
+    var options = [];
+    $(this).children('ci-option').each(function() {
+      options.push({name: name, value: $(this).attr("value"), label: $(this).html(), default: defaultNotFalse($(this).attr("default")) });
+    });
+    groups.push({name: name, options: options});
+  });
+  return groups;
+}
 
 function bootstrap(host, cacheBuster) {
   insertFrame();
@@ -188,6 +199,7 @@ function bootstrap(host, cacheBuster) {
       newInstanceDisplayName: jEl.data('new-instance-display-name'),
       addLabel: jEl.data('add-label'),
       logToPage: jEl.data('log-to-page'),
+      variantOptions: readOptions(jEl),
     });
   });
   $('[data-activate="golden-button"]').each( function() {
@@ -204,7 +216,9 @@ function bootstrap(host, cacheBuster) {
       newInstanceDisplayName: jEl.data('new-instance-display-name'),
       addLabel: jEl.data('add-label'),
       logToPage: jEl.data('log-to-page'),
+      variantOptions: readOptions(jEl),
     });
+    jEl.html('Start');
   });
   $('[data-activate="issue-creator"]').each( function() {
     var jEl=$(this);

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import './polyfills';
+import '../lib/polyfills';
 import * as proxy from './proxyService';
 import * as wizardService from './wizardService';
 import 'jquery-ui-bundle';
@@ -46,7 +46,7 @@ function bindDOM() {
 	})
 	.autocomplete( "instance" )._renderItem = function( ul, item ) {
 		var regionStr="";
-		if (item.regions) {
+		if (item.regions && item.regions.length>0) {
 			regionStr=" <span class='text-muted'>[" + item.regions.join(" > ") + "]</span>";
 		}
 		return $( "<li>" )
@@ -81,7 +81,8 @@ function bindDOM() {
 				region: $('#regionSelect').val(),
 				reportingRegion: $('#reportingRegion').val(),
 				projectName: $('#projectName').val(),
-				targetEndDate: $('#targetEndDate').val()
+				targetEndDate: $('#targetEndDate').val(),
+				variantOptions: readSelectedOptions()
 			}).fail(onSubmitError);
 			submitBtn.prop('disabled', true);
 			submitProgress.show();
@@ -90,9 +91,28 @@ function bindDOM() {
 		return false;
 	});
 
-	wizardService.withOption('newInstanceDisplayName').done(
+	wizardService.withOption('newInstanceDisplayName').then(
 		function (value) {
 			$('#mainTitle').text("New " + value);
+		}
+	);
+	wizardService.withOption('variantOptions').then(
+		function (variantOptions) {
+			console.log('variantOptions: ',variantOptions);
+			if (variantOptions && variantOptions.length>0 && variantOptions[0].options && variantOptions[0].options.length>0) {
+				var template = $('.variant-option').first();
+				variantOptions[0].options.forEach( function(option) {
+					var optElt = template.clone();
+					optElt.html(optElt.html().format(option.name, option.value, option.label, option.default?'checked':''));
+					optElt.appendTo(template.parent());
+
+					if (optionNames.indexOf(option.name)==-1) {
+						optionNames.push(option.name);
+					}
+				});
+				template.remove();
+				$('#variant-options').removeClass('hidden');
+			}
 		}
 	);
 
@@ -113,7 +133,16 @@ function bindDOM() {
 		.change(function() { copyCustomerName(this); } );
 }
 
+var optionNames = [];
 
+function readSelectedOptions() {
+	var selectedOptions = [];
+	optionNames.forEach(function(option) {
+		selectedOptions.push({ name: option, value: $('input[name='+option+']:checked').val() });
+	});
+	console.log("Selected options: ",selectedOptions);
+	return selectedOptions;
+}
 
 function onSubmitError(error) {
 	var errorMsg=error;

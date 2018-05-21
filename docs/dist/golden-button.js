@@ -33,9 +33,6 @@
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -45,6 +42,11 @@
 /******/ 				get: getter
 /******/ 			});
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -62,17 +64,791 @@
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "/ywiki-plugins/dist/";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 56);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./js/mainframe/main.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 0:
+/***/ "./css/golden-button.css":
+/*!*******************************!*\
+  !*** ./css/golden-button.css ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "./css/jira-issue-summary.css":
+/*!************************************!*\
+  !*** ./css/jira-issue-summary.css ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "./css/professors.css":
+/*!****************************!*\
+  !*** ./css/professors.css ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "./js/common/config.js":
+/*!*****************************!*\
+  !*** ./js/common/config.js ***!
+  \*****************************/
+/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_JIRA_COLUMNS", function() { return DEFAULT_JIRA_COLUMNS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_JIRA_ISSUE_COUNT", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAIN_JIRA_LABEL", function() { return MAIN_JIRA_LABEL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TAGS_FIELD", function() { return TAGS_FIELD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WIKI_HOST", function() { return WIKI_HOST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAX_WIKI_PAGE_CREATION_RATE", function() { return MAX_WIKI_PAGE_CREATION_RATE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY", function() { return SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PREFIX", function() { return PREFIX; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PREFERRED_REGION_KEY", function() { return PREFERRED_REGION_KEY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE", function() { return DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CISTATS_DATA_PAGE", function() { return CISTATS_DATA_PAGE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_CUSTOMER_PAGE_TEMPLATE", function() { return DEFAULT_CUSTOMER_PAGE_TEMPLATE; });
+const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
+const DEFAULT_JIRA_ISSUE_COUNT = 10;
+const MAIN_JIRA_LABEL = "CI";
+const TAGS_FIELD = "customfield_10032";
+const WIKI_HOST = 'wiki.hybris.com';
+const MAX_WIKI_PAGE_CREATION_RATE = 200; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
+const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
+const PREFIX = "ywiki-plugins.";
+const PREFERRED_REGION_KEY = "preferred.region";
+const DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
+const CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
+const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
+// export const WIKI_HOST = 'performancewiki2.hybris.com';
+
+
+/***/ }),
+
+/***/ "./js/common/iframeWrapper.js":
+/*!************************************!*\
+  !*** ./js/common/iframeWrapper.js ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return iframeWrapper; });
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _windowEventListener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./windowEventListener */ "./js/common/windowEventListener.js");
+
+
+
+/**
+ * A generic iframeWrapper.
+ *
+ * The main goal is to bypass the CORS restriction: we want the iframe to be able to execute ajax requests on the domain of the main window, and since they are on different domains, this is not possible with some hack.
+ * The hack here consists in using the window.postMessage function and a message listener to execute code from the iframe into the main frame.
+ *
+ * iframeWrappers provide a call("action", payload) function that can call named actions in another frame and return a promise for the asynchronous response.
+ * The receiving frame must hook the named actions to actual actionHandlers, that must be attached to the iframeWrapper.
+ *
+ * Note: The iframeWrapperFactory requires jQuery and windowEventListener.
+ * It must be loaded in the 2 frames (main window and iframe) to be able to use it to run Cross-Origin actions.
+ * The factory parameters are different when loading the iframeWrapper from the iframe (in which case the target window is the parent and the target hostname is the wiki),
+ * and when loading from the main frame (in which case the target window is the iframe window, and the targetHostname is the yWikiPlugins host).
+ *
+ * Example:
+ * 1. Frame A attaches an actionHandler for a given action, like "ajax", and the action handler simply returns jQuery.ajax(params).
+ * 2. Then the other frame B can call("ajax", params) to remotely execute the ajax request in Frame A and get the result back.
+ *
+ * This is all asynchronous and based on jQuery promises.
+ *
+ * From the iFrame, call iframeWrapper(parent, "https://wiki.hybris.com").
+ * From the main Frame, call iframeWrapper($('iframe')[0].contentWindow, yWikiPlugins.getHost()).
+ */
+function iframeWrapper( postToWindow, targetHostname ) {
+  var _correlationId=1;
+
+  /**
+   * Chainable function to attach action handlers.
+   * Handlers take a single argument and may return a promise or a result (or nothing)
+   * that will be used to send the response back to the other frame.
+   */
+  function attachActionHandler(actionName, handler) {
+
+    function requestListener(correlationId, payload) {
+      jquery__WEBPACK_IMPORTED_MODULE_0___default.a.when( handler(payload) )
+      .done(function sendResponse(responsePayload) {
+        var responseMsg = {
+          correlationId: correlationId,
+          responsePayload: responsePayload
+        };
+        //console.log("Sending response:",responseMsg);
+        postToWindow.postMessage(responseMsg, targetHostname);
+      })
+      .fail(function sendError() {
+        var payload = arguments;
+        if (arguments && arguments.length && arguments.length>2) {// for ajax errors, the error handler gets (jqXHR, textStatus, errorThrown) but we can't pass the whole jqXHR through the postMessage API
+          payload={textStatus: arguments[1], errorThrown: arguments[2]};
+          if (arguments[0] && arguments[0].responseText) {
+            payload.responseText = arguments[0].responseText;
+            try {
+                payload.responseJson = JSON.parse(payload.responseText);
+            } catch(e) {
+              // ignore
+            }
+          }
+        }
+        var errorMsg = {
+          correlationId: correlationId,
+          errorPayload: payload
+        };
+        //console.log("Sending error response:",errorMsg);
+        postToWindow.postMessage(errorMsg, targetHostname);
+      });
+    }
+    _windowEventListener__WEBPACK_IMPORTED_MODULE_1__["default"].registerRequestListener(actionName, requestListener);
+    return this;
+  }
+
+  /**
+   * Calls an an action through the messaging system of frames and returns
+   * a jQuery promise that will get resolved once a response is received (also from the messaging system)
+   */
+  function call(action, payload) {
+    var defer = jquery__WEBPACK_IMPORTED_MODULE_0___default.a.Deferred();
+    var correlationId = _correlationId++;
+    _windowEventListener__WEBPACK_IMPORTED_MODULE_1__["default"].registerResponseListener(correlationId,
+      {
+        successHandler: function(successPayload) {
+          defer.resolve(successPayload);
+        },
+        errorHandler: function(errorPayload) {
+          defer.reject(errorPayload);
+        }
+      });
+    //console.log("payload",payload);
+    postToWindow.postMessage(
+      {
+        action: action,
+        payload: payload,
+        correlationId: correlationId
+      }, targetHostname);
+    return defer.promise();
+  }
+
+  return {
+    call: call,
+    attachActionHandler: attachActionHandler
+  }
+}
+
+
+/***/ }),
+
+/***/ "./js/common/optionsParser.js":
+/*!************************************!*\
+  !*** ./js/common/optionsParser.js ***!
+  \************************************/
+/*! exports provided: parseOptions, encodeOptions */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseOptions", function() { return parseOptions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "encodeOptions", function() { return encodeOptions; });
+/* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/polyfills */ "./js/lib/polyfills.js");
+/* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_lib_polyfills__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function parseOptions(defaultOptions) {
+
+  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
+  var match;
+  var params = defaultOptions || {};
+  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
+
+  var hash = document.location.hash;
+
+  while (match = re.exec(hash)) {
+    var value = decode(match[2]);
+    if ( isJSON(value) ) { 
+      console.log("Parsing options: ",value);
+      value = JSON.parse(value);
+    }
+    params[decode(match[1])] = value;
+  }
+  return params;
+}
+
+function encodeOptions(options) {
+  var res = [];
+  for (var key in options) {
+    if (options.hasOwnProperty(key) && options[key]!==undefined) {
+        var value = options[key];
+        if (value.toString() === '[object Object]') {
+          value = JSON.stringify(value);
+        }
+        res.push(key+"="+encodeURIComponent(value));
+    }
+  }
+  return res.join('&');
+}
+
+function isJSON(value) {
+  // simplistic heuristic to detect serialized JSON
+  return ((value.startsWith('{') && value.endsWith('}')) ||  (value.startsWith('[') && value.endsWith(']')) ) && !(value.startsWith('[object'));
+}
+
+
+
+
+/***/ }),
+
+/***/ "./js/common/windowEventListener.js":
+/*!******************************************!*\
+  !*** ./js/common/windowEventListener.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * Sets up a listener of all events received by the window, that dispatches:
+ *   - those that have an action to the corresponding requestListeners
+ *   - those that have a correlationId but no action, to the corresponding responseListeners
+ * Exposes functions to (un)register listeners.
+ */
+var windowEventListener = (function windowEventListener() {
+
+  // Start listening to messages (from other frames, typically)
+  var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+  var eventer = window[eventMethod];
+  var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+  var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
+  var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
+  eventer(messageEvent, eventCallback, false);
+
+  function eventCallback(e) {
+    if (e.data.action) {
+      // action data is in the form { action: "actionName", payload: object }
+      if (requestListeners[e.data.action]) {
+        requestListeners[e.data.action](e.data.correlationId, e.data.payload);
+      } else {
+        // no registered requestListener for this action
+        console.warn('No requestListeners for action: ', e.data.action);
+      }
+    } else if (e.data.correlationId) {
+      // response data is in the form { correlationId: theRequestCorrelationId, responsePayload: object, errorPayload: object }
+      if (responseListeners[e.data.correlationId]) {
+        // deregister (should be used only once for each correlationId)
+        var responseListener = responseListeners[e.data.correlationId];
+        responseListeners[e.data.correlationId] = null;
+        // delegate to the registered responseListener
+        if (e.data.errorPayload) {
+          responseListener.errorHandler(e.data.errorPayload);
+        } else {
+          responseListener.successHandler(e.data.responsePayload);
+        }
+      } else {
+        console.warn("No response listener for correlationId: ", e.data.correlationId);
+      }
+    } else {
+      // not an action message
+      console.log("Received non-request, non-response, message: ", e.data);
+    }
+  }
+
+  /**
+   * Func should be a function(correlationId, payload). The return value will be ignored.
+   * Consider this private and used solely by the iframeWrapper.
+   * Use iframeWrapper.attachActionHandler(action, handler) instead
+   */
+  function registerRequestListener( action, func ) {
+    if (typeof func != 'function') {
+      console.error("Cannot register request listener since not a function: ", func);
+    } else {
+      requestListeners[action] = func;
+    }
+  }
+  function unregisterRequestListener( action ) {
+    requestListeners[action] = null;
+  }
+  /**
+   *  The response listener must be an object in the form { successHandler: function(argument) {}, errorHandler: function(argument) {}}
+   *  where at least 1 of successHandler or errorHandler is defined.
+   *  successHandler and errorHandler, if defined, must be functions that take a single argument. Their returned value is ignored.
+   *  If one of the property is missing, a default handler is added that will simply log the result/error.
+   *
+   *  Note: There is no unregisterResponseListener because the unregistration is automatically done the first (and only) time the responseListener is used.
+   *  This is because for a given correlationId, only one response or one error will be returned.
+   */
+  function registerResponseListener( correlationId, listener ) {
+    if (!listener.successHandler && !listener.errorHandler) {
+      console.error("Cannot register response listener as it is missing a successHandler function or errorHandler function", listener);
+      return;
+    }
+    if (listener.successHandler && typeof listener.successHandler != 'function') {
+      console.error("Cannot register response listener as the successHandler is not a function", listener);
+      return;
+    }
+    if (listener.errorHandler && typeof listener.errorHandler != 'function') {
+      console.error("Cannot register response listener as the errorHandler is not a function", listener);
+      return;
+    }
+    listener.successHandler = listener.successHandler? listener.successHandler : defaultSuccessHandler;
+    listener.errorHandler = listener.errorHandler? listener.errorHandler : defaultErrorHandler;
+    responseListeners[correlationId] = listener;
+  }
+
+  function defaultSuccessHandler(responsePayload) { console.info("Default success handler: ", responsePayload); }
+  function defaultErrorHandler(errorPayload) { console.warn("Default error handler: ", errorPayload); }
+
+  return {
+    registerRequestListener: registerRequestListener,
+    unregisterRequestListener: unregisterRequestListener,
+    registerResponseListener: registerResponseListener
+  };
+})();
+
+/* harmony default export */ __webpack_exports__["default"] = (windowEventListener);
+
+
+/***/ }),
+
+/***/ "./js/lib/polyfills.js":
+/*!*****************************!*\
+  !*** ./js/lib/polyfills.js ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+if(!Array.isArray) {
+  Array.isArray = function(arg) {
+    return Object.prototype.toString.call(arg) === '[object Array]';
+  };
+}
+
+if (!String.prototype.format) {
+  String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) { 
+      return typeof args[number] != 'undefined'
+        ? args[number]
+        : match
+      ;
+    });
+  };
+}
+
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function(searchString, position) {
+    position = position || 0;
+    return this.indexOf(searchString, position) === position;
+  };
+}
+
+
+if (!String.prototype.endsWith) {
+  String.prototype.endsWith = function(searchString, position) {
+    var subjectString = this.toString();
+    if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+      position = subjectString.length;
+    }
+    position -= searchString.length;
+    var lastIndex = subjectString.lastIndexOf(searchString, position);
+    return lastIndex !== -1 && lastIndex === position;
+  };
+}
+
+
+
+/***/ }),
+
+/***/ "./js/mainframe/goldenButtonPlugin.js":
+/*!********************************************!*\
+  !*** ./js/mainframe/goldenButtonPlugin.js ***!
+  \********************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _css_professors_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../css/professors.css */ "./css/professors.css");
+/* harmony import */ var _css_professors_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_css_professors_css__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _css_golden_button_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../css/golden-button.css */ "./css/golden-button.css");
+/* harmony import */ var _css_golden_button_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_css_golden_button_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _css_jira_issue_summary_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../css/jira-issue-summary.css */ "./css/jira-issue-summary.css");
+/* harmony import */ var _css_jira_issue_summary_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_css_jira_issue_summary_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _common_iframeWrapper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../common/iframeWrapper */ "./js/common/iframeWrapper.js");
+/* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
+/* harmony import */ var _common_optionsParser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../common/optionsParser */ "./js/common/optionsParser.js");
+/* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
+
+
+
+
+
+
+
+
+function closeIFrame(iframeElt) {
+  iframeElt.unbind('load').fadeOut( function() {
+    iframeElt.attr('src', '');
+    $('#block').fadeOut();
+    $('#iframecontainer').fadeOut();
+  });
+}
+
+/** Opens the iframe in a "lightbox" fashion, loading it from frameSrc, and passing all provided options in the hash part of the url */
+function openIFrame(iframeElt, frameSrc, options) {
+  var block = $('#block');
+  block.fadeIn();
+  $('#iframecontainer').fadeIn();
+  iframeElt.bind('load', function() {
+    console.log("iframe loaded");
+    $('#loader').fadeOut(function() {
+      iframeElt.fadeIn();
+    });
+  });
+  iframeElt.attr('src', frameSrc + '#' + Object(_common_optionsParser__WEBPACK_IMPORTED_MODULE_5__["encodeOptions"])(options));
+  $(document).keyup(function(e) {
+    if (e.keyCode == 27) { // ESC
+			 closeIFrame(iframeElt);
+    }
+	});
+
+  $(document).mouseup(function (e)
+  {
+    if (block.is(e.target) || block.has(e.target).length > 0) {
+      // If the target of the click is the surrounding block
+      // Hide the iframe
+      closeIFrame(iframeElt);
+    }
+  });
+}
+
+function redirectTo(url) {
+  window.location.href = url;
+}
+
+function attachHandlersToIFrameWindow(host, myIFrame) {
+  Object(_common_iframeWrapper__WEBPACK_IMPORTED_MODULE_3__["default"])(myIFrame[0].contentWindow, host)
+    .attachActionHandler("ajax", function (param) {
+      return jQuery.ajax(param);
+    })
+    .attachActionHandler("closeFrame", function () {
+      return closeIFrame(myIFrame);
+    })
+    .attachActionHandler("redirect", function (url) {
+      return redirectTo(url);
+    })
+    .attachActionHandler("$metacontent", function (e) {
+      return jQuery(e).attr("content");
+    })
+    .attachActionHandler("localStorageSetItem", function (e) {
+      return window.localStorage.setItem(e.key, e.value);
+    })
+    .attachActionHandler("localStorageGetItem", function (e) {
+      return window.localStorage.getItem(e);
+    })
+    .attachActionHandler("$text", function (e) {
+      return jQuery(e).text();
+    });
+}
+
+function wireBanner(options) {
+  var jEl = $(options.cssSelector);
+  jEl.addClass("cibanner");
+  if (!options.disablePullUp) {
+    jEl.addClass("pullup");
+  }
+  options.buttonText = options.buttonText || "Start";
+  options.bannerText = options.bannerText || $('#title-text').text().trim();
+  $(".wiki-content .innerCell").css("overflow-x", "visible");
+  $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
+  .html('<div class="cilogo">\
+              <img src="'+options.host+'/banner/service_leads_2.png" />\
+            </div>\
+            <div class="cicenter">\
+            <h1>'+options.bannerText+'</h1>\
+            </div>\
+          ');
+  //options.cssSelector=".ciaction";
+  //wireButton(options);
+}
+
+function genericButton(options, formPath) {
+  // load dependencies in order
+  var myIFrame = $('#iframecontainer iframe');
+  $(options.cssSelector).click(function() {
+    openIFrame(myIFrame, options.host+'/'+formPath, options);
+    attachHandlersToIFrameWindow(options.host,myIFrame);
+  });
+}
+
+/** The main entrypoint for the plugin, which receives all options, loads the dependencies,
+creates the iframe element, attach the click event to the main button to load the iframe */
+function wireButton(options) {
+  return genericButton(options, 'golden-form.html');
+}
+
+function wireJiraIssueSummary(options) {
+  // {
+  //   host,
+  //   cacheBuster,
+  //   cssSelector,
+  //   jiraLabel,
+  //   summaryType,
+  //   jiraIssueCount,
+  //   jiraColumns
+  // }
+  var el = $(options.cssSelector);
+  var jql = '( labels="'+options.jiraLabel+'" AND labels="'+_common_config__WEBPACK_IMPORTED_MODULE_6__["MAIN_JIRA_LABEL"]+'") ';
+  if (options.summaryType=="done") {
+    jql+=' AND status IN (Resolved, "Verified/Closed", Done, Fixed, Complete)';
+  } else if (options.summaryType=="todo") {
+    jql+=' AND status NOT IN (Resolved, "Verified/Closed", Done, Fixed, Complete, Cancelled)';
+  }
+  var postQuery = '<ac:structured-macro ac:name="jira" ac:schema-version="1" ><ac:parameter ac:name="columns">'+options.jiraColumns+'</ac:parameter><ac:parameter ac:name="maximumIssues">'+options.jiraIssueCount+'</ac:parameter><ac:parameter ac:name="jqlQuery">'+jql+'</ac:parameter></ac:structured-macro>';
+  var reqPayload = {
+      wikiMarkup : encodeURIComponent( postQuery ),
+      clearCache:true
+  };
+  $.ajax({
+    url:"https://"+_common_config__WEBPACK_IMPORTED_MODULE_6__["WIKI_HOST"]+"/rest/jiraanywhere/1.0/jira/renderTable",
+    type: "POST",
+    data: JSON.stringify(reqPayload),
+    contentType: "application/json",
+    complete: function( data ) {el.html(JSON.parse(data.responseText).data);}
+  });
+}
+
+function wireCreateJiraButton(options) {
+
+  var el = $(options.cssSelector);
+  var currentText = el.text();
+  el.addClass("cibutton btn btn-lg btn-warning")
+  .html('\
+    <span class="fa-stack">\
+      <i class="fa fa-comment-o fa-stack-2x"></i>\
+      <i class="fa fa-lightbulb-o fa-stack-1x"></i>\
+    </span><span class="text">'+currentText+'</span>\
+  ');
+  return genericButton(options, 'create-jira-form.html');
+}
+
+function wireMovePageButton(options) {
+
+  var el = $(options.cssSelector);
+  var btnText = el.text() || options.defaultText;
+  el.addClass("cibutton btn btn-lg btn-warning")
+  .html('\
+    <span class="text">'+btnText+'</span>\
+  ');
+  return genericButton(options, 'move-pages.html');
+}
+
+function insertFrame() {
+  // insert the frame html after the current script tag
+  var scripts = document.getElementsByTagName('script');
+  $(scripts[scripts.length-1]).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
+}
+function readOptions(el) {
+  var groups = [];
+  function defaultNotFalse(v) {
+    return (v!==undefined && v!==null && v!==false && v!=="false"); 
+  }
+  el.children('ci-options').each(function() {
+    var name = $(this).attr("name");
+    var options = [];
+    $(this).children('ci-option').each(function() {
+      options.push({name: name, value: $(this).attr("value"), label: $(this).html(), default: defaultNotFalse($(this).attr("default")) });
+    });
+    groups.push({name: name, options: options});
+  });
+  return groups;
+}
+
+function bootstrap(host, cacheBuster) {
+  insertFrame();
+  $('[data-activate="golden-banner"]').each( function() {
+    var jEl=$(this);
+    wireBanner({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      disablePullUp: jEl.data('disable-pull-up'),
+      buttonText: jEl.data('button-text'),
+      bannerText: jEl.data('banner-text'),
+      targetSpace: jEl.data('target-space'),
+      newInstanceDisplayName: jEl.data('new-instance-display-name'),
+      addLabel: jEl.data('add-label'),
+      logToPage: jEl.data('log-to-page'),
+      variantOptions: readOptions(jEl),
+    });
+  });
+  $('[data-activate="golden-button"]').each( function() {
+    var jEl=$(this);
+    jEl.addClass("theOneButton");
+    wireButton({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      disablePullUp: jEl.data('disable-pull-up'),
+      buttonText: jEl.data('button-text'),
+      bannerText: jEl.data('banner-text'),
+      targetSpace: jEl.data('target-space'),
+      newInstanceDisplayName: jEl.data('new-instance-display-name'),
+      addLabel: jEl.data('add-label'),
+      logToPage: jEl.data('log-to-page'),
+      variantOptions: readOptions(jEl),
+    });
+    jEl.html('Start');
+  });
+  $('[data-activate="issue-creator"]').each( function() {
+    var jEl=$(this);
+    wireCreateJiraButton({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      jiraProjectKey: jEl.data('jira-project-key'),
+      serviceDisplayName: jEl.data('service-display-name'),
+      issueType: jEl.data('issue-type') || "Improvement",
+      issueComponent: jEl.data('issue-component'),
+      issueLabel: jEl.data('issue-label') || jEl.data('jira-label'),
+    });
+  });
+  $('[data-activate="move-page-button"]').each( function() {
+    var jEl=$(this);
+    wireMovePageButton({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      defaultText: "Move Pages"
+    });
+  });
+  $('[data-activate="issue-summary"]').each( function() {
+    var jEl=$(this);
+    wireJiraIssueSummary({
+      host: host,
+      cacheBuster: cacheBuster,
+      cssSelector: this,
+      jiraLabel : jEl.data('jira-label'),
+      summaryType: jEl.data('summary-type'),
+      jiraIssueCount: Number(jEl.data('jira-max-issues')) || _common_config__WEBPACK_IMPORTED_MODULE_6__["DEFAULT_JIRA_ISSUE_COUNT"],
+      jiraColumns: jEl.data('jira-columns') || _common_config__WEBPACK_IMPORTED_MODULE_6__["DEFAULT_JIRA_COLUMNS"]
+    });
+  });
+}
+
+bootstrap(_pluginCommon__WEBPACK_IMPORTED_MODULE_4__["host"],_pluginCommon__WEBPACK_IMPORTED_MODULE_4__["cacheBuster"]);
+
+
+/***/ }),
+
+/***/ "./js/mainframe/main.js":
+/*!******************************!*\
+  !*** ./js/mainframe/main.js ***!
+  \******************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _stylesheetPlugin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
+/* harmony import */ var _goldenButtonPlugin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./goldenButtonPlugin */ "./js/mainframe/goldenButtonPlugin.js");
+
+
+
+
+/***/ }),
+
+/***/ "./js/mainframe/pluginCommon.js":
+/*!**************************************!*\
+  !*** ./js/mainframe/pluginCommon.js ***!
+  \**************************************/
+/*! exports provided: host, cacheBuster */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "host", function() { return host; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cacheBuster", function() { return cacheBuster; });
+function getOriginLocation() {
+  var scripts = document.getElementsByTagName('script');
+  var l = document.createElement("a");
+  l.href = scripts[scripts.length-1].getAttribute("src");
+  if (!l.origin) l.origin=l.protocol+"//"+l.host
+  console.log("origin",l.origin);
+  return l;
+}
+
+var originlocation = getOriginLocation();
+var host = originlocation.origin+'/ywiki-plugins';
+var cacheBuster=originlocation.search;
+console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
+
+
+
+
+/***/ }),
+
+/***/ "./js/mainframe/stylesheetPlugin.js":
+/*!******************************************!*\
+  !*** ./js/mainframe/stylesheetPlugin.js ***!
+  \******************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
+
+
+// Loads a stylesheet at url. Url can be relative to the configured host.
+function loadStyleSheet(host, url) {
+  if (!url.startsWith('http')) {
+    url = host+'/'+url;
+  }
+  var link = document.createElement('link');
+  link.setAttribute('rel', 'stylesheet');
+  link.setAttribute('type', 'text/css');
+  link.setAttribute('href', url);
+  document.getElementsByTagName('head')[0].appendChild(link);
+  console.log('style loaded');
+}
+
+loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["host"],'dist/golden-button.css'+_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["cacheBuster"]);
+
+
+/***/ }),
+
+/***/ "./node_modules/jquery/dist/jquery.js":
+/*!********************************************!*\
+  !*** ./node_modules/jquery/dist/jquery.js ***!
+  \********************************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * jQuery JavaScript Library v3.2.1
+ * jQuery JavaScript Library v3.3.1
  * https://jquery.com/
  *
  * Includes Sizzle.js
@@ -82,7 +858,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2017-03-20T18:59Z
+ * Date: 2018-01-20T17:24Z
  */
 ( function( global, factory ) {
 
@@ -144,16 +920,57 @@ var ObjectFunctionString = fnToString.call( Object );
 
 var support = {};
 
+var isFunction = function isFunction( obj ) {
+
+      // Support: Chrome <=57, Firefox <=52
+      // In some browsers, typeof returns "function" for HTML <object> elements
+      // (i.e., `typeof document.createElement( "object" ) === "function"`).
+      // We don't want to classify *any* DOM node as a function.
+      return typeof obj === "function" && typeof obj.nodeType !== "number";
+  };
 
 
-	function DOMEval( code, doc ) {
+var isWindow = function isWindow( obj ) {
+		return obj != null && obj === obj.window;
+	};
+
+
+
+
+	var preservedScriptAttributes = {
+		type: true,
+		src: true,
+		noModule: true
+	};
+
+	function DOMEval( code, doc, node ) {
 		doc = doc || document;
 
-		var script = doc.createElement( "script" );
+		var i,
+			script = doc.createElement( "script" );
 
 		script.text = code;
+		if ( node ) {
+			for ( i in preservedScriptAttributes ) {
+				if ( node[ i ] ) {
+					script[ i ] = node[ i ];
+				}
+			}
+		}
 		doc.head.appendChild( script ).parentNode.removeChild( script );
 	}
+
+
+function toType( obj ) {
+	if ( obj == null ) {
+		return obj + "";
+	}
+
+	// Support: Android <=2.3 only (functionish RegExp)
+	return typeof obj === "object" || typeof obj === "function" ?
+		class2type[ toString.call( obj ) ] || "object" :
+		typeof obj;
+}
 /* global Symbol */
 // Defining this global in .eslintrc.json would create a danger of using the global
 // unguarded in another place, it seems safer to define global only for this module
@@ -161,7 +978,7 @@ var support = {};
 
 
 var
-	version = "3.2.1",
+	version = "3.3.1",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -173,16 +990,7 @@ var
 
 	// Support: Android <=4.0 only
 	// Make sure we trim BOM and NBSP
-	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
-
-	// Matches dashed string for camelizing
-	rmsPrefix = /^-ms-/,
-	rdashAlpha = /-([a-z])/g,
-
-	// Used by jQuery.camelCase as callback to replace()
-	fcamelCase = function( all, letter ) {
-		return letter.toUpperCase();
-	};
+	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 
 jQuery.fn = jQuery.prototype = {
 
@@ -282,7 +1090,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	}
 
 	// Handle case when target is a string or something (possible in deep copy)
-	if ( typeof target !== "object" && !jQuery.isFunction( target ) ) {
+	if ( typeof target !== "object" && !isFunction( target ) ) {
 		target = {};
 	}
 
@@ -348,28 +1156,6 @@ jQuery.extend( {
 
 	noop: function() {},
 
-	isFunction: function( obj ) {
-		return jQuery.type( obj ) === "function";
-	},
-
-	isWindow: function( obj ) {
-		return obj != null && obj === obj.window;
-	},
-
-	isNumeric: function( obj ) {
-
-		// As of jQuery 3.0, isNumeric is limited to
-		// strings and numbers (primitives or objects)
-		// that can be coerced to finite numbers (gh-2662)
-		var type = jQuery.type( obj );
-		return ( type === "number" || type === "string" ) &&
-
-			// parseFloat NaNs numeric-cast false positives ("")
-			// ...but misinterprets leading-number strings, particularly hex literals ("0x...")
-			// subtraction forces infinities to NaN
-			!isNaN( obj - parseFloat( obj ) );
-	},
-
 	isPlainObject: function( obj ) {
 		var proto, Ctor;
 
@@ -403,27 +1189,9 @@ jQuery.extend( {
 		return true;
 	},
 
-	type: function( obj ) {
-		if ( obj == null ) {
-			return obj + "";
-		}
-
-		// Support: Android <=2.3 only (functionish RegExp)
-		return typeof obj === "object" || typeof obj === "function" ?
-			class2type[ toString.call( obj ) ] || "object" :
-			typeof obj;
-	},
-
 	// Evaluates a script in a global context
 	globalEval: function( code ) {
 		DOMEval( code );
-	},
-
-	// Convert dashed to camelCase; used by the css and data modules
-	// Support: IE <=9 - 11, Edge 12 - 13
-	// Microsoft forgot to hump their vendor prefix (#9572)
-	camelCase: function( string ) {
-		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
 	},
 
 	each: function( obj, callback ) {
@@ -546,37 +1314,6 @@ jQuery.extend( {
 	// A global GUID counter for objects
 	guid: 1,
 
-	// Bind a function to a context, optionally partially applying any
-	// arguments.
-	proxy: function( fn, context ) {
-		var tmp, args, proxy;
-
-		if ( typeof context === "string" ) {
-			tmp = fn[ context ];
-			context = fn;
-			fn = tmp;
-		}
-
-		// Quick check to determine if target is callable, in the spec
-		// this throws a TypeError, but we will just return undefined.
-		if ( !jQuery.isFunction( fn ) ) {
-			return undefined;
-		}
-
-		// Simulated bind
-		args = slice.call( arguments, 2 );
-		proxy = function() {
-			return fn.apply( context || this, args.concat( slice.call( arguments ) ) );
-		};
-
-		// Set the guid of unique handler to the same of original handler, so it can be removed
-		proxy.guid = fn.guid = fn.guid || jQuery.guid++;
-
-		return proxy;
-	},
-
-	now: Date.now,
-
 	// jQuery.support is not used in Core but other projects attach their
 	// properties to it so it needs to exist.
 	support: support
@@ -599,9 +1336,9 @@ function isArrayLike( obj ) {
 	// hasOwn isn't used here due to false negatives
 	// regarding Nodelist length in IE
 	var length = !!obj && "length" in obj && obj.length,
-		type = jQuery.type( obj );
+		type = toType( obj );
 
-	if ( type === "function" || jQuery.isWindow( obj ) ) {
+	if ( isFunction( obj ) || isWindow( obj ) ) {
 		return false;
 	}
 
@@ -2921,11 +3658,9 @@ var rsingleTag = ( /^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|
 
 
 
-var risSimple = /^.[^:#\[\.,]*$/;
-
 // Implement the identical functionality for filter and not
 function winnow( elements, qualifier, not ) {
-	if ( jQuery.isFunction( qualifier ) ) {
+	if ( isFunction( qualifier ) ) {
 		return jQuery.grep( elements, function( elem, i ) {
 			return !!qualifier.call( elem, i, elem ) !== not;
 		} );
@@ -2945,16 +3680,8 @@ function winnow( elements, qualifier, not ) {
 		} );
 	}
 
-	// Simple selector that can be filtered directly, removing non-Elements
-	if ( risSimple.test( qualifier ) ) {
-		return jQuery.filter( qualifier, elements, not );
-	}
-
-	// Complex selector, compare the two sets, removing non-Elements
-	qualifier = jQuery.filter( qualifier, elements );
-	return jQuery.grep( elements, function( elem ) {
-		return ( indexOf.call( qualifier, elem ) > -1 ) !== not && elem.nodeType === 1;
-	} );
+	// Filtered directly for both simple and complex selectors
+	return jQuery.filter( qualifier, elements, not );
 }
 
 jQuery.filter = function( expr, elems, not ) {
@@ -3075,7 +3802,7 @@ var rootjQuery,
 						for ( match in context ) {
 
 							// Properties of context are called as methods if possible
-							if ( jQuery.isFunction( this[ match ] ) ) {
+							if ( isFunction( this[ match ] ) ) {
 								this[ match ]( context[ match ] );
 
 							// ...and otherwise set as attributes
@@ -3118,7 +3845,7 @@ var rootjQuery,
 
 		// HANDLE: $(function)
 		// Shortcut for document ready
-		} else if ( jQuery.isFunction( selector ) ) {
+		} else if ( isFunction( selector ) ) {
 			return root.ready !== undefined ?
 				root.ready( selector ) :
 
@@ -3433,11 +4160,11 @@ jQuery.Callbacks = function( options ) {
 
 					( function add( args ) {
 						jQuery.each( args, function( _, arg ) {
-							if ( jQuery.isFunction( arg ) ) {
+							if ( isFunction( arg ) ) {
 								if ( !options.unique || !self.has( arg ) ) {
 									list.push( arg );
 								}
-							} else if ( arg && arg.length && jQuery.type( arg ) !== "string" ) {
+							} else if ( arg && arg.length && toType( arg ) !== "string" ) {
 
 								// Inspect recursively
 								add( arg );
@@ -3552,11 +4279,11 @@ function adoptValue( value, resolve, reject, noValue ) {
 	try {
 
 		// Check for promise aspect first to privilege synchronous behavior
-		if ( value && jQuery.isFunction( ( method = value.promise ) ) ) {
+		if ( value && isFunction( ( method = value.promise ) ) ) {
 			method.call( value ).done( resolve ).fail( reject );
 
 		// Other thenables
-		} else if ( value && jQuery.isFunction( ( method = value.then ) ) ) {
+		} else if ( value && isFunction( ( method = value.then ) ) ) {
 			method.call( value, resolve, reject );
 
 		// Other non-thenables
@@ -3614,14 +4341,14 @@ jQuery.extend( {
 						jQuery.each( tuples, function( i, tuple ) {
 
 							// Map tuples (progress, done, fail) to arguments (done, fail, progress)
-							var fn = jQuery.isFunction( fns[ tuple[ 4 ] ] ) && fns[ tuple[ 4 ] ];
+							var fn = isFunction( fns[ tuple[ 4 ] ] ) && fns[ tuple[ 4 ] ];
 
 							// deferred.progress(function() { bind to newDefer or newDefer.notify })
 							// deferred.done(function() { bind to newDefer or newDefer.resolve })
 							// deferred.fail(function() { bind to newDefer or newDefer.reject })
 							deferred[ tuple[ 1 ] ]( function() {
 								var returned = fn && fn.apply( this, arguments );
-								if ( returned && jQuery.isFunction( returned.promise ) ) {
+								if ( returned && isFunction( returned.promise ) ) {
 									returned.promise()
 										.progress( newDefer.notify )
 										.done( newDefer.resolve )
@@ -3675,7 +4402,7 @@ jQuery.extend( {
 										returned.then;
 
 									// Handle a returned thenable
-									if ( jQuery.isFunction( then ) ) {
+									if ( isFunction( then ) ) {
 
 										// Special processors (notify) just wait for resolution
 										if ( special ) {
@@ -3771,7 +4498,7 @@ jQuery.extend( {
 							resolve(
 								0,
 								newDefer,
-								jQuery.isFunction( onProgress ) ?
+								isFunction( onProgress ) ?
 									onProgress :
 									Identity,
 								newDefer.notifyWith
@@ -3783,7 +4510,7 @@ jQuery.extend( {
 							resolve(
 								0,
 								newDefer,
-								jQuery.isFunction( onFulfilled ) ?
+								isFunction( onFulfilled ) ?
 									onFulfilled :
 									Identity
 							)
@@ -3794,7 +4521,7 @@ jQuery.extend( {
 							resolve(
 								0,
 								newDefer,
-								jQuery.isFunction( onRejected ) ?
+								isFunction( onRejected ) ?
 									onRejected :
 									Thrower
 							)
@@ -3834,8 +4561,15 @@ jQuery.extend( {
 					// fulfilled_callbacks.disable
 					tuples[ 3 - i ][ 2 ].disable,
 
+					// rejected_handlers.disable
+					// fulfilled_handlers.disable
+					tuples[ 3 - i ][ 3 ].disable,
+
 					// progress_callbacks.lock
-					tuples[ 0 ][ 2 ].lock
+					tuples[ 0 ][ 2 ].lock,
+
+					// progress_handlers.lock
+					tuples[ 0 ][ 3 ].lock
 				);
 			}
 
@@ -3905,7 +4639,7 @@ jQuery.extend( {
 
 			// Use .then() to unwrap secondary thenables (cf. gh-3000)
 			if ( master.state() === "pending" ||
-				jQuery.isFunction( resolveValues[ i ] && resolveValues[ i ].then ) ) {
+				isFunction( resolveValues[ i ] && resolveValues[ i ].then ) ) {
 
 				return master.then();
 			}
@@ -4033,7 +4767,7 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 		bulk = key == null;
 
 	// Sets many values
-	if ( jQuery.type( key ) === "object" ) {
+	if ( toType( key ) === "object" ) {
 		chainable = true;
 		for ( i in key ) {
 			access( elems, fn, i, key[ i ], true, emptyGet, raw );
@@ -4043,7 +4777,7 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 	} else if ( value !== undefined ) {
 		chainable = true;
 
-		if ( !jQuery.isFunction( value ) ) {
+		if ( !isFunction( value ) ) {
 			raw = true;
 		}
 
@@ -4085,6 +4819,23 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 
 	return len ? fn( elems[ 0 ], key ) : emptyGet;
 };
+
+
+// Matches dashed string for camelizing
+var rmsPrefix = /^-ms-/,
+	rdashAlpha = /-([a-z])/g;
+
+// Used by camelCase as callback to replace()
+function fcamelCase( all, letter ) {
+	return letter.toUpperCase();
+}
+
+// Convert dashed to camelCase; used by the css and data modules
+// Support: IE <=9 - 11, Edge 12 - 15
+// Microsoft forgot to hump their vendor prefix (#9572)
+function camelCase( string ) {
+	return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
+}
 var acceptData = function( owner ) {
 
 	// Accepts only:
@@ -4147,14 +4898,14 @@ Data.prototype = {
 		// Handle: [ owner, key, value ] args
 		// Always use camelCase key (gh-2257)
 		if ( typeof data === "string" ) {
-			cache[ jQuery.camelCase( data ) ] = value;
+			cache[ camelCase( data ) ] = value;
 
 		// Handle: [ owner, { properties } ] args
 		} else {
 
 			// Copy the properties one-by-one to the cache object
 			for ( prop in data ) {
-				cache[ jQuery.camelCase( prop ) ] = data[ prop ];
+				cache[ camelCase( prop ) ] = data[ prop ];
 			}
 		}
 		return cache;
@@ -4164,7 +4915,7 @@ Data.prototype = {
 			this.cache( owner ) :
 
 			// Always use camelCase key (gh-2257)
-			owner[ this.expando ] && owner[ this.expando ][ jQuery.camelCase( key ) ];
+			owner[ this.expando ] && owner[ this.expando ][ camelCase( key ) ];
 	},
 	access: function( owner, key, value ) {
 
@@ -4212,9 +4963,9 @@ Data.prototype = {
 
 				// If key is an array of keys...
 				// We always set camelCase keys, so remove that.
-				key = key.map( jQuery.camelCase );
+				key = key.map( camelCase );
 			} else {
-				key = jQuery.camelCase( key );
+				key = camelCase( key );
 
 				// If a key with the spaces exists, use it.
 				// Otherwise, create an array by matching non-whitespace
@@ -4360,7 +5111,7 @@ jQuery.fn.extend( {
 						if ( attrs[ i ] ) {
 							name = attrs[ i ].name;
 							if ( name.indexOf( "data-" ) === 0 ) {
-								name = jQuery.camelCase( name.slice( 5 ) );
+								name = camelCase( name.slice( 5 ) );
 								dataAttr( elem, name, data[ name ] );
 							}
 						}
@@ -4607,8 +5358,7 @@ var swap = function( elem, options, callback, args ) {
 
 
 function adjustCSS( elem, prop, valueParts, tween ) {
-	var adjusted,
-		scale = 1,
+	var adjusted, scale,
 		maxIterations = 20,
 		currentValue = tween ?
 			function() {
@@ -4626,30 +5376,33 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 
 	if ( initialInUnit && initialInUnit[ 3 ] !== unit ) {
 
+		// Support: Firefox <=54
+		// Halve the iteration target value to prevent interference from CSS upper bounds (gh-2144)
+		initial = initial / 2;
+
 		// Trust units reported by jQuery.css
 		unit = unit || initialInUnit[ 3 ];
-
-		// Make sure we update the tween properties later on
-		valueParts = valueParts || [];
 
 		// Iteratively approximate from a nonzero starting point
 		initialInUnit = +initial || 1;
 
-		do {
+		while ( maxIterations-- ) {
 
-			// If previous iteration zeroed out, double until we get *something*.
-			// Use string for doubling so we don't accidentally see scale as unchanged below
-			scale = scale || ".5";
-
-			// Adjust and apply
-			initialInUnit = initialInUnit / scale;
+			// Evaluate and update our best guess (doubling guesses that zero out).
+			// Finish if the scale equals or crosses 1 (making the old*new product non-positive).
 			jQuery.style( elem, prop, initialInUnit + unit );
+			if ( ( 1 - scale ) * ( 1 - ( scale = currentValue() / initial || 0.5 ) ) <= 0 ) {
+				maxIterations = 0;
+			}
+			initialInUnit = initialInUnit / scale;
 
-		// Update scale, tolerating zero or NaN from tween.cur()
-		// Break the loop if scale is unchanged or perfect, or if we've just had enough.
-		} while (
-			scale !== ( scale = currentValue() / initial ) && scale !== 1 && --maxIterations
-		);
+		}
+
+		initialInUnit = initialInUnit * 2;
+		jQuery.style( elem, prop, initialInUnit + unit );
+
+		// Make sure we update the tween properties later on
+		valueParts = valueParts || [];
 	}
 
 	if ( valueParts ) {
@@ -4767,7 +5520,7 @@ var rcheckableType = ( /^(?:checkbox|radio)$/i );
 
 var rtagName = ( /<([a-z][^\/\0>\x20\t\r\n\f]+)/i );
 
-var rscriptType = ( /^$|\/(?:java|ecma)script/i );
+var rscriptType = ( /^$|^module$|\/(?:java|ecma)script/i );
 
 
 
@@ -4849,7 +5602,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 		if ( elem || elem === 0 ) {
 
 			// Add nodes directly
-			if ( jQuery.type( elem ) === "object" ) {
+			if ( toType( elem ) === "object" ) {
 
 				// Support: Android <=4.0 only, PhantomJS 1 only
 				// push.apply(_, arraylike) throws on ancient WebKit
@@ -5359,7 +6112,7 @@ jQuery.event = {
 			enumerable: true,
 			configurable: true,
 
-			get: jQuery.isFunction( hook ) ?
+			get: isFunction( hook ) ?
 				function() {
 					if ( this.originalEvent ) {
 							return hook( this.originalEvent );
@@ -5494,7 +6247,7 @@ jQuery.Event = function( src, props ) {
 	}
 
 	// Create a timestamp if incoming event doesn't have one
-	this.timeStamp = src && src.timeStamp || jQuery.now();
+	this.timeStamp = src && src.timeStamp || Date.now();
 
 	// Mark it as fixed
 	this[ jQuery.expando ] = true;
@@ -5693,14 +6446,13 @@ var
 
 	/* eslint-enable */
 
-	// Support: IE <=10 - 11, Edge 12 - 13
+	// Support: IE <=10 - 11, Edge 12 - 13 only
 	// In IE/Edge using regex groups here causes severe slowdowns.
 	// See https://connect.microsoft.com/IE/feedback/details/1736512/
 	rnoInnerhtml = /<script|<style|<link/i,
 
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
-	rscriptTypeMasked = /^true\/(.*)/,
 	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g;
 
 // Prefer a tbody over its parent table for containing new rows
@@ -5708,7 +6460,7 @@ function manipulationTarget( elem, content ) {
 	if ( nodeName( elem, "table" ) &&
 		nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ) {
 
-		return jQuery( ">tbody", elem )[ 0 ] || elem;
+		return jQuery( elem ).children( "tbody" )[ 0 ] || elem;
 	}
 
 	return elem;
@@ -5720,10 +6472,8 @@ function disableScript( elem ) {
 	return elem;
 }
 function restoreScript( elem ) {
-	var match = rscriptTypeMasked.exec( elem.type );
-
-	if ( match ) {
-		elem.type = match[ 1 ];
+	if ( ( elem.type || "" ).slice( 0, 5 ) === "true/" ) {
+		elem.type = elem.type.slice( 5 );
 	} else {
 		elem.removeAttribute( "type" );
 	}
@@ -5789,15 +6539,15 @@ function domManip( collection, args, callback, ignored ) {
 		l = collection.length,
 		iNoClone = l - 1,
 		value = args[ 0 ],
-		isFunction = jQuery.isFunction( value );
+		valueIsFunction = isFunction( value );
 
 	// We can't cloneNode fragments that contain checked, in WebKit
-	if ( isFunction ||
+	if ( valueIsFunction ||
 			( l > 1 && typeof value === "string" &&
 				!support.checkClone && rchecked.test( value ) ) ) {
 		return collection.each( function( index ) {
 			var self = collection.eq( index );
-			if ( isFunction ) {
+			if ( valueIsFunction ) {
 				args[ 0 ] = value.call( this, index, self.html() );
 			}
 			domManip( self, args, callback, ignored );
@@ -5851,14 +6601,14 @@ function domManip( collection, args, callback, ignored ) {
 						!dataPriv.access( node, "globalEval" ) &&
 						jQuery.contains( doc, node ) ) {
 
-						if ( node.src ) {
+						if ( node.src && ( node.type || "" ).toLowerCase()  !== "module" ) {
 
 							// Optional AJAX dependency, but won't run scripts if not present
 							if ( jQuery._evalUrl ) {
 								jQuery._evalUrl( node.src );
 							}
 						} else {
-							DOMEval( node.textContent.replace( rcleanScript, "" ), doc );
+							DOMEval( node.textContent.replace( rcleanScript, "" ), doc, node );
 						}
 					}
 				}
@@ -6138,8 +6888,6 @@ jQuery.each( {
 		return this.pushStack( ret );
 	};
 } );
-var rmargin = ( /^margin/ );
-
 var rnumnonpx = new RegExp( "^(" + pnum + ")(?!px)[a-z%]+$", "i" );
 
 var getStyles = function( elem ) {
@@ -6156,6 +6904,8 @@ var getStyles = function( elem ) {
 		return view.getComputedStyle( elem );
 	};
 
+var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
+
 
 
 ( function() {
@@ -6169,25 +6919,33 @@ var getStyles = function( elem ) {
 			return;
 		}
 
+		container.style.cssText = "position:absolute;left:-11111px;width:60px;" +
+			"margin-top:1px;padding:0;border:0";
 		div.style.cssText =
-			"box-sizing:border-box;" +
-			"position:relative;display:block;" +
+			"position:relative;display:block;box-sizing:border-box;overflow:scroll;" +
 			"margin:auto;border:1px;padding:1px;" +
-			"top:1%;width:50%";
-		div.innerHTML = "";
-		documentElement.appendChild( container );
+			"width:60%;top:1%";
+		documentElement.appendChild( container ).appendChild( div );
 
 		var divStyle = window.getComputedStyle( div );
 		pixelPositionVal = divStyle.top !== "1%";
 
 		// Support: Android 4.0 - 4.3 only, Firefox <=3 - 44
-		reliableMarginLeftVal = divStyle.marginLeft === "2px";
-		boxSizingReliableVal = divStyle.width === "4px";
+		reliableMarginLeftVal = roundPixelMeasures( divStyle.marginLeft ) === 12;
 
-		// Support: Android 4.0 - 4.3 only
+		// Support: Android 4.0 - 4.3 only, Safari <=9.1 - 10.1, iOS <=7.0 - 9.3
 		// Some styles come back with percentage values, even though they shouldn't
-		div.style.marginRight = "50%";
-		pixelMarginRightVal = divStyle.marginRight === "4px";
+		div.style.right = "60%";
+		pixelBoxStylesVal = roundPixelMeasures( divStyle.right ) === 36;
+
+		// Support: IE 9 - 11 only
+		// Detect misreporting of content dimensions for box-sizing:border-box elements
+		boxSizingReliableVal = roundPixelMeasures( divStyle.width ) === 36;
+
+		// Support: IE 9 only
+		// Detect overflow:scroll screwiness (gh-3699)
+		div.style.position = "absolute";
+		scrollboxSizeVal = div.offsetWidth === 36 || "absolute";
 
 		documentElement.removeChild( container );
 
@@ -6196,7 +6954,12 @@ var getStyles = function( elem ) {
 		div = null;
 	}
 
-	var pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal, reliableMarginLeftVal,
+	function roundPixelMeasures( measure ) {
+		return Math.round( parseFloat( measure ) );
+	}
+
+	var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal,
+		reliableMarginLeftVal,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
 
@@ -6211,26 +6974,26 @@ var getStyles = function( elem ) {
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	container.style.cssText = "border:0;width:8px;height:0;top:0;left:-9999px;" +
-		"padding:0;margin-top:1px;position:absolute";
-	container.appendChild( div );
-
 	jQuery.extend( support, {
-		pixelPosition: function() {
-			computeStyleTests();
-			return pixelPositionVal;
-		},
 		boxSizingReliable: function() {
 			computeStyleTests();
 			return boxSizingReliableVal;
 		},
-		pixelMarginRight: function() {
+		pixelBoxStyles: function() {
 			computeStyleTests();
-			return pixelMarginRightVal;
+			return pixelBoxStylesVal;
+		},
+		pixelPosition: function() {
+			computeStyleTests();
+			return pixelPositionVal;
 		},
 		reliableMarginLeft: function() {
 			computeStyleTests();
 			return reliableMarginLeftVal;
+		},
+		scrollboxSize: function() {
+			computeStyleTests();
+			return scrollboxSizeVal;
 		}
 	} );
 } )();
@@ -6262,7 +7025,7 @@ function curCSS( elem, name, computed ) {
 		// but width seems to be reliably pixels.
 		// This is against the CSSOM draft spec:
 		// https://drafts.csswg.org/cssom/#resolved-values
-		if ( !support.pixelMarginRight() && rnumnonpx.test( ret ) && rmargin.test( name ) ) {
+		if ( !support.pixelBoxStyles() && rnumnonpx.test( ret ) && rboxStyle.test( name ) ) {
 
 			// Remember the original values
 			width = style.width;
@@ -6367,87 +7130,120 @@ function setPositiveNumber( elem, value, subtract ) {
 		value;
 }
 
-function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
-	var i,
-		val = 0;
+function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computedVal ) {
+	var i = dimension === "width" ? 1 : 0,
+		extra = 0,
+		delta = 0;
 
-	// If we already have the right measurement, avoid augmentation
-	if ( extra === ( isBorderBox ? "border" : "content" ) ) {
-		i = 4;
-
-	// Otherwise initialize for horizontal or vertical properties
-	} else {
-		i = name === "width" ? 1 : 0;
+	// Adjustment may not be necessary
+	if ( box === ( isBorderBox ? "border" : "content" ) ) {
+		return 0;
 	}
 
 	for ( ; i < 4; i += 2 ) {
 
-		// Both box models exclude margin, so add it if we want it
-		if ( extra === "margin" ) {
-			val += jQuery.css( elem, extra + cssExpand[ i ], true, styles );
+		// Both box models exclude margin
+		if ( box === "margin" ) {
+			delta += jQuery.css( elem, box + cssExpand[ i ], true, styles );
 		}
 
-		if ( isBorderBox ) {
+		// If we get here with a content-box, we're seeking "padding" or "border" or "margin"
+		if ( !isBorderBox ) {
 
-			// border-box includes padding, so remove it if we want content
-			if ( extra === "content" ) {
-				val -= jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+			// Add padding
+			delta += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+
+			// For "border" or "margin", add border
+			if ( box !== "padding" ) {
+				delta += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+
+			// But still keep track of it otherwise
+			} else {
+				extra += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
 
-			// At this point, extra isn't border nor margin, so remove border
-			if ( extra !== "margin" ) {
-				val -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
-			}
+		// If we get here with a border-box (content + padding + border), we're seeking "content" or
+		// "padding" or "margin"
 		} else {
 
-			// At this point, extra isn't content, so add padding
-			val += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+			// For "content", subtract padding
+			if ( box === "content" ) {
+				delta -= jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+			}
 
-			// At this point, extra isn't content nor padding, so add border
-			if ( extra !== "padding" ) {
-				val += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+			// For "content" or "padding", subtract border
+			if ( box !== "margin" ) {
+				delta -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
 		}
 	}
 
-	return val;
+	// Account for positive content-box scroll gutter when requested by providing computedVal
+	if ( !isBorderBox && computedVal >= 0 ) {
+
+		// offsetWidth/offsetHeight is a rounded sum of content, padding, scroll gutter, and border
+		// Assuming integer scroll gutter, subtract the rest and round down
+		delta += Math.max( 0, Math.ceil(
+			elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ] -
+			computedVal -
+			delta -
+			extra -
+			0.5
+		) );
+	}
+
+	return delta;
 }
 
-function getWidthOrHeight( elem, name, extra ) {
+function getWidthOrHeight( elem, dimension, extra ) {
 
 	// Start with computed style
-	var valueIsBorderBox,
-		styles = getStyles( elem ),
-		val = curCSS( elem, name, styles ),
-		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
+	var styles = getStyles( elem ),
+		val = curCSS( elem, dimension, styles ),
+		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+		valueIsBorderBox = isBorderBox;
 
-	// Computed unit is not pixels. Stop here and return.
+	// Support: Firefox <=54
+	// Return a confounding non-pixel value or feign ignorance, as appropriate.
 	if ( rnumnonpx.test( val ) ) {
-		return val;
+		if ( !extra ) {
+			return val;
+		}
+		val = "auto";
 	}
 
 	// Check for style in case a browser which returns unreliable values
 	// for getComputedStyle silently falls back to the reliable elem.style
-	valueIsBorderBox = isBorderBox &&
-		( support.boxSizingReliable() || val === elem.style[ name ] );
+	valueIsBorderBox = valueIsBorderBox &&
+		( support.boxSizingReliable() || val === elem.style[ dimension ] );
 
-	// Fall back to offsetWidth/Height when value is "auto"
+	// Fall back to offsetWidth/offsetHeight when value is "auto"
 	// This happens for inline elements with no explicit setting (gh-3571)
-	if ( val === "auto" ) {
-		val = elem[ "offset" + name[ 0 ].toUpperCase() + name.slice( 1 ) ];
+	// Support: Android <=4.1 - 4.3 only
+	// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
+	if ( val === "auto" ||
+		!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) {
+
+		val = elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ];
+
+		// offsetWidth/offsetHeight provide border-box values
+		valueIsBorderBox = true;
 	}
 
-	// Normalize "", auto, and prepare for extra
+	// Normalize "" and auto
 	val = parseFloat( val ) || 0;
 
-	// Use the active box-sizing model to add/subtract irrelevant styles
+	// Adjust for the element's box model
 	return ( val +
-		augmentWidthOrHeight(
+		boxModelAdjustment(
 			elem,
-			name,
+			dimension,
 			extra || ( isBorderBox ? "border" : "content" ),
 			valueIsBorderBox,
-			styles
+			styles,
+
+			// Provide the current computed size to request scroll gutter calculation (gh-3589)
+			val
 		)
 	) + "px";
 }
@@ -6488,9 +7284,7 @@ jQuery.extend( {
 
 	// Add in properties whose names you wish to fix before
 	// setting or getting the value
-	cssProps: {
-		"float": "cssFloat"
-	},
+	cssProps: {},
 
 	// Get and set the style property on a DOM Node
 	style: function( elem, name, value, extra ) {
@@ -6502,7 +7296,7 @@ jQuery.extend( {
 
 		// Make sure that we're working with the right name
 		var ret, type, hooks,
-			origName = jQuery.camelCase( name ),
+			origName = camelCase( name ),
 			isCustomProp = rcustomProp.test( name ),
 			style = elem.style;
 
@@ -6570,7 +7364,7 @@ jQuery.extend( {
 
 	css: function( elem, name, extra, styles ) {
 		var val, num, hooks,
-			origName = jQuery.camelCase( name ),
+			origName = camelCase( name ),
 			isCustomProp = rcustomProp.test( name );
 
 		// Make sure that we're working with the right name. We don't
@@ -6608,8 +7402,8 @@ jQuery.extend( {
 	}
 } );
 
-jQuery.each( [ "height", "width" ], function( i, name ) {
-	jQuery.cssHooks[ name ] = {
+jQuery.each( [ "height", "width" ], function( i, dimension ) {
+	jQuery.cssHooks[ dimension ] = {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
 
@@ -6625,29 +7419,41 @@ jQuery.each( [ "height", "width" ], function( i, name ) {
 					// in IE throws an error.
 					( !elem.getClientRects().length || !elem.getBoundingClientRect().width ) ?
 						swap( elem, cssShow, function() {
-							return getWidthOrHeight( elem, name, extra );
+							return getWidthOrHeight( elem, dimension, extra );
 						} ) :
-						getWidthOrHeight( elem, name, extra );
+						getWidthOrHeight( elem, dimension, extra );
 			}
 		},
 
 		set: function( elem, value, extra ) {
 			var matches,
-				styles = extra && getStyles( elem ),
-				subtract = extra && augmentWidthOrHeight(
+				styles = getStyles( elem ),
+				isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+				subtract = extra && boxModelAdjustment(
 					elem,
-					name,
+					dimension,
 					extra,
-					jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+					isBorderBox,
 					styles
 				);
+
+			// Account for unreliable border-box dimensions by comparing offset* to computed and
+			// faking a content-box to get border and padding (gh-3699)
+			if ( isBorderBox && support.scrollboxSize() === styles.position ) {
+				subtract -= Math.ceil(
+					elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ] -
+					parseFloat( styles[ dimension ] ) -
+					boxModelAdjustment( elem, dimension, "border", false, styles ) -
+					0.5
+				);
+			}
 
 			// Convert to pixels if value adjustment is needed
 			if ( subtract && ( matches = rcssNum.exec( value ) ) &&
 				( matches[ 3 ] || "px" ) !== "px" ) {
 
-				elem.style[ name ] = value;
-				value = jQuery.css( elem, name );
+				elem.style[ dimension ] = value;
+				value = jQuery.css( elem, dimension );
 			}
 
 			return setPositiveNumber( elem, value, subtract );
@@ -6691,7 +7497,7 @@ jQuery.each( {
 		}
 	};
 
-	if ( !rmargin.test( prefix ) ) {
+	if ( prefix !== "margin" ) {
 		jQuery.cssHooks[ prefix + suffix ].set = setPositiveNumber;
 	}
 } );
@@ -6862,7 +7668,7 @@ function createFxNow() {
 	window.setTimeout( function() {
 		fxNow = undefined;
 	} );
-	return ( fxNow = jQuery.now() );
+	return ( fxNow = Date.now() );
 }
 
 // Generate parameters to create a standard animation
@@ -6966,9 +7772,10 @@ function defaultPrefilter( elem, props, opts ) {
 	// Restrict "overflow" and "display" styles during box animations
 	if ( isBox && elem.nodeType === 1 ) {
 
-		// Support: IE <=9 - 11, Edge 12 - 13
+		// Support: IE <=9 - 11, Edge 12 - 15
 		// Record all 3 overflow attributes because IE does not infer the shorthand
-		// from identically-valued overflowX and overflowY
+		// from identically-valued overflowX and overflowY and Edge just mirrors
+		// the overflowX value there.
 		opts.overflow = [ style.overflow, style.overflowX, style.overflowY ];
 
 		// Identify a display type, preferring old show/hide data over the CSS cascade
@@ -7076,7 +7883,7 @@ function propFilter( props, specialEasing ) {
 
 	// camelCase, specialEasing and expand cssHook pass
 	for ( index in props ) {
-		name = jQuery.camelCase( index );
+		name = camelCase( index );
 		easing = specialEasing[ name ];
 		value = props[ index ];
 		if ( Array.isArray( value ) ) {
@@ -7201,9 +8008,9 @@ function Animation( elem, properties, options ) {
 	for ( ; index < length; index++ ) {
 		result = Animation.prefilters[ index ].call( animation, elem, props, animation.opts );
 		if ( result ) {
-			if ( jQuery.isFunction( result.stop ) ) {
+			if ( isFunction( result.stop ) ) {
 				jQuery._queueHooks( animation.elem, animation.opts.queue ).stop =
-					jQuery.proxy( result.stop, result );
+					result.stop.bind( result );
 			}
 			return result;
 		}
@@ -7211,7 +8018,7 @@ function Animation( elem, properties, options ) {
 
 	jQuery.map( props, createTween, animation );
 
-	if ( jQuery.isFunction( animation.opts.start ) ) {
+	if ( isFunction( animation.opts.start ) ) {
 		animation.opts.start.call( elem, animation );
 	}
 
@@ -7244,7 +8051,7 @@ jQuery.Animation = jQuery.extend( Animation, {
 	},
 
 	tweener: function( props, callback ) {
-		if ( jQuery.isFunction( props ) ) {
+		if ( isFunction( props ) ) {
 			callback = props;
 			props = [ "*" ];
 		} else {
@@ -7276,9 +8083,9 @@ jQuery.Animation = jQuery.extend( Animation, {
 jQuery.speed = function( speed, easing, fn ) {
 	var opt = speed && typeof speed === "object" ? jQuery.extend( {}, speed ) : {
 		complete: fn || !fn && easing ||
-			jQuery.isFunction( speed ) && speed,
+			isFunction( speed ) && speed,
 		duration: speed,
-		easing: fn && easing || easing && !jQuery.isFunction( easing ) && easing
+		easing: fn && easing || easing && !isFunction( easing ) && easing
 	};
 
 	// Go to the end state if fx are off
@@ -7305,7 +8112,7 @@ jQuery.speed = function( speed, easing, fn ) {
 	opt.old = opt.complete;
 
 	opt.complete = function() {
-		if ( jQuery.isFunction( opt.old ) ) {
+		if ( isFunction( opt.old ) ) {
 			opt.old.call( this );
 		}
 
@@ -7469,7 +8276,7 @@ jQuery.fx.tick = function() {
 		i = 0,
 		timers = jQuery.timers;
 
-	fxNow = jQuery.now();
+	fxNow = Date.now();
 
 	for ( ; i < timers.length; i++ ) {
 		timer = timers[ i ];
@@ -7822,7 +8629,7 @@ jQuery.each( [
 
 
 	// Strip and collapse whitespace according to HTML spec
-	// https://html.spec.whatwg.org/multipage/infrastructure.html#strip-and-collapse-whitespace
+	// https://infra.spec.whatwg.org/#strip-and-collapse-ascii-whitespace
 	function stripAndCollapse( value ) {
 		var tokens = value.match( rnothtmlwhite ) || [];
 		return tokens.join( " " );
@@ -7833,20 +8640,30 @@ function getClass( elem ) {
 	return elem.getAttribute && elem.getAttribute( "class" ) || "";
 }
 
+function classesToArray( value ) {
+	if ( Array.isArray( value ) ) {
+		return value;
+	}
+	if ( typeof value === "string" ) {
+		return value.match( rnothtmlwhite ) || [];
+	}
+	return [];
+}
+
 jQuery.fn.extend( {
 	addClass: function( value ) {
 		var classes, elem, cur, curValue, clazz, j, finalValue,
 			i = 0;
 
-		if ( jQuery.isFunction( value ) ) {
+		if ( isFunction( value ) ) {
 			return this.each( function( j ) {
 				jQuery( this ).addClass( value.call( this, j, getClass( this ) ) );
 			} );
 		}
 
-		if ( typeof value === "string" && value ) {
-			classes = value.match( rnothtmlwhite ) || [];
+		classes = classesToArray( value );
 
+		if ( classes.length ) {
 			while ( ( elem = this[ i++ ] ) ) {
 				curValue = getClass( elem );
 				cur = elem.nodeType === 1 && ( " " + stripAndCollapse( curValue ) + " " );
@@ -7875,7 +8692,7 @@ jQuery.fn.extend( {
 		var classes, elem, cur, curValue, clazz, j, finalValue,
 			i = 0;
 
-		if ( jQuery.isFunction( value ) ) {
+		if ( isFunction( value ) ) {
 			return this.each( function( j ) {
 				jQuery( this ).removeClass( value.call( this, j, getClass( this ) ) );
 			} );
@@ -7885,9 +8702,9 @@ jQuery.fn.extend( {
 			return this.attr( "class", "" );
 		}
 
-		if ( typeof value === "string" && value ) {
-			classes = value.match( rnothtmlwhite ) || [];
+		classes = classesToArray( value );
 
+		if ( classes.length ) {
 			while ( ( elem = this[ i++ ] ) ) {
 				curValue = getClass( elem );
 
@@ -7917,13 +8734,14 @@ jQuery.fn.extend( {
 	},
 
 	toggleClass: function( value, stateVal ) {
-		var type = typeof value;
+		var type = typeof value,
+			isValidValue = type === "string" || Array.isArray( value );
 
-		if ( typeof stateVal === "boolean" && type === "string" ) {
+		if ( typeof stateVal === "boolean" && isValidValue ) {
 			return stateVal ? this.addClass( value ) : this.removeClass( value );
 		}
 
-		if ( jQuery.isFunction( value ) ) {
+		if ( isFunction( value ) ) {
 			return this.each( function( i ) {
 				jQuery( this ).toggleClass(
 					value.call( this, i, getClass( this ), stateVal ),
@@ -7935,12 +8753,12 @@ jQuery.fn.extend( {
 		return this.each( function() {
 			var className, i, self, classNames;
 
-			if ( type === "string" ) {
+			if ( isValidValue ) {
 
 				// Toggle individual class names
 				i = 0;
 				self = jQuery( this );
-				classNames = value.match( rnothtmlwhite ) || [];
+				classNames = classesToArray( value );
 
 				while ( ( className = classNames[ i++ ] ) ) {
 
@@ -7999,7 +8817,7 @@ var rreturn = /\r/g;
 
 jQuery.fn.extend( {
 	val: function( value ) {
-		var hooks, ret, isFunction,
+		var hooks, ret, valueIsFunction,
 			elem = this[ 0 ];
 
 		if ( !arguments.length ) {
@@ -8028,7 +8846,7 @@ jQuery.fn.extend( {
 			return;
 		}
 
-		isFunction = jQuery.isFunction( value );
+		valueIsFunction = isFunction( value );
 
 		return this.each( function( i ) {
 			var val;
@@ -8037,7 +8855,7 @@ jQuery.fn.extend( {
 				return;
 			}
 
-			if ( isFunction ) {
+			if ( valueIsFunction ) {
 				val = value.call( this, i, jQuery( this ).val() );
 			} else {
 				val = value;
@@ -8179,18 +8997,24 @@ jQuery.each( [ "radio", "checkbox" ], function() {
 // Return jQuery for attributes-only inclusion
 
 
-var rfocusMorph = /^(?:focusinfocus|focusoutblur)$/;
+support.focusin = "onfocusin" in window;
+
+
+var rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
+	stopPropagationCallback = function( e ) {
+		e.stopPropagation();
+	};
 
 jQuery.extend( jQuery.event, {
 
 	trigger: function( event, data, elem, onlyHandlers ) {
 
-		var i, cur, tmp, bubbleType, ontype, handle, special,
+		var i, cur, tmp, bubbleType, ontype, handle, special, lastElement,
 			eventPath = [ elem || document ],
 			type = hasOwn.call( event, "type" ) ? event.type : event,
 			namespaces = hasOwn.call( event, "namespace" ) ? event.namespace.split( "." ) : [];
 
-		cur = tmp = elem = elem || document;
+		cur = lastElement = tmp = elem = elem || document;
 
 		// Don't do events on text and comment nodes
 		if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
@@ -8242,7 +9066,7 @@ jQuery.extend( jQuery.event, {
 
 		// Determine event propagation path in advance, per W3C events spec (#9951)
 		// Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
-		if ( !onlyHandlers && !special.noBubble && !jQuery.isWindow( elem ) ) {
+		if ( !onlyHandlers && !special.noBubble && !isWindow( elem ) ) {
 
 			bubbleType = special.delegateType || type;
 			if ( !rfocusMorph.test( bubbleType + type ) ) {
@@ -8262,7 +9086,7 @@ jQuery.extend( jQuery.event, {
 		// Fire handlers on the event path
 		i = 0;
 		while ( ( cur = eventPath[ i++ ] ) && !event.isPropagationStopped() ) {
-
+			lastElement = cur;
 			event.type = i > 1 ?
 				bubbleType :
 				special.bindType || type;
@@ -8294,7 +9118,7 @@ jQuery.extend( jQuery.event, {
 
 				// Call a native DOM method on the target with the same name as the event.
 				// Don't do default actions on window, that's where global variables be (#6170)
-				if ( ontype && jQuery.isFunction( elem[ type ] ) && !jQuery.isWindow( elem ) ) {
+				if ( ontype && isFunction( elem[ type ] ) && !isWindow( elem ) ) {
 
 					// Don't re-trigger an onFOO event when we call its FOO() method
 					tmp = elem[ ontype ];
@@ -8305,7 +9129,17 @@ jQuery.extend( jQuery.event, {
 
 					// Prevent re-triggering of the same event, since we already bubbled it above
 					jQuery.event.triggered = type;
+
+					if ( event.isPropagationStopped() ) {
+						lastElement.addEventListener( type, stopPropagationCallback );
+					}
+
 					elem[ type ]();
+
+					if ( event.isPropagationStopped() ) {
+						lastElement.removeEventListener( type, stopPropagationCallback );
+					}
+
 					jQuery.event.triggered = undefined;
 
 					if ( tmp ) {
@@ -8351,31 +9185,6 @@ jQuery.fn.extend( {
 } );
 
 
-jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
-	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
-	"change select submit keydown keypress keyup contextmenu" ).split( " " ),
-	function( i, name ) {
-
-	// Handle event binding
-	jQuery.fn[ name ] = function( data, fn ) {
-		return arguments.length > 0 ?
-			this.on( name, null, data, fn ) :
-			this.trigger( name );
-	};
-} );
-
-jQuery.fn.extend( {
-	hover: function( fnOver, fnOut ) {
-		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
-	}
-} );
-
-
-
-
-support.focusin = "onfocusin" in window;
-
-
 // Support: Firefox <=44
 // Firefox doesn't have focus(in | out) events
 // Related ticket - https://bugzilla.mozilla.org/show_bug.cgi?id=687787
@@ -8419,7 +9228,7 @@ if ( !support.focusin ) {
 }
 var location = window.location;
 
-var nonce = jQuery.now();
+var nonce = Date.now();
 
 var rquery = ( /\?/ );
 
@@ -8477,7 +9286,7 @@ function buildParams( prefix, obj, traditional, add ) {
 			}
 		} );
 
-	} else if ( !traditional && jQuery.type( obj ) === "object" ) {
+	} else if ( !traditional && toType( obj ) === "object" ) {
 
 		// Serialize object item.
 		for ( name in obj ) {
@@ -8499,7 +9308,7 @@ jQuery.param = function( a, traditional ) {
 		add = function( key, valueOrFunction ) {
 
 			// If value is a function, invoke it and use its return value
-			var value = jQuery.isFunction( valueOrFunction ) ?
+			var value = isFunction( valueOrFunction ) ?
 				valueOrFunction() :
 				valueOrFunction;
 
@@ -8617,7 +9426,7 @@ function addToPrefiltersOrTransports( structure ) {
 			i = 0,
 			dataTypes = dataTypeExpression.toLowerCase().match( rnothtmlwhite ) || [];
 
-		if ( jQuery.isFunction( func ) ) {
+		if ( isFunction( func ) ) {
 
 			// For each dataType in the dataTypeExpression
 			while ( ( dataType = dataTypes[ i++ ] ) ) {
@@ -9089,7 +9898,7 @@ jQuery.extend( {
 		if ( s.crossDomain == null ) {
 			urlAnchor = document.createElement( "a" );
 
-			// Support: IE <=8 - 11, Edge 12 - 13
+			// Support: IE <=8 - 11, Edge 12 - 15
 			// IE throws exception on accessing the href property if url is malformed,
 			// e.g. http://example.com:80x/
 			try {
@@ -9147,8 +9956,8 @@ jQuery.extend( {
 			// Remember the hash so we can put it back
 			uncached = s.url.slice( cacheURL.length );
 
-			// If data is available, append data to url
-			if ( s.data ) {
+			// If data is available and should be processed, append data to url
+			if ( s.data && ( s.processData || typeof s.data === "string" ) ) {
 				cacheURL += ( rquery.test( cacheURL ) ? "&" : "?" ) + s.data;
 
 				// #9682: remove data so that it's not used in an eventual retry
@@ -9385,7 +10194,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 	jQuery[ method ] = function( url, data, callback, type ) {
 
 		// Shift arguments if data argument was omitted
-		if ( jQuery.isFunction( data ) ) {
+		if ( isFunction( data ) ) {
 			type = type || callback;
 			callback = data;
 			data = undefined;
@@ -9423,7 +10232,7 @@ jQuery.fn.extend( {
 		var wrap;
 
 		if ( this[ 0 ] ) {
-			if ( jQuery.isFunction( html ) ) {
+			if ( isFunction( html ) ) {
 				html = html.call( this[ 0 ] );
 			}
 
@@ -9449,7 +10258,7 @@ jQuery.fn.extend( {
 	},
 
 	wrapInner: function( html ) {
-		if ( jQuery.isFunction( html ) ) {
+		if ( isFunction( html ) ) {
 			return this.each( function( i ) {
 				jQuery( this ).wrapInner( html.call( this, i ) );
 			} );
@@ -9469,10 +10278,10 @@ jQuery.fn.extend( {
 	},
 
 	wrap: function( html ) {
-		var isFunction = jQuery.isFunction( html );
+		var htmlIsFunction = isFunction( html );
 
 		return this.each( function( i ) {
-			jQuery( this ).wrapAll( isFunction ? html.call( this, i ) : html );
+			jQuery( this ).wrapAll( htmlIsFunction ? html.call( this, i ) : html );
 		} );
 	},
 
@@ -9564,7 +10373,8 @@ jQuery.ajaxTransport( function( options ) {
 					return function() {
 						if ( callback ) {
 							callback = errorCallback = xhr.onload =
-								xhr.onerror = xhr.onabort = xhr.onreadystatechange = null;
+								xhr.onerror = xhr.onabort = xhr.ontimeout =
+									xhr.onreadystatechange = null;
 
 							if ( type === "abort" ) {
 								xhr.abort();
@@ -9604,7 +10414,7 @@ jQuery.ajaxTransport( function( options ) {
 
 				// Listen to events
 				xhr.onload = callback();
-				errorCallback = xhr.onerror = callback( "error" );
+				errorCallback = xhr.onerror = xhr.ontimeout = callback( "error" );
 
 				// Support: IE 9 only
 				// Use onreadystatechange to replace onabort
@@ -9758,7 +10568,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 	if ( jsonProp || s.dataTypes[ 0 ] === "jsonp" ) {
 
 		// Get callback name, remembering preexisting value associated with it
-		callbackName = s.jsonpCallback = jQuery.isFunction( s.jsonpCallback ) ?
+		callbackName = s.jsonpCallback = isFunction( s.jsonpCallback ) ?
 			s.jsonpCallback() :
 			s.jsonpCallback;
 
@@ -9809,7 +10619,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 			}
 
 			// Call if it was a function and we have a response
-			if ( responseContainer && jQuery.isFunction( overwritten ) ) {
+			if ( responseContainer && isFunction( overwritten ) ) {
 				overwritten( responseContainer[ 0 ] );
 			}
 
@@ -9901,7 +10711,7 @@ jQuery.fn.load = function( url, params, callback ) {
 	}
 
 	// If it's a function
-	if ( jQuery.isFunction( params ) ) {
+	if ( isFunction( params ) ) {
 
 		// We assume that it's the callback
 		callback = params;
@@ -10009,7 +10819,7 @@ jQuery.offset = {
 			curLeft = parseFloat( curCSSLeft ) || 0;
 		}
 
-		if ( jQuery.isFunction( options ) ) {
+		if ( isFunction( options ) ) {
 
 			// Use jQuery.extend here to allow modification of coordinates argument (gh-1848)
 			options = options.call( elem, i, jQuery.extend( {}, curOffset ) );
@@ -10032,6 +10842,8 @@ jQuery.offset = {
 };
 
 jQuery.fn.extend( {
+
+	// offset() relates an element's border box to the document origin
 	offset: function( options ) {
 
 		// Preserve chaining for setter
@@ -10043,7 +10855,7 @@ jQuery.fn.extend( {
 				} );
 		}
 
-		var doc, docElem, rect, win,
+		var rect, win,
 			elem = this[ 0 ];
 
 		if ( !elem ) {
@@ -10058,50 +10870,52 @@ jQuery.fn.extend( {
 			return { top: 0, left: 0 };
 		}
 
+		// Get document-relative position by adding viewport scroll to viewport-relative gBCR
 		rect = elem.getBoundingClientRect();
-
-		doc = elem.ownerDocument;
-		docElem = doc.documentElement;
-		win = doc.defaultView;
-
+		win = elem.ownerDocument.defaultView;
 		return {
-			top: rect.top + win.pageYOffset - docElem.clientTop,
-			left: rect.left + win.pageXOffset - docElem.clientLeft
+			top: rect.top + win.pageYOffset,
+			left: rect.left + win.pageXOffset
 		};
 	},
 
+	// position() relates an element's margin box to its offset parent's padding box
+	// This corresponds to the behavior of CSS absolute positioning
 	position: function() {
 		if ( !this[ 0 ] ) {
 			return;
 		}
 
-		var offsetParent, offset,
+		var offsetParent, offset, doc,
 			elem = this[ 0 ],
 			parentOffset = { top: 0, left: 0 };
 
-		// Fixed elements are offset from window (parentOffset = {top:0, left: 0},
-		// because it is its only offset parent
+		// position:fixed elements are offset from the viewport, which itself always has zero offset
 		if ( jQuery.css( elem, "position" ) === "fixed" ) {
 
-			// Assume getBoundingClientRect is there when computed position is fixed
+			// Assume position:fixed implies availability of getBoundingClientRect
 			offset = elem.getBoundingClientRect();
 
 		} else {
-
-			// Get *real* offsetParent
-			offsetParent = this.offsetParent();
-
-			// Get correct offsets
 			offset = this.offset();
-			if ( !nodeName( offsetParent[ 0 ], "html" ) ) {
-				parentOffset = offsetParent.offset();
-			}
 
-			// Add offsetParent borders
-			parentOffset = {
-				top: parentOffset.top + jQuery.css( offsetParent[ 0 ], "borderTopWidth", true ),
-				left: parentOffset.left + jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true )
-			};
+			// Account for the *real* offset parent, which can be the document or its root element
+			// when a statically positioned element is identified
+			doc = elem.ownerDocument;
+			offsetParent = elem.offsetParent || doc.documentElement;
+			while ( offsetParent &&
+				( offsetParent === doc.body || offsetParent === doc.documentElement ) &&
+				jQuery.css( offsetParent, "position" ) === "static" ) {
+
+				offsetParent = offsetParent.parentNode;
+			}
+			if ( offsetParent && offsetParent !== elem && offsetParent.nodeType === 1 ) {
+
+				// Incorporate borders into its offset, since they are outside its content origin
+				parentOffset = jQuery( offsetParent ).offset();
+				parentOffset.top += jQuery.css( offsetParent, "borderTopWidth", true );
+				parentOffset.left += jQuery.css( offsetParent, "borderLeftWidth", true );
+			}
 		}
 
 		// Subtract parent offsets and element margins
@@ -10143,7 +10957,7 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 
 			// Coalesce documents and windows
 			var win;
-			if ( jQuery.isWindow( elem ) ) {
+			if ( isWindow( elem ) ) {
 				win = elem;
 			} else if ( elem.nodeType === 9 ) {
 				win = elem.defaultView;
@@ -10201,7 +11015,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			return access( this, function( elem, type, value ) {
 				var doc;
 
-				if ( jQuery.isWindow( elem ) ) {
+				if ( isWindow( elem ) ) {
 
 					// $( window ).outerWidth/Height return w/h including scrollbars (gh-1729)
 					return funcName.indexOf( "outer" ) === 0 ?
@@ -10235,6 +11049,28 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 } );
 
 
+jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
+	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
+	"change select submit keydown keypress keyup contextmenu" ).split( " " ),
+	function( i, name ) {
+
+	// Handle event binding
+	jQuery.fn[ name ] = function( data, fn ) {
+		return arguments.length > 0 ?
+			this.on( name, null, data, fn ) :
+			this.trigger( name );
+	};
+} );
+
+jQuery.fn.extend( {
+	hover: function( fnOver, fnOut ) {
+		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
+	}
+} );
+
+
+
+
 jQuery.fn.extend( {
 
 	bind: function( types, data, fn ) {
@@ -10256,6 +11092,37 @@ jQuery.fn.extend( {
 	}
 } );
 
+// Bind a function to a context, optionally partially applying any
+// arguments.
+// jQuery.proxy is deprecated to promote standards (specifically Function#bind)
+// However, it is not slated for removal any time soon
+jQuery.proxy = function( fn, context ) {
+	var tmp, args, proxy;
+
+	if ( typeof context === "string" ) {
+		tmp = fn[ context ];
+		context = fn;
+		fn = tmp;
+	}
+
+	// Quick check to determine if target is callable, in the spec
+	// this throws a TypeError, but we will just return undefined.
+	if ( !isFunction( fn ) ) {
+		return undefined;
+	}
+
+	// Simulated bind
+	args = slice.call( arguments, 2 );
+	proxy = function() {
+		return fn.apply( context || this, args.concat( slice.call( arguments ) ) );
+	};
+
+	// Set the guid of unique handler to the same of original handler, so it can be removed
+	proxy.guid = fn.guid = fn.guid || jQuery.guid++;
+
+	return proxy;
+};
+
 jQuery.holdReady = function( hold ) {
 	if ( hold ) {
 		jQuery.readyWait++;
@@ -10266,6 +11133,26 @@ jQuery.holdReady = function( hold ) {
 jQuery.isArray = Array.isArray;
 jQuery.parseJSON = JSON.parse;
 jQuery.nodeName = nodeName;
+jQuery.isFunction = isFunction;
+jQuery.isWindow = isWindow;
+jQuery.camelCase = camelCase;
+jQuery.type = toType;
+
+jQuery.now = Date.now;
+
+jQuery.isNumeric = function( obj ) {
+
+	// As of jQuery 3.0, isNumeric is limited to
+	// strings and numbers (primitives or objects)
+	// that can be coerced to finite numbers (gh-2662)
+	var type = jQuery.type( obj );
+	return ( type === "number" || type === "string" ) &&
+
+		// parseFloat NaNs numeric-cast false positives ("")
+		// ...but misinterprets leading-number strings, particularly hex literals ("0x...")
+		// subtraction forces infinities to NaN
+		!isNaN( obj - parseFloat( obj ) );
+};
 
 
 
@@ -10284,9 +11171,9 @@ jQuery.nodeName = nodeName;
 // https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
 
 if ( true ) {
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
 		return jQuery;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+	}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 }
 
@@ -10325,738 +11212,6 @@ if ( !noGlobal ) {
 
 return jQuery;
 } );
-
-
-/***/ }),
-
-/***/ 1:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
-/* harmony export (immutable) */ __webpack_exports__["l"] = DEFAULT_JIRA_COLUMNS;
-
-const DEFAULT_JIRA_ISSUE_COUNT = 10;
-/* harmony export (immutable) */ __webpack_exports__["k"] = DEFAULT_JIRA_ISSUE_COUNT;
-
-const MAIN_JIRA_LABEL = "CI";
-/* harmony export (immutable) */ __webpack_exports__["b"] = MAIN_JIRA_LABEL;
-
-const TAGS_FIELD = "customfield_10032";
-/* harmony export (immutable) */ __webpack_exports__["c"] = TAGS_FIELD;
-
-const WIKI_HOST = 'wiki.hybris.com';
-/* harmony export (immutable) */ __webpack_exports__["a"] = WIKI_HOST;
-
-const MAX_WIKI_PAGE_CREATION_RATE = 200;
-/* harmony export (immutable) */ __webpack_exports__["j"] = MAX_WIKI_PAGE_CREATION_RATE;
- // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
-const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500;
-/* harmony export (immutable) */ __webpack_exports__["i"] = SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY;
- // (in millis) for ESPLM-846
-const PREFIX = "ywiki-plugins.";
-/* harmony export (immutable) */ __webpack_exports__["f"] = PREFIX;
-
-const PREFERRED_REGION_KEY = "preferred.region";
-/* harmony export (immutable) */ __webpack_exports__["g"] = PREFERRED_REGION_KEY;
-
-const DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
-/* harmony export (immutable) */ __webpack_exports__["d"] = DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE;
-
-const CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
-/* harmony export (immutable) */ __webpack_exports__["h"] = CISTATS_DATA_PAGE;
-
-const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
-/* harmony export (immutable) */ __webpack_exports__["e"] = DEFAULT_CUSTOMER_PAGE_TEMPLATE;
-
-// export const WIKI_HOST = 'performancewiki2.hybris.com';
-
-
-/***/ }),
-
-/***/ 26:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return host; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return cacheBuster; });
-function getOriginLocation() {
-  var scripts = document.getElementsByTagName('script');
-  var l = document.createElement("a");
-  l.href = scripts[scripts.length-1].getAttribute("src");
-  if (!l.origin) l.origin=l.protocol+"//"+l.host
-  console.log("origin",l.origin);
-  return l;
-}
-
-var originlocation = getOriginLocation();
-var host = originlocation.origin+'/ywiki-plugins';
-var cacheBuster=originlocation.search;
-console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
-
-
-
-
-/***/ }),
-
-/***/ 37:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pluginCommon__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__common_optionsParser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__ = __webpack_require__(57);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_dashboard_page_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(7);
-
-
-
-
-
-function attachHandlersToIFrameWindow(host, myIFrame) {
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__["a" /* default */])(myIFrame[0].contentWindow, host)
-    .attachActionHandler("ajax", function (param) {
-      return jQuery.ajax(param);
-    })
-    .attachActionHandler("$text", function (e) {
-      return jQuery(e).text();
-    })
-    .attachActionHandler("$tableCellsGetHtml", function (e) {
-      return jQuery(e).get().map(function(row) {
-        return $(row).find('td').get().map(function(cell) {
-          return $(cell).html().trim();
-        });
-      });
-    })
-    .attachActionHandler("$arrayGetText", function (e) {
-      return jQuery(e).get().map(function(cell) {
-        return $(cell).text();
-      });
-    });
-}
-
-var dataAttributes=[
-  'service-types-dataheaders',
-  'service-types-datasource',
-  'service-engagements-dataheaders',
-  'service-engagements-datasource',
-  'improvement-ideas-dataheaders',
-  'improvement-ideas-datasource'];
-
-function bootstrap(host, cacheBuster) {
-  $('[data-activate="dashboard"]').each( function() {
-    var jEl=$(this);
-    var options={
-      host: host,
-      cacheBuster: cacheBuster,
-      title: $("#title-text").text(),
-      element: this};
-    dataAttributes.forEach( function(attr) {
-      options[attr] = jEl.data(attr);
-    });
-    insertFrame(host,options);
-  });
-}
-
-function insertFrame(host,options) {
-  console.log("iframe being added");
-  $(options.element).after('<iframe class="dashboard" src="'+options.host+'/'+'dashboard.html#'+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__common_optionsParser__["b" /* encodeOptions */])(options)+'"></iframe>');
-  var iframe = $("iframe.dashboard");
-  iframe.bind('load', function() {
-    $(this).fadeIn();
-  });
-  attachHandlersToIFrameWindow(host,iframe);
-}
-
-bootstrap(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["b" /* cacheBuster */]);
-
-
-/***/ }),
-
-/***/ 38:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__css_professors_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__css_professors_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__ = __webpack_require__(58);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__css_golden_button_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__css_golden_button_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css__ = __webpack_require__(59);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__css_jira_issue_summary_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pluginCommon__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_optionsParser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__common_config__ = __webpack_require__(1);
-
-
-
-
-
-
-
-
-function closeIFrame(iframeElt) {
-  iframeElt.unbind('load').fadeOut( function() {
-    iframeElt.attr('src', '');
-    $('#block').fadeOut();
-    $('#iframecontainer').fadeOut();
-  });
-}
-
-/** Opens the iframe in a "lightbox" fashion, loading it from frameSrc, and passing all provided options in the hash part of the url */
-function openIFrame(iframeElt, frameSrc, options) {
-  var block = $('#block');
-  block.fadeIn();
-  $('#iframecontainer').fadeIn();
-  iframeElt.bind('load', function() {
-    console.log("iframe loaded");
-    $('#loader').fadeOut(function() {
-      iframeElt.fadeIn();
-    });
-  });
-  iframeElt.attr('src', frameSrc + '#' + __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_5__common_optionsParser__["b" /* encodeOptions */])(options));
-  $(document).keyup(function(e) {
-    if (e.keyCode == 27) { // ESC
-			 closeIFrame(iframeElt);
-    }
-	});
-
-  $(document).mouseup(function (e)
-  {
-    if (block.is(e.target) || block.has(e.target).length > 0) {
-      // If the target of the click is the surrounding block
-      // Hide the iframe
-      closeIFrame(iframeElt);
-    }
-  });
-}
-
-function redirectTo(url) {
-  window.location.href = url;
-}
-
-function attachHandlersToIFrameWindow(host, myIFrame) {
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__common_iframeWrapper__["a" /* default */])(myIFrame[0].contentWindow, host)
-    .attachActionHandler("ajax", function (param) {
-      return jQuery.ajax(param);
-    })
-    .attachActionHandler("closeFrame", function () {
-      return closeIFrame(myIFrame);
-    })
-    .attachActionHandler("redirect", function (url) {
-      return redirectTo(url);
-    })
-    .attachActionHandler("$metacontent", function (e) {
-      return jQuery(e).attr("content");
-    })
-    .attachActionHandler("localStorageSetItem", function (e) {
-      return window.localStorage.setItem(e.key, e.value);
-    })
-    .attachActionHandler("localStorageGetItem", function (e) {
-      return window.localStorage.getItem(e);
-    })
-    .attachActionHandler("$text", function (e) {
-      return jQuery(e).text();
-    });
-}
-
-function wireBanner(options) {
-  var jEl = $(options.cssSelector);
-  jEl.addClass("cibanner");
-  if (!options.disablePullUp) {
-    jEl.addClass("pullup");
-  }
-  options.buttonText = options.buttonText || "Start";
-  options.bannerText = options.bannerText || $('#title-text').text().trim();
-  $(".wiki-content .innerCell").css("overflow-x", "visible");
-  $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
-  .html('<div class="ciaction">\
-              <img src="'+options.host+'/banner/clickme.png" />\
-              <div class="theOneButton">'+options.buttonText+'</div>\
-            </div>\
-            <div class="cilogo">\
-              <img src="'+options.host+'/banner/service_leads_2.png" />\
-            </div>\
-            <div class="cicenter">\
-            <h1>'+options.bannerText+'</h1>\
-            </div>\
-          ');
-  options.cssSelector=".ciaction";
-  wireButton(options);
-}
-
-function genericButton(options, formPath) {
-  // load dependencies in order
-  var myIFrame = $('#iframecontainer iframe');
-  $(options.cssSelector).click(function() {
-    openIFrame(myIFrame, options.host+'/'+formPath, options);
-    attachHandlersToIFrameWindow(options.host,myIFrame);
-  });
-}
-
-/** The main entrypoint for the plugin, which receives all options, loads the dependencies,
-creates the iframe element, attach the click event to the main button to load the iframe */
-function wireButton(options) {
-  return genericButton(options, 'golden-form.html');
-}
-
-function wireJiraIssueSummary(options) {
-  // {
-  //   host,
-  //   cacheBuster,
-  //   cssSelector,
-  //   jiraLabel,
-  //   summaryType,
-  //   jiraIssueCount,
-  //   jiraColumns
-  // }
-  var el = $(options.cssSelector);
-  var jql = '( labels="'+options.jiraLabel+'" AND labels="'+__WEBPACK_IMPORTED_MODULE_6__common_config__["b" /* MAIN_JIRA_LABEL */]+'") ';
-  if (options.summaryType=="done") {
-    jql+=' AND status IN (Resolved, "Verified/Closed", Done, Fixed, Complete)';
-  } else if (options.summaryType=="todo") {
-    jql+=' AND status NOT IN (Resolved, "Verified/Closed", Done, Fixed, Complete, Cancelled)';
-  }
-  var postQuery = '<ac:structured-macro ac:name="jira" ac:schema-version="1" ><ac:parameter ac:name="columns">'+options.jiraColumns+'</ac:parameter><ac:parameter ac:name="maximumIssues">'+options.jiraIssueCount+'</ac:parameter><ac:parameter ac:name="jqlQuery">'+jql+'</ac:parameter></ac:structured-macro>';
-  var reqPayload = {
-      wikiMarkup : encodeURIComponent( postQuery ),
-      clearCache:true
-  };
-  $.ajax({
-    url:"https://"+__WEBPACK_IMPORTED_MODULE_6__common_config__["a" /* WIKI_HOST */]+"/rest/jiraanywhere/1.0/jira/renderTable",
-    type: "POST",
-    data: JSON.stringify(reqPayload),
-    contentType: "application/json",
-    complete: function( data ) {el.html(JSON.parse(data.responseText).data);}
-  });
-}
-
-function wireCreateJiraButton(options) {
-
-  var el = $(options.cssSelector);
-  var currentText = el.text();
-  el.addClass("cibutton btn btn-lg btn-warning")
-  .html('\
-    <span class="fa-stack">\
-      <i class="fa fa-comment-o fa-stack-2x"></i>\
-      <i class="fa fa-lightbulb-o fa-stack-1x"></i>\
-    </span><span class="text">'+currentText+'</span>\
-  ');
-  return genericButton(options, 'create-jira-form.html');
-}
-
-function wireMovePageButton(options) {
-
-  var el = $(options.cssSelector);
-  var btnText = el.text() || options.defaultText;
-  el.addClass("cibutton btn btn-lg btn-warning")
-  .html('\
-    <span class="text">'+btnText+'</span>\
-  ');
-  return genericButton(options, 'move-pages.html');
-}
-
-function insertFrame() {
-  // insert the frame html after the current script tag
-  var scripts = document.getElementsByTagName('script');
-  $(scripts[scripts.length-1]).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
-}
-
-function bootstrap(host, cacheBuster) {
-  insertFrame();
-  $('[data-activate="golden-banner"]').each( function() {
-    var jEl=$(this);
-    wireBanner({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      disablePullUp: jEl.data('disable-pull-up'),
-      buttonText: jEl.data('button-text'),
-      bannerText: jEl.data('banner-text'),
-      targetSpace: jEl.data('target-space'),
-      newInstanceDisplayName: jEl.data('new-instance-display-name'),
-      addLabel: jEl.data('add-label'),
-      logToPage: jEl.data('log-to-page'),
-    });
-  });
-  $('[data-activate="golden-button"]').each( function() {
-    var jEl=$(this);
-    jEl.addClass("theOneButton");
-    wireButton({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      disablePullUp: jEl.data('disable-pull-up'),
-      buttonText: jEl.data('button-text'),
-      bannerText: jEl.data('banner-text'),
-      targetSpace: jEl.data('target-space'),
-      newInstanceDisplayName: jEl.data('new-instance-display-name'),
-      addLabel: jEl.data('add-label'),
-      logToPage: jEl.data('log-to-page'),
-    });
-  });
-  $('[data-activate="issue-creator"]').each( function() {
-    var jEl=$(this);
-    wireCreateJiraButton({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      jiraProjectKey: jEl.data('jira-project-key'),
-      serviceDisplayName: jEl.data('service-display-name'),
-      issueType: jEl.data('issue-type') || "Improvement",
-      issueComponent: jEl.data('issue-component'),
-      issueLabel: jEl.data('issue-label') || jEl.data('jira-label'),
-    });
-  });
-  $('[data-activate="move-page-button"]').each( function() {
-    var jEl=$(this);
-    wireMovePageButton({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      defaultText: "Move Pages"
-    });
-  });
-  $('[data-activate="issue-summary"]').each( function() {
-    var jEl=$(this);
-    wireJiraIssueSummary({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      jiraLabel : jEl.data('jira-label'),
-      summaryType: jEl.data('summary-type'),
-      jiraIssueCount: Number(jEl.data('jira-max-issues')) || __WEBPACK_IMPORTED_MODULE_6__common_config__["k" /* DEFAULT_JIRA_ISSUE_COUNT */],
-      jiraColumns: jEl.data('jira-columns') || __WEBPACK_IMPORTED_MODULE_6__common_config__["l" /* DEFAULT_JIRA_COLUMNS */]
-    });
-  });
-}
-
-bootstrap(__WEBPACK_IMPORTED_MODULE_4__pluginCommon__["a" /* host */],__WEBPACK_IMPORTED_MODULE_4__pluginCommon__["b" /* cacheBuster */]);
-
-
-/***/ }),
-
-/***/ 39:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__pluginCommon__ = __webpack_require__(26);
-
-
-// Loads a stylesheet at url. Url can be relative to the configured host.
-function loadStyleSheet(host, url) {
-  if (!url.startsWith('http')) {
-    url = host+'/'+url;
-  }
-  var link = document.createElement('link');
-  link.setAttribute('rel', 'stylesheet');
-  link.setAttribute('type', 'text/css');
-  link.setAttribute('href', url);
-  document.getElementsByTagName('head')[0].appendChild(link);
-  console.log('style loaded');
-}
-
-loadStyleSheet(__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["a" /* host */],'dist/golden-button.css'+__WEBPACK_IMPORTED_MODULE_0__pluginCommon__["b" /* cacheBuster */]);
-
-
-/***/ }),
-
-/***/ 56:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__stylesheetPlugin__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__goldenButtonPlugin__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__dashboardPlugin__ = __webpack_require__(37);
-
-
-
-
-
-/***/ }),
-
-/***/ 57:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 58:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 59:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 60:
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 7:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = iframeWrapper;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__windowEventListener__ = __webpack_require__(9);
-
-
-
-/**
- * A generic iframeWrapper.
- *
- * The main goal is to bypass the CORS restriction: we want the iframe to be able to execute ajax requests on the domain of the main window, and since they are on different domains, this is not possible with some hack.
- * The hack here consists in using the window.postMessage function and a message listener to execute code from the iframe into the main frame.
- *
- * iframeWrappers provide a call("action", payload) function that can call named actions in another frame and return a promise for the asynchronous response.
- * The receiving frame must hook the named actions to actual actionHandlers, that must be attached to the iframeWrapper.
- *
- * Note: The iframeWrapperFactory requires jQuery and windowEventListener.
- * It must be loaded in the 2 frames (main window and iframe) to be able to use it to run Cross-Origin actions.
- * The factory parameters are different when loading the iframeWrapper from the iframe (in which case the target window is the parent and the target hostname is the wiki),
- * and when loading from the main frame (in which case the target window is the iframe window, and the targetHostname is the yWikiPlugins host).
- *
- * Example:
- * 1. Frame A attaches an actionHandler for a given action, like "ajax", and the action handler simply returns jQuery.ajax(params).
- * 2. Then the other frame B can call("ajax", params) to remotely execute the ajax request in Frame A and get the result back.
- *
- * This is all asynchronous and based on jQuery promises.
- *
- * From the iFrame, call iframeWrapper(parent, "https://wiki.hybris.com").
- * From the main Frame, call iframeWrapper($('iframe')[0].contentWindow, yWikiPlugins.getHost()).
- */
-function iframeWrapper( postToWindow, targetHostname ) {
-  var _correlationId=1;
-
-  /**
-   * Chainable function to attach action handlers.
-   * Handlers take a single argument and may return a promise or a result (or nothing)
-   * that will be used to send the response back to the other frame.
-   */
-  function attachActionHandler(actionName, handler) {
-
-    function requestListener(correlationId, payload) {
-      __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.when( handler(payload) )
-      .done(function sendResponse(responsePayload) {
-        var responseMsg = {
-          correlationId: correlationId,
-          responsePayload: responsePayload
-        };
-        //console.log("Sending response:",responseMsg);
-        postToWindow.postMessage(responseMsg, targetHostname);
-      })
-      .fail(function sendError() {
-        var payload = arguments;
-        if (arguments && arguments.length && arguments.length>2) {// for ajax errors, the error handler gets (jqXHR, textStatus, errorThrown) but we can't pass the whole jqXHR through the postMessage API
-          payload={textStatus: arguments[1], errorThrown: arguments[2]};
-          if (arguments[0] && arguments[0].responseText) {
-            payload.responseText = arguments[0].responseText;
-            try {
-                payload.responseJson = JSON.parse(payload.responseText);
-            } catch(e) {
-              // ignore
-            }
-          }
-        }
-        var errorMsg = {
-          correlationId: correlationId,
-          errorPayload: payload
-        };
-        //console.log("Sending error response:",errorMsg);
-        postToWindow.postMessage(errorMsg, targetHostname);
-      });
-    }
-    __WEBPACK_IMPORTED_MODULE_1__windowEventListener__["a" /* default */].registerRequestListener(actionName, requestListener);
-    return this;
-  }
-
-  /**
-   * Calls an an action through the messaging system of frames and returns
-   * a jQuery promise that will get resolved once a response is received (also from the messaging system)
-   */
-  function call(action, payload) {
-    var defer = __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.Deferred();
-    var correlationId = _correlationId++;
-    __WEBPACK_IMPORTED_MODULE_1__windowEventListener__["a" /* default */].registerResponseListener(correlationId,
-      {
-        successHandler: function(successPayload) {
-          defer.resolve(successPayload);
-        },
-        errorHandler: function(errorPayload) {
-          defer.reject(errorPayload);
-        }
-      });
-    //console.log("payload",payload);
-    postToWindow.postMessage(
-      {
-        action: action,
-        payload: payload,
-        correlationId: correlationId
-      }, targetHostname);
-    return defer.promise();
-  }
-
-  return {
-    call: call,
-    attachActionHandler: attachActionHandler
-  }
-}
-
-
-/***/ }),
-
-/***/ 8:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return parseOptions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return encodeOptions; });
-function parseOptions(defaultOptions) {
-
-  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
-  var match;
-  var params = defaultOptions || {};
-  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
-
-  var hash = document.location.hash;
-
-  while (match = re.exec(hash)) {
-    params[decode(match[1])] = decode(match[2]);
-  }
-  return params;
-}
-
-function encodeOptions(options) {
-  var res = [];
-  for (var key in options) {
-    if (options.hasOwnProperty(key) && options[key]!==undefined) {
-        res.push(key+"="+encodeURIComponent(options[key]));
-    }
-  }
-  return res.join('&');
-}
-
-
-
-
-/***/ }),
-
-/***/ 9:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/**
- * Sets up a listener of all events received by the window, that dispatches:
- *   - those that have an action to the corresponding requestListeners
- *   - those that have a correlationId but no action, to the corresponding responseListeners
- * Exposes functions to (un)register listeners.
- */
-var windowEventListener = (function windowEventListener() {
-
-  // Start listening to messages (from other frames, typically)
-  var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-  var eventer = window[eventMethod];
-  var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-  var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
-  var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
-  eventer(messageEvent, eventCallback, false);
-
-  function eventCallback(e) {
-    if (e.data.action) {
-      // action data is in the form { action: "actionName", payload: object }
-      if (requestListeners[e.data.action]) {
-        requestListeners[e.data.action](e.data.correlationId, e.data.payload);
-      } else {
-        // no registered requestListener for this action
-        console.warn('No requestListeners for action: ', e.data.action);
-      }
-    } else if (e.data.correlationId) {
-      // response data is in the form { correlationId: theRequestCorrelationId, responsePayload: object, errorPayload: object }
-      if (responseListeners[e.data.correlationId]) {
-        // deregister (should be used only once for each correlationId)
-        var responseListener = responseListeners[e.data.correlationId];
-        responseListeners[e.data.correlationId] = null;
-        // delegate to the registered responseListener
-        if (e.data.errorPayload) {
-          responseListener.errorHandler(e.data.errorPayload);
-        } else {
-          responseListener.successHandler(e.data.responsePayload);
-        }
-      } else {
-        console.warn("No response listener for correlationId: ", e.data.correlationId);
-      }
-    } else {
-      // not an action message
-      console.log("Received non-request, non-response, message: ", e.data);
-    }
-  }
-
-  /**
-   * Func should be a function(correlationId, payload). The return value will be ignored.
-   * Consider this private and used solely by the iframeWrapper.
-   * Use iframeWrapper.attachActionHandler(action, handler) instead
-   */
-  function registerRequestListener( action, func ) {
-    if (typeof func != 'function') {
-      console.error("Cannot register request listener since not a function: ", func);
-    } else {
-      requestListeners[action] = func;
-    }
-  }
-  function unregisterRequestListener( action ) {
-    requestListeners[action] = null;
-  }
-  /**
-   *  The response listener must be an object in the form { successHandler: function(argument) {}, errorHandler: function(argument) {}}
-   *  where at least 1 of successHandler or errorHandler is defined.
-   *  successHandler and errorHandler, if defined, must be functions that take a single argument. Their returned value is ignored.
-   *  If one of the property is missing, a default handler is added that will simply log the result/error.
-   *
-   *  Note: There is no unregisterResponseListener because the unregistration is automatically done the first (and only) time the responseListener is used.
-   *  This is because for a given correlationId, only one response or one error will be returned.
-   */
-  function registerResponseListener( correlationId, listener ) {
-    if (!listener.successHandler && !listener.errorHandler) {
-      console.error("Cannot register response listener as it is missing a successHandler function or errorHandler function", listener);
-      return;
-    }
-    if (listener.successHandler && typeof listener.successHandler != 'function') {
-      console.error("Cannot register response listener as the successHandler is not a function", listener);
-      return;
-    }
-    if (listener.errorHandler && typeof listener.errorHandler != 'function') {
-      console.error("Cannot register response listener as the errorHandler is not a function", listener);
-      return;
-    }
-    listener.successHandler = listener.successHandler? listener.successHandler : defaultSuccessHandler;
-    listener.errorHandler = listener.errorHandler? listener.errorHandler : defaultErrorHandler;
-    responseListeners[correlationId] = listener;
-  }
-
-  function defaultSuccessHandler(responsePayload) { console.info("Default success handler: ", responsePayload); }
-  function defaultErrorHandler(errorPayload) { console.warn("Default error handler: ", errorPayload); }
-
-  return {
-    registerRequestListener: registerRequestListener,
-    unregisterRequestListener: unregisterRequestListener,
-    registerResponseListener: registerResponseListener
-  };
-})();
-
-/* harmony default export */ __webpack_exports__["a"] = (windowEventListener);
 
 
 /***/ })

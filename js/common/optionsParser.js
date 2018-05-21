@@ -1,3 +1,5 @@
+import '../lib/polyfills';
+
 function parseOptions(defaultOptions) {
 
   var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
@@ -8,7 +10,12 @@ function parseOptions(defaultOptions) {
   var hash = document.location.hash;
 
   while (match = re.exec(hash)) {
-    params[decode(match[1])] = decode(match[2]);
+    var value = decode(match[2]);
+    if ( isJSON(value) ) { 
+      console.log("Parsing options: ",value);
+      value = JSON.parse(value);
+    }
+    params[decode(match[1])] = value;
   }
   return params;
 }
@@ -17,10 +24,19 @@ function encodeOptions(options) {
   var res = [];
   for (var key in options) {
     if (options.hasOwnProperty(key) && options[key]!==undefined) {
-        res.push(key+"="+encodeURIComponent(options[key]));
+        var value = options[key];
+        if (value.toString() === '[object Object]') {
+          value = JSON.stringify(value);
+        }
+        res.push(key+"="+encodeURIComponent(value));
     }
   }
   return res.join('&');
+}
+
+function isJSON(value) {
+  // simplistic heuristic to detect serialized JSON
+  return ((value.startsWith('{') && value.endsWith('}')) ||  (value.startsWith('[') && value.endsWith(']')) ) && !(value.startsWith('[object'));
 }
 
 export {parseOptions, encodeOptions}

@@ -10,6 +10,10 @@ a label {
   cursor: pointer;
 }
 
+.options legend {
+  margin-bottom: 0;
+}
+
 .ui-autocomplete {
     position: absolute;
     z-index: 1000;
@@ -65,4 +69,11 @@ a label {
 }
 .mb-spacer {
 	margin-bottom: 15px;
+}
+.mt-spacer {
+	margin-top: 10px;
+}
+
+.panel-body .form-group {
+  margin-bottom: 0;
 }
