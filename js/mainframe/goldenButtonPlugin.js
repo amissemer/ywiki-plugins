@@ -88,8 +88,6 @@ function wireBanner(options) {
             <h1>'+options.bannerText+'</h1>\
             </div>\
           ');
-  //options.cssSelector=".ciaction";
-  //wireButton(options);
 }
 
 function genericButton(options, formPath) {
@@ -99,12 +97,6 @@ function genericButton(options, formPath) {
     openIFrame(myIFrame, options.host+'/'+formPath, options);
     attachHandlersToIFrameWindow(options.host,myIFrame);
   });
-}
-
-/** The main entrypoint for the plugin, which receives all options, loads the dependencies,
-creates the iframe element, attach the click event to the main button to load the iframe */
-function wireButton(options) {
-  return genericButton(options, 'golden-form.html');
 }
 
 function wireJiraIssueSummary(options) {
@@ -138,16 +130,21 @@ function wireJiraIssueSummary(options) {
   });
 }
 
-function wireCreateJiraButton(options) {
+function wireStartEngagementButton(options) {
+  var jEl = $(options.cssSelector);
+  jEl.addClass("cibutton btn btn-lg btn-warning").html('<span class="text">Start</span>&nbsp;&nbsp;<i class="fa fa-play-circle fa-2x"></i>');
+  return genericButton(options, 'golden-form.html');
+}
 
+function wireCreateJiraButton(options) {
   var el = $(options.cssSelector);
   var currentText = el.text();
   el.addClass("cibutton btn btn-lg btn-warning")
   .html('\
-    <span class="fa-stack">\
+    <span class="text">'+currentText+'</span>&nbsp;&nbsp;<span class="fa-stack" style="top: -3px">\
       <i class="fa fa-comment-o fa-stack-2x"></i>\
       <i class="fa fa-lightbulb-o fa-stack-1x"></i>\
-    </span><span class="text">'+currentText+'</span>\
+    </span>\
   ');
   return genericButton(options, 'create-jira-form.html');
 }
@@ -204,8 +201,7 @@ function bootstrap(host, cacheBuster) {
   });
   $('[data-activate="golden-button"]').each( function() {
     var jEl=$(this);
-    jEl.addClass("theOneButton");
-    wireButton({
+    wireStartEngagementButton({
       host: host,
       cacheBuster: cacheBuster,
       cssSelector: this,
@@ -218,7 +214,6 @@ function bootstrap(host, cacheBuster) {
       logToPage: jEl.data('log-to-page'),
       variantOptions: readOptions(jEl),
     });
-    jEl.html('Start');
   });
   $('[data-activate="issue-creator"]').each( function() {
     var jEl=$(this);

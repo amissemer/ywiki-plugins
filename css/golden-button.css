@@ -132,6 +132,16 @@
 .cibanner h1{
 	font-size:22px !important;
 }
+.cibutton {
+    display: inline-flex;
+    align-items: center;
+}
+.cibutton:hover{
+    text-decoration: none !important;
+}
+.cibutton:hover .text{
+    text-decoration: underline;
+}
 /* Medium devices (desktops, @screen-sm-min and up) */
 @media (min-width: 768px) {
   .cibanner h1{
@@ -255,3 +265,35 @@
 	vertical-align: middle;
 	margin-left: 5px;
 }
+.fa-play-circle-o:before {
+    content: "\f01d";
+}
+.fa-play:before {
+    content: "\f04b";
+}
+.fa-play-circle:before {
+    content: "\f144";
+}
+.fa-lg {
+    font-size: 1.33333333em;
+    line-height: 0.75em;
+    vertical-align: -15%;
+  }
+  .fa-2x {
+    font-size: 2em;
+  }
+  .fa-3x {
+    font-size: 3em;
+  }
+  .fa-4x {
+    font-size: 4em;
+  }
+  .fa-5x {
+    font-size: 5em;
+  }
+  .fa-circle:before {
+    content: "\f111";
+  }
+  .fa-circle-o:before {
+    content: "\f10c";
+  }
