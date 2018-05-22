@@ -30,7 +30,6 @@ function config(production) {
         { test: /\.(gif|eot|woff|woff2|svg|ttf)([\?]?.*)$/, loader: "file-loader" },
         // tweak to bundle bootstrap, which require jquery as a global variable
         { test: /bootstrap.+\.(jsx|js)$/, loader: 'imports-loader?jQuery=jquery,$=jquery,this=>window' },
-        { test: /morris\.js$/, loader: 'imports-loader?jQuery=jquery,$=jquery,Raphael=raphael,this=>window' }
       ]
     },
     // generate a separate bundled css file for each bundle
