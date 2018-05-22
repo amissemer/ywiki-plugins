@@ -634,14 +634,14 @@ function wireJiraIssueSummary(options) {
 
 function wireStartEngagementButton(options) {
   var jEl = $(options.cssSelector);
-  jEl.addClass("cibutton btn btn-lg btn-warning").html('<span class="text">Start</span>&nbsp;&nbsp;<i class="fa fa-play-circle fa-2x"></i>');
+  jEl.addClass("cibutton btn btn-lg btn-warning btn-raised").html('<span class="text">Start</span>&nbsp;&nbsp;<i class="fa fa-play-circle fa-2x"></i>');
   return genericButton(options, 'golden-form.html');
 }
 
 function wireCreateJiraButton(options) {
   var el = $(options.cssSelector);
   var currentText = el.text();
-  el.addClass("cibutton btn btn-lg btn-warning")
+  el.addClass("cibutton btn btn-lg btn-warning btn-raised")
   .html('\
     <span class="text">'+currentText+'</span>&nbsp;&nbsp;<span class="fa-stack" style="top: -3px">\
       <i class="fa fa-comment-o fa-stack-2x"></i>\
