@@ -1,5 +1,5 @@
 import { delay, bind, defer, map  } from 'underscore';
-import $ from 'jquery';
+import jQuery from 'jquery-deferred';
 
 /* Extend the Underscore object with the following methods */
 
@@ -31,8 +31,14 @@ export default function rateLimit(func, rate) {
         if (queue.length) {
             currentlyEmptyingQueue = true;
             delay(function() {
-                defer(function() { var f = queue.shift(); if (f) f.call(); });
-                emptyQueue();
+                defer(function() { 
+                    var f = queue.shift(); 
+                    if (f) {
+                        jQuery.when(f.call()).then(emptyQueue); 
+                    } else {
+                        emptyQueue();
+                    }
+                });
             }, rate);
         } else {
             currentlyEmptyingQueue = false;
@@ -40,11 +46,11 @@ export default function rateLimit(func, rate) {
     };
     
     return function() {
-        var defer = $.Deferred();
+        var defer = jQuery.Deferred();
         var args = map(arguments, function(e) { return e; }); // get arguments into an array
 
         queue.push( function() {
-            $.when(func.apply({}, args)).then( defer.resolve, defer.reject, defer.notify );
+            return jQuery.when(func.apply({}, args)).then( defer.resolve, defer.reject, defer.notify );
          } ); // call apply so that we can pass in arguments as parameters as opposed to an array
         if (!currentlyEmptyingQueue) { emptyQueue(); }
         return defer.promise();
