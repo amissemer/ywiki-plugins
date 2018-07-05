@@ -1109,7 +1109,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _variantOptionsTransform__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./variantOptionsTransform */ "./js/iframe/variantOptionsTransform.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wikiPageXslt__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./wikiPageXslt */ "./js/iframe/wikiPageXslt.js");
 
+
+
+var fixLocalLinksXsl = __webpack_require__(/*! raw-loader!./xslt/fix-local-links.xsl */ "./node_modules/raw-loader/index.js!./js/iframe/xslt/fix-local-links.xsl");
 
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 
@@ -1182,6 +1186,12 @@ function TemplateProcessor(placeholderReplacements, variantOptions) {
       page.body.storage.value = replacePlaceholders(page.body.storage.value, true);
     }
   }
+  function fixLocalLinks(page) {
+    page.body.storage.value = fixLocalLinksInternal(page.body.storage.value, page.space.key);
+  }
+  function fixLocalLinksInternal(content, spaceKey) {
+    return Object(_wikiPageXslt__WEBPACK_IMPORTED_MODULE_2__["default"])(content, fixLocalLinksXsl.format(spaceKey));
+  }
   function filterVariant(page) {
     page.body.storage.value = filterVariantInContent(page.body.storage.value);
   }
@@ -1210,6 +1220,7 @@ function TemplateProcessor(placeholderReplacements, variantOptions) {
     transformPage : function(page) {
       replacePlaceholderInPage(page);
       filterVariant(page);
+      fixLocalLinks(page);
     }
   };
 
@@ -1228,12 +1239,37 @@ function TemplateProcessor(placeholderReplacements, variantOptions) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return variantOptionsTransform; });
+/* harmony import */ var _wikiPageXslt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./wikiPageXslt */ "./js/iframe/wikiPageXslt.js");
+
+var xsl = __webpack_require__(/*! raw-loader!./xslt/strip-variant-options-blocks.xsl */ "./node_modules/raw-loader/index.js!./js/iframe/xslt/strip-variant-options-blocks.xsl");
+
+function variantOptionsTransform(text, options) {
+    console.log('variantOptionsTransform', text, options);
+    if (!options || options.length==0) return text;
+    if (options.length>1) throw "Only one option is supported at this time";
+    var option = options[0];
+    return Object(_wikiPageXslt__WEBPACK_IMPORTED_MODULE_0__["default"])(text, xsl.format(option.name, option.value));
+}
+
+
+
+/***/ }),
+
+/***/ "./js/iframe/wikiPageXslt.js":
+/*!***********************************!*\
+  !*** ./js/iframe/wikiPageXslt.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return transformWikiPage; });
 /* harmony import */ var _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/jsxml */ "./js/lib/jsxml.js");
 /* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lib/polyfills */ "./js/lib/polyfills.js");
 /* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_lib_polyfills__WEBPACK_IMPORTED_MODULE_1__);
 
 
-var xsl = __webpack_require__(/*! raw-loader!./strip-variant-options-blocks.xsl */ "./node_modules/raw-loader/index.js!./js/iframe/strip-variant-options-blocks.xsl");
 
 var ns = ['xmlns:ac="http://atlassian.com/content"',
     'xmlns:atlassian-content="http://atlassian.com/content"',
@@ -1267,16 +1303,13 @@ function unescapeEntities(escapedText) {
     return ret;
 }
 
-function variantOptionsTransform(text, options) {
-    console.log('transform', text, options);
-    if (!options || options.length==0) return text;
-    if (options.length>1) throw "Only one option is supported at this time";
-    var option = options[0];
-    return unwrapToStorageFormat(xslt(wrapStorageFormat(text), xsl.format(option.name, option.value)));
+function transformWikiPage(textContent, xsl) {
+    console.log('transformWikiPage', textContent, xsl);
+    if (!textContent || !xsl) throw 'Both textContent and xsl are mandatory';
+    return unwrapToStorageFormat(xslt(wrapStorageFormat(textContent), xsl));
 }
 
 function xslt(xmlTxt, xslTxt) {
-    console.log("About to XSL-Transform", xmlTxt, xslTxt);
     var xsltResult = _lib_jsxml__WEBPACK_IMPORTED_MODULE_0__["jsxml"].transReady(xmlTxt, xslTxt);
     console.log("Result of XSL-Transform", xsltResult);
     return xsltResult;
@@ -37233,10 +37266,21 @@ return jQuery;
 
 /***/ }),
 
-/***/ "./node_modules/raw-loader/index.js!./js/iframe/strip-variant-options-blocks.xsl":
-/*!******************************************************************************!*\
-  !*** ./node_modules/raw-loader!./js/iframe/strip-variant-options-blocks.xsl ***!
-  \******************************************************************************/
+/***/ "./node_modules/raw-loader/index.js!./js/iframe/xslt/fix-local-links.xsl":
+/*!**********************************************************************!*\
+  !*** ./node_modules/raw-loader!./js/iframe/xslt/fix-local-links.xsl ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xsl:stylesheet version=\"1.0\" \n    xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \n    xmlns:ac=\"http://atlassian.com/content\"\n    xmlns:ri=\"http://atlassian.com/resource/identifier\">\n\n    <!-- Output the ac:plain-text-link-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->\n    <xsl:output method=\"xml\" cdata-section-elements=\"ac:plain-text-link-body\" />\n\n    <!-- Add the space-key attribute to ri:page (links) when it is missing -->\n    <xsl:template match=\"ri:page[@ri:content-title][not(@ri:space-key)]\">\n        <xsl:copy>\n            <xsl:attribute name=\"ri:space-key\">{0}</xsl:attribute>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n    \n    <!-- Copy everything else as is -->   \n    <xsl:template match=\"@*|node()\">\n        <xsl:copy>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n</xsl:stylesheet>"
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/index.js!./js/iframe/xslt/strip-variant-options-blocks.xsl":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/raw-loader!./js/iframe/xslt/strip-variant-options-blocks.xsl ***!
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 

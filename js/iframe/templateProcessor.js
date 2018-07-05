@@ -1,5 +1,8 @@
 import variantOptionsTransform from './variantOptionsTransform';
 import $ from 'jquery';
+import wikiPageXslt from './wikiPageXslt';
+var fixLocalLinksXsl = require('raw-loader!./xslt/fix-local-links.xsl');
+
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 
 export function TemplateProcessor(placeholderReplacements, variantOptions) {
@@ -71,6 +74,12 @@ export function TemplateProcessor(placeholderReplacements, variantOptions) {
       page.body.storage.value = replacePlaceholders(page.body.storage.value, true);
     }
   }
+  function fixLocalLinks(page) {
+    page.body.storage.value = fixLocalLinksInternal(page.body.storage.value, page.space.key);
+  }
+  function fixLocalLinksInternal(content, spaceKey) {
+    return wikiPageXslt(content, fixLocalLinksXsl.format(spaceKey));
+  }
   function filterVariant(page) {
     page.body.storage.value = filterVariantInContent(page.body.storage.value);
   }
@@ -99,6 +108,7 @@ export function TemplateProcessor(placeholderReplacements, variantOptions) {
     transformPage : function(page) {
       replacePlaceholderInPage(page);
       filterVariant(page);
+      fixLocalLinks(page);
     }
   };
 
