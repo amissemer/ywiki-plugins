@@ -5,7 +5,7 @@
     xmlns:ri="http://atlassian.com/resource/identifier">
 
     <!-- Output the ac:plain-text-link-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->
-    <xsl:output method="xml" cdata-section-elements="ac:plain-text-link-body" />
+    <xsl:output method="xml" cdata-section-elements="ac:plain-text-link-body ac:plain-text-body" />
 
     <!-- Add the space-key attribute to ri:page (links) when it is missing -->
     <xsl:template match="ri:page[@ri:content-title][not(@ri:space-key)]">

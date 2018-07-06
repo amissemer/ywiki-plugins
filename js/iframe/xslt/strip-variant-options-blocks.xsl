@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ac="http://atlassian.com/content">
 
     <!-- Output the plain-text-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->
-    <xsl:output method="xml" cdata-section-elements="ac:plain-text-body" />
+    <xsl:output method="xml" cdata-section-elements="ac:plain-text-link-body ac:plain-text-body" />
 
     <!-- We can't use &#10; inside concat() directly, as least not on Safari, but it works with a variable. -->
     <xsl:variable name="LF"><xsl:text>&#10;</xsl:text></xsl:variable>
