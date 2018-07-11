@@ -8,9 +8,12 @@ function config(production) {
     mode: production?'production':'development',
     entry: {
       "golden-button": './js/mainframe/main.js',
+      "move-pages-bundle.1": './js/iframe/move-pages.1.js',
       "move-pages-bundle": './js/iframe/move-pages.js',
       "golden-form": './js/iframe/golden-form.js',
-      "create-jira-form": './js/iframe/create-jira-form.js'
+      "create-jira-form": './js/iframe/create-jira-form.js',
+      "page-tree-chart": './js/page-tree-chart.js',
+      "page-tree2": './js/page-tree2.js'
     },
     output: {
       filename: '[name].js',

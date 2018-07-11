@@ -1,0 +1,6 @@
+Covestro (20 pages) 5766.236083984375ms
+Gerry Weber (3 pages)  5319.85107421875ms
+Goodyear DE (1 page)  1953.864990234375ms
+Intercars (73) 61037.22412109375ms
+TUL (TataCliq)- Tata Unistore Limited (200) 74338.38598632812ms
+Shoppers Stop (7 pages): 8755.82421875ms

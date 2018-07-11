@@ -1,6 +1,3 @@
-import JSZip from 'jszip';
-import {saveAs} from 'file-saver';
-
 const MAX_API_CALL_IN_PARALLEL = 3;
 const throat = require('throat')(MAX_API_CALL_IN_PARALLEL);
 
@@ -144,7 +141,6 @@ async function updateContent(page) {
   );
 }
 
-
 $.fn.confluence = {
   movePages : movePages,
   movePagesById : movePagesById,
@@ -155,56 +151,23 @@ $.fn.confluence = {
   copyPageRecursive:copyPageRecursive,
   searchPagesWithCQL:searchPagesWithCQL,
   getContent:getContent,
-  getContentById:getContentById,
-  dumpPageTree:dumpPageTree
+  getContentById:getContentById
 };
 
-async function dumpPageTree(sourceSpaceKey, sourcePageTitle) {
-  var startPage = await getContent(sourceSpaceKey, sourcePageTitle);
-  
-  $('#chart_div').html($(`<span>Dumping ${sourcePageTitle}...</span>`));
-  var txt = JSON.stringify(await getPageTree(startPage.id, null, null, { pages: 0 }));
-  $('#chart_div span').text('Done');
-  $('#chart_div').append('<button>Download</button>');
-  $('#chart_div button').click(async () => {
-    var zip = new JSZip();
-    zip.file(`${sourcePageTitle}.json`, txt);
-    var content = await zip.generateAsync({type:"blob"});
-    saveAs(content, `${sourcePageTitle}.zip`);
-  });
-}
-
-async function getPageTree( pageId, parentId, parentTitle, counter ) {
-  console.log(`Queueing getContentById for ${pageId}`);
-  var pageAndChildren = await throat(() => getContentById(pageId, 'history.lastUpdated,children.page,metadata.labels'));
-  counter.pages++;
-  if (counter.pages%100 == 0) console.log(`Found ${counter.pages} pages so far...`);
-  var childrenP = [];
-  var childrenPages = pageAndChildren.children.page;
-  while (childrenPages && childrenPages.size>0) {
-    for (let child of childrenPages.results) {
-      childrenP.push(getPageTree(child.id, pageId, pageAndChildren.title, counter));
-    }
-    // get next page if any
-    if (childrenPages._links.next) {
-      console.log(`Queueing GET next page of children for ${pageAndChildren.title}: ${childrenPages._links.next}`);
-      childrenPages = await throat(() => $.ajax(childrenPages._links.next));
-    } else {
-      childrenPages=false;
-    }
+async function moveAllPages() {
+  const pages = ['Covestro', 'Gerry Weber', 'Goodyear DE', 'Intercars', 'TUL (TataCliq)- Tata Unistore Limited'];
+  //const pages = ['Shoppers Stop'];
+  const space = 'ps';
+  for (let page of pages) {
+    await getContent(space, page);
   }
-
-  return {
-    title: pageAndChildren.title,
-    id: pageId,
-    lastUpdated: new Date(pageAndChildren.history.lastUpdated.when),
-    createdDate: new Date(pageAndChildren.history.createdDate),
-    parentId: parentId,
-    parentTitle: parentTitle,
-    children: await Promise.all(childrenP),
-    labels: Array.prototype.map.call(pageAndChildren.metadata.labels.results, l=>l.name)
-  };
+  console.log("Starting moving of pages", pages);
+  for (let page of pages) {
+    console.time(page);
+    await movePages(space, page, '~adrien.missemer@hybris.com', 'Tests');
+    console.timeEnd(page);
+  }
+  
 }
 
-setTimeout(() => dumpPageTree("ps", "Project Documentation"), 1000);
-//setTimeout(() => dumpPageTree("ps", "Test Adrien"), 2000);
+moveAllPages();
