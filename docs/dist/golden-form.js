@@ -1117,7 +1117,7 @@ var fixLocalLinksXsl = __webpack_require__(/*! raw-loader!./xslt/fix-local-links
 
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 
-function TemplateProcessor(placeholderReplacements, variantOptions) {
+function TemplateProcessor(placeholderReplacements, variantOptions, forceTitle) {
 
   var placeholderReplacements = placeholderReplacements;
   var variantOptions = variantOptions; // [ { name : "hosting", value : "ccv2" | "other" } ]
@@ -1166,7 +1166,9 @@ function TemplateProcessor(placeholderReplacements, variantOptions) {
           console.warn(varStr + " is not used in template",template);
         }
         var replacementValue = placeholderReplacements[key];
-        if (escapeHtml) {
+        if (typeof replacementValue !== 'string') {
+          replacementValue = replacementValue.value;
+        } else if (escapeHtml) {
           replacementValue = jquery__WEBPACK_IMPORTED_MODULE_1___default()("<div>").text(replacementValue).html();
         }
         var result = result.split(varStr).join(replacementValue);
@@ -1180,7 +1182,11 @@ function TemplateProcessor(placeholderReplacements, variantOptions) {
 
   function replacePlaceholderInPage(page) {
     console.log("Found page to Copy",page);
-    page.title = replacePlaceholders(page.title);
+    if (forceTitle) {
+      page.title = forceTitle;
+    } else {
+      page.title = replacePlaceholders(page.title);
+    }
     console.log("New Title for target page: "+page.title);
     if (typeof placeholderReplacements!=='string') {
       page.body.storage.value = replacePlaceholders(page.body.storage.value, true);
