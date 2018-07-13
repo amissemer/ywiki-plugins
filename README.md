@@ -22,3 +22,14 @@ npm run watch
 ## Usage
 
 See [Continuous Improvement - The Golden Button](https://wiki.hybris.com/display/ps/Continuous+Improvement+-+The+Golden+Button)
+
+
+## Wiki migration
+
+Put this html snippet in a page of the wiki.
+
+```
+<button id="dumpBtn">Extract Page Tree from wiki</button>&nbsp;<button id="loadBtn">Load Page Tree from local</button><button id="buildProgram">Migrate !</button>
+<div id="msg"></div>
+<script src="https://localhost/ywiki-plugins/dist/move-pages-bundle.js"></script>
+```
