@@ -1,0 +1,455 @@
+type,pageTitle,decision
+type-root,"Project Documentation",keep
+type-other,"How to Create Project Documentation Pages",keep
+type-other,".CI New Project Documentation Template",keep
+type-other,"Project Documentation Pages - System list",keep
+type-customer,"Akzo Nobel",move
+type-customer,"Aldi",move
+type-project-root,"Aldi - Performance Review 3 - November 2015",move
+type-customer,"Arco",move
+type-project-root,"Arco - Design review - December 2015",move
+type-customer,"Arsenal FC",move
+type-project-root,"Arsenal FC - Performance Review - August 2016",move
+type-customer,"BAT",move
+type-customer,"BHS",move
+type-customer,"Burberry",migrationcheck-type-customer
+type-customer,"Capita",migrationcheck-type-customer
+type-project-root,"Capita - May 2016 - Design Review",migrationcheck-type-project-root
+type-customer,"Carphone Warehouse (Dixons Carphone)",migrationcheck-type-customer
+type-customer,"Clarks",migrationcheck-type-customer
+type-customer,"Dansk Supermarked",migrationcheck-type-customer
+type-customer,"Dr Martens",migrationcheck-type-customer
+type-customer,"Dyson",migrationcheck-type-customer
+type-project-root,"Dyson - Promotions",migrationcheck-type-project-root
+type-customer,"EE (Everything Everywhere)",migrationcheck-type-customer
+type-customer,"Electrolux",migrationcheck-type-customer
+type-customer,"G-Star",migrationcheck-type-customer
+type-customer,"GSK",migrationcheck-type-customer
+type-project-root,"GSK North America",migrationcheck-type-project-root
+type-project-root,"GSK UK",migrationcheck-type-project-root
+type-customer,"Goodyear",migrationcheck-type-customer
+type-customer,"Grandvision",migrationcheck-type-customer
+type-customer,"Grundfos",migrationcheck-type-customer
+type-project-root,"Grundfos - Performance Review",migrationcheck-type-project-root
+type-project-root,"Grundfos - Rolling update deployment",migrationcheck-type-project-root
+type-project-root,"Grundfos - full indexing optimization",migrationcheck-type-project-root
+type-customer,"H&M Global Expansion (GOEP)",migrationcheck-type-customer
+type-project-root,"GOEP Development setup",migrationcheck-type-project-root
+type-project-root,"H&M - Appeaser",migrationcheck-type-project-root
+type-project-root,"H&M - Initiatives",migrationcheck-type-project-root
+type-customer,"Heineken EU",migrationcheck-type-customer
+type-customer,"Heineken International",migrationcheck-type-customer
+type-customer,"House of Fraser",migrationcheck-type-customer
+type-customer,"Iceland",migrationcheck-type-customer
+type-customer,"JD Williams",migrationcheck-type-customer
+type-project-root,"JD Williams - 2015 - Fit 4 Future - Europe",migrationcheck-type-project-root
+type-project-root,"JD Williams - 2016 - Fit 4 Future - US",migrationcheck-type-project-root
+type-customer,"Joules",migrationcheck-type-customer
+type-customer,"Maplin",migrationcheck-type-customer
+type-customer,"Matches Fashion",migrationcheck-type-customer
+type-project-root,"MF - Reading text content from props",migrationcheck-type-project-root
+type-project-root,"Matches Fashion - PLP Design Review",migrationcheck-type-project-root
+type-project-root,"Matches Fashion - System Update loading props table into memory - February 2016",migrationcheck-type-project-root
+type-customer,"Maxeda",migrationcheck-type-customer
+type-customer,"Monsoon",migrationcheck-type-customer
+type-customer,"MyDeposits",migrationcheck-type-customer
+type-project-root,"MyDeposits - Escalation - March 2016",migrationcheck-type-project-root
+type-customer,"Nestle'",migrationcheck-type-customer
+type-project-root,"Nestle' Waters North America (NWNA)",migrationcheck-type-project-root
+type-customer,"New Look",migrationcheck-type-customer
+type-project-root,"New Look B2B",migrationcheck-type-project-root
+type-project-root,"New Look DPP",migrationcheck-type-project-root
+type-customer,"Nokian Tyres",migrationcheck-type-customer
+type-customer,"Off Oracle",migrationcheck-type-customer
+type-project-root,"Off Oracle - Sizing and Failover Tests - November 2016",migrationcheck-type-project-root
+type-project-root,"Off Oracle - Datahub with HANA - January 2017",migrationcheck-type-project-root
+type-project-root,"HANA Studio Eclipse Plugin",migrationcheck-type-project-root
+type-customer,"Office Depot",migrationcheck-type-customer
+type-customer,"Oriola",migrationcheck-type-customer
+type-customer,"P&O Ferries",migrationcheck-type-customer
+type-customer,"Papyrus",migrationcheck-type-customer
+type-customer,"Philips Health-tech",migrationcheck-type-customer
+type-project-root,"Philips HealthTech support 2017-2018",migrationcheck-type-project-root
+type-project-root,"Philips HealthTech support < 2017",migrationcheck-type-project-root
+type-customer,"Pon Tyre",migrationcheck-type-customer
+type-customer,"Rapha",migrationcheck-type-customer
+type-project-root,"Rapha - System Review - June 2015",migrationcheck-type-project-root
+type-customer,"Reckitt Benckiser",migrationcheck-type-customer
+type-customer,"Sainsbury's",migrationcheck-type-customer
+type-project-root,"Sainsbury Dynatrace",migrationcheck-type-project-root
+type-project-root,"Sainsbury's High Response Time and Errors - November 2015",migrationcheck-type-project-root
+type-customer,"Shell - Overall",migrationcheck-type-customer
+type-project-root,"Shell - Downstream Projects",migrationcheck-type-project-root
+type-customer,"Smyths Toys",migrationcheck-type-customer
+type-customer,"Sony Computer Entertainment (SCE)",migrationcheck-type-customer
+type-project-root,"SCE - MOLT - 2016",migrationcheck-type-project-root
+type-customer,"Sony Mobile",migrationcheck-type-customer
+type-customer,"TK Maxx (TJX)",migrationcheck-type-customer
+type-project-root,"TK Maxx (TJX Europe) - System Review - June 2016",migrationcheck-type-project-root
+type-customer,"TUI",migrationcheck-type-customer
+type-customer,"Tata Steel",migrationcheck-type-customer
+type-customer,"Ted Baker",migrationcheck-type-customer
+type-project-root,"Ted Baker - Code Review - April 2016",migrationcheck-type-project-root
+type-customer,"TetraPak",migrationcheck-type-customer
+type-customer,"The Body Shop",migrationcheck-type-customer
+type-project-root,"The Body Shop - Code Review - January 2016",migrationcheck-type-project-root
+type-customer,"Thomas Pink",migrationcheck-type-customer
+type-project-root,"Thomas Pink - System Review - September 2015",migrationcheck-type-project-root
+type-customer,"Travelopia (ex TUI Specialist Holiday Group)",migrationcheck-type-customer
+type-customer,"Travis Perkins",migrationcheck-type-customer
+type-customer,"Unilever",migrationcheck-type-customer
+type-customer,"VW UK (Volkswagen UK)",migrationcheck-type-customer
+type-project-root,"VW UK - Code Review - December 2016/February 2017",migrationcheck-type-project-root
+type-customer,"(Y-CH-ABB) ABB SE",migrationcheck-type-customer
+type-customer,"(Y-CH-BOBST) Bobst Mex SA B2B",migrationcheck-type-customer
+type-customer,"(Y-CH-DISTRELEC) Distrelec AG/Daetwyler",migrationcheck-type-customer
+type-customer,"(Y-CH-MANOR) Manor AG B2C",migrationcheck-type-customer
+type-project-root,"Manor Project & Activities",migrationcheck-type-project-root
+type-customer,"(Y-CH-METTLER-TOLEDO) Mettler-Toledo (Schweiz) GmbH",migrationcheck-type-customer
+type-customer,"(Y-CH-SCOTT) SCOTT Sports SA",migrationcheck-type-customer
+type-customer,"A1 Telekom Austria Group",migrationcheck-type-customer
+type-customer,"AIDA",migrationcheck-type-customer
+type-customer,"ALDI Nord",migrationcheck-type-customer
+type-customer,"ANWR Group EG",migrationcheck-type-customer
+type-customer,"AOK",migrationcheck-type-customer
+type-customer,"AVL List GmbH",migrationcheck-type-customer
+type-customer,"Apollo-Optik",migrationcheck-type-customer
+type-customer,"B. Braun Melsungen AG",migrationcheck-type-customer
+type-customer,"BSH",migrationcheck-type-customer
+type-customer,"Bauerfeind AG",migrationcheck-type-customer
+type-customer,"Baywa RWA (Baustoffe)",migrationcheck-type-customer
+type-customer,"Bechtle",migrationcheck-type-customer
+type-customer,"Belimo",migrationcheck-type-customer
+type-customer,"Berner SE",migrationcheck-type-customer
+type-customer,"Bosch China Loyalty",migrationcheck-type-customer
+type-customer,"Bürklin (Tanner)",migrationcheck-type-customer
+type-customer,"CHRIST Juweliere & Uhrmacher seit 1863 GmbH",migrationcheck-type-customer
+type-customer,"Daimler AG",migrationcheck-type-customer
+type-customer,"Douglas Parfümerie GmbH",migrationcheck-type-customer
+type-customer,"Dänisches Bettenlager",migrationcheck-type-customer
+type-customer,"FC Bayern München",migrationcheck-type-customer
+type-customer,"Fresenius Kabi / Netcare",migrationcheck-type-customer
+type-project-root,"Fresenius Kabi Project Documentation",migrationcheck-type-project-root
+type-customer,"Fressnapf Tiernahrungs GmbH",migrationcheck-type-customer
+type-customer,"Grohe AG",migrationcheck-type-customer
+type-customer,"Haba + Jako-o",migrationcheck-type-customer
+type-customer,"Henkel AG",migrationcheck-type-customer
+type-customer,"Hilti AG",migrationcheck-type-customer
+type-customer,"Hoffmann-Group",migrationcheck-type-customer
+type-customer,"Kaufland Informationssysteme",migrationcheck-type-customer
+type-project-root,"Proof of Concept (Part 1): hybris 5.6 - ESB - SAP integration",migrationcheck-type-project-root
+type-customer,"Klingel Gruppe (K-Lifestyle / Schneider Versand GmbH / Creatrade)",migrationcheck-type-customer
+type-customer,"Klöckner",migrationcheck-type-customer
+type-customer,"Knorr Bremse IT-Services GmbH (Commerce & C4C)",migrationcheck-type-customer
+type-customer,"Krones AG",migrationcheck-type-customer
+type-customer,"LIDL Stiftung Project ""Handelsware" (HW US, EU, etc) & "Coaching Anwendungsentwicklung"",migrationcheck-type-customer
+type-project-root,"Architecture Overview",migrationcheck-type-project-root
+type-customer,"LIDL Stiftung Project ""Nicht Handelsware" (NHW)",migrationcheck-type-customer
+type-project-root,"Lidl NHW architecture",migrationcheck-type-project-root
+type-customer,"LOESCHE GmbH",migrationcheck-type-customer
+type-customer,"Libro",migrationcheck-type-customer
+type-customer,"Lidl eCommerce International",migrationcheck-type-customer
+type-project-root,"Lidl Performance Improvements",migrationcheck-type-project-root
+type-customer,"MAHLE international",migrationcheck-type-customer
+type-customer,"Messe Düsseldorf",migrationcheck-type-customer
+type-customer,"Ottobock AG",migrationcheck-type-customer
+type-project-root,"Otto-Bock project notes",migrationcheck-type-project-root
+type-customer,"Palfinger AG, Salzburg",migrationcheck-type-customer
+type-customer,"Porsche AG",migrationcheck-type-customer
+type-project-root,"Porsche Project Documentation",migrationcheck-type-project-root
+type-customer,"Remmers",migrationcheck-type-customer
+type-customer,"Roller GmbH & Co. KG",migrationcheck-type-customer
+type-project-root,"Roller Project Documentation",migrationcheck-type-project-root
+type-customer,"SCHOTT AG",migrationcheck-type-customer
+type-customer,"Schaeffler",migrationcheck-type-customer
+type-customer,"Schlüter Systems KG",migrationcheck-type-customer
+type-customer,"Siemens Healthcare (Healthineers)",migrationcheck-type-customer
+type-customer,"Sonova Holding AG / Phonak Communications AG",migrationcheck-type-customer
+type-customer,"Spar Österreichische Warenhandels AG",migrationcheck-type-customer
+type-customer,"Testo AG",migrationcheck-type-customer
+type-customer,"ThyssenKrupp AG",migrationcheck-type-customer
+type-customer,"Transgourmet",migrationcheck-type-customer
+type-customer,"Triumph",migrationcheck-type-customer
+type-customer,"TÜV Rheinland",migrationcheck-type-customer
+type-customer,"Ulla Popken",migrationcheck-type-customer
+type-customer,"Versandapotheke DocMorris",migrationcheck-type-customer
+type-customer,"Volkswagen Zubehör",migrationcheck-type-customer
+type-customer,"WAGO Kontakttechnik GmbH & Co. KG",migrationcheck-type-customer
+type-customer,"Wacker Chemie AG",migrationcheck-type-customer
+type-customer,"Walbusch",migrationcheck-type-customer
+type-customer,"Weishaupt",migrationcheck-type-customer
+type-customer,"Westfalen AG",migrationcheck-type-customer
+type-customer,"XXXLutz",migrationcheck-type-customer
+type-customer,"hagebau",migrationcheck-type-customer
+type-customer,"ifm electronic GmbH",migrationcheck-type-customer
+type-customer,"real,- SB-Warenhaus GmbH",migrationcheck-type-customer
+type-customer,"zooplus AG",migrationcheck-type-customer
+type-project-root,"Zooplus / Bitiba Project Documentation",migrationcheck-type-project-root
+type-customer,"Azbuka Vkusa",migrationcheck-type-customer
+type-customer,"Belwest",migrationcheck-type-customer
+type-project-root,"Belwest. 2017 trainings session",migrationcheck-type-project-root
+type-customer,"Bosch",migrationcheck-type-customer
+type-customer,"Eldorado",migrationcheck-type-customer
+type-customer,"Foxtrot",migrationcheck-type-customer
+type-customer,"Gloria Jeans",migrationcheck-type-customer
+type-customer,"Gorenje",migrationcheck-type-customer
+type-project-root,"2016.12 - Gorenje HLD",migrationcheck-type-project-root
+type-project-root,"GOR - Meetings",migrationcheck-type-project-root
+type-customer,"Intercars",migrationcheck-type-customer
+type-project-root,"Intercars - 2016-04-22 - PoC",migrationcheck-type-project-root
+type-project-root,"Intercars - 2016-10 - design review",migrationcheck-type-project-root
+type-project-root,"Intercars - 2016-11 - Multi-country PCM",migrationcheck-type-project-root
+type-customer,"P4 (Play)",migrationcheck-type-customer
+type-project-root,"2016-05-10 P4 (Play) - restart",migrationcheck-type-project-root
+type-customer,"Polkomtel (Plus + Cyfrowy Polsat)",migrationcheck-type-customer
+type-customer,"Rive Gauche",migrationcheck-type-customer
+type-customer,"Severstal (NorthSteel)",migrationcheck-type-customer
+type-customer,"Technosila",migrationcheck-type-customer
+type-customer,"Telekom Slovenije",migrationcheck-type-customer
+type-customer,"Telekom Srbija MTS",migrationcheck-type-customer
+type-customer,"Amway",migrationcheck-type-customer
+type-project-root,"Amway Americas - Implementation Reviews Kickoff Meeting Notes",migrationcheck-type-project-root
+type-project-root,"Amway EIA",migrationcheck-type-project-root
+type-project-root,"Amway India",migrationcheck-type-project-root
+type-customer,"Aramark",migrationcheck-type-customer
+type-customer,"Cargill Salt",migrationcheck-type-customer
+type-customer,"Cintas eService",migrationcheck-type-customer
+type-project-root,"Cintas eService Design Review - Sprint 1 & 2",migrationcheck-type-project-root
+type-project-root,"Final eService Design Review",migrationcheck-type-project-root
+type-customer,"Costco",migrationcheck-type-customer
+type-customer,"Discount Tire",migrationcheck-type-customer
+type-customer,"Dow Corning",migrationcheck-type-customer
+type-project-root,"CxTP System Review",migrationcheck-type-project-root
+type-project-root,"Dow Corning CXTP System Review Notes",migrationcheck-type-project-root
+type-customer,"Experian Automotive",migrationcheck-type-customer
+type-customer,"Footlocker",migrationcheck-type-customer
+type-project-root,"Footlocker Multicountry",migrationcheck-type-project-root
+type-customer,"Heritage",migrationcheck-type-customer
+type-project-root,"Go-Live -- Heritage Upgrade",migrationcheck-type-project-root
+type-project-root,"Heritage ASM & Microsite Discovery",migrationcheck-type-project-root
+type-project-root,"Upgrade Procedure for Heritage Technical Upgrade",migrationcheck-type-project-root
+type-customer,"Heritage Parts Canada",migrationcheck-type-customer
+type-customer,"Hobby Lobby",migrationcheck-type-customer
+type-project-root,"Hobby Lobby Upgrade",migrationcheck-type-project-root
+type-customer,"Jafra",migrationcheck-type-customer
+type-project-root,"Jafra - Code Reviews",migrationcheck-type-project-root
+type-customer,"Kerry Foods",migrationcheck-type-customer
+type-customer,"Kit and Ace",migrationcheck-type-customer
+type-project-root,"Kit and Ace - Implementation Review - December 2016",migrationcheck-type-project-root
+type-customer,"Levi's",migrationcheck-type-customer
+type-customer,"Lids - PS",migrationcheck-type-customer
+type-project-root,"Lids - Hybris Mobile API",migrationcheck-type-project-root
+type-project-root,"Lids Access Pass",migrationcheck-type-project-root
+type-project-root,"Lids Performance Testing - BTG quick wins impact analysis - December 2016",migrationcheck-type-project-root
+type-customer,"Liquidation Channel",migrationcheck-type-customer
+type-customer,"Loblaw",migrationcheck-type-customer
+type-project-root,"Loblaw Grocery Click & Collect",migrationcheck-type-project-root
+type-customer,"Maui Jim",migrationcheck-type-customer
+type-project-root,"Maui Jim 2017 Planning",migrationcheck-type-project-root
+type-project-root,"Maui Jim B2C",migrationcheck-type-project-root
+type-project-root,"Maui Jim Uber Rush Pilot (Wiki Wiki)",migrationcheck-type-project-root
+type-customer,"McKesson",migrationcheck-type-customer
+type-customer,"Meyers",migrationcheck-type-customer
+type-customer,"Mohawk",migrationcheck-type-customer
+type-customer,"Pep Boys",migrationcheck-type-customer
+type-customer,"Procter and Gamble",migrationcheck-type-customer
+type-customer,"Ralph Lauren",migrationcheck-type-customer
+type-customer,"Rodan and Fields",migrationcheck-type-customer
+type-customer,"Signet",migrationcheck-type-customer
+type-project-root,"Signet Code Review Iteration 2",migrationcheck-type-project-root
+type-project-root,"Signet Code Review Phase 1",migrationcheck-type-project-root
+type-customer,"Sinclair Dental",migrationcheck-type-customer
+type-project-root,"Sinclair Dental - Code Reviews",migrationcheck-type-project-root
+type-customer,"Texas Instruments",migrationcheck-type-customer
+type-customer,"Trek",migrationcheck-type-customer
+type-project-root,"Capabilities Workshop June 15-17 2015",migrationcheck-type-project-root
+type-project-root,"Trek Architecture Workshop August 2016",migrationcheck-type-project-root
+type-customer,"West Marine",migrationcheck-type-customer
+type-customer,"Zoetis",migrationcheck-type-customer
+type-customer,"Auckland Council - Online Platform",migrationcheck-type-customer
+type-customer,"BGW",migrationcheck-type-customer
+type-customer,"Ballance Agri",migrationcheck-type-customer
+type-project-root,"Ballance - OMNI",migrationcheck-type-project-root
+type-customer,"DHS",migrationcheck-type-customer
+type-project-root,"DHS NDIS",migrationcheck-type-project-root
+type-customer,"Dulux",migrationcheck-type-customer
+type-project-root,"Reviews",migrationcheck-type-project-root
+type-customer,"Fantastic Holdings - Fantastic Furniture eCommerce Website",migrationcheck-type-customer
+type-customer,"Fisher & Paykel",migrationcheck-type-customer
+type-customer,"FoodStuffs SI",migrationcheck-type-customer
+type-customer,"Frucor",migrationcheck-type-customer
+type-project-root,"Frucor DS4G Project",migrationcheck-type-project-root
+type-customer,"HCEA",migrationcheck-type-customer
+type-project-root,"HCEA Reviews",migrationcheck-type-project-root
+type-customer,"Lion",migrationcheck-type-customer
+type-project-root,"Lion Project Gretzsky",migrationcheck-type-project-root
+type-customer,"MITRE10 NZ",migrationcheck-type-customer
+type-project-root,"M10 NZ  Omni Programme Landing",migrationcheck-type-project-root
+type-customer,"Metcash",migrationcheck-type-customer
+type-customer,"Qantas - Epicure",migrationcheck-type-customer
+type-customer,"SFG-Ecommerce B2C",migrationcheck-type-customer
+type-customer,"Spotlight",migrationcheck-type-customer
+type-customer,"Target",migrationcheck-type-customer
+type-customer,"Woolworths",migrationcheck-type-customer
+type-project-root,"Woolworths - BigW",migrationcheck-type-project-root
+type-customer,"Best Seller",migrationcheck-type-customer
+type-customer,"Century Ginwa",migrationcheck-type-customer
+type-project-root,"Ginwa For Bluesea Interface Specification",migrationcheck-type-project-root
+type-customer,"China Express Air",migrationcheck-type-customer
+type-customer,"DaShang",migrationcheck-type-customer
+type-customer,"HKTV",migrationcheck-type-customer
+type-customer,"HuiTongDa",migrationcheck-type-customer
+type-customer,"Li Ning",migrationcheck-type-customer
+type-customer,"Microsoft",migrationcheck-type-customer
+type-customer,"Nippon (Icolor)",migrationcheck-type-customer
+type-customer,"Project: PCCW Marketplace",migrationcheck-type-customer
+type-customer,"Shanghai Weida",migrationcheck-type-customer
+type-customer,"Testrite Taiwan",migrationcheck-type-customer
+type-customer,"Asian Paints (APL)",migrationcheck-type-customer
+type-project-root,"APL Deployment Architecture",migrationcheck-type-project-root
+type-customer,"Infiniti Retail - Cromā",migrationcheck-type-customer
+type-customer,"Reliance F&L",migrationcheck-type-customer
+type-customer,"Shoppers Stop",migrationcheck-type-customer
+type-project-root,"Shoppers stop - Escalation - Review report",migrationcheck-type-project-root
+type-customer,"TUL (TataCliq)- Tata Unistore Limited",migrationcheck-type-customer
+type-project-root,"TUL Action Plan",migrationcheck-type-project-root
+type-project-root,"TUL Engagement Dec 2015",migrationcheck-type-project-root
+type-project-root,"TUL Go Live Support",migrationcheck-type-project-root
+type-project-root,"TUL OMS Cluster Plan",migrationcheck-type-project-root
+type-project-root,"TUL OMS Cluster Setup",migrationcheck-type-project-root
+type-project-root,"TUL Production Issue",migrationcheck-type-project-root
+type-project-root,"TUL Reviews",migrationcheck-type-project-root
+type-customer,"Unilever B2C (UNL)",migrationcheck-type-customer
+type-project-root,"Infrastructure Details",migrationcheck-type-project-root
+type-project-root,"UL System Review",migrationcheck-type-project-root
+type-project-root,"Unilever Technical Issues",migrationcheck-type-project-root
+type-customer,"WELSPUN",migrationcheck-type-customer
+type-project-root,"SAP PI VS DataHub for Hybris Integration",migrationcheck-type-project-root
+type-project-root,"Welspun B2B Solution Architecture",migrationcheck-type-project-root
+type-project-root,"Welspun B2C sizing",migrationcheck-type-project-root
+type-customer,"Samsung",migrationcheck-type-customer
+type-project-root,"Project: Samsung Electronics",migrationcheck-type-project-root
+type-project-root,"Samsung - Hotel Shilla - eStore",migrationcheck-type-project-root
+type-project-root,"Samsung - Hybris Marketing",migrationcheck-type-project-root
+type-customer,"Cerebos Singapore",migrationcheck-type-customer
+type-project-root,"Cerebos Production Support",migrationcheck-type-project-root
+type-project-root,"Cerebos - Support before Go Live",migrationcheck-type-project-root
+type-project-root,"Cerebos - Expert Services Activities followup",migrationcheck-type-project-root
+type-project-root,"Cerebos - Project Description",migrationcheck-type-project-root
+type-customer,"DFS",migrationcheck-type-customer
+type-customer,"Hyflux",migrationcheck-type-customer
+type-customer,"VinCommerce - SAI Digital",migrationcheck-type-customer
+type-customer,"Auchan (ES)",migrationcheck-type-customer
+type-project-root,"Auchan ES support 2016",migrationcheck-type-project-root
+type-customer,"EasyJet",migrationcheck-type-customer
+type-customer,"ExxonMobil",migrationcheck-type-customer
+type-customer,"Travis Perkins (ES)",migrationcheck-type-customer
+type-customer,"Lenovo",migrationcheck-type-customer
+type-project-root,"LENOVO - US Deployment - Engagement August 2016",migrationcheck-type-project-root
+type-customer,"AS Watson - Worldwide overview",migrationcheck-type-customer
+type-project-root,"AS Watson - Context details",migrationcheck-type-project-root
+type-project-root,"AS Watson support - 2016",migrationcheck-type-project-root
+type-project-root,"yCommerce sites in AS Watson group",migrationcheck-type-project-root
+type-customer,"Ahold Delhaize Group",migrationcheck-type-customer
+type-project-root,"Delhaize - Who is Who",migrationcheck-type-project-root
+type-project-root,"Delhaize 2015",migrationcheck-type-project-root
+type-project-root,"Delhaize 2016",migrationcheck-type-project-root
+type-project-root,"Delhaize 2017",migrationcheck-type-project-root
+type-customer,"Kering",migrationcheck-type-customer
+type-project-root,"Expected support for 2017",migrationcheck-type-project-root
+type-project-root,"Who's who Kering",migrationcheck-type-project-root
+type-customer,"Balta Group",migrationcheck-type-customer
+type-project-root,"Balta - Contact List",migrationcheck-type-project-root
+type-customer,"Carrefour Belgium",migrationcheck-type-customer
+type-project-root,"Carrefour Belgium - Contacts",migrationcheck-type-project-root
+type-project-root,"Carrefour Belgium - Food Project",migrationcheck-type-project-root
+type-project-root,"Carrefour Belgium - Non food project",migrationcheck-type-project-root
+type-customer,"Euronics",migrationcheck-type-customer
+type-customer,"Krefel",migrationcheck-type-customer
+type-project-root,"Krefel - Environmment Access",migrationcheck-type-project-root
+type-project-root,"Krefel - Who is who",migrationcheck-type-project-root
+type-customer,"Levis",migrationcheck-type-customer
+type-project-root,"Levis B2B Europe",migrationcheck-type-project-root
+type-customer,"Aubert",migrationcheck-type-customer
+type-customer,"Auchan",migrationcheck-type-customer
+type-project-root,"Auchan - eFood",migrationcheck-type-project-root
+type-project-root,"Aushopping",migrationcheck-type-project-root
+type-customer,"Beaumanoir Group",migrationcheck-type-customer
+type-customer,"Camaieu international",migrationcheck-type-customer
+type-customer,"Carrefour France (Drive)",migrationcheck-type-customer
+type-project-root,"Carrefour France (Drive) - Contact List",migrationcheck-type-project-root
+type-project-root,"Carrefour France (Drive) - Environments",migrationcheck-type-project-root
+type-customer,"Celio",migrationcheck-type-customer
+type-customer,"CGR",migrationcheck-type-customer
+type-project-root,"CGR - 2016-09-19 - Emergency Incident Response",migrationcheck-type-project-root
+type-customer,"Chanel",migrationcheck-type-customer
+type-project-root,"Chanel Parfums & Beauté (Fragrance & Beauty)",migrationcheck-type-project-root
+type-project-root,"Chanel Montres & Fine Joaillerie (Watches & Finest Jewellery)",migrationcheck-type-project-root
+type-project-root,"Chanel ONE",migrationcheck-type-project-root
+type-project-root,"Chanel Mode (Fashion)",migrationcheck-type-project-root
+type-customer,"Conforama",migrationcheck-type-customer
+type-project-root,"CONFO - Environment",migrationcheck-type-project-root
+type-project-root,"Conforama.fr",migrationcheck-type-project-root
+type-project-root,"Conforama.ch",migrationcheck-type-project-root
+type-customer,"Galeries Lafayette",migrationcheck-type-customer
+type-customer,"Groupe Rocher",migrationcheck-type-customer
+type-project-root,"Yves Rocher",migrationcheck-type-project-root
+type-customer,"Groupe SEB",migrationcheck-type-customer
+type-project-root,"SEB & SHARE",migrationcheck-type-project-root
+type-project-root,"SEB - Digital Ready",migrationcheck-type-project-root
+type-customer,"Interflora",migrationcheck-type-customer
+type-customer,"Intersport",migrationcheck-type-customer
+type-customer,"IPH-Orexad",migrationcheck-type-customer
+type-customer,"Jacadi",migrationcheck-type-customer
+type-project-root,"Jacadi - Consulting Interventions",migrationcheck-type-project-root
+type-customer,"L'Oreal",migrationcheck-type-customer
+type-project-root,"L'OREAL - OPERA GLOBAL PCM",migrationcheck-type-project-root
+type-customer,"La Poste",migrationcheck-type-customer
+type-project-root,"La Poste - eBoutique",migrationcheck-type-project-root
+type-customer,"Moet Hennessy",migrationcheck-type-customer
+type-project-root,"Week 31 @ Moet-Hennessy: Report",migrationcheck-type-project-root
+type-customer,"Point P",migrationcheck-type-customer
+type-project-root,"OUTIZ",migrationcheck-type-project-root
+type-project-root,"PUM PLASTIQUES",migrationcheck-type-project-root
+type-customer,"Printemps",migrationcheck-type-customer
+type-project-root,"Printemps - printemps.com",migrationcheck-type-project-root
+type-customer,"Rexel Group",migrationcheck-type-customer
+type-project-root,"Rexel - Who is who",migrationcheck-type-project-root
+type-project-root,"Rexel - Support",migrationcheck-type-project-root
+type-customer,"Saint Gobain Group",migrationcheck-type-customer
+type-customer,"Big+",migrationcheck-type-customer
+type-project-root,"Big+ - Accesses",migrationcheck-type-project-root
+type-project-root,"BIG+ - 20161222 - Code Review",migrationcheck-type-project-root
+type-customer,"Shufersal",migrationcheck-type-customer
+type-project-root,"Shufersal - Capability Workshops",migrationcheck-type-project-root
+type-project-root,"Shufersal - Project Management",migrationcheck-type-project-root
+type-customer,"Super-Pharm",migrationcheck-type-customer
+type-customer,"ACEA",migrationcheck-type-customer
+type-customer,"Gucci Spa",migrationcheck-type-customer
+type-customer,"Italian Touch",migrationcheck-type-customer
+type-customer,"Max Mara BtoC project",migrationcheck-type-customer
+type-customer,"Adveo",migrationcheck-type-customer
+type-customer,"Alcampo",migrationcheck-type-customer
+type-project-root,"Alcampo Migration Assessment - Report",migrationcheck-type-project-root
+type-customer,"DIA%",migrationcheck-type-customer
+type-customer,"Lecta - Torras Papel",migrationcheck-type-customer
+type-project-root,"Lecta - Torras Papel - SAP Hybris Commerce Licence contract",migrationcheck-type-project-root
+type-project-root,"Lecta - Torras Papel - Business Blueprint - Architecture Workshop",migrationcheck-type-project-root
+type-customer,"Tous",migrationcheck-type-customer
+type-customer,"Arcelik A.S",migrationcheck-type-customer
+type-customer,"Avansas",migrationcheck-type-customer
+type-customer,"eBebek",migrationcheck-type-customer
+type-project-root,"eBebek - Sizing - May 2015",migrationcheck-type-project-root
+type-customer,"LC Waikiki",migrationcheck-type-customer
+type-project-root,"LC Waikiki - Weekly Status Reports",migrationcheck-type-project-root
+type-customer,"SABANCI Group",migrationcheck-type-customer
+type-project-root,"BriSA",migrationcheck-type-project-root
+type-project-root,"CarrefourSA",migrationcheck-type-project-root
+type-project-root,"Teknosa",migrationcheck-type-project-root
+type-customer,"Turkcell - Medyasoft",migrationcheck-type-customer
+type-customer,"Ziylan",migrationcheck-type-customer
+type-project-root,"Ziylan - Foundation Phase",migrationcheck-type-project-root
+type-project-root,"Ziylan - Scoping package - April 2016",migrationcheck-type-project-root
+type-project-root,"Ziylan - Sizing",migrationcheck-type-project-root
+type-customer,"Virgin Megastore",migrationcheck-type-customer
+type-customer,"du",migrationcheck-type-customer
