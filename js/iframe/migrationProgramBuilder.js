@@ -16,7 +16,7 @@ function templateProcessor(customerPageTitle) {
     }, null, customerPageTitle);
 }
 
-import {createPageFromTemplate,copyPageToSpace,movePagesById} from './confluenceAsync';
+import {createPageFromTemplate,copyPageToSpace,movePagesById, getContentById} from './confluenceAsync';
 
 export default async function migrate(rootPageNode) {
     calculateDates(rootPageNode);
@@ -98,19 +98,32 @@ async function migrateNode(node, targetParentId, sourceParentId, onlyCopies, mov
             //await Promise.all(node.children.map(child=>migrateNode(child, copiedPage.id, node.id)));
         }
     } else if (node.action.match(/^move-.*-customer$/)) {
+
+        // if (node.weight > 10) {
+        //     console.log(`Keeping ${node.title} for later since it has ${node.weight} pages`);
+        //     return;
+        // }
         // move it
         // if any child is kept, create a customer page from template
         if (node.treeAction=='move') {
             moveCounter.numMoves++;
             if (!onlyCopies) {
                 console.log(`Moving ${node.title} (${node.weight} pages)`);
-                await movePagesById(node.id, targetSpaceKey, targetParentId);
+                if (await isPageInSpace(node.id,targetSpaceKey)) {
+                    console.log("Not necessary to move as page is already in target space");
+                } else {
+                    await movePagesById(node.id, targetSpaceKey, targetParentId);
+                }
             }
         } else {
             moveCounter.numMoves++;
             if (!onlyCopies) {
                 console.log(`Moving ${node.title} (${node.weight} pages)`);
-                await movePagesById(node.id, targetSpaceKey, targetParentId);
+                if (await isPageInSpace(node.id,targetSpaceKey)) {
+                    console.log("Not necessary to move as page is already in target space");
+                } else {
+                    await movePagesById(node.id, targetSpaceKey, targetParentId);
+                } 
                 console.log(`Recreating customer page ${node.title} in ${sourceSpaceKey} space`);
                 try {
                     await createPageFromTemplate(sourceSpaceKey,'Migrated Customer Template', sourceSpaceKey, sourceParentId, templateProcessor(node.title));
@@ -149,6 +162,11 @@ async function migrateNode(node, targetParentId, sourceParentId, onlyCopies, mov
     if (!onlyCopies) {
         console.log(`Done migrating ${node.title} and all ${node.weight} pages (treeAction=${node.treeAction})`);
     }
+}
+
+async function isPageInSpace(pageId, spaceKey) {
+    let page = await getContentById(pageId,'space');
+    return page.space.key==spaceKey;
 }
 
 function setTypes(node, counters, parentType, level, parentAction) {
