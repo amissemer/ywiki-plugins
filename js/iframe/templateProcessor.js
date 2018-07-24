@@ -5,7 +5,7 @@ var fixLocalLinksXsl = require('raw-loader!./xslt/fix-local-links.xsl');
 
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 
-export function TemplateProcessor(placeholderReplacements, variantOptions) {
+export function TemplateProcessor(placeholderReplacements, variantOptions, forceTitle) {
 
   var placeholderReplacements = placeholderReplacements;
   var variantOptions = variantOptions; // [ { name : "hosting", value : "ccv2" | "other" } ]
@@ -54,7 +54,9 @@ export function TemplateProcessor(placeholderReplacements, variantOptions) {
           console.warn(varStr + " is not used in template",template);
         }
         var replacementValue = placeholderReplacements[key];
-        if (escapeHtml) {
+        if (typeof replacementValue !== 'string') {
+          replacementValue = replacementValue.value;
+        } else if (escapeHtml) {
           replacementValue = $("<div>").text(replacementValue).html();
         }
         var result = result.split(varStr).join(replacementValue);
@@ -68,7 +70,11 @@ export function TemplateProcessor(placeholderReplacements, variantOptions) {
 
   function replacePlaceholderInPage(page) {
     console.log("Found page to Copy",page);
-    page.title = replacePlaceholders(page.title);
+    if (forceTitle) {
+      page.title = forceTitle;
+    } else {
+      page.title = replacePlaceholders(page.title);
+    }
     console.log("New Title for target page: "+page.title);
     if (typeof placeholderReplacements!=='string') {
       page.body.storage.value = replacePlaceholders(page.body.storage.value, true);
