@@ -157,7 +157,7 @@ export async function createPageUnderPageId(page, targetSpaceKey, targetPageId) 
 }
 
 export async function postPage(page) {
-  return singleThroat( async () => await $.ajax(
+  return await singleThroat( async () => await $.ajax(
     {
       url: '/rest/api/content',
       type: 'POST',
@@ -168,7 +168,7 @@ export async function postPage(page) {
 }
 
 export async function updateContent(page) {
-  return singleThroat( async () => await $.ajax(
+  return await singleThroat( async () => await $.ajax(
     {
       url: '/rest/api/content/'+encodeURIComponent(page.id),
       type: 'PUT',
