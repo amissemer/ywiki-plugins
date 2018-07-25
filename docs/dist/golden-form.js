@@ -1344,7 +1344,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _common_optionsParser__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../common/optionsParser */ "./js/common/optionsParser.js");
-/* harmony import */ var _common_config_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../common/config.js */ "./js/common/config.js");
+/* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
 /* harmony import */ var _templateProcessor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./templateProcessor */ "./js/iframe/templateProcessor.js");
 
 
@@ -1388,24 +1388,24 @@ optionsPromise.then(function (options) { console.log("yWiki Options: ",options);
 
 function postProcessOptions() {
 	// set defaults for missing options
-	options.projectDocumentationRootPage = options.projectDocumentationRootPage || _common_config_js__WEBPACK_IMPORTED_MODULE_4__["DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE"];
-	options.customerPageTemplate = options.customerPageTemplate || _common_config_js__WEBPACK_IMPORTED_MODULE_4__["DEFAULT_CUSTOMER_PAGE_TEMPLATE"];
+	options.projectDocumentationRootPage = options.projectDocumentationRootPage || _common_config__WEBPACK_IMPORTED_MODULE_4__["DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE"];
+	options.customerPageTemplate = options.customerPageTemplate || _common_config__WEBPACK_IMPORTED_MODULE_4__["DEFAULT_CUSTOMER_PAGE_TEMPLATE"];
 	options.openInNewTab= !!options.openInNewTab;
 	options.targetSpace = options.targetSpace || options.currentSpaceKey;
 	return options;
 }
 
 function savePreferredRegion(region) {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_1__["localStorageSetItem"](_common_config_js__WEBPACK_IMPORTED_MODULE_4__["PREFIX"]+_common_config_js__WEBPACK_IMPORTED_MODULE_4__["PREFERRED_REGION_KEY"],region);
+  return _proxyService__WEBPACK_IMPORTED_MODULE_1__["localStorageSetItem"](_common_config__WEBPACK_IMPORTED_MODULE_4__["PREFIX"]+_common_config__WEBPACK_IMPORTED_MODULE_4__["PREFERRED_REGION_KEY"],region);
 }
 /** returns a promise for the region name (the region is typed as a simple String) */
 function getPreferredRegion() {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_1__["localStorageGetItem"](_common_config_js__WEBPACK_IMPORTED_MODULE_4__["PREFIX"]+_common_config_js__WEBPACK_IMPORTED_MODULE_4__["PREFERRED_REGION_KEY"])
+  return _proxyService__WEBPACK_IMPORTED_MODULE_1__["localStorageGetItem"](_common_config__WEBPACK_IMPORTED_MODULE_4__["PREFIX"]+_common_config__WEBPACK_IMPORTED_MODULE_4__["PREFERRED_REGION_KEY"])
 }
 
 /** returns a promise for 3 params, the list of region names, the map of consultant regions in the form { email:regionName, email:regionName }, and the preferred region name */
 function getDeliveryRegionSettings() {
-  var dataPage = _common_config_js__WEBPACK_IMPORTED_MODULE_4__["CISTATS_DATA_PAGE"];
+  var dataPage = _common_config__WEBPACK_IMPORTED_MODULE_4__["CISTATS_DATA_PAGE"];
   return withOption("targetSpace")
     .then(function(targetSpace) { return _confluenceService__WEBPACK_IMPORTED_MODULE_0__["getContent"](targetSpace, dataPage);})
     .then(function (page) {
@@ -1476,7 +1476,7 @@ function filterTitlesFromResults(pageResults) {
 function endCopyProcess(copiedPages) {
   var workspaceURL = '/pages/viewpage.action?pageId='+copiedPages[0].id;
   var delay = 0;
-  if (copiedPages.length==1) delay = _common_config_js__WEBPACK_IMPORTED_MODULE_4__["SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY"];// add a delay when only a single page was copied, for ESPLM-846
+  if (copiedPages.length==1) delay = _common_config__WEBPACK_IMPORTED_MODULE_4__["SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY"];// add a delay when only a single page was copied, for ESPLM-846
   setTimeout(function() { _proxyService__WEBPACK_IMPORTED_MODULE_1__["redirect"](workspaceURL); }, delay);
 }
 
@@ -1606,7 +1606,7 @@ function getRegions(spaceKey, projectDocumentationRootPage) {
                 });
               }
           });
-          return _confluenceService__WEBPACK_IMPORTED_MODULE_0__["searchPagesWithCQL"](spaceKey, "label!='project-documentation-pages' AND "+parentQuery(regionsWithSubRegions), 50);
+          return _confluenceService__WEBPACK_IMPORTED_MODULE_0__["searchPagesWithCQL"](spaceKey, "label='ci-region' AND label!='project-documentation-pages' AND "+parentQuery(regionsWithSubRegions), 50);
         });
     })
     .then(function (regionResults) {

@@ -2,7 +2,7 @@ import * as confluence from './confluenceService'
 import * as proxy from './proxyService';
 import $ from 'jquery';
 import {parseOptions} from '../common/optionsParser';
-import {SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, CISTATS_DATA_PAGE} from '../common/config.js';
+import {SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, CISTATS_DATA_PAGE} from '../common/config';
 import {TemplateProcessor} from './templateProcessor';
 
 var options = parseOptions();
@@ -258,7 +258,7 @@ function getRegions(spaceKey, projectDocumentationRootPage) {
                 });
               }
           });
-          return confluence.searchPagesWithCQL(spaceKey, "label!='project-documentation-pages' AND "+parentQuery(regionsWithSubRegions), 50);
+          return confluence.searchPagesWithCQL(spaceKey, "label='ci-region' AND label!='project-documentation-pages' AND "+parentQuery(regionsWithSubRegions), 50);
         });
     })
     .then(function (regionResults) {
