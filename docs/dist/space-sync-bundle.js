@@ -462,7 +462,10 @@ async function syncPageToSpace(sourcePageId, targetSpaceKey, targetParentId, syn
 }
 
 async function syncAttachmentsToContainer(attachments, targetContainerId) {
-  let synced = await Promise.all( Array.prototype.map.call(attachments.results, attachment => Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_1__["cloneAttachment"])(attachment, targetContainerId) ));
+  const synced = [];
+  for (let attachment of attachments.results) {
+    synced.push(await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_1__["cloneAttachment"])(attachment, targetContainerId) );
+  }
   if (attachments._links.next) {
     console.log("More than 25 attachments, loading next page");
     let nextBatch = await syncAttachmentsToContainer(await $.get(attachments._links.next), targetContainerId);

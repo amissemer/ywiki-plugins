@@ -19,7 +19,10 @@ export async function syncPageToSpace(sourcePageId, targetSpaceKey, targetParent
 }
 
 async function syncAttachmentsToContainer(attachments, targetContainerId) {
-  let synced = await Promise.all( Array.prototype.map.call(attachments.results, attachment => cloneAttachment(attachment, targetContainerId) ));
+  const synced = [];
+  for (let attachment of attachments.results) {
+    synced.push(await cloneAttachment(attachment, targetContainerId) );
+  }
   if (attachments._links.next) {
     console.log("More than 25 attachments, loading next page");
     let nextBatch = await syncAttachmentsToContainer(await $.get(attachments._links.next), targetContainerId);
