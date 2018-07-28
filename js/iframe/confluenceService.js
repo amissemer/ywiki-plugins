@@ -143,14 +143,11 @@ export function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
 * Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
 * and do a placeholder replacement the page title using the templateProcessor.
 */
-export function copyPage(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor) {
-  return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage,metadata.labels')
-  .then(function(pageToCopy) {
-    templateProcessor.transformPage(pageToCopy);
+export async function copyPage(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor) {
+  let pageToCopy = await getContent(fromSpaceKey, fromPageTitle, 'space,body.storage,metadata.labels');
+  await templateProcessor.transformPage(pageToCopy);
     // Create the new page under toPageTitle
-    return createPage(pageToCopy,toSpaceKey,toPageTitle);
-  }
-  );
+  return await createPage(pageToCopy,toSpaceKey,toPageTitle);
 }
 
 export function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor, copiedPages) {
@@ -162,24 +159,18 @@ export function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPag
   });
 }
 
-function copyPageRecursiveInternal(sourcePageId, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
-  return getContentById(sourcePageId, 'space,body.storage,children.page,metadata.labels')
-  .then(function (pageToCopy) {
-    if (templateProcessor.isApplicableTemplatePage(pageToCopy)) {
-      templateProcessor.transformPage(pageToCopy);
-
+async function copyPageRecursiveInternal(sourcePageId, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
+  let pageToCopy = await getContentById(sourcePageId, 'space,body.storage,children.page,metadata.labels');
+  if (templateProcessor.isApplicableTemplatePage(pageToCopy)) {
+      await templateProcessor.transformPage(pageToCopy);
       // Create the new page under targetSpaceKey:targetPageId
-      return createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId)
-        .then( function(copiedPage) {
-          copiedPages.push(copiedPage);
-          return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
-        });
-    } else {
+      let copiedPage = await createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId);
+      copiedPages.push(copiedPage);
+      return await copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
+  } else {
       console.log("Page is not a template, not copied, but children will be copied: ",pageToCopy.title);
-      return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
-    }
-
-  })
+      return await copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
+  }
 }
 
 function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {

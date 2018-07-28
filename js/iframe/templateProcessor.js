@@ -80,14 +80,14 @@ export function TemplateProcessor(placeholderReplacements, variantOptions, force
       page.body.storage.value = replacePlaceholders(page.body.storage.value, true);
     }
   }
-  function fixLocalLinks(page) {
-    page.body.storage.value = fixLocalLinksInternal(page.body.storage.value, page.space.key);
+  async function fixLocalLinks(page) {
+    page.body.storage.value = await fixLocalLinksInternal(page.body.storage.value, page.space.key);
   }
   function fixLocalLinksInternal(content, spaceKey) {
     return wikiPageXslt(content, fixLocalLinksXsl.format(spaceKey));
   }
-  function filterVariant(page) {
-    page.body.storage.value = filterVariantInContent(page.body.storage.value);
+  async function filterVariant(page) {
+    page.body.storage.value = await filterVariantInContent(page.body.storage.value);
   }
   /**
    * Processes the content by stripping divbox out when their class attribute value is not relevant to the selected variantOptions.
@@ -111,10 +111,10 @@ export function TemplateProcessor(placeholderReplacements, variantOptions, force
      * Transforms a page a per placeholderReplacements and selected variantOptions
      * /!\ Working through side-effect, directly on the input page.
      */
-    transformPage : function(page) {
+    transformPage : async function(page) {
       replacePlaceholderInPage(page);
-      filterVariant(page);
-      fixLocalLinks(page);
+      await filterVariant(page);
+      await fixLocalLinks(page);
     }
   };
 
