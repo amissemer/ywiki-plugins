@@ -10,4 +10,5 @@ export const PREFERRED_REGION_KEY = "preferred.region";
 export const DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
 export const CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
 export const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
+export const XSLT_ENDPOINT_URL = 'https://bzycrip1eh.execute-api.eu-central-1.amazonaws.com/dev/page/transform';
 // export const WIKI_HOST = 'performancewiki2.hybris.com';

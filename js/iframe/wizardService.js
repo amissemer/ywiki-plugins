@@ -100,8 +100,12 @@ function logCreationWithVersion(version, logToPage, createdPage) {
 				if (bodyContent.indexOf('<ul>')<0) {
 					bodyContent='<ul></ul>';
 				}
-				var logLine = '<li><ac:link><ri:user ri:userkey="[userkey]" /></ac:link> created&nbsp;<ac:link><ri:page ri:content-title="[pagetitle]" /></ac:link> on&nbsp;<time datetime="[date]" />&nbsp;'+versionMsg+'</li>';
-				logLine=logLine.replace('[userkey]',options.currentUserKey).replace('[pagetitle]',createdPage.title).replace('[date]',formattedDate);
+				var logLine = '<li><ac:link><ri:user ri:userkey="[userkey]" /></ac:link> created&nbsp;<ac:link><ri:page ri:space-key="[spaceKey]" ri:content-title="[pagetitle]" /></ac:link> on&nbsp;<time datetime="[date]" />&nbsp;'+versionMsg+'</li>';
+				logLine=logLine
+				  .replace('[userkey]',options.currentUserKey)
+				  .replace('[pagetitle]',createdPage.title)
+				  .replace('[date]',formattedDate)
+				  .replace('[spaceKey]',createdPage.space.key);
 				logPageJson.body.storage.value=bodyContent.replace('</ul>',logLine+'</ul>');
 				logPageJson.version.minorEdit=false;
 				logPageJson.version.number+=1;
