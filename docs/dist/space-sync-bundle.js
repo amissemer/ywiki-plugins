@@ -103,13 +103,18 @@ async function lookupAttachment(containerId, attachmentTitle) {
 
 async function clone(attachmentUrl, targetContainerId, title, /* optional */ targetId) {
     let blobData = await loadBlob(attachmentUrl);
-    let attachment = await storeBlob(targetContainerId, blobData, title, targetId);
+    let attachment = JSON.parse(await storeBlob(targetContainerId, blobData, title, targetId));
     if (attachment.results && attachment.results instanceof Array ) {
         // the attachment API returns an array
-        return attachment.results[0]; 
-    } else {
-        return attachment;
+        attachment = attachment.results[0]; 
+    } 
+    // populate the space.key to save a GET, since we need it to store the sync timestamp
+    if (!attachment.space) {
+        attachment.space = {
+            key: attachment._expandable.space.replace(/.*\//,'')
+        };
     }
+    return attachment;
 }
 
 /** 
@@ -410,6 +415,129 @@ async function getPageTree( pageId, parentId, parentTitle, counter ) {
 
 /***/ }),
 
+/***/ "./js/common/confluence/confluence-properties-async.js":
+/*!*************************************************************!*\
+  !*** ./js/common/confluence/confluence-properties-async.js ***!
+  \*************************************************************/
+/*! exports provided: load, create, update */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "load", function() { return load; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create", function() { return create; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "update", function() { return update; });
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
+
+
+const BASE_URL = '/rest/api/content/';
+
+async function load(contentId, key)  {
+    let url = BASE_URL + `${contentId}/property/${key}`; 
+    return $.get(url);
+}
+
+async function create(contentId, propertyData)  {
+    let url = BASE_URL + `${contentId}/property`; 
+    return $.ajax({
+        url: url, 
+        contentType: "application/json;charset=UTF-8",
+        type: "POST",
+        data: JSON.stringify( propertyData )
+    });
+}
+
+async function update(contentId, propertyData)  {
+    let url = BASE_URL + `${contentId}/property/${propertyData.key}`; 
+    return $.ajax({
+        url: url, 
+        contentType: "application/json;charset=UTF-8",
+        type: "PUT",
+        data: JSON.stringify( propertyData )
+    });
+}
+
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-properties-service.js":
+/*!***************************************************************!*\
+  !*** ./js/common/confluence/confluence-properties-service.js ***!
+  \***************************************************************/
+/*! exports provided: getPropertyValue, setPropertyValue, doWithPropertyValue */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPropertyValue", function() { return getPropertyValue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setPropertyValue", function() { return setPropertyValue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "doWithPropertyValue", function() { return doWithPropertyValue; });
+/* harmony import */ var _confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-properties-async */ "./js/common/confluence/confluence-properties-async.js");
+
+
+async function getPropertyValue(contentId, key) {
+    try {
+        return (await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["load"])(contentId, key)).value;
+    } catch (err) {
+        return null;
+    }
+}
+
+async function setPropertyValue(contentId, key, value) {
+    let propertyData = {
+        id: null,
+        key: key,
+        version: {
+            minorEdit: true,
+            number: null
+        },
+        value: value
+    };
+
+    try {
+        let existingProperty = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["load"])(contentId, key);
+        propertyData.id = existingProperty.id;
+        propertyData.version.number = existingProperty.version.number+1;
+    } catch (err) {
+        // ignore, it just means the property does not exist yet
+    }
+    if (propertyData.id) {
+        Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["update"])(contentId, propertyData);
+    } else {
+        Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["create"])(contentId, propertyData);
+    }
+}
+
+/**
+ * updateCallback: function(propertyData)=>void
+ */
+async function doWithPropertyValue(contentId, key, updateCallback) {
+    let propertyData;
+    try {
+        propertyData = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["load"])(contentId, key);
+        propertyData.version.number++;
+    } catch (err) {
+        propertyData = {
+            id: null,
+            key: key,
+            version: {
+                minorEdit: true,
+                number: null
+            },
+            value: {}
+        };
+    }
+    await updateCallback(propertyData);
+    if (propertyData.id) {
+        Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["update"])(contentId, propertyData);
+    } else {
+        Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["create"])(contentId, propertyData);
+    }
+}
+
+
+/***/ }),
+
 /***/ "./js/common/confluence/confluence-throttle.js":
 /*!*****************************************************!*\
   !*** ./js/common/confluence/confluence-throttle.js ***!
@@ -433,42 +561,86 @@ const throttleWrite = __webpack_require__(/*! throat */ "./node_modules/throat/i
 /*!******************************************************!*\
   !*** ./js/common/confluence/content-sync-service.js ***!
   \******************************************************/
-/*! exports provided: syncPageToSpace */
+/*! exports provided: syncPageToSpace, syncSubTreeToSpace */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "syncPageToSpace", function() { return syncPageToSpace; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "syncSubTreeToSpace", function() { return syncSubTreeToSpace; });
 /* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
 /* harmony import */ var _confluence_attachment_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
+/* harmony import */ var _confluence_properties_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./confluence-properties-service */ "./js/common/confluence/confluence-properties-service.js");
 
 
 
+
+/** 
+ * Synchronizes a single page between spaces, with or without attachments.
+ * If the page doesn't exist in the target, it is created under targetParentId.
+ */
 async function syncPageToSpace(sourcePageId, targetSpaceKey, targetParentId, syncAttachments) {
-    let pageToCopy = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContentById"])(sourcePageId, 'space,body.storage,metadata.labels,children.attachment');
+    let pageToCopy = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContentById"])(sourcePageId, 'version,space,body.storage,metadata.labels,children.attachment.version,children.attachment.space');
     let targetPage;
     try {
-      targetPage = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContent"])(targetSpaceKey, pageToCopy.title);
+      targetPage = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContent"])(targetSpaceKey, pageToCopy.title, 'version');
       // TODO update the body if modified
     } catch (err) {
       // Create the new page 
+      // TODO filter links
       targetPage = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["createPageUnderPageId"])(pageToCopy,targetSpaceKey,targetParentId);
     }
     if (syncAttachments) {
       let synced = await syncAttachmentsToContainer(pageToCopy.children.attachment, targetPage.id);
       console.log(`${synced.length} attachments synced for ${pageToCopy.title}`);
     }
+    await setSyncTimeStamps(pageToCopy, targetPage, pageToCopy.space.key, targetSpaceKey);
+
     return targetPage;
+}
+
+async function setSyncTimeStamps(srcContent, targetContent, souceSpace, targetSpace) {
+  let syncTime = new Date();
+  await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_2__["doWithPropertyValue"])(srcContent.id, 'ysync', function(propertyValue) {
+    if (propertyValue.value.syncTargets) {
+      console.log("Previous value on source item: syncTargets: ",propertyValue.value.syncTargets);
+    }
+    propertyValue.value.syncTargets = propertyValue.value.syncTargets || {};
+    propertyValue.value.syncTargets[targetSpace] = {
+      targetContentId : targetContent.id,
+      targetVersion: targetContent.version.number,
+      sourceVersion: srcContent.version.number,
+      syncTime: syncTime
+    };
+  });
+  await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_2__["doWithPropertyValue"])(targetContent.id, 'ysync', function(propertyValue) {
+    if (propertyValue.value.syncSources) {
+      console.log("Previous value on target item: syncSources: ",propertyValue.value.syncSources);
+    }
+    propertyValue.value.syncSources = propertyValue.value.syncSources || {};
+    propertyValue.value.syncSources[souceSpace] = {
+      sourceContentId : srcContent.id,
+      targetVersion: targetContent.version.number,
+      sourceVersion: srcContent.version.number,
+      syncTime: syncTime
+    };
+  });
+}
+
+async function syncSubTreeToSpace(sourcePageId, targetSpaceKey) {
+  let subTreeRoot = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContentById"])(sourcePageId, 'space,ancestors');
 }
 
 async function syncAttachmentsToContainer(attachments, targetContainerId) {
   const synced = [];
   for (let attachment of attachments.results) {
-    synced.push(await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_1__["cloneAttachment"])(attachment, targetContainerId) );
+    let cloned = await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_1__["cloneAttachment"])(attachment, targetContainerId);
+    await setSyncTimeStamps(attachment, cloned, attachment.space.key, cloned.space.key);
+    synced.push(cloned);
   }
   if (attachments._links.next) {
     console.log("More than 25 attachments, loading next page");
-    let nextBatch = await syncAttachmentsToContainer(await $.get(attachments._links.next), targetContainerId);
+    let nextBatch = await syncAttachmentsToContainer(await $.get(attachments._links.next + "&expand=space,version"), targetContainerId);
     return [].concat(synced, nextBatch);
   } else {
     return synced;

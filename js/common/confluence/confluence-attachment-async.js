@@ -19,13 +19,18 @@ async function lookupAttachment(containerId, attachmentTitle) {
 
 async function clone(attachmentUrl, targetContainerId, title, /* optional */ targetId) {
     let blobData = await loadBlob(attachmentUrl);
-    let attachment = await storeBlob(targetContainerId, blobData, title, targetId);
+    let attachment = JSON.parse(await storeBlob(targetContainerId, blobData, title, targetId));
     if (attachment.results && attachment.results instanceof Array ) {
         // the attachment API returns an array
-        return attachment.results[0]; 
-    } else {
-        return attachment;
+        attachment = attachment.results[0]; 
+    } 
+    // populate the space.key to save a GET, since we need it to store the sync timestamp
+    if (!attachment.space) {
+        attachment.space = {
+            key: attachment._expandable.space.replace(/.*\//,'')
+        };
     }
+    return attachment;
 }
 
 /** 
