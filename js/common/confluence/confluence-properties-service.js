@@ -52,7 +52,7 @@ export async function doWithPropertyValue(contentId, key, updateCallback) {
             value: {}
         };
     }
-    await updateCallback(propertyData);
+    await updateCallback(propertyData.value);
     if (propertyData.id) {
         update(contentId, propertyData);
     } else {

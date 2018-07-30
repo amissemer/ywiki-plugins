@@ -71,6 +71,47 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./js/common/config.js":
+/*!*****************************!*\
+  !*** ./js/common/config.js ***!
+  \*****************************/
+/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL, PROP_KEY */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_JIRA_COLUMNS", function() { return DEFAULT_JIRA_COLUMNS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_JIRA_ISSUE_COUNT", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAIN_JIRA_LABEL", function() { return MAIN_JIRA_LABEL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TAGS_FIELD", function() { return TAGS_FIELD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WIKI_HOST", function() { return WIKI_HOST; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAX_WIKI_PAGE_CREATION_RATE", function() { return MAX_WIKI_PAGE_CREATION_RATE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY", function() { return SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PREFIX", function() { return PREFIX; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PREFERRED_REGION_KEY", function() { return PREFERRED_REGION_KEY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE", function() { return DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CISTATS_DATA_PAGE", function() { return CISTATS_DATA_PAGE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_CUSTOMER_PAGE_TEMPLATE", function() { return DEFAULT_CUSTOMER_PAGE_TEMPLATE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "XSLT_ENDPOINT_URL", function() { return XSLT_ENDPOINT_URL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PROP_KEY", function() { return PROP_KEY; });
+const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
+const DEFAULT_JIRA_ISSUE_COUNT = 10;
+const MAIN_JIRA_LABEL = "CI";
+const TAGS_FIELD = "customfield_10032";
+const WIKI_HOST = 'wiki.hybris.com';
+const MAX_WIKI_PAGE_CREATION_RATE = 50; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
+const SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
+const PREFIX = "ywiki-plugins.";
+const PREFERRED_REGION_KEY = "preferred.region";
+const DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
+const CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
+const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
+const XSLT_ENDPOINT_URL = 'https://bzycrip1eh.execute-api.eu-central-1.amazonaws.com/dev/page/transform';
+// export const WIKI_HOST = 'performancewiki2.hybris.com';
+const PROP_KEY = 'ysync';
+
+/***/ }),
+
 /***/ "./js/common/confluence/confluence-attachment-async.js":
 /*!*************************************************************!*\
   !*** ./js/common/confluence/confluence-attachment-async.js ***!
@@ -86,14 +127,22 @@ __webpack_require__.r(__webpack_exports__);
 
 const BASE_URL = '/rest/api/content/';
 
-async function cloneAttachment(attachment, targetContainerId) {
+async function cloneAttachment(attachment, targetContainerId, syncTimeStamp) {
     let targetAttachment = await lookupAttachment(targetContainerId, attachment.title);
     let targetAttachmentId = targetAttachment ? targetAttachment.id:null;
-    return clone(attachment._links.download, targetContainerId, attachment.title, targetAttachmentId);
+    if (syncTimeStamp && targetAttachmentId!=null && (targetAttachmentId !== syncTimeStamp.targetContentId || targetAttachment.version.number !== syncTimeStamp.targetVersion ) ) {
+        throw `Attachment ${targetAttachmentId} was modified on target, should we overwrite?`;
+    }
+    if (syncTimeStamp && targetAttachmentId!=null && attachment.version.number === syncTimeStamp.sourceVersion) {
+        console.log(`attachment ${targetAttachmentId} was already up-to-date, synced with source version ${attachment.version.number}`);
+        return targetAttachment;
+    } else {
+        return clone(attachment._links.download, targetContainerId, attachment.title, targetAttachmentId);
+    }
 }
 
 async function lookupAttachment(containerId, attachmentTitle) {
-    let results = await $.get(BASE_URL+`${containerId}/child/attachment?filename=${attachmentTitle}&expand=version,container`);
+    let results = await $.get(BASE_URL+`${containerId}/child/attachment?filename=${attachmentTitle}&expand=space,version,container`);
     if (results && results.results && results.results.length) {
         return results.results[0];
     } else {
@@ -527,7 +576,7 @@ async function doWithPropertyValue(contentId, key, updateCallback) {
             value: {}
         };
     }
-    await updateCallback(propertyData);
+    await updateCallback(propertyData.value);
     if (propertyData.id) {
         Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["update"])(contentId, propertyData);
     } else {
@@ -571,6 +620,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
 /* harmony import */ var _confluence_attachment_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
 /* harmony import */ var _confluence_properties_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./confluence-properties-service */ "./js/common/confluence/confluence-properties-service.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../config */ "./js/common/config.js");
+
 
 
 
@@ -582,48 +633,80 @@ __webpack_require__.r(__webpack_exports__);
 async function syncPageToSpace(sourcePageId, targetSpaceKey, targetParentId, syncAttachments) {
     let pageToCopy = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContentById"])(sourcePageId, 'version,space,body.storage,metadata.labels,children.attachment.version,children.attachment.space');
     let targetPage;
-    try {
-      targetPage = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContent"])(targetSpaceKey, pageToCopy.title, 'version');
-      // TODO update the body if modified
-    } catch (err) {
-      // Create the new page 
-      // TODO filter links
-      targetPage = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["createPageUnderPageId"])(pageToCopy,targetSpaceKey,targetParentId);
+    let syncProp = await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_2__["getPropertyValue"])(sourcePageId, _config__WEBPACK_IMPORTED_MODULE_3__["PROP_KEY"]);
+    if (syncProp && syncProp.syncTargets && syncProp.syncTargets[targetSpaceKey]) {
+      let syncTimeStamp = syncProp.syncTargets[targetSpaceKey];
+      try {
+        targetPage = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContentById"])(syncTimeStamp.targetContentId, 'version,metadata.labels');
+        // TODO filter links
+        await updateContentIfNecessary(pageToCopy, targetPage, syncTimeStamp);
+      } catch (err) {
+        // the last synced target page was removed, we will recreate
+      }
     }
-    if (syncAttachments) {
-      let synced = await syncAttachmentsToContainer(pageToCopy.children.attachment, targetPage.id);
-      console.log(`${synced.length} attachments synced for ${pageToCopy.title}`);
+    if (!targetPage) {
+      try {
+        targetPage = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContent"])(targetSpaceKey, pageToCopy.title, 'version,metadata.labels');
+        // Do a full initial sync
+        // TODO filter links
+        await updateContentIfNecessary(pageToCopy, targetPage);
+      } catch (err) {
+        // Create the new page 
+        // TODO filter links
+        targetPage = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["createPageUnderPageId"])(pageToCopy,targetSpaceKey,targetParentId);
+      }
     }
     await setSyncTimeStamps(pageToCopy, targetPage, pageToCopy.space.key, targetSpaceKey);
+
+    if (syncAttachments) {
+      let synced = await syncAttachmentsToContainer(pageToCopy.children.attachment, targetPage.id, targetSpaceKey);
+      console.log(`${synced.length} attachments synced for ${pageToCopy.title}`);
+    }
 
     return targetPage;
 }
 
+async function updateContentIfNecessary(sourcePage, targetPage, syncTimeStamp) {
+  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.targetVersion) {
+    throw `targetPage was modified after sync, should we overwrite? ${targetPage.title}`;
+  }
+  if (syncTimeStamp && sourcePage.version.number === syncTimeStamp.sourceVersion) {
+    console.log(`page ${targetPage.title} was already up-to-date, synced with source version ${sourcePage.version.number}`);
+    // TODO update labels even if not modified
+  } else {
+    targetPage.version.number++;
+    targetPage.body = targetPage.body || {};
+    targetPage.body.storage = sourcePage.body.storage; // TODO filtering
+    targetPage.title = sourcePage.title;
+    targetPage.metadata.labels = sourcePage.metadata.labels;
+    await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["updateContent"])(targetPage);
+  }
+}
+
 async function setSyncTimeStamps(srcContent, targetContent, souceSpace, targetSpace) {
   let syncTime = new Date();
-  await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_2__["doWithPropertyValue"])(srcContent.id, 'ysync', function(propertyValue) {
-    if (propertyValue.value.syncTargets) {
-      console.log("Previous value on source item: syncTargets: ",propertyValue.value.syncTargets);
+  let syncTimeStamp = {
+    sourceContentId : srcContent.id,
+    targetContentId : targetContent.id,
+    sourceVersion: srcContent.version.number,
+    targetVersion: targetContent.version.number,
+    syncTime: syncTime
+  };
+  await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_2__["doWithPropertyValue"])(srcContent.id, _config__WEBPACK_IMPORTED_MODULE_3__["PROP_KEY"], function(value) {
+    if (value.syncTargets) {
+      console.log("Previous value on source item: syncTargets: ",value.syncTargets);
+    } else {
+      value.syncTargets = {};
     }
-    propertyValue.value.syncTargets = propertyValue.value.syncTargets || {};
-    propertyValue.value.syncTargets[targetSpace] = {
-      targetContentId : targetContent.id,
-      targetVersion: targetContent.version.number,
-      sourceVersion: srcContent.version.number,
-      syncTime: syncTime
-    };
+    value.syncTargets[targetSpace] = syncTimeStamp;
   });
-  await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_2__["doWithPropertyValue"])(targetContent.id, 'ysync', function(propertyValue) {
-    if (propertyValue.value.syncSources) {
-      console.log("Previous value on target item: syncSources: ",propertyValue.value.syncSources);
+  await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_2__["doWithPropertyValue"])(targetContent.id, _config__WEBPACK_IMPORTED_MODULE_3__["PROP_KEY"], function(value) {
+    if (value.syncSources) {
+      console.log("Previous value on target item: syncSources: ",value.syncSources);
+    } else {
+      value.syncSources = {};
     }
-    propertyValue.value.syncSources = propertyValue.value.syncSources || {};
-    propertyValue.value.syncSources[souceSpace] = {
-      sourceContentId : srcContent.id,
-      targetVersion: targetContent.version.number,
-      sourceVersion: srcContent.version.number,
-      syncTime: syncTime
-    };
+    value.syncSources[souceSpace] = syncTimeStamp;
   });
 }
 
@@ -631,16 +714,22 @@ async function syncSubTreeToSpace(sourcePageId, targetSpaceKey) {
   let subTreeRoot = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContentById"])(sourcePageId, 'space,ancestors');
 }
 
-async function syncAttachmentsToContainer(attachments, targetContainerId) {
+async function syncAttachmentsToContainer(attachments, targetContainerId, targetSpaceKey) {
   const synced = [];
   for (let attachment of attachments.results) {
-    let cloned = await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_1__["cloneAttachment"])(attachment, targetContainerId);
+
+    let syncProp = await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_2__["getPropertyValue"])(attachment.id, _config__WEBPACK_IMPORTED_MODULE_3__["PROP_KEY"]);
+    let syncTimeStamp=null;
+    if (syncProp && syncProp.syncTargets && syncProp.syncTargets[targetSpaceKey]) {
+      syncTimeStamp = syncProp.syncTargets[targetSpaceKey];
+    }
+    let cloned = await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_1__["cloneAttachment"])(attachment, targetContainerId, syncTimeStamp);
     await setSyncTimeStamps(attachment, cloned, attachment.space.key, cloned.space.key);
     synced.push(cloned);
   }
   if (attachments._links.next) {
     console.log("More than 25 attachments, loading next page");
-    let nextBatch = await syncAttachmentsToContainer(await $.get(attachments._links.next + "&expand=space,version"), targetContainerId);
+    let nextBatch = await syncAttachmentsToContainer(await $.get(attachments._links.next + "&expand=space,version"), targetContainerId, targetSpaceKey);
     return [].concat(synced, nextBatch);
   } else {
     return synced;
