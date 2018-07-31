@@ -3,7 +3,7 @@ import {throttleRead, throttleWrite} from './confluence-throttle';
 const BASE_URL = '/rest/api/content/';
 
 export async function lookupAttachment(containerId, attachmentTitle) {
-    let results = await $.get(BASE_URL+`${containerId}/child/attachment?filename=${attachmentTitle}&expand=space,version,container`);
+    let results = await $.get(BASE_URL+`${containerId}/child/attachment?filename=${encodeURIComponent(attachmentTitle)}&expand=space,version,container`);
     if (results && results.results && results.results.length) {
         return results.results[0];
     } else {

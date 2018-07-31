@@ -131,7 +131,7 @@ __webpack_require__.r(__webpack_exports__);
 const BASE_URL = '/rest/api/content/';
 
 async function lookupAttachment(containerId, attachmentTitle) {
-    let results = await $.get(BASE_URL+`${containerId}/child/attachment?filename=${attachmentTitle}&expand=space,version,container`);
+    let results = await $.get(BASE_URL+`${containerId}/child/attachment?filename=${encodeURIComponent(attachmentTitle)}&expand=space,version,container`);
     if (results && results.results && results.results.length) {
         return results.results[0];
     } else {
