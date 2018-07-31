@@ -2,21 +2,7 @@ import {throttleRead, throttleWrite} from './confluence-throttle';
 
 const BASE_URL = '/rest/api/content/';
 
-export async function cloneAttachment(attachment, targetContainerId, syncTimeStamp) {
-    let targetAttachment = await lookupAttachment(targetContainerId, attachment.title);
-    let targetAttachmentId = targetAttachment ? targetAttachment.id:null;
-    if (syncTimeStamp && targetAttachmentId!=null && (targetAttachmentId !== syncTimeStamp.targetContentId || targetAttachment.version.number !== syncTimeStamp.targetVersion ) ) {
-        throw `Attachment ${targetAttachmentId} was modified on target, should we overwrite?`;
-    }
-    if (syncTimeStamp && targetAttachmentId!=null && attachment.version.number === syncTimeStamp.sourceVersion) {
-        console.log(`attachment ${targetAttachmentId} was already up-to-date, synced with source version ${attachment.version.number}`);
-        return targetAttachment;
-    } else {
-        return clone(attachment._links.download, targetContainerId, attachment.title, targetAttachmentId);
-    }
-}
-
-async function lookupAttachment(containerId, attachmentTitle) {
+export async function lookupAttachment(containerId, attachmentTitle) {
     let results = await $.get(BASE_URL+`${containerId}/child/attachment?filename=${attachmentTitle}&expand=space,version,container`);
     if (results && results.results && results.results.length) {
         return results.results[0];
@@ -25,7 +11,7 @@ async function lookupAttachment(containerId, attachmentTitle) {
     }
 }
 
-async function clone(attachmentUrl, targetContainerId, title, /* optional */ targetId) {
+export async function cloneAttachment(attachmentUrl, targetContainerId, title, /* optional */ targetId) {
     let blobData = await loadBlob(attachmentUrl);
     let attachment = JSON.parse(await storeBlob(targetContainerId, blobData, title, targetId));
     if (attachment.results && attachment.results instanceof Array ) {

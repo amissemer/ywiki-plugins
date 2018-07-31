@@ -53,9 +53,13 @@ export async function doWithPropertyValue(contentId, key, updateCallback) {
         };
     }
     await updateCallback(propertyData.value);
-    if (propertyData.id) {
-        update(contentId, propertyData);
-    } else {
-        create(contentId, propertyData);
+    try {
+        if (propertyData.id) {
+            await update(contentId, propertyData);
+        } else {
+            await create(contentId, propertyData);
+        }
+    } catch ( err ) {
+        console.warn('Could not set content property, ignoring');
     }
 }

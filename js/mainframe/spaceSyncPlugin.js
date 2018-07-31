@@ -1,6 +1,7 @@
 import {syncPageToSpace} from '../common/confluence/content-sync-service';
-import {getContent} from '../common/confluence/confluence-page-async';
+import {getContent,getContentById} from '../common/confluence/confluence-page-async';
 
+const pageExpands = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
 /*
 
 Source Space Key: <input id="sourceSpaceKey" value="ps" /><br>
@@ -24,9 +25,10 @@ $("#copyBtn").click(async () => {
         let sourcePageTitle = $("#sourcePageTitle").val();
         output();
         output(`Syncing ${sourcePageTitle} to ${targetSpaceKey}...`);
-        let sourcePage = await getContent(sourceSpaceKey,sourcePageTitle);
+
+        let sourcePage = await getContent(sourceSpaceKey,sourcePageTitle, pageExpands);
         let targetParent = await getContent(targetSpaceKey,targetParentPage);
-        let syncedPage = await syncPageToSpace(sourcePage.id, targetSpaceKey, targetParent.id, true);
+        let syncedPage = await syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParent.id);
         output("Done");
         $("#resultPage").html(`<a href="https://wiki.hybris.com/pages/viewpage.action?pageId=${syncedPage.id}">${syncedPage.title}</a>`);
     } catch (err) {
@@ -42,4 +44,21 @@ function output(txt) {
     } else {
         OUT.text(OUT.text() + txt + '\n');
     }
+}
+
+async function syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParentId) {
+    let rootCopy = await syncPageToSpace(sourcePage, targetSpaceKey, targetParentId, true);
+    let children = sourcePage.children.page;
+    while (children) {
+        for (let child of children.results) {
+            let childDetails = await getContentById(child.id, pageExpands);
+            await syncPageTreeToSpace(childDetails, targetSpaceKey, rootCopy.id);
+        }
+        if (children._links.next) {
+            children = await $.ajax(children._links.next);
+        } else {
+            children = null;
+        }
+    }
+    return rootCopy;
 }

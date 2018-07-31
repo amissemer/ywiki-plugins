@@ -148,10 +148,17 @@ export async function createPage(page, targetSpaceKey, targetParentTitle) {
 }
 
 export async function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
-  page.ancestors=[ { id: targetPageId } ];
-  console.log("New Page",page);
-  page.space={ key: targetSpaceKey };
-  return await postPage(page);
+  let newPage = {
+    space : { key: targetSpaceKey },
+    body: { storage: page.body.storage},
+    ancestors: [ { id: targetPageId } ],
+    metadata: page.metadata,
+    title: page.title,
+    type: page.type
+  };
+  console.log("New Page", newPage);
+  
+  return await postPage(newPage);
 }
 
 export async function postPage(page) {

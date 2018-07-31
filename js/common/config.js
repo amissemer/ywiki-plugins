@@ -13,3 +13,4 @@ export const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Tem
 export const XSLT_ENDPOINT_URL = 'https://bzycrip1eh.execute-api.eu-central-1.amazonaws.com/dev/page/transform';
 // export const WIKI_HOST = 'performancewiki2.hybris.com';
 export const PROP_KEY = 'ysync';
+export const DEFAULT_RESTRICTION_GROUP = 'dl sap customer experience all employees (external)';
