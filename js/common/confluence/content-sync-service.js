@@ -4,6 +4,7 @@ import {getTargetSyncTimeStamp, setSyncTimeStamps, getSourceSyncTimeStamp} from 
 import {addLabels,removeLabels} from './confluence-labels-async';
 import {postProcess,preProcess} from './confluence-page-postprocessor';
 
+const onAttachmentCopyFailure = "log";
 
 /** 
  * Synchronizes a single page between spaces, with or without attachments.
@@ -96,10 +97,17 @@ export async function syncSubTreeToSpace(sourcePageId, targetSpaceKey) {
 async function syncAttachmentsToContainer(attachments, targetContainerId, targetSpaceKey) {
   const synced = [];
   for (let attachment of attachments.results) {
-
-    let syncTimeStamp = await getTargetSyncTimeStamp(attachment.id, targetSpaceKey);
-    let cloned = await syncAttachment(attachment, targetContainerId, syncTimeStamp);
-    synced.push(cloned);
+    try {
+      let syncTimeStamp = await getTargetSyncTimeStamp(attachment.id, targetSpaceKey);
+      let cloned = await syncAttachment(attachment, targetContainerId, syncTimeStamp);
+      synced.push(cloned);
+    } catch (err) {
+      if (onAttachmentCopyFailure == "fail") {
+        throw err;
+      } else {
+        console.warn(`Error copying attachment ${attachment.id} - "${attachment.title}", skipping`, err);
+      }
+    }
   }
   if (attachments._links.next) {
     console.log("More than 25 attachments, loading next page");

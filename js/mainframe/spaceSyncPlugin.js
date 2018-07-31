@@ -28,7 +28,7 @@ $("#copyBtn").click(async () => {
 
         let sourcePage = await getContent(sourceSpaceKey,sourcePageTitle, pageExpands);
         let targetParent = await getContent(targetSpaceKey,targetParentPage);
-        let syncedPage = await syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParent.id);
+        let syncedPage = await syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParent.id, true);
         output("Done");
         $("#resultPage").html(`<a href="https://wiki.hybris.com/pages/viewpage.action?pageId=${syncedPage.id}">${syncedPage.title}</a>`);
     } catch (err) {
@@ -46,13 +46,13 @@ function output(txt) {
     }
 }
 
-async function syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParentId) {
-    let rootCopy = await syncPageToSpace(sourcePage, targetSpaceKey, targetParentId, true);
+async function syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParentId, syncAttachments) {
+    let rootCopy = await syncPageToSpace(sourcePage, targetSpaceKey, targetParentId, syncAttachments);
     let children = sourcePage.children.page;
     while (children) {
         for (let child of children.results) {
             let childDetails = await getContentById(child.id, pageExpands);
-            await syncPageTreeToSpace(childDetails, targetSpaceKey, rootCopy.id);
+            await syncPageTreeToSpace(childDetails, targetSpaceKey, rootCopy.id, syncAttachments);
         }
         if (children._links.next) {
             children = await $.ajax(children._links.next);

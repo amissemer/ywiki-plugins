@@ -2,6 +2,27 @@ import $ from 'jquery';
 import getUser from './confluence-user-async';
 import {DEFAULT_RESTRICTION_GROUP} from '../config';
 
+/**
+ * returns either false if no edit restriction exist, or an object with a user and a group property 
+ * containing the list of user names and group names with edit restriction.
+ */
+export async function getEditorRestrictions(contentId) {
+    let resp = await $.get('/rest/api/content/'+contentId+'/restriction/byOperation/update');
+    let restrictions = { user: [], group: []};
+    if (resp && resp.restrictions) {
+        if (resp.restrictions.group && resp.restrictions.group.results) {
+            restrictions.group = resp.restrictions.group.results.map(r=>r.name);
+        }
+        if (resp.restrictions.user && resp.restrictions.user.results) {
+            restrictions.user = resp.restrictions.user.results.map(r=>r.username);
+        }
+    }
+    if (restrictions.user.length + restrictions.group.length == 0) {
+        restrictions = false;
+    }
+    return restrictions;
+}
+
 export async function setEditorRestriction(contentId, groupName) {
     if (!groupName) {
         groupName = DEFAULT_RESTRICTION_GROUP;

@@ -515,6 +515,8 @@ __webpack_require__.r(__webpack_exports__);
 
 async function postProcess(body, page) {
     if (body.indexOf('<ac:structured-macro ac:name="html"')>=0) {
+            // if there is already editor restriction, no need to set one
+        if (await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["getEditorRestrictions"])(page.id)) return;
         await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["setEditorRestriction"])(page.id);
         console.log(`Permissions set on page ${page.title}`);
     }
@@ -537,11 +539,12 @@ async function preProcess(page, targetSpace) {
 /*!**************************************************************!*\
   !*** ./js/common/confluence/confluence-permissions-async.js ***!
   \**************************************************************/
-/*! exports provided: setEditorRestriction */
+/*! exports provided: getEditorRestrictions, setEditorRestriction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getEditorRestrictions", function() { return getEditorRestrictions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setEditorRestriction", function() { return setEditorRestriction; });
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
@@ -550,6 +553,27 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/**
+ * returns either false if no edit restriction exist, or an object with a user and a group property 
+ * containing the list of user names and group names with edit restriction.
+ */
+async function getEditorRestrictions(contentId) {
+    let resp = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get('/rest/api/content/'+contentId+'/restriction/byOperation/update');
+    let restrictions = { user: [], group: []};
+    if (resp && resp.restrictions) {
+        if (resp.restrictions.group && resp.restrictions.group.results) {
+            restrictions.group = resp.restrictions.group.results.map(r=>r.name);
+        }
+        if (resp.restrictions.user && resp.restrictions.user.results) {
+            restrictions.user = resp.restrictions.user.results.map(r=>r.username);
+        }
+    }
+    if (restrictions.user.length + restrictions.group.length == 0) {
+        restrictions = false;
+    }
+    return restrictions;
+}
 
 async function setEditorRestriction(contentId, groupName) {
     if (!groupName) {
@@ -836,6 +860,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const onAttachmentCopyFailure = "log";
 
 /** 
  * Synchronizes a single page between spaces, with or without attachments.
@@ -928,10 +953,17 @@ async function syncSubTreeToSpace(sourcePageId, targetSpaceKey) {
 async function syncAttachmentsToContainer(attachments, targetContainerId, targetSpaceKey) {
   const synced = [];
   for (let attachment of attachments.results) {
-
-    let syncTimeStamp = await Object(_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_2__["getTargetSyncTimeStamp"])(attachment.id, targetSpaceKey);
-    let cloned = await syncAttachment(attachment, targetContainerId, syncTimeStamp);
-    synced.push(cloned);
+    try {
+      let syncTimeStamp = await Object(_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_2__["getTargetSyncTimeStamp"])(attachment.id, targetSpaceKey);
+      let cloned = await syncAttachment(attachment, targetContainerId, syncTimeStamp);
+      synced.push(cloned);
+    } catch (err) {
+      if (onAttachmentCopyFailure == "fail") {
+        throw err;
+      } else {
+        console.warn(`Error copying attachment ${attachment.id} - "${attachment.title}", skipping`, err);
+      }
+    }
   }
   if (attachments._links.next) {
     console.log("More than 25 attachments, loading next page");
@@ -1005,7 +1037,7 @@ $("#copyBtn").click(async () => {
 
         let sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContent"])(sourceSpaceKey,sourcePageTitle, pageExpands);
         let targetParent = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContent"])(targetSpaceKey,targetParentPage);
-        let syncedPage = await syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParent.id);
+        let syncedPage = await syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParent.id, true);
         output("Done");
         $("#resultPage").html(`<a href="https://wiki.hybris.com/pages/viewpage.action?pageId=${syncedPage.id}">${syncedPage.title}</a>`);
     } catch (err) {
@@ -1023,13 +1055,13 @@ function output(txt) {
     }
 }
 
-async function syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParentId) {
-    let rootCopy = await Object(_common_confluence_content_sync_service__WEBPACK_IMPORTED_MODULE_0__["syncPageToSpace"])(sourcePage, targetSpaceKey, targetParentId, true);
+async function syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParentId, syncAttachments) {
+    let rootCopy = await Object(_common_confluence_content_sync_service__WEBPACK_IMPORTED_MODULE_0__["syncPageToSpace"])(sourcePage, targetSpaceKey, targetParentId, syncAttachments);
     let children = sourcePage.children.page;
     while (children) {
         for (let child of children.results) {
             let childDetails = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(child.id, pageExpands);
-            await syncPageTreeToSpace(childDetails, targetSpaceKey, rootCopy.id);
+            await syncPageTreeToSpace(childDetails, targetSpaceKey, rootCopy.id, syncAttachments);
         }
         if (children._links.next) {
             children = await $.ajax(children._links.next);
