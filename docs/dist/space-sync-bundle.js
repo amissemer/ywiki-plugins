@@ -66,43 +66,10 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./js/mainframe/main.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./js/mainframe/spaceSyncPlugin.js");
 /******/ })
 /************************************************************************/
 /******/ ({
-
-/***/ "./css/golden-button.css":
-/*!*******************************!*\
-  !*** ./css/golden-button.css ***!
-  \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
-/***/ "./css/jira-issue-summary.css":
-/*!************************************!*\
-  !*** ./css/jira-issue-summary.css ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
-/***/ "./css/professors.css":
-/*!****************************!*\
-  !*** ./css/professors.css ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
 
 /***/ "./js/common/config.js":
 /*!*****************************!*\
@@ -147,697 +114,963 @@ const DEFAULT_RESTRICTION_GROUP = 'dl sap customer experience all employees (ext
 
 /***/ }),
 
-/***/ "./js/common/iframeWrapper.js":
-/*!************************************!*\
-  !*** ./js/common/iframeWrapper.js ***!
-  \************************************/
-/*! exports provided: default */
+/***/ "./js/common/confluence/confluence-attachment-async.js":
+/*!*************************************************************!*\
+  !*** ./js/common/confluence/confluence-attachment-async.js ***!
+  \*************************************************************/
+/*! exports provided: lookupAttachment, cloneAttachment */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return iframeWrapper; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lookupAttachment", function() { return lookupAttachment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cloneAttachment", function() { return cloneAttachment; });
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
+
+
+const BASE_URL = '/rest/api/content/';
+
+async function lookupAttachment(containerId, attachmentTitle) {
+    let results = await $.get(BASE_URL+`${containerId}/child/attachment?filename=${encodeURIComponent(attachmentTitle)}&expand=space,version,container`);
+    if (results && results.results && results.results.length) {
+        return results.results[0];
+    } else {
+        return null;
+    }
+}
+
+async function cloneAttachment(attachmentUrl, targetContainerId, title, /* optional */ targetId) {
+    let blobData = await loadBlob(attachmentUrl);
+    let attachment = JSON.parse(await storeBlob(targetContainerId, blobData, title, targetId));
+    if (attachment.results && attachment.results instanceof Array ) {
+        // the attachment API returns an array
+        attachment = attachment.results[0]; 
+    } 
+    // populate the space.key to save a GET, since we need it to store the sync timestamp
+    if (!attachment.space) {
+        attachment.space = {
+            key: attachment._expandable.space.replace(/.*\//,'')
+        };
+    }
+    return attachment;
+}
+
+/** 
+ * ContentId is mandatory when updating an existing attachment, and must be omitted when
+ * creating a new attachment.
+ */
+async function storeBlob(containerId, blobData, title, /* optional */ contentId) {
+    let url = BASE_URL;
+    url += containerId;
+    url += '/child/attachment';
+    if (contentId) {
+        url += '/' + contentId + '/data';
+    }
+    let formData = new FormData();
+    formData.append('file', blobData, title);
+    formData.append('minorEdit', 'true');
+    return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleWrite"])( () => postBinary(url, formData));
+}
+
+
+
+async function loadBlob(url) {
+    return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleRead"])( () => loadBinary(url) );
+}
+
+async function postBinary(url, formData) {
+    return new Promise( (resolve, reject) => {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.onerror = reject;
+        xhr.setRequestHeader('X-Atlassian-Token','nocheck');
+        xhr.onload = function (e) {
+            if (this.status == 200) {
+                resolve(this.response);
+            } else {
+                reject(`Could not POST to ${url}: ${this.status} ${this.statusText}, details: ${this.responseText}`);
+            }
+        };
+        xhr.send(formData);
+    });
+}
+async function loadBinary(url) {
+    return new Promise( (resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'blob';
+        xhr.onerror = reject;
+        xhr.onload = function(e) {
+          if (this.status == 200) {
+            // get binary data as a response
+            let blob = this.response;
+            resolve(blob);
+          } else {
+            reject(e);
+          }
+        };
+        xhr.send();
+    });
+}
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-labels-async.js":
+/*!*********************************************************!*\
+  !*** ./js/common/confluence/confluence-labels-async.js ***!
+  \*********************************************************/
+/*! exports provided: addLabels, removeLabels */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addLabels", function() { return addLabels; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeLabels", function() { return removeLabels; });
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _windowEventListener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./windowEventListener */ "./js/common/windowEventListener.js");
+//import {throttleRead, throttleWrite} from './confluence-throttle';
 
 
+const BASE_URL = '/rest/api/content/';
 
-/**
- * A generic iframeWrapper.
- *
- * The main goal is to bypass the CORS restriction: we want the iframe to be able to execute ajax requests on the domain of the main window, and since they are on different domains, this is not possible with some hack.
- * The hack here consists in using the window.postMessage function and a message listener to execute code from the iframe into the main frame.
- *
- * iframeWrappers provide a call("action", payload) function that can call named actions in another frame and return a promise for the asynchronous response.
- * The receiving frame must hook the named actions to actual actionHandlers, that must be attached to the iframeWrapper.
- *
- * Note: The iframeWrapperFactory requires jQuery and windowEventListener.
- * It must be loaded in the 2 frames (main window and iframe) to be able to use it to run Cross-Origin actions.
- * The factory parameters are different when loading the iframeWrapper from the iframe (in which case the target window is the parent and the target hostname is the wiki),
- * and when loading from the main frame (in which case the target window is the iframe window, and the targetHostname is the yWikiPlugins host).
- *
- * Example:
- * 1. Frame A attaches an actionHandler for a given action, like "ajax", and the action handler simply returns jQuery.ajax(params).
- * 2. Then the other frame B can call("ajax", params) to remotely execute the ajax request in Frame A and get the result back.
- *
- * This is all asynchronous and based on jQuery promises.
- *
- * From the iFrame, call iframeWrapper(parent, "https://wiki.hybris.com").
- * From the main Frame, call iframeWrapper($('iframe')[0].contentWindow, yWikiPlugins.getHost()).
- */
-function iframeWrapper( postToWindow, targetHostname ) {
-  var _correlationId=1;
-
-  /**
-   * Chainable function to attach action handlers.
-   * Handlers take a single argument and may return a promise or a result (or nothing)
-   * that will be used to send the response back to the other frame.
-   */
-  function attachActionHandler(actionName, handler) {
-
-    function requestListener(correlationId, payload) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default.a.when( handler(payload) )
-      .done(function sendResponse(responsePayload) {
-        var responseMsg = {
-          correlationId: correlationId,
-          responsePayload: responsePayload
-        };
-        //console.log("Sending response:",responseMsg);
-        postToWindow.postMessage(responseMsg, targetHostname);
-      })
-      .fail(function sendError() {
-        var payload = arguments;
-        if (arguments && arguments.length && arguments.length>2) {// for ajax errors, the error handler gets (jqXHR, textStatus, errorThrown) but we can't pass the whole jqXHR through the postMessage API
-          payload={textStatus: arguments[1], errorThrown: arguments[2]};
-          if (arguments[0] && arguments[0].responseText) {
-            payload.responseText = arguments[0].responseText;
-            try {
-                payload.responseJson = JSON.parse(payload.responseText);
-            } catch(e) {
-              // ignore
-            }
-          }
-        }
-        var errorMsg = {
-          correlationId: correlationId,
-          errorPayload: payload
-        };
-        //console.log("Sending error response:",errorMsg);
-        postToWindow.postMessage(errorMsg, targetHostname);
-      });
+async function addLabels(contentId, labels) {
+    let labelsPayload = [];
+    for (let label of labels) {
+        labelsPayload.push({"prefix": "global","name":label});
     }
-    _windowEventListener__WEBPACK_IMPORTED_MODULE_1__["default"].registerRequestListener(actionName, requestListener);
-    return this;
-  }
-
-  /**
-   * Calls an an action through the messaging system of frames and returns
-   * a jQuery promise that will get resolved once a response is received (also from the messaging system)
-   */
-  function call(action, payload) {
-    var defer = jquery__WEBPACK_IMPORTED_MODULE_0___default.a.Deferred();
-    var correlationId = _correlationId++;
-    _windowEventListener__WEBPACK_IMPORTED_MODULE_1__["default"].registerResponseListener(correlationId,
-      {
-        successHandler: function(successPayload) {
-          defer.resolve(successPayload);
-        },
-        errorHandler: function(errorPayload) {
-          defer.reject(errorPayload);
-        }
-      });
-    //console.log("payload",payload);
-    postToWindow.postMessage(
-      {
-        action: action,
-        payload: payload,
-        correlationId: correlationId
-      }, targetHostname);
-    return defer.promise();
-  }
-
-  return {
-    call: call,
-    attachActionHandler: attachActionHandler
-  }
+    return jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post({
+        url: BASE_URL + contentId + '/label',
+        data: JSON.stringify(labelsPayload),
+        contentType: "application/json; charset=utf-8"
+    });
 }
 
+async function removeLabels(contentId, labels) {
+    for (let label of labels) {
+        await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.delete(BASE_URL + contentId + '/label?name='+encodeURIComponent(label));
+    }
+    return labels;
+}
 
 /***/ }),
 
-/***/ "./js/common/optionsParser.js":
-/*!************************************!*\
-  !*** ./js/common/optionsParser.js ***!
-  \************************************/
-/*! exports provided: parseOptions, encodeOptions */
+/***/ "./js/common/confluence/confluence-page-async.js":
+/*!*******************************************************!*\
+  !*** ./js/common/confluence/confluence-page-async.js ***!
+  \*******************************************************/
+/*! exports provided: movePages, movePagesById, getContent, getContentById, searchPagesWithCQL, copyPage, copyPageToSpace, createPageFromTemplate, copyPageRecursive, copyPageRecursiveInternal, copyAllChildren, createPage, createPageUnderPageId, postPage, updateContent, getPageTree */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseOptions", function() { return parseOptions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "encodeOptions", function() { return encodeOptions; });
-/* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/polyfills */ "./js/lib/polyfills.js");
-/* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_lib_polyfills__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "movePages", function() { return movePages; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "movePagesById", function() { return movePagesById; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getContent", function() { return getContent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getContentById", function() { return getContentById; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "searchPagesWithCQL", function() { return searchPagesWithCQL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPage", function() { return copyPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageToSpace", function() { return copyPageToSpace; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPageFromTemplate", function() { return createPageFromTemplate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageRecursive", function() { return copyPageRecursive; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageRecursiveInternal", function() { return copyPageRecursiveInternal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyAllChildren", function() { return copyAllChildren; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPage", function() { return createPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPageUnderPageId", function() { return createPageUnderPageId; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postPage", function() { return postPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateContent", function() { return updateContent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPageTree", function() { return getPageTree; });
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
 
 
-function parseOptions(defaultOptions) {
-
-  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
-  var match;
-  var params = defaultOptions || {};
-  function decode(s) {return decodeURIComponent(s.replace(/\+/g, " "));};
-
-  var hash = document.location.hash;
-
-  while (match = re.exec(hash)) {
-    var value = decode(match[2]);
-    if ( isJSON(value) ) { 
-      console.log("Parsing options: ",value);
-      value = JSON.parse(value);
-    }
-    params[decode(match[1])] = value;
-  }
-  return params;
+async function movePages(sourceSpaceKey, sourcePageTitle,targetSpaceKey, targetParentTitle) {
+  var sourcePage = await getContent(sourceSpaceKey, sourcePageTitle);
+  return await movePagesById( sourcePage.id, targetSpaceKey, targetParentTitle );
+}
+function getAtlToken() {
+  return $('meta[name=ajs-atl-token]').attr("content");
 }
 
-function encodeOptions(options) {
-  var res = [];
-  for (var key in options) {
-    if (options.hasOwnProperty(key) && options[key]!==undefined) {
-        var value = options[key];
-        if (value.toString() === '[object Object]') {
-          value = JSON.stringify(value);
+async function movePagesById (sourcePageId, targetSpaceKey, target) {
+  return await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleWrite"])( async () => {
+    let targetParentTitle;
+    if (Number.isInteger(Number(target))) {
+      let targetParent = await getContentById(Number(target));
+      targetParentTitle = targetParent.title;
+    } else {
+      targetParentTitle = target;
+    }
+    if (!targetParentTitle) throw 'targetParentTitle is mandatory (for source '+sourcePageId+' and target '+target+')';
+    var url = '/pages/movepage.action?pageId='+encodeURIComponent(sourcePageId)+'&spaceKey='+encodeURIComponent(targetSpaceKey)+'&targetTitle='+encodeURIComponent(targetParentTitle)+'&position=append&atl_token='+getAtlToken()+'&_='+Math.random();
+    console.log("Moving page ",sourcePageId," under ",targetSpaceKey+":"+ targetParentTitle, url);
+    let resp = await $.ajax(url);
+    if (typeof resp === 'string' && resp.indexOf('Not Permitted'>=0)) {
+      throw 'Not Permitted';
+    } else if (typeof resp === 'string') {
+      throw 'Generic move error';
+    } else if (resp.actionErrors) {
+      throw resp.actionErrors.join();
+    }
+  });
+}
+
+
+
+/**
+* Get a page by spaceKey and title from Confluence and returns a deferred for that page.
+* See $.ajax().done()
+* Failures are logged and ignored.
+* The deferred is resolved with the first matching page is any, else it is rejected.
+*/
+async function getContent(spaceKey,pageTitle,expand) {
+  var expandParam="";
+  if (expand) {
+    expandParam = '&expand='+encodeURIComponent(expand);
+  }
+  var url = '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
+  console.log("Getting page content from " + url);
+  var response = await $.ajax(url);
+  console.log("Filtering AJAX response",response);
+  if (response.results && response.results.length>0) {
+    var page = response.results[0];
+    console.log("Returning ",page);
+    return page;
+  } else {
+    throw "Page Not found: '"+spaceKey+":"+pageTitle+"'";
+  }
+}
+
+async function getContentById(pageId, expand) {
+  var expandParam="";
+  if (expand) {
+    expandParam = '?expand='+encodeURIComponent(expand);
+  }
+  var url = '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
+  console.log(url);
+  return await $.ajax(url);
+}
+ 
+/** search for content with CQL
+for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
+async function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
+  if (!limit || limit<0) {
+    limit=15;
+  }
+  var expandParam=(expand?"&expand="+encodeURIComponent(expand):"");
+  return await $.ajax('/rest/api/content/search?limit='+encodeURIComponent(limit)+'&cql='+encodeURIComponent(cqlQuery+' and type=page and space=\''+spaceKey+'\'')+expandParam);
+}
+
+/**
+* Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
+* and do a placeholder replacement the page title using the templateProcessor.
+*/
+async function copyPage(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor) {
+  var pageToCopy = await getContent(fromSpaceKey, fromPageTitle, 'space,body.storage,metadata.labels');
+  await templateProcessor.transformPage(pageToCopy);
+  // Create the new page under toPageTitle
+  return await createPage(pageToCopy,toSpaceKey,toPageTitle);
+}
+
+async function copyPageToSpace(sourcePageId, targetSpaceKey, targetParentId) {
+  let pageToCopy = await getContentById(sourcePageId, 'space,body.storage,metadata.labels');
+  try {
+    return await getContent(targetSpaceKey, pageToCopy.title);
+    // if it exists, do nothing
+  } catch (err) {
+    // Create the new page 
+    return await createPageUnderPageId(pageToCopy,targetSpaceKey,targetParentId);
+  }
+}
+
+async function createPageFromTemplate(templateSpace, templateTitle, targetSpaceKey, targetPageId, templateProcessor) {
+  var pageToCopy = await getContent(templateSpace, templateTitle, 'space,body.storage,metadata.labels');
+  //var parentPage = await getContentById(targetPageId, 'space');
+  await templateProcessor.transformPage(pageToCopy);
+  // Create the new page under toPageTitle
+  return await createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId);
+}
+
+async function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor, copiedPages) {
+  var sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
+  var targetPagePromise = getContent(toSpaceKey,toPageTitle, 'space');
+  var pages = await Promise.all(sourcePagePromise,targetPagePromise);
+  return await copyPageRecursiveInternal( pages[0].id, pages[1].space.key, pages[1].id, templateProcessor, copiedPages);
+}
+
+async function copyPageRecursiveInternal(sourcePageId, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
+  var pageToCopy = await getContentById(sourcePageId, 'space,body.storage,children.page,metadata.labels');
+  if (templateProcessor.isApplicableTemplatePage(pageToCopy)) {
+    await templateProcessor.transformPage(pageToCopy);
+
+    // Create the new page under targetSpaceKey:targetPageId
+    var copiedPage = await createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId);
+    copiedPages.push(copiedPage);
+    return await copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
+  } else {
+    console.log("Page is not a template, not copied, but children will be copied: ",pageToCopy.title);
+    return await copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
+  }
+}
+
+async function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
+  // recursively copy all children
+  var copiedChildren = [];
+  console.log("In copyAllChildren", pageToCopy,targetPageId);
+  if (pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results) {
+    for (let child of pageToCopy.children.page.results) {
+      copiedChildren.push(await copyPageRecursiveInternal(child.id, targetSpaceKey, targetPageId, templateProcessor, copiedPages));
+    }
+  }
+  return copiedChildren;
+}
+
+async function createPage(page, targetSpaceKey, targetParentTitle) {
+  var targetParentPage = await getContent(targetSpaceKey,targetParentTitle,'space');
+  console.log("targetParentPage: space=",targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
+  return await createPageUnderPageId(page, targetParentPage.space.key, targetParentPage.id);
+}
+
+async function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
+  let newPage = {
+    space : { key: targetSpaceKey },
+    body: { storage: page.body.storage},
+    ancestors: [ { id: targetPageId } ],
+    metadata: page.metadata,
+    title: page.title,
+    type: page.type
+  };
+  console.log("New Page", newPage);
+  
+  return await postPage(newPage);
+}
+
+async function postPage(page) {
+  return await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleWrite"])( async () => await $.ajax(
+    {
+      url: '/rest/api/content',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(page)
+    }
+  ));
+}
+
+async function updateContent(page) {
+  return await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleWrite"])( async () => await $.ajax(
+    {
+      url: '/rest/api/content/'+encodeURIComponent(page.id),
+      type: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(page)
+    }
+  ));
+}
+
+async function getPageTree( pageId, parentId, parentTitle, counter ) {
+  console.log(`Queueing getContentById for ${pageId}`);
+  var pageAndChildren = await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleRead"])(() => getContentById(pageId, 'history.lastUpdated,children.page,metadata.labels'));
+  counter.pages++;
+  if (counter.pages%100 == 0) console.log(`Found ${counter.pages} pages so far...`);
+  var childrenP = [];
+  var childrenPages = pageAndChildren.children.page;
+  while (childrenPages && childrenPages.size>0) {
+    for (let child of childrenPages.results) {
+      childrenP.push(getPageTree(child.id, pageId, pageAndChildren.title, counter));
+    }
+    // get next page if any
+    if (childrenPages._links.next) {
+      console.log(`Queueing GET next page of children for ${pageAndChildren.title}: ${childrenPages._links.next}`);
+      childrenPages = await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleRead"])(() => $.ajax(childrenPages._links.next));
+    } else {
+      childrenPages=false;
+    }
+  }
+
+  return {
+    title: pageAndChildren.title,
+    id: pageId,
+    lastUpdated: new Date(pageAndChildren.history.lastUpdated.when),
+    createdDate: new Date(pageAndChildren.history.createdDate),
+    parentId: parentId,
+    parentTitle: parentTitle,
+    children: await Promise.all(childrenP),
+    labels: Array.prototype.map.call(pageAndChildren.metadata.labels.results, l=>l.name)
+  };
+}
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-page-postprocessor.js":
+/*!***************************************************************!*\
+  !*** ./js/common/confluence/confluence-page-postprocessor.js ***!
+  \***************************************************************/
+/*! exports provided: postProcess, preProcess */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postProcess", function() { return postProcess; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "preProcess", function() { return preProcess; });
+/* harmony import */ var _confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-permissions-async */ "./js/common/confluence/confluence-permissions-async.js");
+
+
+async function postProcess(body, page) {
+    if (body.indexOf('<ac:structured-macro ac:name="html"')>=0) {
+            // if there is already editor restriction, no need to set one
+        if (await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["getEditorRestrictions"])(page.id)) return;
+        await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["setEditorRestriction"])(page.id);
+        console.log(`Permissions set on page ${page.title}`);
+    }
+}
+
+const portfolioRegex = /\bservportfolio\b/g;
+
+async function preProcess(page, targetSpace) {
+    let body = page.body.storage.value;
+    if (portfolioRegex.test(body)) {
+        page.body.storage.value = body.replace(portfolioRegex, targetSpace);
+        console.warn(`Updated 1 or more servportfolio ref in ${page.title}`);
+    }
+    return page;
+}
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-permissions-async.js":
+/*!**************************************************************!*\
+  !*** ./js/common/confluence/confluence-permissions-async.js ***!
+  \**************************************************************/
+/*! exports provided: getEditorRestrictions, setEditorRestriction */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getEditorRestrictions", function() { return getEditorRestrictions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setEditorRestriction", function() { return setEditorRestriction; });
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _confluence_user_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./confluence-user-async */ "./js/common/confluence/confluence-user-async.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../config */ "./js/common/config.js");
+
+
+
+
+/**
+ * returns either false if no edit restriction exist, or an object with a user and a group property 
+ * containing the list of user names and group names with edit restriction.
+ */
+async function getEditorRestrictions(contentId) {
+    let resp = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get('/rest/api/content/'+contentId+'/restriction/byOperation/update');
+    let restrictions = { user: [], group: []};
+    if (resp && resp.restrictions) {
+        if (resp.restrictions.group && resp.restrictions.group.results) {
+            restrictions.group = resp.restrictions.group.results.map(r=>r.name);
         }
-        res.push(key+"="+encodeURIComponent(value));
+        if (resp.restrictions.user && resp.restrictions.user.results) {
+            restrictions.user = resp.restrictions.user.results.map(r=>r.username);
+        }
     }
-  }
-  return res.join('&');
+    if (restrictions.user.length + restrictions.group.length == 0) {
+        restrictions = false;
+    }
+    return restrictions;
 }
 
-function isJSON(value) {
-  // simplistic heuristic to detect serialized JSON
-  return ((value.startsWith('{') && value.endsWith('}')) ||  (value.startsWith('[') && value.endsWith(']')) ) && !(value.startsWith('[object'));
+async function setEditorRestriction(contentId, groupName) {
+    if (!groupName) {
+        groupName = _config__WEBPACK_IMPORTED_MODULE_2__["DEFAULT_RESTRICTION_GROUP"];
+    }
+    let username = await Object(_confluence_user_async__WEBPACK_IMPORTED_MODULE_1__["default"])();
+    // set ourselves as editor
+    await experimental('/rest/experimental/content/'+contentId+'/restriction/byOperation/update/user?userName=' + encodeURIComponent(username));
+    // and the whole group as well
+    await experimental('/rest/experimental/content/'+contentId+'/restriction/byOperation/update/group/' + encodeURIComponent(groupName));
 }
 
+/** the experimental restriction API resturns 200 OK without any content which
+ * jquery considers as an error, so we need to catch the error
+ */
+async function experimental(url) {
+    try { 
+        await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.ajax({
+            url: url,
+            type: 'PUT'
+        });
+    } catch (err) {
+        if (err.status != 200 && err.status  != 204) { // is this a real error
+            throw err; // rethrow
+        } // else success
+    }
+}
 
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-properties-async.js":
+/*!*************************************************************!*\
+  !*** ./js/common/confluence/confluence-properties-async.js ***!
+  \*************************************************************/
+/*! exports provided: load, create, update */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "load", function() { return load; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "create", function() { return create; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "update", function() { return update; });
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
+
+
+const BASE_URL = '/rest/api/content/';
+
+async function load(contentId, key)  {
+    let url = BASE_URL + `${contentId}/property/${key}`; 
+    return $.get(url);
+}
+
+async function create(contentId, propertyData)  {
+    let url = BASE_URL + `${contentId}/property`; 
+    return $.ajax({
+        url: url, 
+        contentType: "application/json;charset=UTF-8",
+        type: "POST",
+        data: JSON.stringify( propertyData )
+    });
+}
+
+async function update(contentId, propertyData)  {
+    let url = BASE_URL + `${contentId}/property/${propertyData.key}`; 
+    return $.ajax({
+        url: url, 
+        contentType: "application/json;charset=UTF-8",
+        type: "PUT",
+        data: JSON.stringify( propertyData )
+    });
+}
 
 
 /***/ }),
 
-/***/ "./js/common/windowEventListener.js":
-/*!******************************************!*\
-  !*** ./js/common/windowEventListener.js ***!
-  \******************************************/
+/***/ "./js/common/confluence/confluence-properties-service.js":
+/*!***************************************************************!*\
+  !*** ./js/common/confluence/confluence-properties-service.js ***!
+  \***************************************************************/
+/*! exports provided: getPropertyValue, setPropertyValue, doWithPropertyValue */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPropertyValue", function() { return getPropertyValue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setPropertyValue", function() { return setPropertyValue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "doWithPropertyValue", function() { return doWithPropertyValue; });
+/* harmony import */ var _confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-properties-async */ "./js/common/confluence/confluence-properties-async.js");
+
+
+async function getPropertyValue(contentId, key) {
+    try {
+        return (await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["load"])(contentId, key)).value;
+    } catch (err) {
+        return null;
+    }
+}
+
+async function setPropertyValue(contentId, key, value) {
+    let propertyData = {
+        id: null,
+        key: key,
+        version: {
+            minorEdit: true,
+            number: null
+        },
+        value: value
+    };
+
+    try {
+        let existingProperty = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["load"])(contentId, key);
+        propertyData.id = existingProperty.id;
+        propertyData.version.number = existingProperty.version.number+1;
+    } catch (err) {
+        // ignore, it just means the property does not exist yet
+    }
+    if (propertyData.id) {
+        Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["update"])(contentId, propertyData);
+    } else {
+        Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["create"])(contentId, propertyData);
+    }
+}
+
+/**
+ * updateCallback: function(propertyData)=>void
+ */
+async function doWithPropertyValue(contentId, key, updateCallback) {
+    let propertyData;
+    try {
+        propertyData = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["load"])(contentId, key);
+        propertyData.version.number++;
+    } catch (err) {
+        propertyData = {
+            id: null,
+            key: key,
+            version: {
+                minorEdit: true,
+                number: null
+            },
+            value: {}
+        };
+    }
+    await updateCallback(propertyData.value);
+    try {
+        if (propertyData.id) {
+            await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["update"])(contentId, propertyData);
+        } else {
+            await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["create"])(contentId, propertyData);
+        }
+    } catch ( err ) {
+        console.warn('Could not set content property, ignoring');
+    }
+}
+
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-sync-timestamps.js":
+/*!************************************************************!*\
+  !*** ./js/common/confluence/confluence-sync-timestamps.js ***!
+  \************************************************************/
+/*! exports provided: setSyncTimeStamps, getTargetSyncTimeStamp, getSourceSyncTimeStamp */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setSyncTimeStamps", function() { return setSyncTimeStamps; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTargetSyncTimeStamp", function() { return getTargetSyncTimeStamp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSourceSyncTimeStamp", function() { return getSourceSyncTimeStamp; });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./js/common/config.js");
+/* harmony import */ var _confluence_properties_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./confluence-properties-service */ "./js/common/confluence/confluence-properties-service.js");
+
+
+
+
+async function setSyncTimeStamps(srcContent, targetContent, souceSpace, targetSpace) {
+    let syncTime = new Date();
+    let syncTimeStamp = {
+      sourceContentId : srcContent.id,
+      targetContentId : targetContent.id,
+      sourceVersion: srcContent.version.number,
+      targetVersion: targetContent.version.number,
+      syncTime: syncTime
+    };
+    await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_1__["doWithPropertyValue"])(srcContent.id, _config__WEBPACK_IMPORTED_MODULE_0__["PROP_KEY"], function(value) {
+      if (value.syncTargets) {
+        console.log("Previous value on source item: syncTargets: ",value.syncTargets);
+      } else {
+        value.syncTargets = {};
+      }
+      value.syncTargets[targetSpace] = syncTimeStamp;
+    });
+    await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_1__["doWithPropertyValue"])(targetContent.id, _config__WEBPACK_IMPORTED_MODULE_0__["PROP_KEY"], function(value) {
+      if (value.syncSources) {
+        console.log("Previous value on target item: syncSources: ",value.syncSources);
+      } else {
+        value.syncSources = {};
+      }
+      value.syncSources[souceSpace] = syncTimeStamp;
+    });
+}
+
+async function getTargetSyncTimeStamp(contentId, spaceKey) {
+    let value = await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_1__["getPropertyValue"])(contentId, _config__WEBPACK_IMPORTED_MODULE_0__["PROP_KEY"]);
+    if (value && value.syncTargets && value.syncTargets[spaceKey]) {
+        return value.syncTargets[spaceKey];
+    }
+    return null;
+}
+
+async function getSourceSyncTimeStamp(contentId, spaceKey) {
+    let value = await Object(_confluence_properties_service__WEBPACK_IMPORTED_MODULE_1__["getPropertyValue"])(contentId, _config__WEBPACK_IMPORTED_MODULE_0__["PROP_KEY"]);
+    if (value && value.syncSources && value.syncSources[spaceKey]) {
+        return value.syncSources[spaceKey];
+    }
+    return null;
+}
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-throttle.js":
+/*!*****************************************************!*\
+  !*** ./js/common/confluence/confluence-throttle.js ***!
+  \*****************************************************/
+/*! exports provided: throttleRead, throttleWrite */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "throttleRead", function() { return throttleRead; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "throttleWrite", function() { return throttleWrite; });
+const MAX_PARALLEL_READ = 3;
+const MAX_PARALLEL_WRITE = 1;
+const throttleRead = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_READ);
+const throttleWrite = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_WRITE);
+
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-user-async.js":
+/*!*******************************************************!*\
+  !*** ./js/common/confluence/confluence-user-async.js ***!
+  \*******************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/**
- * Sets up a listener of all events received by the window, that dispatches:
- *   - those that have an action to the corresponding requestListeners
- *   - those that have a correlationId but no action, to the corresponding responseListeners
- * Exposes functions to (un)register listeners.
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return getUser; });
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+
+
+let userCached;
+
+async function getUser() {
+    if (userCached) return userCached;
+    userCached = (await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get('/rest/api/user/current') ).username;
+    return userCached;
+}
+
+/***/ }),
+
+/***/ "./js/common/confluence/content-sync-service.js":
+/*!******************************************************!*\
+  !*** ./js/common/confluence/content-sync-service.js ***!
+  \******************************************************/
+/*! exports provided: syncPageToSpace, syncSubTreeToSpace, syncAttachment */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "syncPageToSpace", function() { return syncPageToSpace; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "syncSubTreeToSpace", function() { return syncSubTreeToSpace; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "syncAttachment", function() { return syncAttachment; });
+/* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
+/* harmony import */ var _confluence_attachment_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
+/* harmony import */ var _confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./confluence-sync-timestamps */ "./js/common/confluence/confluence-sync-timestamps.js");
+/* harmony import */ var _confluence_labels_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-labels-async */ "./js/common/confluence/confluence-labels-async.js");
+/* harmony import */ var _confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./confluence-page-postprocessor */ "./js/common/confluence/confluence-page-postprocessor.js");
+
+
+
+
+
+
+const onAttachmentCopyFailure = "log";
+
+/** 
+ * Synchronizes a single page between spaces, with or without attachments.
+ * If the page doesn't exist in the target, it is created under targetParentId.
  */
-var windowEventListener = (function windowEventListener() {
-
-  // Start listening to messages (from other frames, typically)
-  var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-  var eventer = window[eventMethod];
-  var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-  var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
-  var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
-  eventer(messageEvent, eventCallback, false);
-
-  function eventCallback(e) {
-    if (e.data.action) {
-      // action data is in the form { action: "actionName", payload: object }
-      if (requestListeners[e.data.action]) {
-        requestListeners[e.data.action](e.data.correlationId, e.data.payload);
-      } else {
-        // no registered requestListener for this action
-        console.warn('No requestListeners for action: ', e.data.action);
+async function syncPageToSpace(pageToCopy, targetSpaceKey, targetParentId, syncAttachments) {
+    await Object(_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_4__["preProcess"])(pageToCopy, targetSpaceKey);
+    let targetPage;
+    let syncTimeStamp = await Object(_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_2__["getTargetSyncTimeStamp"])(pageToCopy.id, targetSpaceKey);
+    if (syncTimeStamp) {
+      try {
+        targetPage = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContentById"])(syncTimeStamp.targetContentId, 'version,metadata.labels');
+        // TODO filter links
+        await updateContentIfNecessary(pageToCopy, targetPage, syncTimeStamp);
+      } catch (err) {
+        // the last synced target page was removed, we will recreate
       }
-    } else if (e.data.correlationId) {
-      // response data is in the form { correlationId: theRequestCorrelationId, responsePayload: object, errorPayload: object }
-      if (responseListeners[e.data.correlationId]) {
-        // deregister (should be used only once for each correlationId)
-        var responseListener = responseListeners[e.data.correlationId];
-        responseListeners[e.data.correlationId] = null;
-        // delegate to the registered responseListener
-        if (e.data.errorPayload) {
-          responseListener.errorHandler(e.data.errorPayload);
-        } else {
-          responseListener.successHandler(e.data.responsePayload);
+    }
+    if (!targetPage) {
+      try {
+        targetPage = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContent"])(targetSpaceKey, pageToCopy.title, 'version,metadata.labels');
+        syncTimeStamp = await Object(_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_2__["getSourceSyncTimeStamp"])(targetPage.id, pageToCopy.space.key);
+        // Do a full initial sync
+        // TODO filter links
+        await updateContentIfNecessary(pageToCopy, targetPage, syncTimeStamp);
+      } catch (err) {
+        // Create the new page 
+        // TODO filter links
+        targetPage = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["createPageUnderPageId"])(pageToCopy,targetSpaceKey,targetParentId);
+      }
+    }
+    await Object(_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_2__["setSyncTimeStamps"])(pageToCopy, targetPage, pageToCopy.space.key, targetSpaceKey);
+    await syncLabels(pageToCopy, targetPage);
+    await Object(_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_4__["postProcess"])(pageToCopy.body.storage.value, targetPage);
+    if (syncAttachments) {
+      let synced = await syncAttachmentsToContainer(pageToCopy.children.attachment, targetPage.id, targetSpaceKey);
+      console.log(`${synced.length} attachments synced for ${pageToCopy.title}`);
+    }
+
+    return targetPage;
+}
+
+async function syncLabels(sourcePage, targetPage) {
+  async function labels(page) {
+    if (!page.metadata) {
+      page = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContentById"])(page.id, 'metadata.labels');
+    }
+    let labelArray = [];
+    for (let label of page.metadata.labels.results) {
+      labelArray.push(label.name);
+    }
+    labelArray.sort();
+    return labelArray;
+  }
+  let srcLabels = await labels(sourcePage);
+  let tgtLabels = await labels(targetPage);
+  if (JSON.stringify(srcLabels) != JSON.stringify(tgtLabels)) {
+    let toRemove = tgtLabels.minus(srcLabels);
+    let toAdd = srcLabels.minus(tgtLabels);
+    await Object(_confluence_labels_async__WEBPACK_IMPORTED_MODULE_3__["addLabels"])(targetPage.id, toAdd);
+    await Object(_confluence_labels_async__WEBPACK_IMPORTED_MODULE_3__["removeLabels"])(targetPage.id, toRemove);
+  }
+}
+
+Array.prototype.minus = function(a) {
+  return this.filter( i=> a.indexOf(i) < 0 );
+};
+
+async function updateContentIfNecessary(sourcePage, targetPage, syncTimeStamp) {
+  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.targetVersion) {
+    throw `targetPage was modified after sync, should we overwrite? ${targetPage.title}`;
+  }
+  if (syncTimeStamp && sourcePage.version.number === syncTimeStamp.sourceVersion) {
+    console.log(`page ${targetPage.title} was already up-to-date, synced with source version ${sourcePage.version.number}`);
+  } else {
+    targetPage.version.number++;
+    targetPage.body = targetPage.body || {};
+    targetPage.body.storage = sourcePage.body.storage; // TODO filtering
+    targetPage.title = sourcePage.title;
+    await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["updateContent"])(targetPage);
+  }
+}
+
+
+
+async function syncSubTreeToSpace(sourcePageId, targetSpaceKey) {
+  let subTreeRoot = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_0__["getContentById"])(sourcePageId, 'space,ancestors');
+}
+
+async function syncAttachmentsToContainer(attachments, targetContainerId, targetSpaceKey) {
+  const synced = [];
+  for (let attachment of attachments.results) {
+    try {
+      let syncTimeStamp = await Object(_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_2__["getTargetSyncTimeStamp"])(attachment.id, targetSpaceKey);
+      let cloned = await syncAttachment(attachment, targetContainerId, syncTimeStamp);
+      synced.push(cloned);
+    } catch (err) {
+      if (onAttachmentCopyFailure == "fail") {
+        throw err;
+      } else {
+        console.warn(`Error copying attachment ${attachment.id} - "${attachment.title}", skipping`, err);
+      }
+    }
+  }
+  if (attachments._links.next) {
+    console.log("More than 25 attachments, loading next page");
+    let nextBatch = await syncAttachmentsToContainer(await $.get(attachments._links.next + "&expand=space,version"), targetContainerId, targetSpaceKey);
+    return [].concat(synced, nextBatch);
+  } else {
+    return synced;
+  }
+}
+
+async function syncAttachment(attachment, targetContainerId, syncTimeStamp) {
+  let targetAttachment = await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_1__["lookupAttachment"])(targetContainerId, attachment.title);
+  let targetAttachmentId = targetAttachment ? targetAttachment.id:null;
+  if (targetAttachmentId && !syncTimeStamp) {
+    // try and get it from the target
+    syncTimeStamp = await Object(_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_2__["getSourceSyncTimeStamp"])(targetAttachmentId, attachment.space.key);
+  }
+  if (syncTimeStamp && targetAttachmentId!=null && (targetAttachmentId !== syncTimeStamp.targetContentId || targetAttachment.version.number !== syncTimeStamp.targetVersion ) ) {
+      throw `Attachment ${targetAttachmentId} was modified on target, should we overwrite?`;
+  }
+  if (syncTimeStamp && targetAttachmentId!=null && attachment.version.number === syncTimeStamp.sourceVersion) {
+      console.log(`attachment ${targetAttachmentId} was already up-to-date, synced with source version ${attachment.version.number}`);
+      return targetAttachment;
+  } else {
+      let cloned = await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_1__["cloneAttachment"])(attachment._links.download, targetContainerId, attachment.title, targetAttachmentId);
+      await Object(_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_2__["setSyncTimeStamps"])(attachment, cloned, attachment.space.key, cloned.space.key);
+      return cloned;
+  }
+}
+
+/***/ }),
+
+/***/ "./js/mainframe/spaceSyncPlugin.js":
+/*!*****************************************!*\
+  !*** ./js/mainframe/spaceSyncPlugin.js ***!
+  \*****************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _common_confluence_content_sync_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/confluence/content-sync-service */ "./js/common/confluence/content-sync-service.js");
+/* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
+
+
+
+const pageExpands = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
+/*
+
+Source Space Key: <input id="sourceSpaceKey" value="ps" /><br>
+Target Space Key: <input id="targetSpaceKey" value="~adrien.missemer@hybris.com" /><br>
+Target Parent Page: <input id="targetParentPage" value="Tests" /><br>
+Source Page Title: <input id="sourcePageTitle" value="Test Adrien With Attachments" /><br>
+<input type="button" id="copyBtn" value="Copy"/>
+<br>
+<textarea id="output" style="width: 100%; height: 100px;"></textarea>
+<br>
+Result page: 
+<div id="resultPage"></div>
+<script src="http://localhost/ywiki-plugins/dist/space-sync-bundle.js"></script>
+*/
+console.log("jquery binding");
+$("#copyBtn").click(async () => {
+    try {
+        let sourceSpaceKey = $("#sourceSpaceKey").val();
+        let targetSpaceKey = $("#targetSpaceKey").val();
+        let targetParentPage = $("#targetParentPage").val();
+        let sourcePageTitle = $("#sourcePageTitle").val();
+        output();
+        output(`Syncing ${sourcePageTitle} to ${targetSpaceKey}...`);
+
+        let sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContent"])(sourceSpaceKey,sourcePageTitle, pageExpands);
+        let targetParent = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContent"])(targetSpaceKey,targetParentPage);
+        let syncedPage = await syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParent.id, true);
+        output("Done");
+        $("#resultPage").html(`<a href="https://wiki.hybris.com/pages/viewpage.action?pageId=${syncedPage.id}">${syncedPage.title}</a>`);
+    } catch (err) {
+        output(err);
+    }
+});
+
+const OUT = $("#output");
+
+function output(txt) {
+    if (txt === undefined || txt === null) {
+        OUT.text("");
+    } else {
+        OUT.text(OUT.text() + txt + '\n');
+    }
+}
+
+async function syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParentId, syncAttachments) {
+    let rootCopy = await Object(_common_confluence_content_sync_service__WEBPACK_IMPORTED_MODULE_0__["syncPageToSpace"])(sourcePage, targetSpaceKey, targetParentId, syncAttachments);
+    let children = sourcePage.children.page;
+    while (children) {
+        for (let child of children.results) {
+            let childDetails = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(child.id, pageExpands);
+            await syncPageTreeToSpace(childDetails, targetSpaceKey, rootCopy.id, syncAttachments);
         }
-      } else {
-        console.warn("No response listener for correlationId: ", e.data.correlationId);
-      }
-    } else {
-      // not an action message
-      console.log("Received non-request, non-response, message: ", e.data);
+        if (children._links.next) {
+            children = await $.ajax(children._links.next);
+        } else {
+            children = null;
+        }
     }
-  }
-
-  /**
-   * Func should be a function(correlationId, payload). The return value will be ignored.
-   * Consider this private and used solely by the iframeWrapper.
-   * Use iframeWrapper.attachActionHandler(action, handler) instead
-   */
-  function registerRequestListener( action, func ) {
-    if (typeof func != 'function') {
-      console.error("Cannot register request listener since not a function: ", func);
-    } else {
-      requestListeners[action] = func;
-    }
-  }
-  function unregisterRequestListener( action ) {
-    requestListeners[action] = null;
-  }
-  /**
-   *  The response listener must be an object in the form { successHandler: function(argument) {}, errorHandler: function(argument) {}}
-   *  where at least 1 of successHandler or errorHandler is defined.
-   *  successHandler and errorHandler, if defined, must be functions that take a single argument. Their returned value is ignored.
-   *  If one of the property is missing, a default handler is added that will simply log the result/error.
-   *
-   *  Note: There is no unregisterResponseListener because the unregistration is automatically done the first (and only) time the responseListener is used.
-   *  This is because for a given correlationId, only one response or one error will be returned.
-   */
-  function registerResponseListener( correlationId, listener ) {
-    if (!listener.successHandler && !listener.errorHandler) {
-      console.error("Cannot register response listener as it is missing a successHandler function or errorHandler function", listener);
-      return;
-    }
-    if (listener.successHandler && typeof listener.successHandler != 'function') {
-      console.error("Cannot register response listener as the successHandler is not a function", listener);
-      return;
-    }
-    if (listener.errorHandler && typeof listener.errorHandler != 'function') {
-      console.error("Cannot register response listener as the errorHandler is not a function", listener);
-      return;
-    }
-    listener.successHandler = listener.successHandler? listener.successHandler : defaultSuccessHandler;
-    listener.errorHandler = listener.errorHandler? listener.errorHandler : defaultErrorHandler;
-    responseListeners[correlationId] = listener;
-  }
-
-  function defaultSuccessHandler(responsePayload) { console.info("Default success handler: ", responsePayload); }
-  function defaultErrorHandler(errorPayload) { console.warn("Default error handler: ", errorPayload); }
-
-  return {
-    registerRequestListener: registerRequestListener,
-    unregisterRequestListener: unregisterRequestListener,
-    registerResponseListener: registerResponseListener
-  };
-})();
-
-/* harmony default export */ __webpack_exports__["default"] = (windowEventListener);
-
-
-/***/ }),
-
-/***/ "./js/lib/polyfills.js":
-/*!*****************************!*\
-  !*** ./js/lib/polyfills.js ***!
-  \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-if(!Array.isArray) {
-  Array.isArray = function(arg) {
-    return Object.prototype.toString.call(arg) === '[object Array]';
-  };
+    return rootCopy;
 }
-
-if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
-      return typeof args[number] != 'undefined'
-        ? args[number]
-        : match
-      ;
-    });
-  };
-}
-
-if (!String.prototype.startsWith) {
-  String.prototype.startsWith = function(searchString, position) {
-    position = position || 0;
-    return this.indexOf(searchString, position) === position;
-  };
-}
-
-
-if (!String.prototype.endsWith) {
-  String.prototype.endsWith = function(searchString, position) {
-    var subjectString = this.toString();
-    if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
-      position = subjectString.length;
-    }
-    position -= searchString.length;
-    var lastIndex = subjectString.lastIndexOf(searchString, position);
-    return lastIndex !== -1 && lastIndex === position;
-  };
-}
-
-
-
-/***/ }),
-
-/***/ "./js/mainframe/goldenButtonPlugin.js":
-/*!********************************************!*\
-  !*** ./js/mainframe/goldenButtonPlugin.js ***!
-  \********************************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _css_professors_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../css/professors.css */ "./css/professors.css");
-/* harmony import */ var _css_professors_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_css_professors_css__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _css_golden_button_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../css/golden-button.css */ "./css/golden-button.css");
-/* harmony import */ var _css_golden_button_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_css_golden_button_css__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _css_jira_issue_summary_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../css/jira-issue-summary.css */ "./css/jira-issue-summary.css");
-/* harmony import */ var _css_jira_issue_summary_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_css_jira_issue_summary_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _common_iframeWrapper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../common/iframeWrapper */ "./js/common/iframeWrapper.js");
-/* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
-/* harmony import */ var _common_optionsParser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../common/optionsParser */ "./js/common/optionsParser.js");
-/* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
-
-
-
-
-
-
-
-
-function closeIFrame(iframeElt) {
-  iframeElt.unbind('load').fadeOut( function() {
-    iframeElt.attr('src', '');
-    $('#block').fadeOut();
-    $('#iframecontainer').fadeOut();
-  });
-}
-
-/** Opens the iframe in a "lightbox" fashion, loading it from frameSrc, and passing all provided options in the hash part of the url */
-function openIFrame(iframeElt, frameSrc, options) {
-  var block = $('#block');
-  block.fadeIn();
-  $('#iframecontainer').fadeIn();
-  iframeElt.bind('load', function() {
-    console.log("iframe loaded");
-    $('#loader').fadeOut(function() {
-      iframeElt.fadeIn();
-    });
-  });
-  iframeElt.attr('src', frameSrc + '#' + Object(_common_optionsParser__WEBPACK_IMPORTED_MODULE_5__["encodeOptions"])(options));
-  $(document).keyup(function(e) {
-    if (e.keyCode == 27) { // ESC
-			 closeIFrame(iframeElt);
-    }
-	});
-
-  $(document).mouseup(function (e)
-  {
-    if (block.is(e.target) || block.has(e.target).length > 0) {
-      // If the target of the click is the surrounding block
-      // Hide the iframe
-      closeIFrame(iframeElt);
-    }
-  });
-}
-
-function redirectTo(url) {
-  window.location.href = url;
-}
-
-function attachHandlersToIFrameWindow(host, myIFrame) {
-  Object(_common_iframeWrapper__WEBPACK_IMPORTED_MODULE_3__["default"])(myIFrame[0].contentWindow, host)
-    .attachActionHandler("ajax", function (param) {
-      return jQuery.ajax(param);
-    })
-    .attachActionHandler("closeFrame", function () {
-      return closeIFrame(myIFrame);
-    })
-    .attachActionHandler("redirect", function (url) {
-      return redirectTo(url);
-    })
-    .attachActionHandler("$metacontent", function (e) {
-      return jQuery(e).attr("content");
-    })
-    .attachActionHandler("localStorageSetItem", function (e) {
-      return window.localStorage.setItem(e.key, e.value);
-    })
-    .attachActionHandler("localStorageGetItem", function (e) {
-      return window.localStorage.getItem(e);
-    })
-    .attachActionHandler("$text", function (e) {
-      return jQuery(e).text();
-    });
-}
-
-function wireBanner(options) {
-  var jEl = $(options.cssSelector);
-  jEl.addClass("cibanner");
-  if (!options.disablePullUp) {
-    jEl.addClass("pullup");
-  }
-  options.buttonText = options.buttonText || "Start";
-  options.bannerText = options.bannerText || $('#title-text').text().trim();
-  $(".wiki-content .innerCell").css("overflow-x", "visible");
-  $(options.cssSelector).removeClass("rw_corners rw_page_left_section")
-  .html('<div class="cilogo">\
-              <img src="'+options.host+'/banner/service_leads_2.png" />\
-            </div>\
-            <div class="cicenter">\
-            <h1>'+options.bannerText+'</h1>\
-            </div>\
-          ');
-}
-
-function genericButton(options, formPath) {
-  // load dependencies in order
-  var myIFrame = $('#iframecontainer iframe');
-  $(options.cssSelector).click(function() {
-    openIFrame(myIFrame, options.host+'/'+formPath, options);
-    attachHandlersToIFrameWindow(options.host,myIFrame);
-  });
-}
-
-function wireJiraIssueSummary(options) {
-  // {
-  //   host,
-  //   cacheBuster,
-  //   cssSelector,
-  //   jiraLabel,
-  //   summaryType,
-  //   jiraIssueCount,
-  //   jiraColumns
-  // }
-  var el = $(options.cssSelector);
-  var jql = '( labels="'+options.jiraLabel+'" AND labels="'+_common_config__WEBPACK_IMPORTED_MODULE_6__["MAIN_JIRA_LABEL"]+'") ';
-  if (options.summaryType=="done") {
-    jql+=' AND status IN (Resolved, "Verified/Closed", Done, Fixed, Complete)';
-  } else if (options.summaryType=="todo") {
-    jql+=' AND status NOT IN (Resolved, "Verified/Closed", Done, Fixed, Complete, Cancelled)';
-  }
-  var postQuery = '<ac:structured-macro ac:name="jira" ac:schema-version="1" ><ac:parameter ac:name="columns">'+options.jiraColumns+'</ac:parameter><ac:parameter ac:name="maximumIssues">'+options.jiraIssueCount+'</ac:parameter><ac:parameter ac:name="jqlQuery">'+jql+'</ac:parameter></ac:structured-macro>';
-  var reqPayload = {
-      wikiMarkup : encodeURIComponent( postQuery ),
-      clearCache:true
-  };
-  $.ajax({
-    url:"https://"+_common_config__WEBPACK_IMPORTED_MODULE_6__["WIKI_HOST"]+"/rest/jiraanywhere/1.0/jira/renderTable",
-    type: "POST",
-    data: JSON.stringify(reqPayload),
-    contentType: "application/json",
-    complete: function( data ) {el.html(JSON.parse(data.responseText).data);}
-  });
-}
-
-function wireStartEngagementButton(options) {
-  var jEl = $(options.cssSelector);
-  jEl.addClass("cibutton btn btn-lg btn-warning btn-raised").html('<span class="text">Start</span>&nbsp;&nbsp;<i class="fa fa-play-circle fa-2x"></i>');
-  return genericButton(options, 'golden-form.html');
-}
-
-function wireCreateJiraButton(options) {
-  var el = $(options.cssSelector);
-  var currentText = el.text();
-  el.addClass("cibutton btn btn-lg btn-warning btn-raised")
-  .html('\
-    <span class="text">'+currentText+'</span>&nbsp;&nbsp;<span class="fa-stack" style="top: -3px">\
-      <i class="fa fa-comment-o fa-stack-2x"></i>\
-      <i class="fa fa-lightbulb-o fa-stack-1x"></i>\
-    </span>\
-  ');
-  return genericButton(options, 'create-jira-form.html');
-}
-
-function insertFrame() {
-  // insert the frame html after the current script tag
-  var scripts = document.getElementsByTagName('script');
-  $(scripts[scripts.length-1]).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
-}
-function readOptions(el) {
-  var groups = [];
-  function defaultNotFalse(v) {
-    return (v!==undefined && v!==null && v!==false && v!=="false"); 
-  }
-  el.children('ci-options').each(function() {
-    var name = $(this).attr("name");
-    var options = [];
-    $(this).children('ci-option').each(function() {
-      options.push({name: name, value: $(this).attr("value"), label: $(this).html(), default: defaultNotFalse($(this).attr("default")) });
-    });
-    groups.push({name: name, options: options});
-  });
-  return groups;
-}
-
-function bootstrap(host, cacheBuster) {
-  insertFrame();
-  $('[data-activate="golden-banner"]').each( function() {
-    var jEl=$(this);
-    wireBanner({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      disablePullUp: jEl.data('disable-pull-up'),
-      buttonText: jEl.data('button-text'),
-      bannerText: jEl.data('banner-text'),
-      targetSpace: jEl.data('target-space'),
-      newInstanceDisplayName: jEl.data('new-instance-display-name'),
-      addLabel: jEl.data('add-label'),
-      logToPage: jEl.data('log-to-page'),
-      variantOptions: readOptions(jEl),
-    });
-  });
-  $('[data-activate="golden-button"]').each( function() {
-    var jEl=$(this);
-    wireStartEngagementButton({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      disablePullUp: jEl.data('disable-pull-up'),
-      buttonText: jEl.data('button-text'),
-      bannerText: jEl.data('banner-text'),
-      targetSpace: jEl.data('target-space'),
-      newInstanceDisplayName: jEl.data('new-instance-display-name'),
-      addLabel: jEl.data('add-label'),
-      logToPage: jEl.data('log-to-page'),
-      variantOptions: readOptions(jEl),
-    });
-  });
-  $('[data-activate="issue-creator"]').each( function() {
-    var jEl=$(this);
-    wireCreateJiraButton({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      jiraProjectKey: jEl.data('jira-project-key'),
-      serviceDisplayName: jEl.data('service-display-name'),
-      issueType: jEl.data('issue-type') || "Improvement",
-      issueComponent: jEl.data('issue-component'),
-      issueLabel: jEl.data('issue-label') || jEl.data('jira-label'),
-    });
-  });
-  $('[data-activate="issue-summary"]').each( function() {
-    var jEl=$(this);
-    wireJiraIssueSummary({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      jiraLabel : jEl.data('jira-label'),
-      summaryType: jEl.data('summary-type'),
-      jiraIssueCount: Number(jEl.data('jira-max-issues')) || _common_config__WEBPACK_IMPORTED_MODULE_6__["DEFAULT_JIRA_ISSUE_COUNT"],
-      jiraColumns: jEl.data('jira-columns') || _common_config__WEBPACK_IMPORTED_MODULE_6__["DEFAULT_JIRA_COLUMNS"]
-    });
-  });
-}
-
-bootstrap(_pluginCommon__WEBPACK_IMPORTED_MODULE_4__["host"],_pluginCommon__WEBPACK_IMPORTED_MODULE_4__["cacheBuster"]);
-
-
-/***/ }),
-
-/***/ "./js/mainframe/main.js":
-/*!******************************!*\
-  !*** ./js/mainframe/main.js ***!
-  \******************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _stylesheetPlugin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
-/* harmony import */ var _goldenButtonPlugin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./goldenButtonPlugin */ "./js/mainframe/goldenButtonPlugin.js");
-
-
-
-
-/***/ }),
-
-/***/ "./js/mainframe/pluginCommon.js":
-/*!**************************************!*\
-  !*** ./js/mainframe/pluginCommon.js ***!
-  \**************************************/
-/*! exports provided: host, cacheBuster */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "host", function() { return host; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cacheBuster", function() { return cacheBuster; });
-const WHITELISTED_ORIGIN = [
-  'https://localhost',
-  'https://amissemer.github.io',
-  'https://es-global-ci.github.io'
-];
-
-function getOriginLocation() {
-  var scripts = document.getElementsByTagName('script');
-  var candidates = [];
-  for (let s of scripts) {
-    var url = s.getAttribute("src");
-    if (url && url.indexOf('http')==0) candidates.push(url);
-  }
-  console.log('Looking for script origin within', candidates);
-
-  for (let idx = candidates.length-1; idx>=0; idx--) {
-    var l = document.createElement("a");
-    l.href = candidates[idx];
-    if (!l.origin) l.origin=l.protocol+"//"+l.host
-    if (whitelistedOrigin(l.origin)) {
-      console.log("Found own origin: ",l.origin, 'cache busting', l.search);
-      return l;
-    }
-  }
-  throw 'Could not find a whitelisted origin';
-}
-
-function whitelistedOrigin(origin) {
-  return WHITELISTED_ORIGIN.indexOf(origin)>=0;
-}
-
-var originlocation = getOriginLocation();
-var host = originlocation.origin+'/ywiki-plugins';
-var cacheBuster=originlocation.search;
-console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
-
-
-
-
-/***/ }),
-
-/***/ "./js/mainframe/stylesheetPlugin.js":
-/*!******************************************!*\
-  !*** ./js/mainframe/stylesheetPlugin.js ***!
-  \******************************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
-
-
-// Loads a stylesheet at url. Url can be relative to the configured host.
-function loadStyleSheet(host, url) {
-  if (!url.startsWith('http')) {
-    url = host+'/'+url;
-  }
-  var link = document.createElement('link');
-  link.setAttribute('rel', 'stylesheet');
-  link.setAttribute('type', 'text/css');
-  link.setAttribute('href', url);
-  document.getElementsByTagName('head')[0].appendChild(link);
-  console.log('style loaded');
-}
-
-loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["host"],'dist/golden-button.css'+_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["cacheBuster"]);
 
 
 /***/ }),
@@ -11216,7 +11449,135 @@ return jQuery;
 } );
 
 
+/***/ }),
+
+/***/ "./node_modules/throat/index.js":
+/*!**************************************!*\
+  !*** ./node_modules/throat/index.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (PromiseArgument) {
+  var Promise;
+  function throat(size, fn) {
+    var queue = new Queue();
+    function run(fn, self, args) {
+      if (size) {
+        size--;
+        var result = new Promise(function (resolve) {
+          resolve(fn.apply(self, args));
+        });
+        result.then(release, release);
+        return result;
+      } else {
+        return new Promise(function (resolve) {
+          queue.push(new Delayed(resolve, fn, self, args));
+        });
+      }
+    }
+    function release() {
+      size++;
+      if (!queue.isEmpty()) {
+        var next = queue.shift();
+        next.resolve(run(next.fn, next.self, next.args));
+      }
+    }
+    if (typeof size === 'function') {
+      var temp = fn;
+      fn = size;
+      size = temp;
+    }
+    if (typeof size !== 'number') {
+      throw new TypeError(
+        'Expected throat size to be a number but got ' + typeof size
+      );
+    }
+    if (fn !== undefined && typeof fn !== 'function') {
+      throw new TypeError(
+        'Expected throat fn to be a function but got ' + typeof fn
+      );
+    }
+    if (typeof fn === 'function') {
+      return function () {
+        var args = [];
+        for (var i = 0; i < arguments.length; i++) {
+          args.push(arguments[i]);
+        }
+        return run(fn, this, args);
+      };
+    } else {
+      return function (fn) {
+        if (typeof fn !== 'function') {
+          throw new TypeError(
+            'Expected throat fn to be a function but got ' + typeof fn
+          );
+        }
+        var args = [];
+        for (var i = 1; i < arguments.length; i++) {
+          args.push(arguments[i]);
+        }
+        return run(fn, this, args);
+      };
+    }
+  }
+  if (arguments.length === 1 && typeof PromiseArgument === 'function') {
+    Promise = PromiseArgument;
+    return throat;
+  } else {
+    Promise = module.exports.Promise;
+    if (typeof Promise !== 'function') {
+      throw new Error(
+        'You must provide a Promise polyfill for this library to work in older environments'
+      );
+    }
+    return throat(arguments[0], arguments[1]);
+  }
+};
+
+/* istanbul ignore next */
+if (typeof Promise === 'function') {
+  module.exports.Promise = Promise;
+}
+
+function Delayed(resolve, fn, self, args) {
+  this.resolve = resolve;
+  this.fn = fn;
+  this.self = self || null;
+  this.args = args;
+}
+
+function Queue() {
+  this._s1 = [];
+  this._s2 = [];
+}
+
+Queue.prototype.push = function (value) {
+  this._s1.push(value);
+};
+
+Queue.prototype.shift = function () {
+  var s2 = this._s2;
+  if (s2.length === 0) {
+    var s1 = this._s1;
+    if (s1.length === 0) {
+      return;
+    }
+    this._s1 = s2;
+    s2 = this._s2 = s1.reverse();
+  }
+  return s2.pop();
+};
+
+Queue.prototype.isEmpty = function () {
+  return !this._s1.length && !this._s2.length;
+};
+
+
 /***/ })
 
 /******/ });
-//# sourceMappingURL=golden-button.js.map
+//# sourceMappingURL=space-sync-bundle.js.map
