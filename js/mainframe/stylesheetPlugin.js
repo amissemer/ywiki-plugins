@@ -1,7 +1,7 @@
 import * as plugin from './pluginCommon';
 
 // Loads a stylesheet at url. Url can be relative to the configured host.
-function loadStyleSheet(host, url) {
+export function loadStyleSheet(host, url) {
   if (!url.startsWith('http')) {
     url = host+'/'+url;
   }
@@ -13,4 +13,6 @@ function loadStyleSheet(host, url) {
   console.log('style loaded');
 }
 
-loadStyleSheet(plugin.host,'dist/golden-button.css'+plugin.cacheBuster);
+export function loadPluginStyleSheet(filename) {
+  return loadStyleSheet(plugin.host, 'dist/'+filename+plugin.cacheBuster);
+}

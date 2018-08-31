@@ -752,10 +752,11 @@ bootstrap(_pluginCommon__WEBPACK_IMPORTED_MODULE_4__["host"],_pluginCommon__WEBP
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _stylesheetPlugin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
-/* harmony import */ var _goldenButtonPlugin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./goldenButtonPlugin */ "./js/mainframe/goldenButtonPlugin.js");
+/* harmony import */ var _goldenButtonPlugin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./goldenButtonPlugin */ "./js/mainframe/goldenButtonPlugin.js");
+/* harmony import */ var _stylesheetPlugin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
 
 
+Object(_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_1__["loadPluginStyleSheet"])('golden-button.css');
 
 
 /***/ }),
@@ -816,11 +817,13 @@ console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
 /*!******************************************!*\
   !*** ./js/mainframe/stylesheetPlugin.js ***!
   \******************************************/
-/*! no exports provided */
+/*! exports provided: loadStyleSheet, loadPluginStyleSheet */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadStyleSheet", function() { return loadStyleSheet; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadPluginStyleSheet", function() { return loadPluginStyleSheet; });
 /* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
 
 
@@ -837,8 +840,9 @@ function loadStyleSheet(host, url) {
   console.log('style loaded');
 }
 
-loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["host"],'dist/golden-button.css'+_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["cacheBuster"]);
-
+function loadPluginStyleSheet(filename) {
+  return loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["host"], 'dist/'+filename+_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["cacheBuster"]);
+}
 
 /***/ }),
 

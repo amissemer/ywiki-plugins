@@ -46,7 +46,7 @@ export async function getContent(spaceKey,pageTitle,expand) {
   }
   var url = '/rest/api/content?type=page&spaceKey='+encodeURIComponent(spaceKey)+'&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
   console.log("Getting page content from " + url);
-  var response = await $.ajax(url);
+  var response = await throttleRead(() => $.ajax(url));
   console.log("Filtering AJAX response",response);
   if (response.results && response.results.length>0) {
     var page = response.results[0];
@@ -64,7 +64,7 @@ export async function getContentById(pageId, expand) {
   }
   var url = '/rest/api/content/'+encodeURIComponent(pageId) + expandParam;
   console.log(url);
-  return await $.ajax(url);
+  return await throttleRead(() => $.ajax(url));
 }
  
 /** search for content with CQL
@@ -162,7 +162,7 @@ export async function createPageUnderPageId(page, targetSpaceKey, targetPageId) 
 }
 
 export async function postPage(page) {
-  return await throttleWrite( async () => await $.ajax(
+  return await throttleWrite( () => $.ajax(
     {
       url: '/rest/api/content',
       type: 'POST',
@@ -173,7 +173,7 @@ export async function postPage(page) {
 }
 
 export async function updateContent(page) {
-  return await throttleWrite( async () => await $.ajax(
+  return await throttleWrite( () => $.ajax(
     {
       url: '/rest/api/content/'+encodeURIComponent(page.id),
       type: 'PUT',
@@ -185,7 +185,7 @@ export async function updateContent(page) {
 
 export async function getPageTree( pageId, parentId, parentTitle, counter ) {
   console.log(`Queueing getContentById for ${pageId}`);
-  var pageAndChildren = await throttleRead(() => getContentById(pageId, 'history.lastUpdated,children.page,metadata.labels'));
+  var pageAndChildren = await getContentById(pageId, 'history.lastUpdated,children.page,metadata.labels');
   counter.pages++;
   if (counter.pages%100 == 0) console.log(`Found ${counter.pages} pages so far...`);
   var childrenP = [];

@@ -1,0 +1,18 @@
+* {
+    -webkit-box-sizing: initial;
+       -moz-box-sizing: initial;
+            box-sizing: initial;
+}
+*:before,
+*:after {
+  -webkit-box-sizing: initial;
+     -moz-box-sizing: initial;
+          box-sizing: initial;
+}
+
+.glyphicon-lg {
+    font-size: 1.5em;
+}
+.btn[disabled] {
+    opacity: 0.1;
+}
