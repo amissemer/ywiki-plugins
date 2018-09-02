@@ -8,7 +8,22 @@
     <tbody>
         {^{for pages}}
         <tr>
-                <td>{^{>title()}}</td>
+                <td>
+                    <ul class="nav nav-pills">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {^{>title()}}
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a target="_blank" data-link="href{: url() }">{^{>title()}}</a></li>
+                                {^{for descendants()}}
+                                <li><a target="_blank" data-link="href{: url }">{^{>level + title}}</a></li>
+                                {{/for}}
+                            </ul>
+                        </li>
+                    </ul>
+                </td>
                 <td>
                     {^{if pagesToPush().length+pagesToPull().length+conflictingPages().length > 0}}
                     <div class="btn-group" role="group">

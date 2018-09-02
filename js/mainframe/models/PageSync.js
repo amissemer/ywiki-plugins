@@ -1,3 +1,3 @@
 export const PageSync = $.views.viewModels({
-    getters: ["id", "title"]
+    getters: ["id", "title", "url"]
 });

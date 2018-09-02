@@ -16,3 +16,9 @@
 .btn[disabled] {
     opacity: 0.1;
 }
+.wiki-content .dropdown ul {
+    list-style-type: none;
+}
+.wiki-content .dropdown-menu>li>a {
+    color: #333;
+}
