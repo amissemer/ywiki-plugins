@@ -1,5 +1,11 @@
 # The Golden Button yWikiPlugin
 
+## Architecture overview
+
+This pure front-end plugin for Confluence wiki is hosted on GitHub static pages (could be hosted in AWS S3 instead), and is used by adding a script tag to a wiki page (1), using the `{html}` macro. Typically this script will look for some specific markup on the page, for example `<ci-macro-tag>` in this diagram, and inject code there, in general an `<iframe>` whose source is also hosted on GitHub static pages (2). Inside the iframe (3), we can use any framework we want for our application, however, due to the Same Origin Policy, the iframe cannot directly access the wiki API. So we are using inter-frame message to communication between the wiki page and the iframe (4), and the main script running on the wiki page will do the actual Confluence REST API calls (4'). An additional REST webservice is called from the iframe to perform wiki page XSL transformation in a reliable way (5), this webservice is implemented by a lambda using Serverless framework (code in [serverless](serverless)).
+
+![ywiki-plugin-diagram](ywiki-plugin-diagram.png)
+
 ## Development environment
 
 ```bash
