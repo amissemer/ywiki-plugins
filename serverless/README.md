@@ -9,3 +9,10 @@ The official lamda is deployed in the AWS CoE account, in the `eu-central-1` reg
 ```
 serverless deploy -v
 ```
+
+* Why Python rather than Node.JS to perform the XSL-Transformation?
+
+I've looked into good implementation of XSLT in npm packages, but it seems there is no good, complete and reliable library to do this kind of transformation, and the few that claim to do it have a huge number of dependencies which do not seem all necessary.
+
+In comparison, Python has a single mature and stable library, lxml, and it is easy enough to use, so that the amount of Python code implementing this lambda is actually very small and straightforward.
+
