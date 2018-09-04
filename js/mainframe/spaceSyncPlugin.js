@@ -13,20 +13,14 @@ import 'jsviews';
 
 const pageExpands = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
 
-
-import {PageGroupSync} from './models/PageGroupSync';
-import {PageSync} from './models/PageSync';
 import log from './sync/log';
-import wrap from './sync/PageWrapperTypes';
+import PageWrapper from './sync/PageWrapper';
 
 import {Observable} from 'rxjs/Observable';
 
-//import 'rxjs/add/observable/of';
-//import 'rxjs/add/operator/map';
-
 var pages = [];
 function addPageGroup(pageGroup) {
-    $.observable(pages).insert(PageGroupSync.map(pageGroup));
+    $.observable(pages).insert(pageGroup);
 }
 
 let appElt = $('ci-sync-app').first();
@@ -46,12 +40,15 @@ const model = {
 };
 const helpers = {
     analyze : function(pageGroup) {
-        log(`Checking synchronization status for ${pageGroup.title()} - ${pageGroup.rootPage.id}...`);
-        pageGroup.analyzing(true);
+        log(`Checking synchronization status for ${pageGroup.title} - ${pageGroup.page.id}...`);
+        pageGroup.setAnalyzing(true);
         checkSyncStatus(pageGroup).subscribe(
             item => log(`Sync check ${item}%`),
-            e => log(`Error: ${e}`),
-            () => log('Checked sync status complete for ${pageGroup.title()} - ${pageGroup.rootPage.id}')
+            e => log(`Sync check error: ${e}`),
+            () => {
+                log(`Checked sync status complete for ${pageGroup.title} - ${pageGroup.page.id}`);
+                pageGroup.setAnalyzed(true);
+            }
         );
     }
 };
@@ -63,7 +60,6 @@ loadTemplate('sync-plugin/page-groups-table.html').then( function(tmpl) {
 listPageGroups(sourceSpace, sourceRootPage).subscribe(
     pageGroup => {
         log(`Found page group: ${pageGroup.title}`);
-        //pageGroup.rootPage = pageGroup.rootPage;
         pageGroup.descendants = descendants(pageGroup, pageGroup.children);
         addPageGroup(pageGroup);
     },
@@ -88,52 +84,62 @@ function descendants(context, children, level) {
 }
 
 function listPageGroups(sourceSpaceKey, sourcePageTitle) {
-    return Observable.create(async observer => {
-        try {
-            log();
-            log(`Listing page groups to sync from ${sourceSpaceKey}:${sourcePageTitle}...`);
-            let sourcePage = await getContent(sourceSpaceKey,sourcePageTitle, pageExpands);
-            //let targetParent = await getContent(targetSpaceKey,targetParentPage);
-            await scanPageGroups(sourcePage, null, observer);
+    return Observable.create(observer => {
+        (async () => {
+            try {
+                log();
+                log(`Listing page groups to sync from ${sourceSpaceKey}:${sourcePageTitle}...`);
+                let sourcePage = await getContent(sourceSpaceKey,sourcePageTitle, pageExpands);
+                //let targetParent = await getContent(targetSpaceKey,targetParentPage);
+                await scanPageGroups(sourcePage, null, observer);
+            } catch (err) {
+                observer.error(err);
+            }
             observer.complete();
-        } catch (err) {
-            observer.error(err);
-        }
+        })().then(null, observer.error);
     });
 }
 
 function checkSyncStatus(pageGroup) {
     //let rootCopy = await syncPageToSpace(sourcePage, targetSpaceKey, targetParentId, syncAttachments);
-    return Observable.create(async observer => {
-        let numPages = 1 + pageGroup.descendants.length;
-        let synced = 0;
-        try {
-            await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, targetParentPage, true, { next: () =>  
-                observer.next( Math.round((100*synced++)/numPages) ) 
-            });
-        } catch (err) {
-            observer.error(err);
-        }
-        observer.complete();
+    return Observable.create(observer => {
+        (async () => {
+            let numPages = 1 + pageGroup.descendants.length;
+            let synced = 0;
+            try {
+                await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, targetParentPage, true, callback);
+            } catch (err) {
+                log('got a sync check error');
+                observer.error(err);
+            }
+            observer.complete();
+
+            function callback() {
+                observer.next( Math.round((100* (++synced))/numPages) );
+            }
+
+        })().then(null, observer.error);
+
+        
     });
 }
-async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, targetParentId, syncAttachments, observer) {
+async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, targetParentId, syncAttachments, callback) {
     let children = pageWrapper.children;
     let page = pageWrapper.page;
     let syncStatus = await getSyncStatus(page, targetSpaceKey, targetParentId, syncAttachments);
     let targetPage = syncStatus.targetPage;
     pageGroup.updateWithSyncStatus(syncStatus);
-    observer.next();
+    callback();
     await Promise.all(children.map(async child => 
-        checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, targetPage, syncAttachments,observer)
+        checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, targetPage, syncAttachments,callback)
     ));
 }
 
 
-/** emits page groups to the observer (the root and subtrees starting from pages with given label, see isPageGroupRoot).
- * Wraps all pages in PageWrapper or PageGroup. */
+/** emits page groups to the observer (the root and subtrees starting from pages with a given label).
+ * Wraps all pages in PageWrapper. */
 async function scanPageGroups(sourcePage, parentPageWrapper, observer) {
-    let thisPageWrapper = wrap(sourcePage, parentPageWrapper);
+    let thisPageWrapper = new PageWrapper(sourcePage, parentPageWrapper);
 
     let children = sourcePage.children.page;
     let allChildren = [];
@@ -151,7 +157,7 @@ async function scanPageGroups(sourcePage, parentPageWrapper, observer) {
     }
     thisPageWrapper.children = allChildren;
 
-    if (thisPageWrapper.isPageGroup()) {
+    if (thisPageWrapper.isPageGroup) {
         observer.next(thisPageWrapper);
     }
     return thisPageWrapper;

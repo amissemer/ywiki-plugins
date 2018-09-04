@@ -899,38 +899,43 @@ async function buildSyncStatus(sourcePage, targetSpaceKey, targetPage, syncTimeS
       status: _mainframe_sync_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_5__["default"].TARGET_MISSING,
       perform: createPage,
       targetPage: null,
-      sourcePage: sourcePage     
+      sourcePage: sourcePage,
+      syncTimeStamp: syncTimeStamp     
     };
   }
-  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.targetVersion && sourcePage.version.number === syncTimeStamp.sourceVersion) {
+  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.sourceVersion && sourcePage.version.number === syncTimeStamp.targetVersion) {
     return {
       status: _mainframe_sync_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_5__["default"].TARGET_UPDATED,
       perform: performPull,
       targetPage: targetPage,
-      sourcePage: sourcePage     
+      sourcePage: sourcePage,
+      syncTimeStamp: syncTimeStamp     
     };
   }
-  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.targetVersion) {
+  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.sourceVersion) {
     return {
       status: _mainframe_sync_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_5__["default"].CONFLICTING,
       perform: performUpdate,
       targetPage: targetPage,
-      sourcePage: sourcePage     
+      sourcePage: sourcePage,
+      syncTimeStamp: syncTimeStamp     
     };
   }
-  if (syncTimeStamp && sourcePage.version.number === syncTimeStamp.sourceVersion) {
+  if (syncTimeStamp && sourcePage.version.number === syncTimeStamp.targetVersion) {
     return {
       status: _mainframe_sync_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_5__["default"].UP_TO_DATE,
       perform: noop,
       targetPage: targetPage,
-      sourcePage: sourcePage  
+      sourcePage: sourcePage,
+      syncTimeStamp: syncTimeStamp  
     }
   } else {
     return {
       status: _mainframe_sync_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_5__["default"].SOURCE_UPDATED,
       perform: performUpdate,
       targetPage: targetPage,
-      sourcePage: sourcePage         
+      sourcePage: sourcePage,
+      syncTimeStamp: syncTimeStamp         
     };
   }
   async function noop() {}
@@ -1140,66 +1145,6 @@ function append(message) {
 
 /***/ }),
 
-/***/ "./js/mainframe/models/PageGroupSync.js":
-/*!**********************************************!*\
-  !*** ./js/mainframe/models/PageGroupSync.js ***!
-  \**********************************************/
-/*! exports provided: PageGroupSync */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PageGroupSync", function() { return PageGroupSync; });
-/* harmony import */ var _PageSync__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PageSync */ "./js/mainframe/models/PageSync.js");
-
-
-const PageGroupSync = $.views.viewModels({
-    getters: ["title", "url", "analyzed", "analyzing",
-    {getter: "pagesToPush",      defaultVal: [], type: "PageSync"}, 
-    {getter: "pagesToPull",      defaultVal: [], type: "PageSync"}, 
-    {getter: "syncedPages",      defaultVal: [], type: "PageSync"}, 
-    {getter: "conflictingPages", defaultVal: [], type: "PageSync"},
-    {getter: "descendants",      defaultVal: [], type: "PageSync"}],
-    extend: {
-        addPageToPush: addPageToPush, 
-        addPageToPull: addPageToPull, 
-        addSyncedPage: addSyncedPage, 
-        addConflictingPage: addConflictingPage
-    }
-});
-
-function addPageToPush(page) {
-    $.observable(this.pagesToPush()).insert(page);
-}
-function addPageToPull(page) {
-    $.observable(this.pagesToPull()).insert(page);
-}
-function addSyncedPage(page) {
-    $.observable(this.syncedPages()).insert(page);
-}
-function addConflictingPage(page) {
-    $.observable(this.conflictingPages()).insert(page);
-}
-
-
-/***/ }),
-
-/***/ "./js/mainframe/models/PageSync.js":
-/*!*****************************************!*\
-  !*** ./js/mainframe/models/PageSync.js ***!
-  \*****************************************/
-/*! exports provided: PageSync */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PageSync", function() { return PageSync; });
-const PageSync = $.views.viewModels({
-    getters: ["id", "title", "url","targetId"]
-});
-
-/***/ }),
-
 /***/ "./js/mainframe/pluginCommon.js":
 /*!**************************************!*\
   !*** ./js/mainframe/pluginCommon.js ***!
@@ -1285,12 +1230,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _fragmentLoader__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./fragmentLoader */ "./js/mainframe/fragmentLoader.js");
 /* harmony import */ var jsviews__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! jsviews */ "./node_modules/jsviews/jsviews.js");
 /* harmony import */ var jsviews__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(jsviews__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _models_PageGroupSync__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./models/PageGroupSync */ "./js/mainframe/models/PageGroupSync.js");
-/* harmony import */ var _models_PageSync__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./models/PageSync */ "./js/mainframe/models/PageSync.js");
-/* harmony import */ var _sync_log__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./sync/log */ "./js/mainframe/sync/log.js");
-/* harmony import */ var _sync_PageWrapperTypes__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./sync/PageWrapperTypes */ "./js/mainframe/sync/PageWrapperTypes.js");
-/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
-/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var _sync_log__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./sync/log */ "./js/mainframe/sync/log.js");
+/* harmony import */ var _sync_PageWrapper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./sync/PageWrapper */ "./js/mainframe/sync/PageWrapper.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__);
 
 
 
@@ -1311,15 +1254,9 @@ const pageExpands = 'version,space,body.storage,metadata.labels,children.page,ch
 
 
 
-
-
-
-//import 'rxjs/add/observable/of';
-//import 'rxjs/add/operator/map';
-
 var pages = [];
 function addPageGroup(pageGroup) {
-    $.observable(pages).insert(_models_PageGroupSync__WEBPACK_IMPORTED_MODULE_9__["PageGroupSync"].map(pageGroup));
+    $.observable(pages).insert(pageGroup);
 }
 
 let appElt = $('ci-sync-app').first();
@@ -1327,24 +1264,27 @@ let sourceSpace = appElt.data('source-space');
 let targetSpace = appElt.data('target-space');
 let sourceRootPage = appElt.data('source-root-page');
 let targetParentPage = appElt.data('target-parent-page');
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])(`sourceSpace="${sourceSpace}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])(`targetSpace="${targetSpace}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])(`sourceRootPage="${sourceRootPage}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])(`targetParentPage="${targetParentPage}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`sourceSpace="${sourceSpace}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`targetSpace="${targetSpace}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`sourceRootPage="${sourceRootPage}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`targetParentPage="${targetParentPage}"`);
 
 const model = {
-    output: _sync_log__WEBPACK_IMPORTED_MODULE_11__["default"].output, 
+    output: _sync_log__WEBPACK_IMPORTED_MODULE_9__["default"].output, 
     pages: pages,
     host: _pluginCommon__WEBPACK_IMPORTED_MODULE_6__["host"]
 };
 const helpers = {
     analyze : function(pageGroup) {
-        Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])(`Checking synchronization status for ${pageGroup.title()} - ${pageGroup.rootPage.id}...`);
-        pageGroup.analyzing(true);
+        Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Checking synchronization status for ${pageGroup.title} - ${pageGroup.page.id}...`);
+        pageGroup.setAnalyzing(true);
         checkSyncStatus(pageGroup).subscribe(
-            item => Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])(`Sync check ${item}%`),
-            e => Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])(`Error: ${e}`),
-            () => Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])('Checked sync status complete for ${pageGroup.title()} - ${pageGroup.rootPage.id}')
+            item => Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Sync check ${item}%`),
+            e => Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Sync check error: ${e}`),
+            () => {
+                Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Checked sync status complete for ${pageGroup.title} - ${pageGroup.page.id}`);
+                pageGroup.setAnalyzed(true);
+            }
         );
     }
 };
@@ -1355,13 +1295,12 @@ Object(_fragmentLoader__WEBPACK_IMPORTED_MODULE_7__["loadTemplate"])('sync-plugi
 
 listPageGroups(sourceSpace, sourceRootPage).subscribe(
     pageGroup => {
-        Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])(`Found page group: ${pageGroup.title}`);
-        //pageGroup.rootPage = pageGroup.rootPage;
+        Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Found page group: ${pageGroup.title}`);
         pageGroup.descendants = descendants(pageGroup, pageGroup.children);
         addPageGroup(pageGroup);
     },
-    e => Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])(`Error: ${e}`),
-    () => Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])('Page group listing complete')
+    e => Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Error: ${e}`),
+    () => Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])('Page group listing complete')
 );
 
 const INDENT = "  ";
@@ -1381,52 +1320,62 @@ function descendants(context, children, level) {
 }
 
 function listPageGroups(sourceSpaceKey, sourcePageTitle) {
-    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_13__["Observable"].create(async observer => {
-        try {
-            Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])();
-            Object(_sync_log__WEBPACK_IMPORTED_MODULE_11__["default"])(`Listing page groups to sync from ${sourceSpaceKey}:${sourcePageTitle}...`);
-            let sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContent"])(sourceSpaceKey,sourcePageTitle, pageExpands);
-            //let targetParent = await getContent(targetSpaceKey,targetParentPage);
-            await scanPageGroups(sourcePage, null, observer);
+    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__["Observable"].create(observer => {
+        (async () => {
+            try {
+                Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])();
+                Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Listing page groups to sync from ${sourceSpaceKey}:${sourcePageTitle}...`);
+                let sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContent"])(sourceSpaceKey,sourcePageTitle, pageExpands);
+                //let targetParent = await getContent(targetSpaceKey,targetParentPage);
+                await scanPageGroups(sourcePage, null, observer);
+            } catch (err) {
+                observer.error(err);
+            }
             observer.complete();
-        } catch (err) {
-            observer.error(err);
-        }
+        })().then(null, observer.error);
     });
 }
 
 function checkSyncStatus(pageGroup) {
     //let rootCopy = await syncPageToSpace(sourcePage, targetSpaceKey, targetParentId, syncAttachments);
-    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_13__["Observable"].create(async observer => {
-        let numPages = 1 + pageGroup.descendants.length;
-        let synced = 0;
-        try {
-            await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, targetParentPage, true, { next: () =>  
-                observer.next( Math.round((100*synced++)/numPages) ) 
-            });
-        } catch (err) {
-            observer.error(err);
-        }
-        observer.complete();
+    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__["Observable"].create(observer => {
+        (async () => {
+            let numPages = 1 + pageGroup.descendants.length;
+            let synced = 0;
+            try {
+                await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, targetParentPage, true, callback);
+            } catch (err) {
+                Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])('got a sync check error');
+                observer.error(err);
+            }
+            observer.complete();
+
+            function callback() {
+                observer.next( Math.round((100* (++synced))/numPages) );
+            }
+
+        })().then(null, observer.error);
+
+        
     });
 }
-async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, targetParentId, syncAttachments, observer) {
+async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, targetParentId, syncAttachments, callback) {
     let children = pageWrapper.children;
     let page = pageWrapper.page;
     let syncStatus = await Object(_common_confluence_content_sync_service__WEBPACK_IMPORTED_MODULE_0__["getSyncStatus"])(page, targetSpaceKey, targetParentId, syncAttachments);
     let targetPage = syncStatus.targetPage;
     pageGroup.updateWithSyncStatus(syncStatus);
-    observer.next();
+    callback();
     await Promise.all(children.map(async child => 
-        checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, targetPage, syncAttachments,observer)
+        checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, targetPage, syncAttachments,callback)
     ));
 }
 
 
-/** emits page groups to the observer (the root and subtrees starting from pages with given label, see isPageGroupRoot).
- * Wraps all pages in PageWrapper or PageGroup. */
+/** emits page groups to the observer (the root and subtrees starting from pages with a given label).
+ * Wraps all pages in PageWrapper. */
 async function scanPageGroups(sourcePage, parentPageWrapper, observer) {
-    let thisPageWrapper = Object(_sync_PageWrapperTypes__WEBPACK_IMPORTED_MODULE_12__["default"])(sourcePage, parentPageWrapper);
+    let thisPageWrapper = new _sync_PageWrapper__WEBPACK_IMPORTED_MODULE_10__["default"](sourcePage, parentPageWrapper);
 
     let children = sourcePage.children.page;
     let allChildren = [];
@@ -1444,7 +1393,7 @@ async function scanPageGroups(sourcePage, parentPageWrapper, observer) {
     }
     thisPageWrapper.children = allChildren;
 
-    if (thisPageWrapper.isPageGroup()) {
+    if (thisPageWrapper.isPageGroup) {
         observer.next(thisPageWrapper);
     }
     return thisPageWrapper;
@@ -1493,43 +1442,66 @@ function loadPluginStyleSheet(filename) {
 
 /***/ }),
 
-/***/ "./js/mainframe/sync/PageWrapperTypes.js":
-/*!***********************************************!*\
-  !*** ./js/mainframe/sync/PageWrapperTypes.js ***!
-  \***********************************************/
-/*! exports provided: PageWrapper, PageGroup, isPageGroupRoot, default */
+/***/ "./js/mainframe/sync/PageWrapper.js":
+/*!******************************************!*\
+  !*** ./js/mainframe/sync/PageWrapper.js ***!
+  \******************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PageWrapper", function() { return PageWrapper; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PageGroup", function() { return PageGroup; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPageGroupRoot", function() { return isPageGroupRoot; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return wrap; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return PageWrapper; });
+/* harmony import */ var _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SyncStatusEnum */ "./js/mainframe/sync/SyncStatusEnum.js");
+
+
 class PageWrapper {
-    constructor(page, parent, children) {
+    constructor(page, parent) {
         this.title = page.title;
         this.url = page._links.webui;
         this.page = page;
-        this.children = children;
+        this.children = null;
         this.parentPage = parent;
+        this.pagesToPush = [];
+        this.pagesToPull = [];
+        this.syncedPages = [];
+        this.conflictingPages = [];
+        this.descendants = [];
+        this.isPageGroup = isPageGroupRoot(page, parent);
+        
     }
-    isPageGroup() {return false;}
-
     skipSync(context) {
-        return context.title!=this.title && this.isPageGroup();
-    }
-}
-
-class PageGroup extends PageWrapper {
-    constructor(rootPage, parent, children) {
-        super(rootPage, parent, children);
-        this.pageGroup = true;
+        return context.title!=this.title && this.isPageGroup;
     }
     updateWithSyncStatus(syncStatus) {
-        return PageGroupSync.map(this).addPageToPush({id:""})
+        switch (syncStatus.status) {
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING: return this.addPageToPush(syncStatus);
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_UPDATED: return this.addPageToPull(syncStatus);
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].CONFLICTING: return this.addConflictingPage(syncStatus);
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].UP_TO_DATE: return this.addSyncedPage(syncStatus);
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_UPDATED: return this.addPageToPush(syncStatus);
+        }
     }
-    isPageGroup() {return true;}
+    addPageToPush(page) {
+        $.observable(this.pagesToPush).insert(page);
+    }
+    addPageToPull(page) {
+        $.observable(this.pagesToPull).insert(page);
+    }
+    addConflictingPage(page) {
+        $.observable(this.conflictingPages).insert(page);
+    }
+    addSyncedPage(page) {
+        $.observable(this.syncedPages).insert(page);
+    }
+    setAnalyzing(analyzing) {
+        $.observable(this).setProperty('analyzing', analyzing);
+    }
+    setAnalyzed(analyzed) {
+        let o = $.observable(this);
+        o.setProperty('analyzing', false);
+        o.setProperty('analyzed', true);
+    }
 }
 
 const PAGE_GROUP_LABELS = ['service-dashboard','ci-publish-package'];
@@ -1545,12 +1517,9 @@ function isPageGroupRoot(page, parentPage) {
     return (!parentPage) || hasLabel(page, PAGE_GROUP_LABELS);
 }
 
-function wrap(sourcePage, parentPageWrapper) {
-    if (isPageGroupRoot(sourcePage, parentPageWrapper)) {
-        return new PageGroup(sourcePage, parentPageWrapper);
-    } else {
-        return new PageWrapper(sourcePage, parentPageWrapper);
-    }    
+/* URL to display changes since last synchro */
+function getDiffUrl(page, lastSyncedVersion) {
+    return `/pages/diffpagesbyversion.action?pageId=${page.id}&selectedPageVersions=${page.version.number}&selectedPageVersions=${lastSyncedVersion}`;
 }
 
 /***/ }),

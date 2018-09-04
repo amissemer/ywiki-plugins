@@ -41,38 +41,43 @@ async function buildSyncStatus(sourcePage, targetSpaceKey, targetPage, syncTimeS
       status: SyncStatusEnum.TARGET_MISSING,
       perform: createPage,
       targetPage: null,
-      sourcePage: sourcePage     
+      sourcePage: sourcePage,
+      syncTimeStamp: syncTimeStamp     
     };
   }
-  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.targetVersion && sourcePage.version.number === syncTimeStamp.sourceVersion) {
+  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.sourceVersion && sourcePage.version.number === syncTimeStamp.targetVersion) {
     return {
       status: SyncStatusEnum.TARGET_UPDATED,
       perform: performPull,
       targetPage: targetPage,
-      sourcePage: sourcePage     
+      sourcePage: sourcePage,
+      syncTimeStamp: syncTimeStamp     
     };
   }
-  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.targetVersion) {
+  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.sourceVersion) {
     return {
       status: SyncStatusEnum.CONFLICTING,
       perform: performUpdate,
       targetPage: targetPage,
-      sourcePage: sourcePage     
+      sourcePage: sourcePage,
+      syncTimeStamp: syncTimeStamp     
     };
   }
-  if (syncTimeStamp && sourcePage.version.number === syncTimeStamp.sourceVersion) {
+  if (syncTimeStamp && sourcePage.version.number === syncTimeStamp.targetVersion) {
     return {
       status: SyncStatusEnum.UP_TO_DATE,
       perform: noop,
       targetPage: targetPage,
-      sourcePage: sourcePage  
+      sourcePage: sourcePage,
+      syncTimeStamp: syncTimeStamp  
     }
   } else {
     return {
       status: SyncStatusEnum.SOURCE_UPDATED,
       perform: performUpdate,
       targetPage: targetPage,
-      sourcePage: sourcePage         
+      sourcePage: sourcePage,
+      syncTimeStamp: syncTimeStamp         
     };
   }
   async function noop() {}
