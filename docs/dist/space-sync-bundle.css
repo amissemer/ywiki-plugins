@@ -6780,5 +6780,9 @@ button.close {
 .wiki-content .dropdown-menu>li>a {
     color: #333;
 }
+.btn-group .spin {
+    margin-top: 13px;
+    margin-left: 5px;
+}
 
 /*# sourceMappingURL=space-sync-bundle.css.map*/

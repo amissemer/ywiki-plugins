@@ -1,13 +1,18 @@
 import {PageSync} from './PageSync';
 
 export const PageGroupSync = $.views.viewModels({
-    getters: ["title", "url",
+    getters: ["title", "url", "analyzed", "analyzing",
     {getter: "pagesToPush",      defaultVal: [], type: "PageSync"}, 
     {getter: "pagesToPull",      defaultVal: [], type: "PageSync"}, 
     {getter: "syncedPages",      defaultVal: [], type: "PageSync"}, 
     {getter: "conflictingPages", defaultVal: [], type: "PageSync"},
     {getter: "descendants",      defaultVal: [], type: "PageSync"}],
-    extend: {addPageToPush: addPageToPush, addPageToPull: addPageToPull, addSyncedPage: addSyncedPage, addConflictingPage: addConflictingPage}
+    extend: {
+        addPageToPush: addPageToPush, 
+        addPageToPull: addPageToPull, 
+        addSyncedPage: addSyncedPage, 
+        addConflictingPage: addConflictingPage
+    }
 });
 
 function addPageToPush(page) {

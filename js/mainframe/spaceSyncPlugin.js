@@ -1,4 +1,4 @@
-import {syncPageToSpace} from '../common/confluence/content-sync-service';
+import {syncPageToSpace, getSyncStatus} from '../common/confluence/content-sync-service';
 import {getContent,getContentById} from '../common/confluence/confluence-page-async';
 import 'bootstrap/dist/js/bootstrap.min';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -7,18 +7,20 @@ import './spaceSyncPlugin.css';
 
 import {loadPluginStyleSheet} from './stylesheetPlugin';
 loadPluginStyleSheet('space-sync-bundle.css');
+import {host} from './pluginCommon';
 import {loadFragment, loadTemplate} from './fragmentLoader';
 import 'jsviews';
 
 const pageExpands = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
-const PAGE_GROUP_LABELS = ['service-dashboard','ci-publish-package'];
 
 
 import {PageGroupSync} from './models/PageGroupSync';
 import {PageSync} from './models/PageSync';
 import log from './sync/log';
+import wrap from './sync/PageWrapperTypes';
 
 import {Observable} from 'rxjs/Observable';
+
 //import 'rxjs/add/observable/of';
 //import 'rxjs/add/operator/map';
 
@@ -39,52 +41,60 @@ log(`targetParentPage="${targetParentPage}"`);
 
 const model = {
     output: log.output, 
-    pages: pages 
+    pages: pages,
+    host: host
+};
+const helpers = {
+    analyze : function(pageGroup) {
+        log(`Checking synchronization status for ${pageGroup.title()} - ${pageGroup.rootPage.id}...`);
+        pageGroup.analyzing(true);
+        checkSyncStatus(pageGroup).subscribe(
+            item => log(`Sync check ${item}%`),
+            e => log(`Error: ${e}`),
+            () => log('Checked sync status complete for ${pageGroup.title()} - ${pageGroup.rootPage.id}')
+        );
+    }
 };
 
 loadTemplate('sync-plugin/page-groups-table.html').then( function(tmpl) {
-    tmpl.link(appElt, model);
+    tmpl.link(appElt, model, helpers);
 });
 
-listPageGroups(sourceSpace, targetSpace, sourceRootPage, targetParentPage).subscribe(
+listPageGroups(sourceSpace, sourceRootPage).subscribe(
     pageGroup => {
         log(`Found page group: ${pageGroup.title}`);
-        addPageGroup({
-            title: pageGroup.title,
-            url: pageGroup.url,
-            descendants: descendants(pageGroup.children)
-        });
+        //pageGroup.rootPage = pageGroup.rootPage;
+        pageGroup.descendants = descendants(pageGroup, pageGroup.children);
+        addPageGroup(pageGroup);
     },
     e => log(`Error: ${e}`),
     () => log('Page group listing complete')
 );
 
 const INDENT = "  ";
-function descendants(children, level) {
+function descendants(context, children, level) {
     let descendantsRes = [];
     level = level || INDENT;
     for (let child of children) {
-        if (!child.skipSync) {
+        if (!child.skipSync(context)) {
             child.level = level;
             descendantsRes.push(child);
-            descendantsRes = descendantsRes.concat(descendants(child.children, level+INDENT));
+            descendantsRes = descendantsRes.concat(descendants(context, child.children, level+INDENT));
+        } else {
+            console.log('ok');
         }
     }
     return descendantsRes;
 }
 
-function listPageGroups(sourceSpaceKey, targetSpaceKey, sourcePageTitle, targetParentPage) {
+function listPageGroups(sourceSpaceKey, sourcePageTitle) {
     return Observable.create(async observer => {
         try {
             log();
-            log(`Listing page groups to sync between ${sourceSpaceKey}:${sourcePageTitle} and ${targetSpaceKey}...`);
+            log(`Listing page groups to sync from ${sourceSpaceKey}:${sourcePageTitle}...`);
             let sourcePage = await getContent(sourceSpaceKey,sourcePageTitle, pageExpands);
             //let targetParent = await getContent(targetSpaceKey,targetParentPage);
-            observer.next({
-                title: sourcePage.title,
-                url: sourcePage._links.webui,
-                children: await scanPageGroups(sourcePage, observer)
-            }); // the root page is a PageGroup by definition
+            await scanPageGroups(sourcePage, null, observer);
             observer.complete();
         } catch (err) {
             observer.error(err);
@@ -92,41 +102,46 @@ function listPageGroups(sourceSpaceKey, targetSpaceKey, sourcePageTitle, targetP
     });
 }
 
-async function ___syncPageTreeToSpace(sourcePage, targetSpaceKey, targetParentId, syncAttachments, observer) {
+function checkSyncStatus(pageGroup) {
     //let rootCopy = await syncPageToSpace(sourcePage, targetSpaceKey, targetParentId, syncAttachments);
-    let children = sourcePage.children.page;
-    while (children) {
-        await Promise.all(children.results.map(async child => {
-            let childDetails = await getContentById(child.id, pageExpands);
-            await syncPageTreeToSpace(childDetails, targetSpaceKey, null, syncAttachments, observer);
-        }));
-        if (children._links.next) {
-            children = await $.ajax(children._links.next);
-        } else {
-            children = null;
+    return Observable.create(async observer => {
+        let numPages = 1 + pageGroup.descendants.length;
+        let synced = 0;
+        try {
+            await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, targetParentPage, true, { next: () =>  
+                observer.next( Math.round((100*synced++)/numPages) ) 
+            });
+        } catch (err) {
+            observer.error(err);
         }
-    }
-    // once all children have been processed, if the label is PAGE_GROUP_LABEL, emit the PageGroup
-    if (isPageGroupRoot(sourcePage)) {
-        observer.next(sourcePage);
-    }
-    //return rootCopy;
+        observer.complete();
+    });
+}
+async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, targetParentId, syncAttachments, observer) {
+    let children = pageWrapper.children;
+    let page = pageWrapper.page;
+    let syncStatus = await getSyncStatus(page, targetSpaceKey, targetParentId, syncAttachments);
+    let targetPage = syncStatus.targetPage;
+    pageGroup.updateWithSyncStatus(syncStatus);
+    observer.next();
+    await Promise.all(children.map(async child => 
+        checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, targetPage, syncAttachments,observer)
+    ));
 }
 
 
-/** emits page groups to the observer, and returns all descendants of the page if it is not a page group root page, or [] otherwise */
-async function scanPageGroups(sourcePage, observer) {
+/** emits page groups to the observer (the root and subtrees starting from pages with given label, see isPageGroupRoot).
+ * Wraps all pages in PageWrapper or PageGroup. */
+async function scanPageGroups(sourcePage, parentPageWrapper, observer) {
+    let thisPageWrapper = wrap(sourcePage, parentPageWrapper);
+
     let children = sourcePage.children.page;
-    let descendants = [];
+    let allChildren = [];
     while (children) {
-        descendants = descendants.concat(await Promise.all(children.results.map(async child => {
+        allChildren = allChildren.concat(await Promise.all(children.results.map(async child => {
             let childDetails = await getContentById(child.id, pageExpands);
-            return {
-                title: childDetails.title,
-                url: childDetails._links.webui,
-                skipSync: isPageGroupRoot(childDetails),
-                children: await scanPageGroups(childDetails, observer)
-            };
+            let childWrapper = await scanPageGroups(childDetails, thisPageWrapper, observer);
+            return childWrapper;
         })));
         if (children._links.next) {
             children = await $.ajax(children._links.next);
@@ -134,25 +149,17 @@ async function scanPageGroups(sourcePage, observer) {
             children = null;
         }
     }
-    // once all children have been processed, if the label is PAGE_GROUP_LABEL, emit the PageGroup
-    if (isPageGroupRoot(sourcePage)) {
-        observer.next({
-            title: sourcePage.title,
-            children: descendants,
-            url: sourcePage._links.webui
-        });
-        return [];
+    thisPageWrapper.children = allChildren;
+
+    if (thisPageWrapper.isPageGroup()) {
+        observer.next(thisPageWrapper);
     }
-    return descendants;
+    return thisPageWrapper;
 }
 
-function hasLabel(page, labelsToFind) {
-    for (let label of page.metadata.labels.results) {
-        if (labelsToFind.indexOf(label.name)>=0) return true;
-    }
-    return false;
-}
 
-function isPageGroupRoot(page) {
-    return hasLabel(page, PAGE_GROUP_LABELS);
-}
+
+
+
+
+

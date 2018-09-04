@@ -3,8 +3,98 @@ import {cloneAttachment,lookupAttachment} from './confluence-attachment-async';
 import {getTargetSyncTimeStamp, setSyncTimeStamps, getSourceSyncTimeStamp} from './confluence-sync-timestamps';
 import {addLabels,removeLabels} from './confluence-labels-async';
 import {postProcess,preProcess} from './confluence-page-postprocessor';
+import SyncStatusEnum from '../../mainframe/sync/SyncStatusEnum';
 
 const onAttachmentCopyFailure = "log";
+
+export async function getSyncStatus(pageToCopy, targetSpaceKey, targetParentId, syncAttachments) {
+  let targetPage;
+  let syncTimeStamp = await getSourceSyncTimeStamp(pageToCopy.id, targetSpaceKey);
+  if (syncTimeStamp && syncTimeStamp.targetContentId!=pageToCopy.id) {
+    log(`Error syncTimeStamp`);
+  } else if (syncTimeStamp) {
+    try {
+      targetPage = await getContentById(syncTimeStamp.sourceContentId, 'version,metadata.labels');
+      return buildSyncStatus(pageToCopy, targetSpaceKey, targetPage, syncTimeStamp);
+    } catch (err) {
+      // the last synced target page was removed, we will recreate
+    }
+  }
+  if (!targetPage) {
+    try {
+      targetPage = await getContent(targetSpaceKey, pageToCopy.title, 'version,metadata.labels');
+      syncTimeStamp = await getTargetSyncTimeStamp(targetPage.id, pageToCopy.space.key);
+      // Do a full initial sync
+      // TODO filter links
+      return buildSyncStatus(pageToCopy, targetSpaceKey, targetPage, syncTimeStamp);
+    } catch (err) {
+      // Create the new page 
+      // TODO filter links
+      return buildSyncStatus(pageToCopy, targetSpaceKey, null, null, targetParentId)
+    }
+  }
+}
+
+async function buildSyncStatus(sourcePage, targetSpaceKey, targetPage, syncTimeStamp, targetParentId) {
+  if (!targetPage) {
+    return {
+      status: SyncStatusEnum.TARGET_MISSING,
+      perform: createPage,
+      targetPage: null,
+      sourcePage: sourcePage     
+    };
+  }
+  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.targetVersion && sourcePage.version.number === syncTimeStamp.sourceVersion) {
+    return {
+      status: SyncStatusEnum.TARGET_UPDATED,
+      perform: performPull,
+      targetPage: targetPage,
+      sourcePage: sourcePage     
+    };
+  }
+  if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.targetVersion) {
+    return {
+      status: SyncStatusEnum.CONFLICTING,
+      perform: performUpdate,
+      targetPage: targetPage,
+      sourcePage: sourcePage     
+    };
+  }
+  if (syncTimeStamp && sourcePage.version.number === syncTimeStamp.sourceVersion) {
+    return {
+      status: SyncStatusEnum.UP_TO_DATE,
+      perform: noop,
+      targetPage: targetPage,
+      sourcePage: sourcePage  
+    }
+  } else {
+    return {
+      status: SyncStatusEnum.SOURCE_UPDATED,
+      perform: performUpdate,
+      targetPage: targetPage,
+      sourcePage: sourcePage         
+    };
+  }
+  async function noop() {}
+
+  async function performUpdate() {
+    await preProcess(sourcePage, targetSpaceKey);
+    targetPage.version.number++;
+    targetPage.body = targetPage.body || {};
+    targetPage.body.storage = sourcePage.body.storage; // TODO filtering
+    targetPage.title = sourcePage.title;
+    await updateContent(targetPage);
+  }
+
+  async function createPage() {
+    return createPageUnderPageId(sourcePage,targetSpaceKey,targetParentId);
+  }
+
+  async function performPull() {
+    throw `not implemented`;
+  }
+}
+
 
 /** 
  * Synchronizes a single page between spaces, with or without attachments.
