@@ -1,4 +1,7 @@
 import SyncStatusEnum from './SyncStatusEnum';
+import {getTargetSyncTimeStamp, getSourceSyncTimeStamp} from '../../common/confluence/confluence-sync-timestamps';
+import {getContent,getContentById} from '../../common/confluence/confluence-page-async';
+import SyncStatus from './SyncStatus';
 
 export default class PageWrapper {
     constructor(page, parent) {
@@ -47,6 +50,36 @@ export default class PageWrapper {
         o.setProperty('analyzing', false);
         o.setProperty('analyzed', true);
     }
+    async computeSyncStatus(targetSpaceKey, syncAttachments) {
+        let syncStatus;
+        let targetPage;
+        let pageToCopy = this.page;
+        let syncTimeStamp = await getSourceSyncTimeStamp(pageToCopy.id, targetSpaceKey);
+        if (syncTimeStamp && syncTimeStamp.targetContentId!=pageToCopy.id) {
+          log(`Error syncTimeStamp`);
+        } else if (syncTimeStamp) {
+          try {
+            targetPage = await getContentById(syncTimeStamp.sourceContentId, 'version,metadata.labels');
+            syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
+          } catch (err) {
+            console.debug("Normal error ",err);
+          }
+        }
+        if (!syncStatus && !targetPage) {
+          try {
+            targetPage = await getContent(targetSpaceKey, pageToCopy.title, 'version,metadata.labels');
+            syncTimeStamp = await getTargetSyncTimeStamp(targetPage.id, pageToCopy.space.key);
+            // Do a full initial sync
+            // TODO filter links
+            syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
+          } catch (err) {
+            // Create the new page 
+            // TODO filter links
+            syncStatus = new SyncStatus(this, targetSpaceKey)
+          }
+        }
+        $.observable(this).setProperty("syncStatus", syncStatus);
+      }
 }
 
 const PAGE_GROUP_LABELS = ['service-dashboard','ci-publish-package'];

@@ -19,10 +19,31 @@
 .wiki-content .dropdown ul {
     list-style-type: none;
 }
-.wiki-content .dropdown-menu>li>a {
+.wiki-content .dropdown-menu > li > a {
     color: #333;
 }
 .btn-group .spin {
     margin-top: 13px;
     margin-left: 5px;
+}
+.wiki-content .dropdown-menu > li > a.link-conflict {
+    color: #fff;
+    background-color: #d9534f;
+}
+.wiki-content .dropdown-menu > li > a.link-conflict:hover {
+    background-color: #c9302c;
+}
+.wiki-content .dropdown-menu > li > a.link-push {
+    color: #fff;
+    background-color: #337ab7;
+}
+.wiki-content .dropdown-menu > li > a.link-push:hover {
+    background-color: #286090;
+}
+.wiki-content .dropdown-menu > li > a.link-pull {
+    color: #337ab7;
+    background-color: #ffffff;
+}
+.wiki-content .dropdown-menu > li > a.link-pull:hover {
+    color: #286090;
 }
