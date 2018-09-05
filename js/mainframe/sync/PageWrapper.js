@@ -51,6 +51,12 @@ export default class PageWrapper {
         o.setProperty('analyzing', false);
         o.setProperty('analyzed', true);
     }
+    getSourceDiff() {
+        return getDiffUrl(this.syncStatus.sourcePage, this.syncStatus.syncTimeStamp.targetVersion);
+    }
+    getTargetDiff() {
+        return getDiffUrl(this.syncStatus.targetPage, this.syncStatus.syncTimeStamp.sourceVersion);
+    }
     async computeSyncStatus(targetSpaceKey, syncAttachments) {
         let syncStatus;
         let targetPage;

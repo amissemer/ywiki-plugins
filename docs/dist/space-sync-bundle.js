@@ -803,31 +803,24 @@ console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var jquery_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery-ui */ "./node_modules/jquery-ui/ui/widget.js");
-/* harmony import */ var jquery_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery_ui__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
-/* harmony import */ var bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! bootstrap/dist/js/bootstrap.min */ "./node_modules/bootstrap/dist/js/bootstrap.min.js");
-/* harmony import */ var bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.css */ "./node_modules/bootstrap/dist/css/bootstrap.css");
-/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./spaceSyncPlugin.css */ "./js/mainframe/spaceSyncPlugin.css");
-/* harmony import */ var _spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _stylesheetPlugin__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
-/* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
-/* harmony import */ var _fragmentLoader__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./fragmentLoader */ "./js/mainframe/fragmentLoader.js");
-/* harmony import */ var jsviews__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! jsviews */ "./node_modules/jsviews/jsviews.js");
-/* harmony import */ var jsviews__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(jsviews__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _sync_log__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./sync/log */ "./js/mainframe/sync/log.js");
-/* harmony import */ var _sync_PageWrapper__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./sync/PageWrapper */ "./js/mainframe/sync/PageWrapper.js");
-/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
-/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var jquery_contextmenu_dist_jquery_contextMenu_min_css__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! jquery-contextmenu/dist/jquery.contextMenu.min.css */ "./node_modules/jquery-contextmenu/dist/jquery.contextMenu.min.css");
-/* harmony import */ var jquery_contextmenu_dist_jquery_contextMenu_min_css__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(jquery_contextmenu_dist_jquery_contextMenu_min_css__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var jquery_contextmenu_dist_jquery_contextMenu_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! jquery-contextmenu/dist/jquery.contextMenu.js */ "./node_modules/jquery-contextmenu/dist/jquery.contextMenu.js");
-/* harmony import */ var jquery_contextmenu_dist_jquery_contextMenu_js__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(jquery_contextmenu_dist_jquery_contextMenu_js__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var font_awesome_css_font_awesome_min_css__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! font-awesome/css/font-awesome.min.css */ "./node_modules/font-awesome/css/font-awesome.min.css");
-/* harmony import */ var font_awesome_css_font_awesome_min_css__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(font_awesome_css_font_awesome_min_css__WEBPACK_IMPORTED_MODULE_15__);
-
+/* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
+/* harmony import */ var bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bootstrap/dist/js/bootstrap.min */ "./node_modules/bootstrap/dist/js/bootstrap.min.js");
+/* harmony import */ var bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.css */ "./node_modules/bootstrap/dist/css/bootstrap.css");
+/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./spaceSyncPlugin.css */ "./js/mainframe/spaceSyncPlugin.css");
+/* harmony import */ var _spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _stylesheetPlugin__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
+/* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
+/* harmony import */ var _fragmentLoader__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./fragmentLoader */ "./js/mainframe/fragmentLoader.js");
+/* harmony import */ var jsviews__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! jsviews */ "./node_modules/jsviews/jsviews.js");
+/* harmony import */ var jsviews__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(jsviews__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _sync_log__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./sync/log */ "./js/mainframe/sync/log.js");
+/* harmony import */ var _sync_PageWrapper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./sync/PageWrapper */ "./js/mainframe/sync/PageWrapper.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _sync_contextMenu__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./sync/contextMenu */ "./js/mainframe/sync/contextMenu.js");
+/* harmony import */ var _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./sync/pageSyncAnalyzer */ "./js/mainframe/sync/pageSyncAnalyzer.js");
 
 
 
@@ -837,22 +830,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-Object(_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_6__["loadPluginStyleSheet"])('space-sync-bundle.css');
 
 
 
-jsviews__WEBPACK_IMPORTED_MODULE_9___default()(jquery__WEBPACK_IMPORTED_MODULE_0___default.a);
+
+
+
+
+
+Object(_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_5__["loadPluginStyleSheet"])('space-sync-bundle.css');
+jsviews__WEBPACK_IMPORTED_MODULE_8___default()(jquery__WEBPACK_IMPORTED_MODULE_0___default.a);
 
 const pageExpands = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
-
-
-
-
-
-
-
-
-
 
 var pages = [];
 function addPageGroup(pageGroup) {
@@ -864,29 +853,19 @@ let sourceSpace = appElt.data('source-space');
 let targetSpace = appElt.data('target-space');
 let sourceRootPage = appElt.data('source-root-page');
 let targetParentPage = appElt.data('target-parent-page');
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])(`sourceSpace="${sourceSpace}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])(`targetSpace="${targetSpace}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])(`sourceRootPage="${sourceRootPage}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])(`targetParentPage="${targetParentPage}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`sourceSpace="${sourceSpace}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`targetSpace="${targetSpace}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`sourceRootPage="${sourceRootPage}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`targetParentPage="${targetParentPage}"`);
 
 const model = {
-    output: _sync_log__WEBPACK_IMPORTED_MODULE_10__["default"].output, 
+    output: _sync_log__WEBPACK_IMPORTED_MODULE_9__["default"].output, 
     pages: pages,
-    host: _pluginCommon__WEBPACK_IMPORTED_MODULE_7__["host"]
+    host: _pluginCommon__WEBPACK_IMPORTED_MODULE_6__["host"],
+    targetSpace: targetSpace
 };
 const helpers = {
-    analyze : function(pageGroup) {
-        Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])(`Checking synchronization status for ${pageGroup.title} - ${pageGroup.page.id}...`);
-        pageGroup.setAnalyzing(true);
-        checkSyncStatus(pageGroup).subscribe(
-            item => Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])(`Sync check ${item}%`),
-            e => Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])(`Sync check error: ${e}`),
-            () => {
-                Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])(`Checked sync status complete for ${pageGroup.title} - ${pageGroup.page.id}`);
-                pageGroup.setAnalyzed(true);
-            }
-        );
-    },
+    analyze : _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_13__["default"],
     menuAction: function(ev, ui) {
         if (!ui.item.children("ul").length) {
             // Leaf menu item
@@ -895,103 +874,18 @@ const helpers = {
     }
 };
 
-jquery__WEBPACK_IMPORTED_MODULE_0___default()(function(){
-    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
-        // define which elements trigger this menu
-        selector: ".sync-table tr .link-conflict",
-        className: 'context-menu-with-title context-menu-conflict',
-        // define the elements of the menu
-        items: {
-            openSource: {name: "Open source", callback: function(key, opt){ alert("openSource on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}},
-            openTarget: {name: "Open target", callback: function(key, opt){ alert("openTarget on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}},
-            "sep1": "---------",
-            checkTargetChanges: {name: "Check target changes", callback: function(key, opt){ alert("checkTargetChanges on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}},
-            checkSourceChanges: {name: "Check source changes", callback: function(key, opt){ alert("checkSourceChanges on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text()); }},
-            overwriteTargetChanges: {name: "Overwrite target", icon: "fa-exclamation-triangle", callback: function(key, opt){ alert("overwriteTargetChanges on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text()); }},
-            overwriteSourceChanges: {name: "Overwrite source", icon: "fa-exclamation-triangle", callback: function(key, opt){ alert("overwriteSourceChanges on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text()); }}
-        },
-        zIndex: 2000,
-        trigger: 'left'
-        // there's more, have a look at the demos and docs...
-    });
-    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
-        // define which elements trigger this menu
-        selector: ".sync-table tr .link-pull",
-        className: 'context-menu-with-title  context-menu-pull',
-        // define the elements of the menu
-        items: {
-            openSource: {name: "Open source", callback: function(key, opt){ alert("openSource on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}},
-            openTarget: {name: "Open target", callback: function(key, opt){ alert("openTarget on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}},
-            "sep1": "---------",
-            checkTargetChanges: {name: "Check target changes", callback: function(key, opt){ alert("checkTargetChanges on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}},
-            pullTargetChanges: {name: "Pull changes", callback: function(key, opt){ alert("pullTargetChanges on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}},
-            resetTarget: {name: "Force reset target from source", icon: "fa-exclamation-triangle", callback: function(key, opt){ alert("resetTarget on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text()); }}
-        },
-        zIndex: 2000,
-        trigger: 'left'
-        // there's more, have a look at the demos and docs...
-    });
-    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
-        // define which elements trigger this menu
-        selector: ".sync-table tr .link-push",
-        className: 'context-menu-with-title  context-menu-push',
-        // define the elements of the menu
-        items: {
-            openSource: {name: "Open source", callback: function(key, opt){ alert("openSource on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}},
-            openTarget: {name: "Open target", callback: function(key, opt){ alert("openTarget on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}},
-            "sep1": "---------",
-            checkSourceChanges: {name: "Check source changes", callback: function(key, opt){ alert("checkSourceChanges on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text()); }},
-            pushSourceChanges: {name: "Push changes", callback: function(key, opt){ alert("pushSourceChanges on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text()); }},
-            resetSource: {name: "Reset source from target", icon: "fa-exclamation-triangle", callback: function(key, opt){ alert("resetSource on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text()); }}
-        },
-        zIndex: 2000,
-        trigger: 'left'
-        // there's more, have a look at the demos and docs...
-    });
-    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
-        // define which elements trigger this menu
-        selector: ".sync-table tr .link-",
-        className: 'context-menu-with-title context-menu-none',
-        // define the elements of the menu
-        items: {
-            openSource: {name: "Open source", callback: function(key, opt){ alert("openSource on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}},
-            openTarget: {name: "Open target", callback: function(key, opt){ alert("openTarget on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}}
-        },
-        zIndex: 2000,
-        trigger: 'left'
-        // there's more, have a look at the demos and docs...
-    });
-    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
-        // define which elements trigger this menu
-        selector: ".sync-table tr .link-default",
-        //className: 'context-menu-with-title context-menu-default',
-        // define the elements of the menu
-        items: {
-            checkSync: {name: "Check Synchronization", callback: function(key, opt){ alert("checkSync on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text());}}
-        },
-        zIndex: 2000,
-        trigger: 'left'
-        // there's more, have a look at the demos and docs...
-    });
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.context-menu-conflict').attr('data-menutitle', "Conflicting page");
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.context-menu-pull').attr('data-menutitle', "Target is more recent");
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.context-menu-push').attr('data-menutitle', "Source is more recent");
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.context-menu-none').attr('data-menutitle', "Page is synchronized");
-    //$('.context-menu-default').attr('data-menutitle', "Check the synchronization fir");
-});
-
-Object(_fragmentLoader__WEBPACK_IMPORTED_MODULE_8__["loadTemplate"])('sync-plugin/page-groups-table.html').then( function(tmpl) {
+Object(_fragmentLoader__WEBPACK_IMPORTED_MODULE_7__["loadTemplate"])('sync-plugin/page-groups-table.html').then( function(tmpl) {
     tmpl.link(appElt, model, helpers);
 });
 
 listPageGroups(sourceSpace, sourceRootPage).subscribe(
     pageGroup => {
-        Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])(`Found page group: ${pageGroup.title}`);
+        Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Found page group: ${pageGroup.title}`);
         pageGroup.descendants = descendants(pageGroup, pageGroup.children);
         addPageGroup(pageGroup);
     },
-    e => Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])(`Error: ${e}`),
-    () => Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])('Page group listing complete')
+    e => Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Error: ${e}`),
+    () => Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])('Page group listing complete')
 );
 
 const INDENT = "  ";
@@ -1009,12 +903,12 @@ function descendants(context, children, level) {
 }
 
 function listPageGroups(sourceSpaceKey, sourcePageTitle) {
-    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_12__["Observable"].create(observer => {
+    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__["Observable"].create(observer => {
         (async () => {
             try {
-                Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])();
-                Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])(`Listing page groups to sync from ${sourceSpaceKey}:${sourcePageTitle}...`);
-                let sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_2__["getContent"])(sourceSpaceKey,sourcePageTitle, pageExpands);
+                Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])();
+                Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Listing page groups to sync from ${sourceSpaceKey}:${sourcePageTitle}...`);
+                let sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContent"])(sourceSpaceKey,sourcePageTitle, pageExpands);
                 //let targetParent = await getContent(targetSpaceKey,targetParentPage);
                 await scanPageGroups(sourcePage, null, observer);
             } catch (err) {
@@ -1025,54 +919,19 @@ function listPageGroups(sourceSpaceKey, sourcePageTitle) {
     });
 }
 
-function checkSyncStatus(pageGroup) {
-    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_12__["Observable"].create(observer => {
-        (async () => {
-            let numPages = 1 + pageGroup.descendants.length;
-            let synced = 0;
-            try {
-                await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, true, callback);
-            } catch (err) {
-                Object(_sync_log__WEBPACK_IMPORTED_MODULE_10__["default"])('got a sync check error');
-                observer.error(err);
-            }
-            observer.complete();
 
-            function callback() {
-                observer.next( Math.round((100* (++synced))/numPages) );
-            }
-
-        })().then(null, observer.error);
-
-        
-    });
-}
-async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, syncAttachments, callback) {
-    let children = pageWrapper.children;
-    let page = pageWrapper.page;
-    await pageWrapper.computeSyncStatus(targetSpaceKey, syncAttachments);
-    pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
-    callback();
-    await Promise.all(children.map(async child => {
-        if (!child.skipSync(pageGroup)) {
-            return checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, syncAttachments, callback)
-        } else {
-            return null;
-        }
-    }));
-}
 
 
 /** emits page groups to the observer (the root and subtrees starting from pages with a given label).
  * Wraps all pages in PageWrapper. */
 async function scanPageGroups(sourcePage, parentPageWrapper, observer) {
-    let thisPageWrapper = new _sync_PageWrapper__WEBPACK_IMPORTED_MODULE_11__["default"](sourcePage, parentPageWrapper);
+    let thisPageWrapper = new _sync_PageWrapper__WEBPACK_IMPORTED_MODULE_10__["default"](sourcePage, parentPageWrapper);
 
     let children = sourcePage.children.page;
     let allChildren = [];
     while (children) {
         allChildren = allChildren.concat(await Promise.all(children.results.map(async child => {
-            let childDetails = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_2__["getContentById"])(child.id, pageExpands);
+            let childDetails = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(child.id, pageExpands);
             let childWrapper = await scanPageGroups(childDetails, thisPageWrapper, observer);
             return childWrapper;
         })));
@@ -1201,6 +1060,12 @@ class PageWrapper {
         let o = jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this);
         o.setProperty('analyzing', false);
         o.setProperty('analyzed', true);
+    }
+    getSourceDiff() {
+        return getDiffUrl(this.syncStatus.sourcePage, this.syncStatus.syncTimeStamp.targetVersion);
+    }
+    getTargetDiff() {
+        return getDiffUrl(this.syncStatus.targetPage, this.syncStatus.syncTimeStamp.sourceVersion);
     }
     async computeSyncStatus(targetSpaceKey, syncAttachments) {
         let syncStatus;
@@ -1359,6 +1224,192 @@ const SyncStatusEnum = Object.freeze({
 
 /***/ }),
 
+/***/ "./js/mainframe/sync/contextMenu.js":
+/*!******************************************!*\
+  !*** ./js/mainframe/sync/contextMenu.js ***!
+  \******************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var jquery_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery-ui */ "./node_modules/jquery-ui/ui/widget.js");
+/* harmony import */ var jquery_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery_ui__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var jquery_contextmenu_dist_jquery_contextMenu_min_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery-contextmenu/dist/jquery.contextMenu.min.css */ "./node_modules/jquery-contextmenu/dist/jquery.contextMenu.min.css");
+/* harmony import */ var jquery_contextmenu_dist_jquery_contextMenu_min_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery_contextmenu_dist_jquery_contextMenu_min_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var jquery_contextmenu_dist_jquery_contextMenu_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery-contextmenu/dist/jquery.contextMenu.js */ "./node_modules/jquery-contextmenu/dist/jquery.contextMenu.js");
+/* harmony import */ var jquery_contextmenu_dist_jquery_contextMenu_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery_contextmenu_dist_jquery_contextMenu_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var font_awesome_css_font_awesome_min_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! font-awesome/css/font-awesome.min.css */ "./node_modules/font-awesome/css/font-awesome.min.css");
+/* harmony import */ var font_awesome_css_font_awesome_min_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(font_awesome_css_font_awesome_min_css__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./pageSyncAnalyzer */ "./js/mainframe/sync/pageSyncAnalyzer.js");
+
+
+
+
+
+
+
+const DEFAULT_Z_INDEX = 2000;
+const TRIGGER = 'left';
+const WARNING_ICON = "fa-exclamation-triangle";
+const WARN = true;
+
+jquery__WEBPACK_IMPORTED_MODULE_0___default()(function(){
+    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
+        // define which elements trigger this menu
+        selector: ".sync-table tr .link-conflict",
+        className: 'context-menu-with-title context-menu-conflict',
+        // define the elements of the menu
+        items: {
+            openSource: MENU_ITEMS.openSourceItem,
+            openTarget: MENU_ITEMS.openTargetItem,
+            "sep1": MENU_ITEMS.separator,
+            checkTargetChanges: MENU_ITEMS.checkTargetChangesItem,
+            checkSourceChanges: MENU_ITEMS.checkSourceChangesItem,
+            overwriteTargetChanges: MENU_ITEMS.pushItem("Overwrite target", WARN),
+            overwriteSourceChanges: MENU_ITEMS.pullItem("Overwrite source", WARN)
+        },
+        zIndex: DEFAULT_Z_INDEX,
+        trigger: TRIGGER
+    });
+    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
+        // define which elements trigger this menu
+        selector: ".sync-table tr .link-pull",
+        className: 'context-menu-with-title  context-menu-pull',
+        // define the elements of the menu
+        items: {
+            openSource: MENU_ITEMS.openSourceItem,
+            openTarget: MENU_ITEMS.openTargetItem,
+            "sep1": MENU_ITEMS.separator,
+            checkTargetChanges: MENU_ITEMS.checkTargetChangesItem,
+            pullTargetChanges: MENU_ITEMS.pullItem(),
+            resetTarget: MENU_ITEMS.pushItem("Force reset target from source", WARN)
+        },
+        zIndex: DEFAULT_Z_INDEX,
+        trigger: TRIGGER
+    });
+    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
+        // define which elements trigger this menu
+        selector: ".sync-table tr .link-push",
+        className: 'context-menu-with-title  context-menu-push',
+        // define the elements of the menu
+        items: {
+            openSource: MENU_ITEMS.openSourceItem,
+            openTarget: MENU_ITEMS.openTargetItem,
+            "sep1": MENU_ITEMS.separator,
+            checkSourceChanges: MENU_ITEMS.checkSourceChangesItem,
+            pushSourceChanges: MENU_ITEMS.pushItem(),
+            resetSource: MENU_ITEMS.pullItem("Reset source from target", WARN)
+        },
+        zIndex: DEFAULT_Z_INDEX,
+        trigger: TRIGGER
+    });
+    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
+        // define which elements trigger this menu
+        selector: ".sync-table tr .link-",
+        className: 'context-menu-with-title context-menu-none',
+        // define the elements of the menu
+        items: {
+            openSource: MENU_ITEMS.openSourceItem,
+            openTarget: MENU_ITEMS.openTargetItem
+        },
+        zIndex: DEFAULT_Z_INDEX,
+        trigger: TRIGGER
+    });
+    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
+        // define which elements trigger this menu
+        selector: ".sync-table tr .link-default",
+        //className: 'context-menu-with-title context-menu-default',
+        // define the elements of the menu
+        items: {
+            checkSync: MENU_ITEMS.checkSyncItem
+        },
+        zIndex: DEFAULT_Z_INDEX,
+        trigger: TRIGGER
+    });
+    setMenuTitle('.context-menu-conflict', "Conflicting page");
+    setMenuTitle('.context-menu-pull', "Target is more recent");
+    setMenuTitle('.context-menu-push', "Source is more recent");
+    setMenuTitle('.context-menu-none', "Page is synchronized");
+});
+
+function getData(element) {
+    return jquery__WEBPACK_IMPORTED_MODULE_0___default.a.view(jquery__WEBPACK_IMPORTED_MODULE_0___default()(element)).data;
+}
+function getPageGroup(element) {
+    let view = jquery__WEBPACK_IMPORTED_MODULE_0___default.a.view(jquery__WEBPACK_IMPORTED_MODULE_0___default()(element));
+    if (view.data.isPageGroup) {
+        return view.data;
+    } else {
+        return view.parent.parent.data;
+    }
+}
+function getTargetSpace(element) {
+    return jquery__WEBPACK_IMPORTED_MODULE_0___default.a.view(jquery__WEBPACK_IMPORTED_MODULE_0___default()(element)).root.data.targetSpace;
+}
+
+const MENU_ITEMS = {
+    openSourceItem : {
+        name: "Open source", 
+        callback: function(){ 
+            let data = getData(this);
+            window.open(data.syncStatus.sourcePage._links.webui);
+        }
+    },
+    openTargetItem : {
+        name: "Open target", 
+        callback: function(){ 
+            let data = getData(this);
+            window.open(data.syncStatus.targetPage._links.webui);
+        }
+    },
+    checkTargetChangesItem : {
+        name: "Check target changes", 
+        callback: function() {
+            let data = getData(this);
+            window.open(data.getTargetDiff());
+        }
+    },
+    checkSourceChangesItem : {
+        name: "Check source changes", 
+        callback: function() {
+            let data = getData(this);
+            window.open(data.getSourceDiff());
+        }
+    },
+    checkSyncItem : {
+        name: "Check Synchronization", 
+        callback: function() {
+            let pageGroup = getPageGroup(this);
+            let targetSpace = getTargetSpace(this);
+            Object(_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_5__["default"])(pageGroup, targetSpace);
+        }
+    },
+    pushItem: function(name, warning) {
+        return {
+            name: name || "Push changes", 
+            icon: warning?WARNING_ICON:null,
+            callback: function(key, opt){ alert("push on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text()); }
+        }
+    },
+    pullItem: function(name, warning) {
+        return {
+            name: name || "Pull changes", 
+            icon: warning?WARNING_ICON:null,
+            callback: function(key, opt){ alert("push on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text()); }
+        }
+    },
+    separator : "---------"
+} 
+
+function setMenuTitle(cssClass, title) {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(cssClass).attr('data-menutitle', title);
+}
+
+/***/ }),
+
 /***/ "./js/mainframe/sync/log.js":
 /*!**********************************!*\
   !*** ./js/mainframe/sync/log.js ***!
@@ -1385,6 +1436,76 @@ log.output = output;
 function append(message) {
     jquery__WEBPACK_IMPORTED_MODULE_0___default.a.observable(output).setProperty("messages", output.messages+message+'\n');
 }
+
+/***/ }),
+
+/***/ "./js/mainframe/sync/pageSyncAnalyzer.js":
+/*!***********************************************!*\
+  !*** ./js/mainframe/sync/pageSyncAnalyzer.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return pageSyncAnalyzer; });
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+function pageSyncAnalyzer(pageGroup, targetSpace) {
+    Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Checking synchronization status for ${pageGroup.title} - ${pageGroup.page.id}...`);
+    pageGroup.setAnalyzing(true);
+    checkSyncStatus(pageGroup, targetSpace).subscribe(
+        item => Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Sync check ${item}%`),
+        e => Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Sync check error: ${e}`),
+        () => {
+            Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Checked sync status complete for ${pageGroup.title} - ${pageGroup.page.id}`);
+            pageGroup.setAnalyzed(true);
+        }
+    );
+}
+
+function checkSyncStatus(pageGroup, targetSpace) {
+    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(observer => {
+        (async () => {
+            let numPages = 1 + pageGroup.descendants.length;
+            let synced = 0;
+            try {
+                await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, true, callback);
+            } catch (err) {
+                Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])('got a sync check error');
+                observer.error(err);
+            }
+            observer.complete();
+
+            function callback() {
+                observer.next( Math.round((100* (++synced))/numPages) );
+            }
+
+        })().then(null, observer.error);
+
+        
+    });
+}
+
+async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, syncAttachments, callback) {
+    let children = pageWrapper.children;
+    let page = pageWrapper.page;
+    await pageWrapper.computeSyncStatus(targetSpaceKey, syncAttachments);
+    pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
+    callback();
+    await Promise.all(children.map(async child => {
+        if (!child.skipSync(pageGroup)) {
+            return checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, syncAttachments, callback)
+        } else {
+            return null;
+        }
+    }));
+}
+
 
 /***/ }),
 
