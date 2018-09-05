@@ -2,6 +2,7 @@ import SyncStatusEnum from './SyncStatusEnum';
 import {getTargetSyncTimeStamp, getSourceSyncTimeStamp} from '../../common/confluence/confluence-sync-timestamps';
 import {getContent,getContentById} from '../../common/confluence/confluence-page-async';
 import SyncStatus from './SyncStatus';
+import $ from 'jquery';
 
 export default class PageWrapper {
     constructor(page, parent) {

@@ -6568,9 +6568,12 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
   !*** ./node_modules/jquery/dist/jquery.js ***!
   \********************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
+
+/*!
  * jQuery JavaScript Library v3.3.1
  * https://jquery.com/
  *
@@ -16893,11 +16896,10 @@ jQuery.isNumeric = function( obj ) {
 // AMD loader is present. jQuery is a special case. For more information, see
 // https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
 
-if ( true ) {
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+if ( typeof define === "function" && define.amd ) {
+	define( "jquery", [], function() {
 		return jQuery;
-	}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} );
 }
 
 
@@ -16935,6 +16937,7 @@ if ( !noGlobal ) {
 
 return jQuery;
 } );
+
 
 
 /***/ })

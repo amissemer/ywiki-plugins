@@ -1,4 +1,4 @@
-<table class="table table-striped table-bordered table-hover">
+<table class="table table-striped table-bordered table-hover sync-table">
     <thead>
         <tr>
             <th>Page Group</th>
@@ -16,9 +16,9 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a target="_blank" data-link="href{: url } class{: 'link-'+syncStatus^style() onerror=''}">{^{>title}}</a></li>
+                                <li><a href="#" target="_blank" data-link="class{: 'link-'+syncStatus^style() onerror='link-default'}">{^{>title}}</a></li>
                                 {^{for descendants}}
-                                <li><a class="link-push" target="_blank" data-link="href{: url } class{: 'link-'+syncStatus^style() onerror=''}">{^{>level + title}}</a></li>
+                                <li><a href="#" target="_blank" data-link="class{: 'link-'+syncStatus^style() onerror='link-default'}">{^{>level + title}}</a></li>
                                 {{/for}}
                             </ul>
                         </li>
@@ -52,6 +52,6 @@
       <h3 class="panel-title">Synchronization Log</h3>
     </div>
     <div class="panel-body">
-        <pre>{^{>output.messages()}}</pre>
+        <pre>{^{>output.messages}}</pre>
     </div>
   </div>

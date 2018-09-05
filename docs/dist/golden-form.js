@@ -6771,8 +6771,12 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
+
 
 module.exports = __webpack_require__(/*! ./lib/jquery-deferred */ "./node_modules/jquery-deferred/lib/jquery-deferred.js");
+
 
 /***/ }),
 
@@ -6782,6 +6786,9 @@ module.exports = __webpack_require__(/*! ./lib/jquery-deferred */ "./node_module
   \**************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
 
 var jQuery = module.exports = __webpack_require__(/*! ./jquery-core.js */ "./node_modules/jquery-deferred/lib/jquery-core.js"),
 	core_rspace = /\s+/;
@@ -6991,6 +6998,7 @@ jQuery.Callbacks = function( options ) {
 
 
 
+
 /***/ }),
 
 /***/ "./node_modules/jquery-deferred/lib/jquery-core.js":
@@ -6999,6 +7007,9 @@ jQuery.Callbacks = function( options ) {
   \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
+
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
 
 /**
 * jQuery core object.
@@ -7157,6 +7168,7 @@ function extend() {
 
 
 
+
 /***/ }),
 
 /***/ "./node_modules/jquery-deferred/lib/jquery-deferred.js":
@@ -7165,6 +7177,9 @@ function extend() {
   \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
 
 
 /*!
@@ -7331,6 +7346,7 @@ jQuery.extend({
 });
 
 
+
 /***/ }),
 
 /***/ "./node_modules/jquery-ui-bundle/jquery-ui.js":
@@ -7338,22 +7354,26 @@ jQuery.extend({
   !*** ./node_modules/jquery-ui-bundle/jquery-ui.js ***!
   \****************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! jQuery UI - v1.12.1 - 2017-03-19
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
+
+/*! jQuery UI - v1.12.1 - 2017-03-19
 * http://jqueryui.com
 * Includes: widget.js, position.js, data.js, disable-selection.js, focusable.js, form-reset-mixin.js, jquery-1-7.js, keycode.js, labels.js, scroll-parent.js, tabbable.js, unique-id.js, widgets/draggable.js, widgets/droppable.js, widgets/resizable.js, widgets/selectable.js, widgets/sortable.js, widgets/accordion.js, widgets/autocomplete.js, widgets/button.js, widgets/checkboxradio.js, widgets/controlgroup.js, widgets/datepicker.js, widgets/dialog.js, widgets/menu.js, widgets/mouse.js, widgets/progressbar.js, widgets/selectmenu.js, widgets/slider.js, widgets/spinner.js, widgets/tabs.js, widgets/tooltip.js, effect.js, effects/effect-blind.js, effects/effect-bounce.js, effects/effect-clip.js, effects/effect-drop.js, effects/effect-explode.js, effects/effect-fade.js, effects/effect-fold.js, effects/effect-highlight.js, effects/effect-puff.js, effects/effect-pulsate.js, effects/effect-scale.js, effects/effect-shake.js, effects/effect-size.js, effects/effect-slide.js, effects/effect-transfer.js
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
 (function( factory ) {
-	if ( true ) {
+	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [ __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js") ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else {}
+		define([ "jquery" ], factory );
+	} else {
+
+		// Browser globals
+		factory( jQuery );
+	}
 }(function( $ ) {
 
 $.ui = $.ui || {};
@@ -26046,6 +26066,7 @@ var effectsEffectTransfer = effect;
 
 }));
 
+
 /***/ }),
 
 /***/ "./node_modules/jquery/dist/jquery.js":
@@ -26053,9 +26074,12 @@ var effectsEffectTransfer = effect;
   !*** ./node_modules/jquery/dist/jquery.js ***!
   \********************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
+
+/*!
  * jQuery JavaScript Library v3.3.1
  * https://jquery.com/
  *
@@ -36378,11 +36402,10 @@ jQuery.isNumeric = function( obj ) {
 // AMD loader is present. jQuery is a special case. For more information, see
 // https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
 
-if ( true ) {
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+if ( typeof define === "function" && define.amd ) {
+	define( "jquery", [], function() {
 		return jQuery;
-	}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} );
 }
 
 
@@ -36420,6 +36443,7 @@ if ( !noGlobal ) {
 
 return jQuery;
 } );
+
 
 
 /***/ }),
