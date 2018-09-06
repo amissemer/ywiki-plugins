@@ -1,4 +1,3 @@
-//import {throttleRead, throttleWrite} from './confluence-throttle';
 import $ from 'jquery';
 
 const BASE_URL = '/rest/api/content/';

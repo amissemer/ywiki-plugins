@@ -447,7 +447,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
 
 
-//import 'jquery-ui-bundle';
 
 
 

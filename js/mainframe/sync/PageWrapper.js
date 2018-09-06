@@ -4,6 +4,8 @@ import {getContent,getContentById} from '../../common/confluence/confluence-page
 import SyncStatus from './SyncStatus';
 import $ from 'jquery';
 
+const TARGET_EXPANDS = 'version,metadata.labels,space';
+
 export default class PageWrapper {
     constructor(page, parent) {
         this.title = page.title;
@@ -23,6 +25,7 @@ export default class PageWrapper {
         return context.title!=this.title && this.isPageGroup;
     }
     updateWithSyncStatus(syncStatus) {
+        this.removeExistingBySourcePageId(syncStatus.sourcePage.id);
         switch (syncStatus.status) {
             case SyncStatusEnum.TARGET_MISSING: return this.addPageToPush(syncStatus);
             case SyncStatusEnum.TARGET_UPDATED: return this.addPageToPull(syncStatus);
@@ -30,6 +33,12 @@ export default class PageWrapper {
             case SyncStatusEnum.UP_TO_DATE: return this.addSyncedPage(syncStatus);
             case SyncStatusEnum.SOURCE_UPDATED: return this.addPageToPush(syncStatus);
         }
+    }
+    removeExistingBySourcePageId(pageId) {
+        this.removeFromArray(this.pagesToPush, pageId);
+        this.removeFromArray(this.pagesToPull, pageId);
+        this.removeFromArray(this.conflictingPages, pageId);
+        this.removeFromArray(this.syncedPages, pageId);
     }
     addPageToPush(page) {
         $.observable(this.pagesToPush).insert(page);
@@ -42,6 +51,12 @@ export default class PageWrapper {
     }
     addSyncedPage(page) {
         $.observable(this.syncedPages).insert(page);
+    }
+    removeFromArray(arr, pageId) {
+        let idx = arr.findIndex(s=>s.sourcePage.id==pageId);
+        if (idx >= 0) {
+            $.observable(arr).remove(idx);
+        }
     }
     setAnalyzing(analyzing) {
         $.observable(this).setProperty('analyzing', analyzing);
@@ -66,7 +81,7 @@ export default class PageWrapper {
           log(`Error syncTimeStamp`);
         } else if (syncTimeStamp) {
           try {
-            targetPage = await getContentById(syncTimeStamp.sourceContentId, 'version,metadata.labels');
+            targetPage = await getContentById(syncTimeStamp.sourceContentId, TARGET_EXPANDS);
             syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
             console.debug("Normal error ",err);
@@ -74,7 +89,7 @@ export default class PageWrapper {
         }
         if (!syncStatus && !targetPage) {
           try {
-            targetPage = await getContent(targetSpaceKey, pageToCopy.title, 'version,metadata.labels');
+            targetPage = await getContent(targetSpaceKey, pageToCopy.title, TARGET_EXPANDS);
             syncTimeStamp = await getTargetSyncTimeStamp(targetPage.id, pageToCopy.space.key);
             // Do a full initial sync
             // TODO filter links

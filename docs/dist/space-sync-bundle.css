@@ -6791,11 +6791,11 @@ button.close {
 .wiki-content .dropdown-menu > li > a.link-conflict:hover {
     background-color: #c9302c;
 }
-.wiki-content .dropdown-menu > li > a.link-push {
+.wiki-content .dropdown-menu > li > a.link-push, .wiki-content .dropdown-menu > li > a.link-create-target {
     color: #fff;
     background-color: #337ab7;
 }
-.wiki-content .dropdown-menu > li > a.link-push:hover {
+.wiki-content .dropdown-menu > li > a.link-push:hover, .wiki-content .dropdown-menu > li > a.link-create-target:hover {
     background-color: #286090;
 }
 .wiki-content .dropdown-menu > li > a.link-pull {

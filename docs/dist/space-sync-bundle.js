@@ -382,13 +382,12 @@ async function postProcess(body, page) {
     }
 }
 
-const portfolioRegex = /\bservportfolio\b/g;
-
 async function preProcess(page, targetSpace) {
+    let sourceSpaceRegex = new RegExp('\\b'+page.space.key+'\\b','g'); // find all occurrences of the source space as a whole word
     let body = page.body.storage.value;
-    if (portfolioRegex.test(body)) {
-        page.body.storage.value = body.replace(portfolioRegex, targetSpace);
-        console.warn(`Updated 1 or more servportfolio ref in ${page.title}`);
+    if (sourceSpaceRegex.test(body)) {
+        page.body.storage.value = body.replace(sourceSpaceRegex, targetSpace);
+        console.warn(`Updated 1 or more ref to space ${page.space.key} in ${page.title}`);
     }
     return page;
 }
@@ -1014,6 +1013,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const TARGET_EXPANDS = 'version,metadata.labels,space';
+
 class PageWrapper {
     constructor(page, parent) {
         this.title = page.title;
@@ -1033,6 +1034,7 @@ class PageWrapper {
         return context.title!=this.title && this.isPageGroup;
     }
     updateWithSyncStatus(syncStatus) {
+        this.removeExistingBySourcePageId(syncStatus.sourcePage.id);
         switch (syncStatus.status) {
             case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING: return this.addPageToPush(syncStatus);
             case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_UPDATED: return this.addPageToPull(syncStatus);
@@ -1040,6 +1042,12 @@ class PageWrapper {
             case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].UP_TO_DATE: return this.addSyncedPage(syncStatus);
             case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_UPDATED: return this.addPageToPush(syncStatus);
         }
+    }
+    removeExistingBySourcePageId(pageId) {
+        this.removeFromArray(this.pagesToPush, pageId);
+        this.removeFromArray(this.pagesToPull, pageId);
+        this.removeFromArray(this.conflictingPages, pageId);
+        this.removeFromArray(this.syncedPages, pageId);
     }
     addPageToPush(page) {
         jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.pagesToPush).insert(page);
@@ -1052,6 +1060,12 @@ class PageWrapper {
     }
     addSyncedPage(page) {
         jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.syncedPages).insert(page);
+    }
+    removeFromArray(arr, pageId) {
+        let idx = arr.findIndex(s=>s.sourcePage.id==pageId);
+        if (idx >= 0) {
+            jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(arr).remove(idx);
+        }
     }
     setAnalyzing(analyzing) {
         jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this).setProperty('analyzing', analyzing);
@@ -1076,7 +1090,7 @@ class PageWrapper {
           log(`Error syncTimeStamp`);
         } else if (syncTimeStamp) {
           try {
-            targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_2__["getContentById"])(syncTimeStamp.sourceContentId, 'version,metadata.labels');
+            targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_2__["getContentById"])(syncTimeStamp.sourceContentId, TARGET_EXPANDS);
             syncStatus = new _SyncStatus__WEBPACK_IMPORTED_MODULE_3__["default"](this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
             console.debug("Normal error ",err);
@@ -1084,7 +1098,7 @@ class PageWrapper {
         }
         if (!syncStatus && !targetPage) {
           try {
-            targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_2__["getContent"])(targetSpaceKey, pageToCopy.title, 'version,metadata.labels');
+            targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_2__["getContent"])(targetSpaceKey, pageToCopy.title, TARGET_EXPANDS);
             syncTimeStamp = await Object(_common_confluence_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_1__["getTargetSyncTimeStamp"])(targetPage.id, pageToCopy.space.key);
             // Do a full initial sync
             // TODO filter links
@@ -1131,8 +1145,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SyncStatusEnum */ "./js/mainframe/sync/SyncStatusEnum.js");
 /* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
 /* harmony import */ var _common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/confluence/confluence-page-postprocessor */ "./js/common/confluence/confluence-page-postprocessor.js");
+/* harmony import */ var _common_confluence_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/confluence/confluence-sync-timestamps */ "./js/common/confluence/confluence-sync-timestamps.js");
 
 
+
+
+
+const COPY_EXPANDS = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
 
 
 function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
@@ -1141,22 +1160,24 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
     this.sourcePage = sourcePage;
     this.syncTimeStamp = syncTimeStamp;
     this.pageWrapper = pageWrapper;
+    this.performPush = noop;
+    this.performPull = noop;
     if (!targetPage) {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING;
-      this.perform = createPage;
+      this.performPush = createPage;
     } else if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.sourceVersion && sourcePage.version.number === syncTimeStamp.targetVersion) {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_UPDATED;
-      this.perform = performPull;
+      this.performPull = performPull;
       return;
     } else if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.sourceVersion) {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].CONFLICTING;
-      this.perform = performUpdate;
+      this.performPush = performUpdate;
+      this.performPull = performPull;
     } else if (syncTimeStamp && sourcePage.version.number === syncTimeStamp.targetVersion) {
-      this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].UP_TO_DATE,
-      this.perform = noop;
+      this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].UP_TO_DATE;
     } else {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_UPDATED;
-      this.perform = performUpdate;
+      this.performPush = performUpdate;
     }
 
     async function noop() {}
@@ -1168,6 +1189,7 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
       targetPage.body.storage = sourcePage.body.storage; // TODO filtering
       targetPage.title = sourcePage.title;
       await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(targetPage);
+      await this.markSynced()
     }
   
     async function createPage() {
@@ -1175,19 +1197,30 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
             await pageWrapper.parentPage.computeSyncStatus(targetSpaceKey,false);
         }
         if (pageWrapper.parentPage.syncStatus.status===_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING) {
-            await pageWrapper.parentPage.syncStatus.perform(); // create the parent recursively if necessary
+            await pageWrapper.parentPage.syncStatus.performPush(); // create the parent recursively if necessary
         }
-        return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["createPageUnderPageId"])(sourcePage, targetSpaceKey, pageWrapper.parentPage.syncStatus.targetPage.id);
+        this.targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["createPageUnderPageId"])(sourcePage, targetSpaceKey, pageWrapper.parentPage.syncStatus.targetPage.id);
+        await this.markSynced()
     }
   
     async function performPull() {
-      throw `not implemented`;
+        if (!this.targetPage.body || !this.targetPage.body.storage) {
+            this.targetPage = targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(targetPage.id, COPY_EXPANDS);
+        }
+        await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(this.targetPage, sourcePage.space.key);
+        sourcePage.version.number++;
+        sourcePage.body = sourcePage.body || {};
+        sourcePage.body.storage = sourcePage.body.storage; // TODO filtering
+        sourcePage.title = targetPage.title;
+        await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(sourcePage);
+        await this.markSynced()
     }
 }
 
 SyncStatus.prototype.style = function() {
     switch(this.status) {
         case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING:
+            return "create-target";
         case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_UPDATED:
             return "push";
         case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_UPDATED:
@@ -1198,6 +1231,11 @@ SyncStatus.prototype.style = function() {
             return "";
     }
 };
+
+SyncStatus.prototype.markSynced = async function() {
+    // source and target in timeStamps are reversed, for now
+    return Object(_common_confluence_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_3__["setSyncTimeStamps"])(this.targetPage, this.sourcePage, this.targetPage.space.key, this.sourcePage.space.key);
+}
 
 /* harmony default export */ __webpack_exports__["default"] = (SyncStatus); 
 
@@ -1243,7 +1281,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery_contextmenu_dist_jquery_contextMenu_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery_contextmenu_dist_jquery_contextMenu_js__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var font_awesome_css_font_awesome_min_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! font-awesome/css/font-awesome.min.css */ "./node_modules/font-awesome/css/font-awesome.min.css");
 /* harmony import */ var font_awesome_css_font_awesome_min_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(font_awesome_css_font_awesome_min_css__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./pageSyncAnalyzer */ "./js/mainframe/sync/pageSyncAnalyzer.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
 
 
 
@@ -1308,6 +1346,19 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(function(){
     });
     jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
         // define which elements trigger this menu
+        selector: ".sync-table tr .link-create-target",
+        className: 'context-menu-with-title  context-menu-create-target',
+        // define the elements of the menu
+        items: {
+            openSource: MENU_ITEMS.openSourceItem,
+            "sep1": MENU_ITEMS.separator,
+            pushSourceChanges: MENU_ITEMS.pushItem("Create target page")
+        },
+        zIndex: DEFAULT_Z_INDEX,
+        trigger: TRIGGER
+    });
+    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
+        // define which elements trigger this menu
         selector: ".sync-table tr .link-",
         className: 'context-menu-with-title context-menu-none',
         // define the elements of the menu
@@ -1333,6 +1384,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(function(){
     setMenuTitle('.context-menu-pull', "Target is more recent");
     setMenuTitle('.context-menu-push', "Source is more recent");
     setMenuTitle('.context-menu-none', "Page is synchronized");
+    setMenuTitle('.context-menu-create-target', "Target doesn't exist");
 });
 
 function getData(element) {
@@ -1342,6 +1394,8 @@ function getPageGroup(element) {
     let view = jquery__WEBPACK_IMPORTED_MODULE_0___default.a.view(jquery__WEBPACK_IMPORTED_MODULE_0___default()(element));
     if (view.data.isPageGroup) {
         return view.data;
+    } else if (view.parent.data.isPageGroup) {
+        return view.parent.data;
     } else {
         return view.parent.parent.data;
     }
@@ -1353,14 +1407,14 @@ function getTargetSpace(element) {
 const MENU_ITEMS = {
     openSourceItem : {
         name: "Open source", 
-        callback: function(){ 
+        callback: function() {
             let data = getData(this);
             window.open(data.syncStatus.sourcePage._links.webui);
         }
     },
     openTargetItem : {
         name: "Open target", 
-        callback: function(){ 
+        callback: function() {
             let data = getData(this);
             window.open(data.syncStatus.targetPage._links.webui);
         }
@@ -1380,33 +1434,60 @@ const MENU_ITEMS = {
         }
     },
     checkSyncItem : {
-        name: "Check Synchronization", 
-        callback: function() {
-            let pageGroup = getPageGroup(this);
-            let targetSpace = getTargetSpace(this);
-            Object(_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_5__["default"])(pageGroup, targetSpace);
-        }
+        name: "Check Synchronization Status (single page)", 
+        callback: handleErrors("checkSyncItem", async (elt) => { return singleSyncCheck(elt) } )
     },
     pushItem: function(name, warning) {
         return {
             name: name || "Push changes", 
             icon: warning?WARNING_ICON:null,
-            callback: function(key, opt){ alert("push on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text()); }
+            callback: handleErrors("pushItem", async (elt) => {
+                let data = getData(elt);
+                await data.syncStatus.performPush();
+                return singleSyncCheck(elt);
+            })
         }
     },
     pullItem: function(name, warning) {
         return {
             name: name || "Pull changes", 
             icon: warning?WARNING_ICON:null,
-            callback: function(key, opt){ alert("push on "+jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).text()); }
+            callback: handleErrors("pullItem", async (elt) => { 
+                let data = getData(elt);
+                await data.syncStatus.performPull();
+                return singleSyncCheck(elt);
+            })
         }
     },
     separator : "---------"
 } 
 
+async function singleSyncCheck(elt) {
+    let pageGroup = getPageGroup(elt);
+    let targetSpace = getTargetSpace(elt);
+    let pageWrapper = getData(elt);
+    await pageWrapper.computeSyncStatus(targetSpace, true);
+    pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
+    // pageSyncAnalyzer(pageGroup, targetSpace); this would check all statuses
+}
+
 function setMenuTitle(cssClass, title) {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(cssClass).attr('data-menutitle', title);
 }
+function handleErrors(funcName, asyncFunc) {
+    return function() {
+        (async (elt)=>{
+            try {
+                Object(_log__WEBPACK_IMPORTED_MODULE_5__["default"])(`Starting ${funcName}...`);
+                await asyncFunc(elt);
+                Object(_log__WEBPACK_IMPORTED_MODULE_5__["default"])(`Done ${funcName}.`);
+            } catch (err) {
+                Object(_log__WEBPACK_IMPORTED_MODULE_5__["default"])(`Error in ${funcName}: ${JSON.stringify(err)}`);
+            }
+        })(this);
+    }
+}
+
 
 /***/ }),
 

@@ -9,13 +9,12 @@ export async function postProcess(body, page) {
     }
 }
 
-const portfolioRegex = /\bservportfolio\b/g;
-
 export async function preProcess(page, targetSpace) {
+    let sourceSpaceRegex = new RegExp('\\b'+page.space.key+'\\b','g'); // find all occurrences of the source space as a whole word
     let body = page.body.storage.value;
-    if (portfolioRegex.test(body)) {
-        page.body.storage.value = body.replace(portfolioRegex, targetSpace);
-        console.warn(`Updated 1 or more servportfolio ref in ${page.title}`);
+    if (sourceSpaceRegex.test(body)) {
+        page.body.storage.value = body.replace(sourceSpaceRegex, targetSpace);
+        console.warn(`Updated 1 or more ref to space ${page.space.key} in ${page.title}`);
     }
     return page;
 }
