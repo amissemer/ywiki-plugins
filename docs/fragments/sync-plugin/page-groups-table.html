@@ -1,3 +1,11 @@
+<div data-link="class{merge:progress.scan===undefined toggle='hide'}">
+    <h4>Scanning source space for pages to synchronize</h4>
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" style="width:0%" data-link="css-width{: progress.scan + '%'}" >
+            
+        </div>
+    </div>
+</div>
 <table class="table table-striped table-bordered table-hover sync-table">
     <thead>
         <tr>
@@ -25,22 +33,39 @@
                     </ul>
                 </td>
                 <td>
-                    {^{if analyzed || analyzing}}
-                        {^{if analyzing || pagesToPush.length+pagesToPull.length+conflictingPages.length > 0}}
+                    {^{if analyzed}}
+                        {^{if pagesToPush.length+pagesToPull.length+conflictingPages.length > 0}}
                     <div class="btn-group" role="group">
-                        <button class="btn btn-primary" type="button" data-link="{on ~perform 'push' pagesToPush #data} title{: 'Publish '+ pagesToPush.length+' page(s)'} disabled{:pagesToPush.length==0}" ><span class="glyphicon glyphicon-upload glyphicon-lg"></span></button>
-                        <button class="btn btn-default" type="button" data-link="{on ~perform 'pull' pagesToPull #data} title{: 'Pull '+ pagesToPull.length+' remote page(s)'} disabled{:pagesToPull.length==0}" ><span class="glyphicon glyphicon-download glyphicon-lg text-primary"></span></button>
-                        <button class="btn btn-danger" type="button" data-link="{on ~perform 'push' conflictingPages #data} title{: 'Overwrite '+ conflictingPages.length+' conflicting page(s)'} disabled{:conflictingPages.length==0}" ><span class="glyphicon glyphicon-upload glyphicon-lg"></span></button>
+                        <button class="btn btn-primary btn-progress" type="button" data-link="{on ~perform 'push' #data} title{: 'Publish '+ pagesToPush.length+' page(s)'} disabled{:pagesToPush.length==0}" >
+                            <span class="glyphicon glyphicon-upload glyphicon-lg"></span>
+                            <div class="progress built-in-progress" data-link="class{merge:progress.push toggle='show'}">
+                                <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.push + '%'}" role="progressbar" style="width: 0%;"></div>
+                            </div>
+                        </button>
+                        <button class="btn btn-default btn-progress" type="button" data-link="{on ~perform 'pull' #data} title{: 'Pull '+ pagesToPull.length+' remote page(s)'} disabled{:pagesToPull.length==0}" >
+                            <span class="glyphicon glyphicon-download glyphicon-lg text-primary"></span>
+                            <div class="progress built-in-progress" data-link="class{merge:progress.pull toggle='show'}">
+                                <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.pull + '%'}" role="progressbar" style="width: 0%;"></div>
+                            </div>
+                        </button>
+                        <button class="btn btn-danger btn-progress" type="button" data-link="{on ~perform 'pushConflicting' #data} title{: 'Overwrite '+ conflictingPages.length+' conflicting page(s)'} disabled{:conflictingPages.length==0}" >
+                            <span class="glyphicon glyphicon-upload glyphicon-lg"></span>
+                            <div class="progress built-in-progress" data-link="class{merge:progress.pushConflicting toggle='show'}">
+                                <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.pushConflicting + '%'}" role="progressbar" style="width: 0%;"></div>
+                            </div>
+                        </button>
                         
                     </div>
-                    {^{if analyzing}}
-                            <img class="spin" data-link="src{: ~root.host + '/progress.gif' }" />
-                    {{/if}}
                         {{else}}
                         <span class="glyphicon glyphicon-ok glyphicon-lg text-success"  title="Synchronized"></span>
                         {{/if}}
                     {{else}}
-                    <button class="btn btn-primary" type="button" title="Check Synchronization" data-link="{on ~analyze #data ~root.targetSpace}"><span class="glyphicon glyphicon-transfer"></span></button>
+                    <button class="btn btn-primary btn-progress" type="button" title="Check Synchronization" data-link="{on ~analyze #data ~root.targetSpace}">
+                        <span class="glyphicon glyphicon-transfer"></span>
+                        <div class="progress built-in-progress" data-link="class{merge:progress.sync toggle='show'}">
+                            <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.sync + '%'}" role="progressbar" style="width: 0%;"></div>
+                        </div>
+                    </button>
                     {{/if}}
                 </td>
         </tr>

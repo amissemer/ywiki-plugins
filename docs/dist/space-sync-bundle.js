@@ -821,12 +821,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _sync_contextMenu__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./sync/contextMenu */ "./js/mainframe/sync/contextMenu.js");
 /* harmony import */ var _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./sync/pageSyncAnalyzer */ "./js/mainframe/sync/pageSyncAnalyzer.js");
 /* harmony import */ var _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./sync/pageSyncPerformer */ "./js/mainframe/sync/pageSyncPerformer.js");
+/* harmony import */ var _sync_notify__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./sync/notify */ "./js/mainframe/sync/notify.js");
 
 
 
 
 
 // resets some default
+
 
 
 
@@ -863,8 +865,16 @@ const model = {
     output: _sync_log__WEBPACK_IMPORTED_MODULE_9__["default"].output, 
     pages: pages,
     host: _pluginCommon__WEBPACK_IMPORTED_MODULE_6__["host"],
+    progress: {},
     targetSpace: targetSpace
 };
+function setScanProgress(value) {
+    if(value===null) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default.a.observable(model.progress).removeProperty('scan');
+    } else {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default.a.observable(model.progress).setProperty('scan', value);
+    }
+}
 const helpers = {
     analyze : _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_13__["default"],
     perform: _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_14__["default"]
@@ -874,15 +884,41 @@ Object(_fragmentLoader__WEBPACK_IMPORTED_MODULE_7__["loadTemplate"])('sync-plugi
     tmpl.link(appElt, model, helpers);
 });
 
-listPageGroups(sourceSpace, sourceRootPage).subscribe(
-    pageGroup => {
-        Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Found page group: ${pageGroup.title}`);
-        pageGroup.descendants = descendants(pageGroup, pageGroup.children);
-        addPageGroup(pageGroup);
-    },
-    e => Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Error: ${e}`),
-    () => Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])('Page group listing complete')
-);
+scanSpace();
+
+async function scanSpace() {
+    setScanProgress(0);
+    let sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContent"])(sourceSpace, sourceRootPage, pageExpands);
+    var pageCount = 0;
+    let pageSearchResult = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["searchPagesWithCQL"])(sourceSpace, "ancestor = "+sourcePage.id, 100);
+    pageCount += pageSearchResult.size;
+    while (pageSearchResult._links.next) {
+        pageSearchResult = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get(pageSearchResult._links.next);
+        pageCount += pageSearchResult.size;
+    }
+    var pageFoundCout = 0;
+    function pageFoundCallback() {
+        setScanProgress( Math.round(100*(++pageFoundCout)/pageCount) ); 
+    }
+
+    
+    listPageGroups(sourceSpace, sourceRootPage, sourcePage, pageFoundCallback).subscribe(
+        pageGroup => {
+            Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Found page group: ${pageGroup.title}`);
+            pageGroup.descendants = descendants(pageGroup, pageGroup.children);
+            addPageGroup(pageGroup);
+        },
+        e => {
+            Object(_sync_notify__WEBPACK_IMPORTED_MODULE_15__["default"])(`Error while listing Page Groups: ${e}`);
+            setScanProgress();
+        },
+        () => {
+            Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])('Page group listing complete');
+            setScanProgress();
+        }
+    );
+}
+
 
 const INDENT = "  ";
 function descendants(context, children, level) {
@@ -898,20 +934,15 @@ function descendants(context, children, level) {
     return descendantsRes;
 }
 
-function listPageGroups(sourceSpaceKey, sourcePageTitle) {
+function listPageGroups(sourceSpaceKey, sourcePageTitle, sourcePage, pageFoundCallback) {
     return rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__["Observable"].create(observer => {
         (async () => {
-            try {
-                Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])();
-                Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Listing page groups to sync from ${sourceSpaceKey}:${sourcePageTitle}...`);
-                let sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContent"])(sourceSpaceKey,sourcePageTitle, pageExpands);
-                //let targetParent = await getContent(targetSpaceKey,targetParentPage);
-                await scanPageGroups(sourcePage, null, observer);
-            } catch (err) {
-                observer.error(err);
-            }
+            Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])();
+            Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Listing page groups to sync from ${sourceSpaceKey}:${sourcePageTitle}...`);
+            //let targetParent = await getContent(targetSpaceKey,targetParentPage);
+            await scanPageGroups(sourcePage, null, observer, pageFoundCallback);
             observer.complete();
-        })().then(null, observer.error);
+        })().then(null, e=>observer.error(e));
     });
 }
 
@@ -920,15 +951,15 @@ function listPageGroups(sourceSpaceKey, sourcePageTitle) {
 
 /** emits page groups to the observer (the root and subtrees starting from pages with a given label).
  * Wraps all pages in PageWrapper. */
-async function scanPageGroups(sourcePage, parentPageWrapper, observer) {
+async function scanPageGroups(sourcePage, parentPageWrapper, observer, pageFoundCallback) {
     let thisPageWrapper = new _sync_PageWrapper__WEBPACK_IMPORTED_MODULE_10__["default"](sourcePage, parentPageWrapper);
-
+    pageFoundCallback();
     let children = sourcePage.children.page;
     let allChildren = [];
     while (children) {
         allChildren = allChildren.concat(await Promise.all(children.results.map(async child => {
             let childDetails = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(child.id, pageExpands);
-            let childWrapper = await scanPageGroups(childDetails, thisPageWrapper, observer);
+            let childWrapper = await scanPageGroups(childDetails, thisPageWrapper, observer, pageFoundCallback);
             return childWrapper;
         })));
         if (children._links.next) {
@@ -1011,6 +1042,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const TARGET_EXPANDS = 'version,metadata.labels,space';
+const MIN_PROGRESS = 20; // in percent, what's the min size of the progress bars
 
 class PageWrapper {
     constructor(page, parent) {
@@ -1024,6 +1056,9 @@ class PageWrapper {
         this.syncedPages = [];
         this.conflictingPages = [];
         this.descendants = [];
+        this.analyzing = false;
+        this.analyzed = false;
+        this.progress = {};
         this.isPageGroup = isPageGroupRoot(page, parent);
         
     }
@@ -1063,6 +1098,13 @@ class PageWrapper {
         if (idx >= 0) {
             jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(arr).remove(idx);
         }
+    }
+    setProgress(action, percent) {
+        // percent is always scaled to start from MIN_PROGRESS%, so that the progress bar is visible from the start
+        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.progress).setProperty(action, MIN_PROGRESS + Math.round((100-MIN_PROGRESS)*percent / 100.));
+    }
+    removeProgress(action) {
+        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.progress).removeProperty(action);
     }
     setAnalyzing(analyzing) {
         jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this).setProperty('analyzing', analyzing);
@@ -1518,6 +1560,43 @@ function append(message) {
 
 /***/ }),
 
+/***/ "./js/mainframe/sync/notify.js":
+/*!*************************************!*\
+  !*** ./js/mainframe/sync/notify.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return notify; });
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var bootstrap_notify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bootstrap-notify */ "./node_modules/bootstrap-notify/bootstrap-notify.js");
+/* harmony import */ var bootstrap_notify__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bootstrap_notify__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
+
+
+
+
+jquery__WEBPACK_IMPORTED_MODULE_0___default.a.notifyDefaults({
+    // default settings
+    type: 'danger',
+    allow_dismiss: true,
+    delay: -1,
+    icon_type: 'class'
+});
+
+function notify(message) {
+    Object(_log__WEBPACK_IMPORTED_MODULE_2__["default"])(`Notify: ${message}`);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.notify({
+        icon: 'glyphicon glyphicon-warning-sign',
+        message: message 
+    });
+}
+
+/***/ }),
+
 /***/ "./js/mainframe/sync/pageSyncAnalyzer.js":
 /*!***********************************************!*\
   !*** ./js/mainframe/sync/pageSyncAnalyzer.js ***!
@@ -1531,15 +1610,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
 /* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
 /* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _notify__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./notify */ "./js/mainframe/sync/notify.js");
 
 
 
+
+const SYNC_ACTION = 'sync';
 function pageSyncAnalyzer(pageGroup, targetSpace) {
     Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Checking synchronization status for ${pageGroup.title} - ${pageGroup.page.id}...`);
     pageGroup.setAnalyzing(true);
+    pageGroup.setProgress(SYNC_ACTION, 0);
     checkSyncStatus(pageGroup, targetSpace).subscribe(
-        item => Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Sync check ${item}%`),
-        e => Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Sync check error: ${e}`),
+        percent => pageGroup.setProgress(SYNC_ACTION, percent),
+        e => {
+            Object(_notify__WEBPACK_IMPORTED_MODULE_2__["default"])(`Error while checking synchronization of page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
+            pageGroup.removeProgress(SYNC_ACTION);
+            pageGroup.setAnalyzed(false);
+        },
         () => {
             Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Checked sync status complete for ${pageGroup.title} - ${pageGroup.page.id}`);
             pageGroup.setAnalyzed(true);
@@ -1552,21 +1639,14 @@ function checkSyncStatus(pageGroup, targetSpace) {
         (async () => {
             let numPages = 1 + pageGroup.descendants.length;
             let synced = 0;
-            try {
-                await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, true, callback);
-            } catch (err) {
-                Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])('got a sync check error');
-                observer.error(err);
-            }
+            await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, true, callback);
             observer.complete();
 
             function callback() {
                 observer.next( Math.round((100* (++synced))/numPages) );
             }
 
-        })().then(null, observer.error);
-
-        
+        })().then(null, e=>observer.error(e));
     });
 }
 
@@ -1601,51 +1681,65 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
 /* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
 /* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _notify__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./notify */ "./js/mainframe/sync/notify.js");
 
 
 
-function pageSyncPerformer(action, listOfSyncStatus, pageGroup) {
+
+const ACTIONS = {
+    "push" : {
+        getList: pageGroup => pageGroup.pagesToPush,
+        perform: async syncStatus => syncStatus.performPush()
+    },
+    "pull" : {
+        getList: pageGroup => pageGroup.pagesToPull,
+        perform: async syncStatus => syncStatus.performPull()
+    },
+    "pushConflicting" : {
+        getList: pageGroup => pageGroup.conflictingPages,
+        perform: async syncStatus => syncStatus.performPush()
+    }
+}
+
+function pageSyncPerformer(action, pageGroup) {
     Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Performing sync for ${pageGroup.title}`);
-    // pageGroup.setSyncing(true);
-    doSync(action, listOfSyncStatus, pageGroup).subscribe(
-        item => Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Syncing ${item}%`),
-        e => Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Syncing error: ${e} ${JSON.stringify(e)}`),
+    pageGroup.setProgress(action, 0);
+    doSync(action, pageGroup).subscribe(
+        percent => pageGroup.setProgress(action, percent),
+        e => {
+            Object(_notify__WEBPACK_IMPORTED_MODULE_2__["default"])(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
+            pageGroup.removeProgress(action);
+        },
         () => {
             Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Sync complete for ${pageGroup.title}`);
-           // pageGroup.setSyncing(false);
+            pageGroup.removeProgress(action);
         }
     );
 }
 
-function doSync(action, listOfSyncStatus, pageGroup) {
+function doSync(action, pageGroup) {
+    let actionRef = ACTIONS[action];
+    let listOfSyncStatus = actionRef.getList(pageGroup);
     return rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(observer => {
         (async () => {
             let numPages = listOfSyncStatus.length;
             let synced = 0;
-            try {
-                await doSyncRecursive(action, pageGroup, pageGroup, listOfSyncStatus, true, callback);
-            } catch (err) {
-                Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])('got a sync error');
-                observer.error(err);
-            }
+            await doSyncRecursive(actionRef, pageGroup, pageGroup, listOfSyncStatus, true, callback);
             observer.complete();
 
             function callback() {
                 observer.next( Math.round((100* (++synced))/numPages) );
             }
-        })().then(null, observer.error);
+        })().then(null, e=>observer.error(e));
     });
 }
 
-async function doSyncRecursive(action, pageGroup, pageWrapper, listOfSyncStatus, syncAttachments, callback) {
+async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStatus, syncAttachments, callback) {
     let children = pageWrapper.children;
     let page = pageWrapper.page;
     let syncStatus = listOfSyncStatus.find(e=>e.sourcePage.id==page.id);
     if (syncStatus) { // is there a syncStatus to perform for current page?
-        switch (action) {
-            case 'push': await syncStatus.performPush(); break;
-            case 'pull': await syncStatus.performPull(); break;
-        }
+        await actionRef.perform(syncStatus);
         let targetSpace = syncStatus.targetSpaceKey;
         await pageWrapper.computeSyncStatus(targetSpace, true);
         pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
@@ -1654,13 +1748,380 @@ async function doSyncRecursive(action, pageGroup, pageWrapper, listOfSyncStatus,
     // in any case, check the children
     await Promise.all(children.map(async child => {
         if (!child.skipSync(pageGroup)) {
-            return doSyncRecursive(action, pageGroup, child, listOfSyncStatus, syncAttachments, callback)
+            return doSyncRecursive(actionRef, pageGroup, child, listOfSyncStatus, syncAttachments, callback)
         } else {
             return null;
         }
     }));
 }
 
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap-notify/bootstrap-notify.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/bootstrap-notify/bootstrap-notify.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/*
+* Project: Bootstrap Notify = v3.1.3
+* Description: Turns standard Bootstrap alerts into "Growl-like" notifications.
+* Author: Mouse0270 aka Robert McIntosh
+* License: MIT License
+* Website: https://github.com/mouse0270/bootstrap-growl
+*/
+(function (factory) {
+	if (true) {
+		// AMD. Register as an anonymous module.
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+}(function ($) {
+	// Create the defaults once
+	var defaults = {
+			element: 'body',
+			position: null,
+			type: "info",
+			allow_dismiss: true,
+			newest_on_top: false,
+			showProgressbar: false,
+			placement: {
+				from: "top",
+				align: "right"
+			},
+			offset: 20,
+			spacing: 10,
+			z_index: 1031,
+			delay: 5000,
+			timer: 1000,
+			url_target: '_blank',
+			mouse_over: null,
+			animate: {
+				enter: 'animated fadeInDown',
+				exit: 'animated fadeOutUp'
+			},
+			onShow: null,
+			onShown: null,
+			onClose: null,
+			onClosed: null,
+			icon_type: 'class',
+			template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0}" role="alert"><button type="button" aria-hidden="true" class="close" data-notify="dismiss">&times;</button><span data-notify="icon"></span> <span data-notify="title">{1}</span> <span data-notify="message">{2}</span><div class="progress" data-notify="progressbar"><div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div><a href="{3}" target="{4}" data-notify="url"></a></div>'
+		};
+
+	String.format = function() {
+		var str = arguments[0];
+		for (var i = 1; i < arguments.length; i++) {
+			str = str.replace(RegExp("\\{" + (i - 1) + "\\}", "gm"), arguments[i]);
+		}
+		return str;
+	};
+
+	function Notify ( element, content, options ) {
+		// Setup Content of Notify
+		var content = {
+			content: {
+				message: typeof content == 'object' ? content.message : content,
+				title: content.title ? content.title : '',
+				icon: content.icon ? content.icon : '',
+				url: content.url ? content.url : '#',
+				target: content.target ? content.target : '-'
+			}
+		};
+
+		options = $.extend(true, {}, content, options);
+		this.settings = $.extend(true, {}, defaults, options);
+		this._defaults = defaults;
+		if (this.settings.content.target == "-") {
+			this.settings.content.target = this.settings.url_target;
+		}
+		this.animations = {
+			start: 'webkitAnimationStart oanimationstart MSAnimationStart animationstart',
+			end: 'webkitAnimationEnd oanimationend MSAnimationEnd animationend'
+		}
+
+		if (typeof this.settings.offset == 'number') {
+		    this.settings.offset = {
+		    	x: this.settings.offset,
+		    	y: this.settings.offset
+		    };
+		}
+
+		this.init();
+	};
+
+	$.extend(Notify.prototype, {
+		init: function () {
+			var self = this;
+
+			this.buildNotify();
+			if (this.settings.content.icon) {
+				this.setIcon();
+			}
+			if (this.settings.content.url != "#") {
+				this.styleURL();
+			}
+			this.styleDismiss();
+			this.placement();
+			this.bind();
+
+			this.notify = {
+				$ele: this.$ele,
+				update: function(command, update) {
+					var commands = {};
+					if (typeof command == "string") {
+						commands[command] = update;
+					}else{
+						commands = command;
+					}
+					for (var command in commands) {
+						switch (command) {
+							case "type":
+								this.$ele.removeClass('alert-' + self.settings.type);
+								this.$ele.find('[data-notify="progressbar"] > .progress-bar').removeClass('progress-bar-' + self.settings.type);
+								self.settings.type = commands[command];
+								this.$ele.addClass('alert-' + commands[command]).find('[data-notify="progressbar"] > .progress-bar').addClass('progress-bar-' + commands[command]);
+								break;
+							case "icon":
+								var $icon = this.$ele.find('[data-notify="icon"]');
+								if (self.settings.icon_type.toLowerCase() == 'class') {
+									$icon.removeClass(self.settings.content.icon).addClass(commands[command]);
+								}else{
+									if (!$icon.is('img')) {
+										$icon.find('img');
+									}
+									$icon.attr('src', commands[command]);
+								}
+								break;
+							case "progress":
+								var newDelay = self.settings.delay - (self.settings.delay * (commands[command] / 100));
+								this.$ele.data('notify-delay', newDelay);
+								this.$ele.find('[data-notify="progressbar"] > div').attr('aria-valuenow', commands[command]).css('width', commands[command] + '%');
+								break;
+							case "url":
+								this.$ele.find('[data-notify="url"]').attr('href', commands[command]);
+								break;
+							case "target":
+								this.$ele.find('[data-notify="url"]').attr('target', commands[command]);
+								break;
+							default:
+								this.$ele.find('[data-notify="' + command +'"]').html(commands[command]);
+						};
+					}
+					var posX = this.$ele.outerHeight() + parseInt(self.settings.spacing) + parseInt(self.settings.offset.y);
+					self.reposition(posX);
+				},
+				close: function() {
+					self.close();
+				}
+			};
+		},
+		buildNotify: function () {
+			var content = this.settings.content;
+			this.$ele = $(String.format(this.settings.template, this.settings.type, content.title, content.message, content.url, content.target));
+			this.$ele.attr('data-notify-position', this.settings.placement.from + '-' + this.settings.placement.align);
+			if (!this.settings.allow_dismiss) {
+				this.$ele.find('[data-notify="dismiss"]').css('display', 'none');
+			}
+			if ((this.settings.delay <= 0 && !this.settings.showProgressbar) || !this.settings.showProgressbar) {
+				this.$ele.find('[data-notify="progressbar"]').remove();
+			}
+		},
+		setIcon: function() {
+			if (this.settings.icon_type.toLowerCase() == 'class') {
+				this.$ele.find('[data-notify="icon"]').addClass(this.settings.content.icon);
+			}else{
+				if (this.$ele.find('[data-notify="icon"]').is('img')) {
+					this.$ele.find('[data-notify="icon"]').attr('src', this.settings.content.icon);
+				}else{
+					this.$ele.find('[data-notify="icon"]').append('<img src="'+this.settings.content.icon+'" alt="Notify Icon" />');
+				}
+			}
+		},
+		styleDismiss: function() {
+			this.$ele.find('[data-notify="dismiss"]').css({
+				position: 'absolute',
+				right: '10px',
+				top: '5px',
+				zIndex: this.settings.z_index + 2
+			});
+		},
+		styleURL: function() {
+			this.$ele.find('[data-notify="url"]').css({
+				backgroundImage: 'url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7)',
+				height: '100%',
+				left: '0px',
+				position: 'absolute',
+				top: '0px',
+				width: '100%',
+				zIndex: this.settings.z_index + 1
+			});
+		},
+		placement: function() {
+			var self = this,
+				offsetAmt = this.settings.offset.y,
+				css = {
+					display: 'inline-block',
+					margin: '0px auto',
+					position: this.settings.position ?  this.settings.position : (this.settings.element === 'body' ? 'fixed' : 'absolute'),
+					transition: 'all .5s ease-in-out',
+					zIndex: this.settings.z_index
+				},
+				hasAnimation = false,
+				settings = this.settings;
+
+			$('[data-notify-position="' + this.settings.placement.from + '-' + this.settings.placement.align + '"]:not([data-closing="true"])').each(function() {
+				return offsetAmt = Math.max(offsetAmt, parseInt($(this).css(settings.placement.from)) +  parseInt($(this).outerHeight()) +  parseInt(settings.spacing));
+			});
+			if (this.settings.newest_on_top == true) {
+				offsetAmt = this.settings.offset.y;
+			}
+			css[this.settings.placement.from] = offsetAmt+'px';
+
+			switch (this.settings.placement.align) {
+				case "left":
+				case "right":
+					css[this.settings.placement.align] = this.settings.offset.x+'px';
+					break;
+				case "center":
+					css.left = 0;
+					css.right = 0;
+					break;
+			}
+			this.$ele.css(css).addClass(this.settings.animate.enter);
+			$.each(Array('webkit-', 'moz-', 'o-', 'ms-', ''), function(index, prefix) {
+				self.$ele[0].style[prefix+'AnimationIterationCount'] = 1;
+			});
+
+			$(this.settings.element).append(this.$ele);
+
+			if (this.settings.newest_on_top == true) {
+				offsetAmt = (parseInt(offsetAmt)+parseInt(this.settings.spacing)) + this.$ele.outerHeight();
+				this.reposition(offsetAmt);
+			}
+
+			if ($.isFunction(self.settings.onShow)) {
+				self.settings.onShow.call(this.$ele);
+			}
+
+			this.$ele.one(this.animations.start, function(event) {
+				hasAnimation = true;
+			}).one(this.animations.end, function(event) {
+				if ($.isFunction(self.settings.onShown)) {
+					self.settings.onShown.call(this);
+				}
+			});
+
+			setTimeout(function() {
+				if (!hasAnimation) {
+					if ($.isFunction(self.settings.onShown)) {
+						self.settings.onShown.call(this);
+					}
+				}
+			}, 600);
+		},
+		bind: function() {
+			var self = this;
+
+			this.$ele.find('[data-notify="dismiss"]').on('click', function() {
+				self.close();
+			})
+
+			this.$ele.mouseover(function(e) {
+				$(this).data('data-hover', "true");
+			}).mouseout(function(e) {
+				$(this).data('data-hover', "false");
+			});
+			this.$ele.data('data-hover', "false");
+
+			if (this.settings.delay > 0) {
+				self.$ele.data('notify-delay', self.settings.delay);
+				var timer = setInterval(function() {
+					var delay = parseInt(self.$ele.data('notify-delay')) - self.settings.timer;
+					if ((self.$ele.data('data-hover') === 'false' && self.settings.mouse_over == "pause") || self.settings.mouse_over != "pause") {
+						var percent = ((self.settings.delay - delay) / self.settings.delay) * 100;
+						self.$ele.data('notify-delay', delay);
+						self.$ele.find('[data-notify="progressbar"] > div').attr('aria-valuenow', percent).css('width', percent + '%');
+					}
+					if (delay <= -(self.settings.timer)) {
+						clearInterval(timer);
+						self.close();
+					}
+				}, self.settings.timer);
+			}
+		},
+		close: function() {
+			var self = this,
+				$successors = null,
+				posX = parseInt(this.$ele.css(this.settings.placement.from)),
+				hasAnimation = false;
+
+			this.$ele.data('closing', 'true').addClass(this.settings.animate.exit);
+			self.reposition(posX);
+
+			if ($.isFunction(self.settings.onClose)) {
+				self.settings.onClose.call(this.$ele);
+			}
+
+			this.$ele.one(this.animations.start, function(event) {
+				hasAnimation = true;
+			}).one(this.animations.end, function(event) {
+				$(this).remove();
+				if ($.isFunction(self.settings.onClosed)) {
+					self.settings.onClosed.call(this);
+				}
+			});
+
+			setTimeout(function() {
+				if (!hasAnimation) {
+					self.$ele.remove();
+					if (self.settings.onClosed) {
+						self.settings.onClosed(self.$ele);
+					}
+				}
+			}, 600);
+		},
+		reposition: function(posX) {
+			var self = this,
+				notifies = '[data-notify-position="' + this.settings.placement.from + '-' + this.settings.placement.align + '"]:not([data-closing="true"])',
+				$elements = this.$ele.nextAll(notifies);
+			if (this.settings.newest_on_top == true) {
+				$elements = this.$ele.prevAll(notifies);
+			}
+			$elements.each(function() {
+				$(this).css(self.settings.placement.from, posX);
+				posX = (parseInt(posX)+parseInt(self.settings.spacing)) + $(this).outerHeight();
+			});
+		}
+	});
+
+	$.notify = function ( content, options ) {
+		var plugin = new Notify( this, content, options );
+		return plugin.notify;
+	};
+	$.notifyDefaults = function( options ) {
+		defaults = $.extend(true, {}, defaults, options);
+		return defaults;
+	};
+	$.notifyClose = function( command ) {
+		if (typeof command === "undefined" || command == "all") {
+			$('[data-notify]').find('[data-notify="dismiss"]').trigger('click');
+		}else{
+			$('[data-notify-position="'+command+'"]').find('[data-notify="dismiss"]').trigger('click');
+		}
+	};
+
+}));
+
+}.call(window));
 
 /***/ }),
 

@@ -6776,6 +6776,8 @@ button.close {
 }
 .wiki-content .dropdown ul {
     list-style-type: none;
+    overflow-y: scroll;
+    max-height: 800px;
 }
 .wiki-content .dropdown-menu > li > a {
     color: #333;
@@ -6829,6 +6831,41 @@ button.close {
 .context-menu-with-title :first-child {
     margin-top: 20px;
 }
+
+.btn-progress {
+    position: relative;
+}
+.btn-primary .built-in-progress {
+    background-color: #286090;
+}
+.btn-danger .built-in-progress {
+    background-color: #c9302c;
+}
+.btn-default .built-in-progress {
+    background-color: #eeeeee;
+}
+.btn-danger .progress-bar {
+    background-color: #d9534f;
+}
+.btn-default .progress-bar {
+    background-color: #cccccc;
+}
+.built-in-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+.btn-progress span {
+    z-index: 1;
+}
+.btn .progress {
+    border-radius: 0px;
+    border: none;
+}
+
 @charset "UTF-8";/*!
  * jQuery contextMenu - Plugin for simple contextMenu handling
  *

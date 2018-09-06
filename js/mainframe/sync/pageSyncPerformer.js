@@ -1,48 +1,61 @@
 import log from './log';
 import {Observable} from 'rxjs/Observable';
+import notify from './notify';
 
-export default function pageSyncPerformer(action, listOfSyncStatus, pageGroup) {
+const ACTIONS = {
+    "push" : {
+        getList: pageGroup => pageGroup.pagesToPush,
+        perform: async syncStatus => syncStatus.performPush()
+    },
+    "pull" : {
+        getList: pageGroup => pageGroup.pagesToPull,
+        perform: async syncStatus => syncStatus.performPull()
+    },
+    "pushConflicting" : {
+        getList: pageGroup => pageGroup.conflictingPages,
+        perform: async syncStatus => syncStatus.performPush()
+    }
+}
+
+export default function pageSyncPerformer(action, pageGroup) {
     log(`Performing sync for ${pageGroup.title}`);
-    // pageGroup.setSyncing(true);
-    doSync(action, listOfSyncStatus, pageGroup).subscribe(
-        item => log(`Syncing ${item}%`),
-        e => log(`Syncing error: ${e} ${JSON.stringify(e)}`),
+    pageGroup.setProgress(action, 0);
+    doSync(action, pageGroup).subscribe(
+        percent => pageGroup.setProgress(action, percent),
+        e => {
+            notify(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
+            pageGroup.removeProgress(action);
+        },
         () => {
             log(`Sync complete for ${pageGroup.title}`);
-           // pageGroup.setSyncing(false);
+            pageGroup.removeProgress(action);
         }
     );
 }
 
-function doSync(action, listOfSyncStatus, pageGroup) {
+function doSync(action, pageGroup) {
+    let actionRef = ACTIONS[action];
+    let listOfSyncStatus = actionRef.getList(pageGroup);
     return Observable.create(observer => {
         (async () => {
             let numPages = listOfSyncStatus.length;
             let synced = 0;
-            try {
-                await doSyncRecursive(action, pageGroup, pageGroup, listOfSyncStatus, true, callback);
-            } catch (err) {
-                log('got a sync error');
-                observer.error(err);
-            }
+            await doSyncRecursive(actionRef, pageGroup, pageGroup, listOfSyncStatus, true, callback);
             observer.complete();
 
             function callback() {
                 observer.next( Math.round((100* (++synced))/numPages) );
             }
-        })().then(null, observer.error);
+        })().then(null, e=>observer.error(e));
     });
 }
 
-async function doSyncRecursive(action, pageGroup, pageWrapper, listOfSyncStatus, syncAttachments, callback) {
+async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStatus, syncAttachments, callback) {
     let children = pageWrapper.children;
     let page = pageWrapper.page;
     let syncStatus = listOfSyncStatus.find(e=>e.sourcePage.id==page.id);
     if (syncStatus) { // is there a syncStatus to perform for current page?
-        switch (action) {
-            case 'push': await syncStatus.performPush(); break;
-            case 'pull': await syncStatus.performPull(); break;
-        }
+        await actionRef.perform(syncStatus);
         let targetSpace = syncStatus.targetSpaceKey;
         await pageWrapper.computeSyncStatus(targetSpace, true);
         pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
@@ -51,7 +64,7 @@ async function doSyncRecursive(action, pageGroup, pageWrapper, listOfSyncStatus,
     // in any case, check the children
     await Promise.all(children.map(async child => {
         if (!child.skipSync(pageGroup)) {
-            return doSyncRecursive(action, pageGroup, child, listOfSyncStatus, syncAttachments, callback)
+            return doSyncRecursive(actionRef, pageGroup, child, listOfSyncStatus, syncAttachments, callback)
         } else {
             return null;
         }

@@ -5,6 +5,7 @@ import SyncStatus from './SyncStatus';
 import $ from 'jquery';
 
 const TARGET_EXPANDS = 'version,metadata.labels,space';
+const MIN_PROGRESS = 20; // in percent, what's the min size of the progress bars
 
 export default class PageWrapper {
     constructor(page, parent) {
@@ -18,6 +19,9 @@ export default class PageWrapper {
         this.syncedPages = [];
         this.conflictingPages = [];
         this.descendants = [];
+        this.analyzing = false;
+        this.analyzed = false;
+        this.progress = {};
         this.isPageGroup = isPageGroupRoot(page, parent);
         
     }
@@ -57,6 +61,13 @@ export default class PageWrapper {
         if (idx >= 0) {
             $.observable(arr).remove(idx);
         }
+    }
+    setProgress(action, percent) {
+        // percent is always scaled to start from MIN_PROGRESS%, so that the progress bar is visible from the start
+        $.observable(this.progress).setProperty(action, MIN_PROGRESS + Math.round((100-MIN_PROGRESS)*percent / 100.));
+    }
+    removeProgress(action) {
+        $.observable(this.progress).removeProperty(action);
     }
     setAnalyzing(analyzing) {
         $.observable(this).setProperty('analyzing', analyzing);
