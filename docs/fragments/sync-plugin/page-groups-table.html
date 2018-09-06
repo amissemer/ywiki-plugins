@@ -28,9 +28,9 @@
                     {^{if analyzed || analyzing}}
                         {^{if analyzing || pagesToPush.length+pagesToPull.length+conflictingPages.length > 0}}
                     <div class="btn-group" role="group">
-                        <button class="btn btn-primary" type="button" data-link="title{: 'Publish '+ pagesToPush.length+' page(s)'} disabled{:pagesToPush.length==0}" ><span class="glyphicon glyphicon-upload glyphicon-lg"></span></button>
-                        <button class="btn btn-default" type="button" data-link="title{: 'Pull '+ pagesToPull.length+' remote page(s)'} disabled{:pagesToPull.length==0}" ><span class="glyphicon glyphicon-download glyphicon-lg text-primary"></span></button>
-                        <button class="btn btn-danger" type="button" data-link="title{: 'Overwrite '+ conflictingPages.length+' conflicting page(s)'} disabled{:conflictingPages.length==0}" ><span class="glyphicon glyphicon-upload glyphicon-lg"></span></button>
+                        <button class="btn btn-primary" type="button" data-link="{on ~perform 'push' pagesToPush #data} title{: 'Publish '+ pagesToPush.length+' page(s)'} disabled{:pagesToPush.length==0}" ><span class="glyphicon glyphicon-upload glyphicon-lg"></span></button>
+                        <button class="btn btn-default" type="button" data-link="{on ~perform 'pull' pagesToPull #data} title{: 'Pull '+ pagesToPull.length+' remote page(s)'} disabled{:pagesToPull.length==0}" ><span class="glyphicon glyphicon-download glyphicon-lg text-primary"></span></button>
+                        <button class="btn btn-danger" type="button" data-link="{on ~perform 'push' conflictingPages #data} title{: 'Overwrite '+ conflictingPages.length+' conflicting page(s)'} disabled{:conflictingPages.length==0}" ><span class="glyphicon glyphicon-upload glyphicon-lg"></span></button>
                         
                     </div>
                     {^{if analyzing}}

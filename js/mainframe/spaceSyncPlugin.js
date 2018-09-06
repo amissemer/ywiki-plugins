@@ -14,6 +14,7 @@ import PageWrapper from './sync/PageWrapper';
 import {Observable} from 'rxjs/Observable';
 import './sync/contextMenu';
 import pageSyncAnalyzer from './sync/pageSyncAnalyzer';
+import pageSyncPerformer from './sync/pageSyncPerformer';
 
 loadPluginStyleSheet('space-sync-bundle.css');
 jsviews($);
@@ -43,12 +44,7 @@ const model = {
 };
 const helpers = {
     analyze : pageSyncAnalyzer,
-    menuAction: function(ev, ui) {
-        if (!ui.item.children("ul").length) {
-            // Leaf menu item
-            alert(ui.item.text());
-        }
-    }
+    perform: pageSyncPerformer
 };
 
 loadTemplate('sync-plugin/page-groups-table.html').then( function(tmpl) {

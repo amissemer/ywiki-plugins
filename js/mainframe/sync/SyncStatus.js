@@ -14,6 +14,7 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
     this.pageWrapper = pageWrapper;
     this.performPush = noop;
     this.performPull = noop;
+    this.targetSpaceKey = targetSpaceKey;
     if (!targetPage) {
       this.status = SyncStatusEnum.TARGET_MISSING;
       this.performPush = createPage;
@@ -48,7 +49,7 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
         if (!pageWrapper.parentPage.syncStatus) {
             await pageWrapper.parentPage.computeSyncStatus(targetSpaceKey,false);
         }
-        if (pageWrapper.parentPage.syncStatus.status===SyncStatusEnum.TARGET_MISSING) {
+        if (pageWrapper.parentPage.syncStatus.status===SyncStatusEnum.TARGET_MISSING && !pageWrapper.parentPage.syncStatus.targetPage) {
             await pageWrapper.parentPage.syncStatus.performPush(); // create the parent recursively if necessary
         }
         this.targetPage = await createPageUnderPageId(sourcePage, targetSpaceKey, pageWrapper.parentPage.syncStatus.targetPage.id);

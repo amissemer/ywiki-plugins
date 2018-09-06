@@ -820,12 +820,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony import */ var _sync_contextMenu__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./sync/contextMenu */ "./js/mainframe/sync/contextMenu.js");
 /* harmony import */ var _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./sync/pageSyncAnalyzer */ "./js/mainframe/sync/pageSyncAnalyzer.js");
+/* harmony import */ var _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./sync/pageSyncPerformer */ "./js/mainframe/sync/pageSyncPerformer.js");
 
 
 
 
 
 // resets some default
+
 
 
 
@@ -865,12 +867,7 @@ const model = {
 };
 const helpers = {
     analyze : _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_13__["default"],
-    menuAction: function(ev, ui) {
-        if (!ui.item.children("ul").length) {
-            // Leaf menu item
-            alert(ui.item.text());
-        }
-    }
+    perform: _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_14__["default"]
 };
 
 Object(_fragmentLoader__WEBPACK_IMPORTED_MODULE_7__["loadTemplate"])('sync-plugin/page-groups-table.html').then( function(tmpl) {
@@ -1162,6 +1159,7 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
     this.pageWrapper = pageWrapper;
     this.performPush = noop;
     this.performPull = noop;
+    this.targetSpaceKey = targetSpaceKey;
     if (!targetPage) {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING;
       this.performPush = createPage;
@@ -1196,7 +1194,7 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
         if (!pageWrapper.parentPage.syncStatus) {
             await pageWrapper.parentPage.computeSyncStatus(targetSpaceKey,false);
         }
-        if (pageWrapper.parentPage.syncStatus.status===_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING) {
+        if (pageWrapper.parentPage.syncStatus.status===_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING && !pageWrapper.parentPage.syncStatus.targetPage) {
             await pageWrapper.parentPage.syncStatus.performPush(); // create the parent recursively if necessary
         }
         this.targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["createPageUnderPageId"])(sourcePage, targetSpaceKey, pageWrapper.parentPage.syncStatus.targetPage.id);
@@ -1581,6 +1579,82 @@ async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, 
     await Promise.all(children.map(async child => {
         if (!child.skipSync(pageGroup)) {
             return checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, syncAttachments, callback)
+        } else {
+            return null;
+        }
+    }));
+}
+
+
+/***/ }),
+
+/***/ "./js/mainframe/sync/pageSyncPerformer.js":
+/*!************************************************!*\
+  !*** ./js/mainframe/sync/pageSyncPerformer.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return pageSyncPerformer; });
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+function pageSyncPerformer(action, listOfSyncStatus, pageGroup) {
+    Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Performing sync for ${pageGroup.title}`);
+    // pageGroup.setSyncing(true);
+    doSync(action, listOfSyncStatus, pageGroup).subscribe(
+        item => Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Syncing ${item}%`),
+        e => Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Syncing error: ${e} ${JSON.stringify(e)}`),
+        () => {
+            Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Sync complete for ${pageGroup.title}`);
+           // pageGroup.setSyncing(false);
+        }
+    );
+}
+
+function doSync(action, listOfSyncStatus, pageGroup) {
+    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(observer => {
+        (async () => {
+            let numPages = listOfSyncStatus.length;
+            let synced = 0;
+            try {
+                await doSyncRecursive(action, pageGroup, pageGroup, listOfSyncStatus, true, callback);
+            } catch (err) {
+                Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])('got a sync error');
+                observer.error(err);
+            }
+            observer.complete();
+
+            function callback() {
+                observer.next( Math.round((100* (++synced))/numPages) );
+            }
+        })().then(null, observer.error);
+    });
+}
+
+async function doSyncRecursive(action, pageGroup, pageWrapper, listOfSyncStatus, syncAttachments, callback) {
+    let children = pageWrapper.children;
+    let page = pageWrapper.page;
+    let syncStatus = listOfSyncStatus.find(e=>e.sourcePage.id==page.id);
+    if (syncStatus) { // is there a syncStatus to perform for current page?
+        switch (action) {
+            case 'push': await syncStatus.performPush(); break;
+            case 'pull': await syncStatus.performPull(); break;
+        }
+        let targetSpace = syncStatus.targetSpaceKey;
+        await pageWrapper.computeSyncStatus(targetSpace, true);
+        pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
+        callback(); // count 1 sync
+    }
+    // in any case, check the children
+    await Promise.all(children.map(async child => {
+        if (!child.skipSync(pageGroup)) {
+            return doSyncRecursive(action, pageGroup, child, listOfSyncStatus, syncAttachments, callback)
         } else {
             return null;
         }
