@@ -2,19 +2,26 @@ import $ from 'jquery';
 import 'bootstrap-notify';
 import log from './log';
 
+const errorOpts = {
+    // default settings for error notify
+    type: 'danger',
+    allow_dismiss: true,
+    delay: -1,
+    icon_type: 'class'
+};
+
 const notify = {
-    error: function(message) {
+    error: function(message, url) {
         log(`Notified error: ${message}`);
-        return $.notify({
+        let n = {
             icon: 'glyphicon glyphicon-warning-sign',
             message: message 
-        },{
-            // default settings
-            type: 'danger',
-            allow_dismiss: true,
-            delay: -1,
-            icon_type: 'class'
-        });
+        };
+        if (url) {
+            n.url = url;
+            n.target = '_blank';
+        }
+        return $.notify(n, errorOpts);
     },
     // progress is not usable for now due to an amination glitch, possibly caused by duplicate jQuery versions on page
     progress: function(message) {

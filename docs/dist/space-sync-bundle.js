@@ -998,8 +998,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_confluence_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../common/confluence/confluence-sync-timestamps */ "./js/common/confluence/confluence-sync-timestamps.js");
 /* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
 /* harmony import */ var _SyncStatus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SyncStatus */ "./js/mainframe/sync/SyncStatus.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _spaceScanner__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./spaceScanner */ "./js/mainframe/sync/spaceScanner.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_5__);
+
 
 
 
@@ -1032,6 +1034,14 @@ class PageWrapper {
         }
         
     }
+    async refreshSourcePage() {
+        let page = await Object(_spaceScanner__WEBPACK_IMPORTED_MODULE_4__["loadPageForSync"])(this.page.id);
+        let o = jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this);
+        o.setProperty("page", page);
+        o.setProperty("title", page.title);
+        o.setProperty("url", page._links.webui);
+        o.removeProperty("syncStatus");
+    }
     skipSync(context) {
         return context.title!=this.title && this.isPageGroup;
     }
@@ -1052,35 +1062,35 @@ class PageWrapper {
         this.removeFromArray(this.syncedPages, pageId);
     }
     addPageToPush(page) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.pagesToPush).insert(page);
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this.pagesToPush).insert(page);
     }
     addPageToPull(page) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.pagesToPull).insert(page);
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this.pagesToPull).insert(page);
     }
     addConflictingPage(page) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.conflictingPages).insert(page);
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this.conflictingPages).insert(page);
     }
     addSyncedPage(page) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.syncedPages).insert(page);
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this.syncedPages).insert(page);
     }
     removeFromArray(arr, pageId) {
         let idx = arr.findIndex(s=>s.sourcePage.id==pageId);
         if (idx >= 0) {
-            jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(arr).remove(idx);
+            jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(arr).remove(idx);
         }
     }
     setProgress(action, percent) {
         // percent is always scaled to start from MIN_PROGRESS%, so that the progress bar is visible from the start
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.progress).setProperty(action, MIN_PROGRESS + Math.round((100-MIN_PROGRESS)*percent / 100.));
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this.progress).setProperty(action, MIN_PROGRESS + Math.round((100-MIN_PROGRESS)*percent / 100.));
     }
     removeProgress(action) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.progress).removeProperty(action);
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this.progress).removeProperty(action);
     }
     setAnalyzing(analyzing) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this).setProperty('analyzing', analyzing);
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this).setProperty('analyzing', analyzing);
     }
     setAnalyzed(analyzed) {
-        let o = jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this);
+        let o = jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this);
         o.setProperty('analyzing', false);
         o.setProperty('analyzed', true);
     }
@@ -1116,7 +1126,7 @@ class PageWrapper {
             syncStatus = new _SyncStatus__WEBPACK_IMPORTED_MODULE_3__["default"](this, targetSpaceKey)
           }
         }
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this).setProperty("syncStatus", syncStatus);
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this).setProperty("syncStatus", syncStatus);
         this.pageGroupRoot._updateWithSyncStatus(syncStatus);
     }
 }
@@ -1238,7 +1248,8 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
         updatedSourcePage.setBodyFromPage(this.targetPage).setTitle(this.targetPage.title);
         await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(updatedSourcePage, this.targetPage.space.key, this.sourcePage.space.key);
         this.sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(updatedSourcePage);
-        await this.markSynced()
+        await this.markSynced();
+        await this.pageWrapper.refreshSourcePage();
     }
 }
 
@@ -1576,19 +1587,26 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const errorOpts = {
+    // default settings for error notify
+    type: 'danger',
+    allow_dismiss: true,
+    delay: -1,
+    icon_type: 'class'
+};
+
 const notify = {
-    error: function(message) {
+    error: function(message, url) {
         Object(_log__WEBPACK_IMPORTED_MODULE_2__["default"])(`Notified error: ${message}`);
-        return jquery__WEBPACK_IMPORTED_MODULE_0___default.a.notify({
+        let n = {
             icon: 'glyphicon glyphicon-warning-sign',
             message: message 
-        },{
-            // default settings
-            type: 'danger',
-            allow_dismiss: true,
-            delay: -1,
-            icon_type: 'class'
-        });
+        };
+        if (url) {
+            n.url = url;
+            n.target = '_blank';
+        }
+        return jquery__WEBPACK_IMPORTED_MODULE_0___default.a.notify(n, errorOpts);
     },
     // progress is not usable for now due to an amination glitch, possibly caused by duplicate jQuery versions on page
     progress: function(message) {
@@ -1630,9 +1648,13 @@ __webpack_require__.r(__webpack_exports__);
 const SYNC_ACTION = 'sync';
 function pageSyncAnalyzer(pageGroup, targetSpace) {
     Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Checking synchronization status for ${pageGroup.title} - ${pageGroup.page.id}...`);
+    let refreshSourcePages = false;
+    if (pageGroup.analyzed) { // this is a refresh, we should refresh the source pages
+        refreshSourcePages = true;
+    }
     pageGroup.setAnalyzing(true);
     pageGroup.setProgress(SYNC_ACTION, 0);
-    checkSyncStatus(pageGroup, targetSpace).subscribe(
+    checkSyncStatus(pageGroup, targetSpace, refreshSourcePages).subscribe(
         percent => pageGroup.setProgress(SYNC_ACTION, percent),
         e => {
             _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Error while checking synchronization of page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
@@ -1641,17 +1663,18 @@ function pageSyncAnalyzer(pageGroup, targetSpace) {
         },
         () => {
             Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Checked sync status complete for ${pageGroup.title} - ${pageGroup.page.id}`);
+            pageGroup.removeProgress(SYNC_ACTION);
             pageGroup.setAnalyzed(true);
         }
     );
 }
 
-function checkSyncStatus(pageGroup, targetSpace) {
+function checkSyncStatus(pageGroup, targetSpace, refreshSourcePages) {
     return rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(observer => {
         (async () => {
             let numPages = 1 + pageGroup.descendants.length;
             let synced = 0;
-            await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, true, callback);
+            await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, true, callback, refreshSourcePages);
             observer.complete();
 
             function callback() {
@@ -1662,14 +1685,16 @@ function checkSyncStatus(pageGroup, targetSpace) {
     });
 }
 
-async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, syncAttachments, callback) {
+async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, syncAttachments, callback, refreshSourcePages) {
+    if (refreshSourcePages) {
+        await pageWrapper.refreshSourcePage();
+    }
     let children = pageWrapper.children;
-    let page = pageWrapper.page;
     await pageWrapper.computeSyncStatus(targetSpaceKey, syncAttachments);
     callback();
     await Promise.all(children.map(async child => {
         if (!child.skipSync(pageGroup)) {
-            return checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, syncAttachments, callback)
+            return checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, syncAttachments, callback, refreshSourcePages)
         } else {
             return null;
         }
@@ -1697,6 +1722,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const PERMISSION_ERROR = "Confluence Permission Error";
 const ACTIONS = {
     "push" : {
         getList: pageGroup => pageGroup.pagesToPush,
@@ -1718,7 +1744,11 @@ function pageSyncPerformer(action, pageGroup) {
     doSync(action, pageGroup).subscribe(
         percent => pageGroup.setProgress(action, percent),
         e => {
-            _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
+            if (e.name === PERMISSION_ERROR) {
+                _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Cannot ${action} on ${e.page.title}, target page is write protected, click here to check permissions, then retry`, e.page._links.webui);
+            } else {
+                _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`);
+            }
             pageGroup.removeProgress(action);
         },
         () => {
@@ -1750,9 +1780,17 @@ async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStat
     let page = pageWrapper.page;
     let syncStatus = listOfSyncStatus.find(e=>e.sourcePage.id==page.id);
     if (syncStatus) { // is there a syncStatus to perform for current page?
-        await actionRef.perform(syncStatus);
+        try {
+            await actionRef.perform(syncStatus);
+        } catch (err) {
+            if (err.status == 403) { // HTTP 403 Forbidden
+                throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
+            } else {
+                throw err;
+            }
+        }
         let targetSpace = syncStatus.targetSpaceKey;
-        await pageWrapper.computeSyncStatus(targetSpace, true);
+        await pageWrapper.computeSyncStatus(targetSpace, true); // TODO this doesn't seem to work in case of a batch pull. Also page titles aren't properly pushed
         callback(); // count 1 sync
     }
     // in any case, check the children
@@ -1772,12 +1810,13 @@ async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStat
 /*!*******************************************!*\
   !*** ./js/mainframe/sync/spaceScanner.js ***!
   \*******************************************/
-/*! exports provided: default */
+/*! exports provided: default, loadPageForSync */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return spaceScanner; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadPageForSync", function() { return loadPageForSync; });
 /* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./model */ "./js/mainframe/sync/model.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_1__);
@@ -1823,7 +1862,7 @@ async function spaceScanner(sourceSpace, sourceRootPage) {
             addPageGroup(pageGroup);
         },
         e => {
-            Object(_notify__WEBPACK_IMPORTED_MODULE_2__["default"])(`Error while listing Page Groups: ${e}`);
+            _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Error while listing Page Groups: ${e}`);
             setScanProgress();
         },
         () => {
@@ -1870,6 +1909,10 @@ function listPageGroups(sourceSpaceKey, sourcePageTitle, sourcePage, pageFoundCa
     });
 }
 
+async function loadPageForSync(pageId) {
+    return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_5__["getContentById"])(pageId, PAGE_EXPANDS);
+}
+
 /** emits page groups to the observer (the root and subtrees starting from pages with a given label).
  * Wraps all pages in PageWrapper. */
 async function scanPageGroups(sourcePage, parentPageWrapper, observer, pageFoundCallback) {
@@ -1879,7 +1922,7 @@ async function scanPageGroups(sourcePage, parentPageWrapper, observer, pageFound
     let allChildren = [];
     while (children) {
         allChildren = allChildren.concat(await Promise.all(children.results.map(async child => {
-            let childDetails = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_5__["getContentById"])(child.id, PAGE_EXPANDS);
+            let childDetails = await loadPageForSync(child.id);
             let childWrapper = await scanPageGroups(childDetails, thisPageWrapper, observer, pageFoundCallback);
             return childWrapper;
         })));

@@ -2,6 +2,7 @@ import log from './log';
 import {Observable} from 'rxjs/Observable';
 import notify from './notify';
 
+const PERMISSION_ERROR = "Confluence Permission Error";
 const ACTIONS = {
     "push" : {
         getList: pageGroup => pageGroup.pagesToPush,
@@ -23,7 +24,11 @@ export default function pageSyncPerformer(action, pageGroup) {
     doSync(action, pageGroup).subscribe(
         percent => pageGroup.setProgress(action, percent),
         e => {
-            notify.error(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
+            if (e.name === PERMISSION_ERROR) {
+                notify.error(`Cannot ${action} on ${e.page.title}, target page is write protected, click here to check permissions, then retry`, e.page._links.webui);
+            } else {
+                notify.error(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`);
+            }
             pageGroup.removeProgress(action);
         },
         () => {
@@ -55,9 +60,17 @@ async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStat
     let page = pageWrapper.page;
     let syncStatus = listOfSyncStatus.find(e=>e.sourcePage.id==page.id);
     if (syncStatus) { // is there a syncStatus to perform for current page?
-        await actionRef.perform(syncStatus);
+        try {
+            await actionRef.perform(syncStatus);
+        } catch (err) {
+            if (err.status == 403) { // HTTP 403 Forbidden
+                throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
+            } else {
+                throw err;
+            }
+        }
         let targetSpace = syncStatus.targetSpaceKey;
-        await pageWrapper.computeSyncStatus(targetSpace, true);
+        await pageWrapper.computeSyncStatus(targetSpace, true); // TODO this doesn't seem to work in case of a batch pull. Also page titles aren't properly pushed
         callback(); // count 1 sync
     }
     // in any case, check the children

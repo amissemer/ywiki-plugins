@@ -2,6 +2,7 @@ import SyncStatusEnum from './SyncStatusEnum';
 import {getTargetSyncTimeStamp, getSourceSyncTimeStamp} from '../../common/confluence/confluence-sync-timestamps';
 import {getContent,getContentById} from '../../common/confluence/confluence-page-async';
 import SyncStatus from './SyncStatus';
+import {loadPageForSync} from './spaceScanner';
 import $ from 'jquery';
 
 const TARGET_EXPANDS = 'version,metadata.labels,space';
@@ -29,6 +30,14 @@ export default class PageWrapper {
             this.progress = {};
         }
         
+    }
+    async refreshSourcePage() {
+        let page = await loadPageForSync(this.page.id);
+        let o = $.observable(this);
+        o.setProperty("page", page);
+        o.setProperty("title", page.title);
+        o.setProperty("url", page._links.webui);
+        o.removeProperty("syncStatus");
     }
     skipSync(context) {
         return context.title!=this.title && this.isPageGroup;

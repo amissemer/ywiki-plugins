@@ -76,7 +76,8 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
         updatedSourcePage.setBodyFromPage(this.targetPage).setTitle(this.targetPage.title);
         await preProcess(updatedSourcePage, this.targetPage.space.key, this.sourcePage.space.key);
         this.sourcePage = await updateContent(updatedSourcePage);
-        await this.markSynced()
+        await this.markSynced();
+        await this.pageWrapper.refreshSourcePage();
     }
 }
 

@@ -33,8 +33,18 @@
                     </ul>
                 </td>
                 <td>
+                    <!-- ACTIONS -->
+                    <!-- INITIAL ANALYSIS BUTTON -->
+                    <button type="button" data-toggle="tooltip" title="Check Synchronization" data-link="{on ~analyze #data ~root.targetSpace} class{: analyzed?'btn btn-progress btn-default':'btn btn-progress btn-primary'}">
+                            <span class="glyphicon glyphicon-refresh"></span>
+                            <div class="progress built-in-progress" data-link="class{merge:progress.sync toggle='show'}">
+                                <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.sync + '%'}" role="progressbar" style="width: 0%;"></div>
+                            </div>
+                    </button>
                     {^{if analyzed}}
-                        {^{if pagesToPush.length+pagesToPull.length+conflictingPages.length > 0}}
+                        {^{if analyzing || pagesToPush.length+pagesToPull.length+conflictingPages.length > 0}}
+                    
+                    <!-- GROUP OF PUSH/PULL BUTTONS -->
                     <div class="btn-group" role="group">
                         <button class="btn btn-primary btn-progress" type="button" data-toggle="tooltip" data-link="{on ~perform 'push' #data} title{: 'Publish '+ pagesToPush.length+' page(s)'} disabled{:pagesToPush.length==0}" >
                             <span class="glyphicon glyphicon-upload glyphicon-lg"></span>
@@ -56,16 +66,10 @@
                         </button>
                         
                     </div>
+
                         {{else}}
                         <span class="glyphicon glyphicon-ok glyphicon-lg text-success"  title="Synchronized"></span>
                         {{/if}}
-                    {{else}}
-                    <button class="btn btn-primary btn-progress" type="button" data-toggle="tooltip" title="Check Synchronization" data-link="{on ~analyze #data ~root.targetSpace}">
-                        <span class="glyphicon glyphicon-transfer"></span>
-                        <div class="progress built-in-progress" data-link="class{merge:progress.sync toggle='show'}">
-                            <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.sync + '%'}" role="progressbar" style="width: 0%;"></div>
-                        </div>
-                    </button>
                     {{/if}}
                 </td>
         </tr>
@@ -74,7 +78,7 @@
 </table>
 <div class="panel panel-default logs">
     <div class="panel-heading">
-      <h3 class="panel-title">Synchronization Log</h3>
+      <h4 class="panel-title">Synchronization Log</h4>
     </div>
     <div class="panel-body">
         <pre>{^{>output.messages}}</pre>

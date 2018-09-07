@@ -34,7 +34,7 @@ export default async function spaceScanner(sourceSpace, sourceRootPage) {
             addPageGroup(pageGroup);
         },
         e => {
-            notify(`Error while listing Page Groups: ${e}`);
+            notify.error(`Error while listing Page Groups: ${e}`);
             setScanProgress();
         },
         () => {
@@ -81,6 +81,10 @@ function listPageGroups(sourceSpaceKey, sourcePageTitle, sourcePage, pageFoundCa
     });
 }
 
+export async function loadPageForSync(pageId) {
+    return getContentById(pageId, PAGE_EXPANDS);
+}
+
 /** emits page groups to the observer (the root and subtrees starting from pages with a given label).
  * Wraps all pages in PageWrapper. */
 async function scanPageGroups(sourcePage, parentPageWrapper, observer, pageFoundCallback) {
@@ -90,7 +94,7 @@ async function scanPageGroups(sourcePage, parentPageWrapper, observer, pageFound
     let allChildren = [];
     while (children) {
         allChildren = allChildren.concat(await Promise.all(children.results.map(async child => {
-            let childDetails = await getContentById(child.id, PAGE_EXPANDS);
+            let childDetails = await loadPageForSync(child.id);
             let childWrapper = await scanPageGroups(childDetails, thisPageWrapper, observer, pageFoundCallback);
             return childWrapper;
         })));

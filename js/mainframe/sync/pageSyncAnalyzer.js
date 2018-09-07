@@ -5,9 +5,13 @@ import notify from './notify';
 const SYNC_ACTION = 'sync';
 export default function pageSyncAnalyzer(pageGroup, targetSpace) {
     log(`Checking synchronization status for ${pageGroup.title} - ${pageGroup.page.id}...`);
+    let refreshSourcePages = false;
+    if (pageGroup.analyzed) { // this is a refresh, we should refresh the source pages
+        refreshSourcePages = true;
+    }
     pageGroup.setAnalyzing(true);
     pageGroup.setProgress(SYNC_ACTION, 0);
-    checkSyncStatus(pageGroup, targetSpace).subscribe(
+    checkSyncStatus(pageGroup, targetSpace, refreshSourcePages).subscribe(
         percent => pageGroup.setProgress(SYNC_ACTION, percent),
         e => {
             notify.error(`Error while checking synchronization of page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
@@ -16,17 +20,18 @@ export default function pageSyncAnalyzer(pageGroup, targetSpace) {
         },
         () => {
             log(`Checked sync status complete for ${pageGroup.title} - ${pageGroup.page.id}`);
+            pageGroup.removeProgress(SYNC_ACTION);
             pageGroup.setAnalyzed(true);
         }
     );
 }
 
-function checkSyncStatus(pageGroup, targetSpace) {
+function checkSyncStatus(pageGroup, targetSpace, refreshSourcePages) {
     return Observable.create(observer => {
         (async () => {
             let numPages = 1 + pageGroup.descendants.length;
             let synced = 0;
-            await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, true, callback);
+            await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, true, callback, refreshSourcePages);
             observer.complete();
 
             function callback() {
@@ -37,14 +42,16 @@ function checkSyncStatus(pageGroup, targetSpace) {
     });
 }
 
-async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, syncAttachments, callback) {
+async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, syncAttachments, callback, refreshSourcePages) {
+    if (refreshSourcePages) {
+        await pageWrapper.refreshSourcePage();
+    }
     let children = pageWrapper.children;
-    let page = pageWrapper.page;
     await pageWrapper.computeSyncStatus(targetSpaceKey, syncAttachments);
     callback();
     await Promise.all(children.map(async child => {
         if (!child.skipSync(pageGroup)) {
-            return checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, syncAttachments, callback)
+            return checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, syncAttachments, callback, refreshSourcePages)
         } else {
             return null;
         }
