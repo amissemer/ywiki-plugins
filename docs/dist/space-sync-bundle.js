@@ -1477,7 +1477,6 @@ const model = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return notify; });
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var bootstrap_notify__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bootstrap-notify */ "./node_modules/bootstrap-notify/bootstrap-notify.js");
@@ -1487,21 +1486,36 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-jquery__WEBPACK_IMPORTED_MODULE_0___default.a.notifyDefaults({
-    // default settings
-    type: 'danger',
-    allow_dismiss: true,
-    delay: -1,
-    icon_type: 'class'
-});
+const notify = {
+    error: function(message) {
+        Object(_log__WEBPACK_IMPORTED_MODULE_2__["default"])(`Notified error: ${message}`);
+        return jquery__WEBPACK_IMPORTED_MODULE_0___default.a.notify({
+            icon: 'glyphicon glyphicon-warning-sign',
+            message: message 
+        },{
+            // default settings
+            type: 'danger',
+            allow_dismiss: true,
+            delay: -1,
+            icon_type: 'class'
+        });
+    },
+    // progress is not usable for now due to an amination glitch, possibly caused by duplicate jQuery versions on page
+    progress: function(message) {
+        Object(_log__WEBPACK_IMPORTED_MODULE_2__["default"])(`Notified progress: ${message}`);
+        let notif = jquery__WEBPACK_IMPORTED_MODULE_0___default.a.notify({
+            message: message
+        },{
+            type: 'info',
+            showProgressbar: true,
+            allow_dismiss: false,
+            delay: -1
+        });
+    }
+};
 
-function notify(message) {
-    Object(_log__WEBPACK_IMPORTED_MODULE_2__["default"])(`Notify: ${message}`);
-    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.notify({
-        icon: 'glyphicon glyphicon-warning-sign',
-        message: message 
-    });
-}
+/* harmony default export */ __webpack_exports__["default"] = (notify);
+
 
 /***/ }),
 
@@ -1531,7 +1545,7 @@ function pageSyncAnalyzer(pageGroup, targetSpace) {
     checkSyncStatus(pageGroup, targetSpace).subscribe(
         percent => pageGroup.setProgress(SYNC_ACTION, percent),
         e => {
-            Object(_notify__WEBPACK_IMPORTED_MODULE_2__["default"])(`Error while checking synchronization of page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
+            _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Error while checking synchronization of page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
             pageGroup.removeProgress(SYNC_ACTION);
             pageGroup.setAnalyzed(false);
         },
@@ -1615,7 +1629,7 @@ function pageSyncPerformer(action, pageGroup) {
     doSync(action, pageGroup).subscribe(
         percent => pageGroup.setProgress(action, percent),
         e => {
-            Object(_notify__WEBPACK_IMPORTED_MODULE_2__["default"])(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
+            _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
             pageGroup.removeProgress(action);
         },
         () => {

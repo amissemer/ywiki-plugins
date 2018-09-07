@@ -23,7 +23,7 @@ export default function pageSyncPerformer(action, pageGroup) {
     doSync(action, pageGroup).subscribe(
         percent => pageGroup.setProgress(action, percent),
         e => {
-            notify(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
+            notify.error(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
             pageGroup.removeProgress(action);
         },
         () => {
