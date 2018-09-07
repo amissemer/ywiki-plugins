@@ -1170,6 +1170,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/confluence/confluence-page-postprocessor */ "./js/common/confluence/confluence-page-postprocessor.js");
 /* harmony import */ var _common_confluence_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/confluence/confluence-sync-timestamps */ "./js/common/confluence/confluence-sync-timestamps.js");
 /* harmony import */ var _common_confluence_Page__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../common/confluence/Page */ "./js/common/confluence/Page.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
+
 
 
 
@@ -1223,31 +1225,41 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
             await pageWrapper.parentPage.syncStatus.performPush(); // create the parent recursively if necessary
         }
         // now create the page under the target parent page
-        let newPage = _common_confluence_Page__WEBPACK_IMPORTED_MODULE_4__["default"].copyFrom(sourcePage);
+        let newPage = _common_confluence_Page__WEBPACK_IMPORTED_MODULE_4__["default"].copyFrom(sourcePage); // .setVersion(1, `pushed by ysync from ${identifier(sourcePage)}`); (doesn't work on page creation)
        
         await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(newPage, sourcePage.space.key, targetSpaceKey);
         newPage.setSpaceKey(targetSpaceKey).setParentId(pageWrapper.parentPage.syncStatus.targetPage.id);
 
         this.targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["createPageUnderPageId"])(newPage);
+        Object(_log__WEBPACK_IMPORTED_MODULE_5__["default"])(`Created page ${nameAndVersion(this.targetPage)} from ${identifier(sourcePage)}`);
         await this.markSynced();
     }
 
     async function performUpdate() {
-        let updatedTargetPage = _common_confluence_Page__WEBPACK_IMPORTED_MODULE_4__["default"].newVersionOf(this.targetPage, `pushed from ${this.sourcePage.space.key} with ysync`, true);
+        let updatedTargetPage = _common_confluence_Page__WEBPACK_IMPORTED_MODULE_4__["default"].newVersionOf(this.targetPage, `pushed by ysync from ${identifier(this.sourcePage)}`, true);
         updatedTargetPage.setBodyFromPage(this.sourcePage).setTitle(this.sourcePage.title);
         await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(updatedTargetPage, this.sourcePage.space.key, targetSpaceKey);
         this.targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(updatedTargetPage);
+        Object(_log__WEBPACK_IMPORTED_MODULE_5__["default"])(`Pushed page ${nameAndVersion(this.targetPage)} (status=${this.status}) from ${identifier(this.sourcePage)}`);
         await this.markSynced();
+    }
+
+    function identifier(page) {
+        return `${page.space.key}:${page.id}:${page.version.number}`;
+    }
+    function nameAndVersion(page) {
+        return `"${page.space.key}:${page.title}" (v. ${page.version.number})`;
     }
   
     async function performPull() {
         if (!this.targetPage.body || !this.targetPage.body.storage) {
             this.targetPage = targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(targetPage.id, COPY_EXPANDS);
         }
-        let updatedSourcePage = _common_confluence_Page__WEBPACK_IMPORTED_MODULE_4__["default"].newVersionOf(this.sourcePage, `pulled from ${this.targetPage.space.key} with ysync`);
+        let updatedSourcePage = _common_confluence_Page__WEBPACK_IMPORTED_MODULE_4__["default"].newVersionOf(this.sourcePage, `pulled by ysync from ${identifier(this.targetPage)}`);
         updatedSourcePage.setBodyFromPage(this.targetPage).setTitle(this.targetPage.title);
         await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(updatedSourcePage, this.targetPage.space.key, this.sourcePage.space.key);
         this.sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(updatedSourcePage);
+        Object(_log__WEBPACK_IMPORTED_MODULE_5__["default"])(`Pulled page ${nameAndVersion(this.sourcePage)} (status=${this.status}) from ${identifier(this.targetPage)}`);
         await this.markSynced();
         await this.pageWrapper.refreshSourcePage();
     }
