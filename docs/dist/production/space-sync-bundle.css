@@ -6865,7 +6865,9 @@ button.close {
     border-radius: 0px;
     border: none;
 }
-
+.panel.logs pre {
+    font-size: 0.7em;
+}
 @charset "UTF-8";/*!
  * jQuery contextMenu - Plugin for simple contextMenu handling
  *

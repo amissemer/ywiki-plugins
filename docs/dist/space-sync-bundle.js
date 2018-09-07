@@ -802,28 +802,25 @@ console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
-/* harmony import */ var bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bootstrap/dist/js/bootstrap.min */ "./node_modules/bootstrap/dist/js/bootstrap.min.js");
-/* harmony import */ var bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.css */ "./node_modules/bootstrap/dist/css/bootstrap.css");
-/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./spaceSyncPlugin.css */ "./js/mainframe/spaceSyncPlugin.css");
-/* harmony import */ var _spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _stylesheetPlugin__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
-/* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
-/* harmony import */ var _fragmentLoader__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./fragmentLoader */ "./js/mainframe/fragmentLoader.js");
-/* harmony import */ var jsviews__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! jsviews */ "./node_modules/jsviews/jsviews.js");
-/* harmony import */ var jsviews__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(jsviews__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _sync_log__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./sync/log */ "./js/mainframe/sync/log.js");
-/* harmony import */ var _sync_PageWrapper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./sync/PageWrapper */ "./js/mainframe/sync/PageWrapper.js");
-/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
-/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var _sync_contextMenu__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./sync/contextMenu */ "./js/mainframe/sync/contextMenu.js");
-/* harmony import */ var _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./sync/pageSyncAnalyzer */ "./js/mainframe/sync/pageSyncAnalyzer.js");
-/* harmony import */ var _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./sync/pageSyncPerformer */ "./js/mainframe/sync/pageSyncPerformer.js");
-/* harmony import */ var _sync_notify__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./sync/notify */ "./js/mainframe/sync/notify.js");
-
-
+/* harmony import */ var bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bootstrap/dist/js/bootstrap.min */ "./node_modules/bootstrap/dist/js/bootstrap.min.js");
+/* harmony import */ var bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_js_bootstrap_min__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.css */ "./node_modules/bootstrap/dist/css/bootstrap.css");
+/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./spaceSyncPlugin.css */ "./js/mainframe/spaceSyncPlugin.css");
+/* harmony import */ var _spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_spaceSyncPlugin_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _stylesheetPlugin__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
+/* harmony import */ var _fragmentLoader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./fragmentLoader */ "./js/mainframe/fragmentLoader.js");
+/* harmony import */ var jsviews__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! jsviews */ "./node_modules/jsviews/jsviews.js");
+/* harmony import */ var jsviews__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(jsviews__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _sync_log__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./sync/log */ "./js/mainframe/sync/log.js");
+/* harmony import */ var _sync_contextMenu__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./sync/contextMenu */ "./js/mainframe/sync/contextMenu.js");
+/* harmony import */ var _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./sync/pageSyncAnalyzer */ "./js/mainframe/sync/pageSyncAnalyzer.js");
+/* harmony import */ var _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./sync/pageSyncPerformer */ "./js/mainframe/sync/pageSyncPerformer.js");
+/* harmony import */ var _sync_model__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./sync/model */ "./js/mainframe/sync/model.js");
+/* harmony import */ var _sync_spaceScanner__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./sync/spaceScanner */ "./js/mainframe/sync/spaceScanner.js");
+/* harmony import */ var _sync_tooltip__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./sync/tooltip */ "./js/mainframe/sync/tooltip.js");
+// Entry point of the sync tool
+// Load main dependencies and css
 
 
 
@@ -840,148 +837,33 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+Object(_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_4__["loadPluginStyleSheet"])('space-sync-bundle.css');
+// load jsviews and binds it to jQuery
+jsviews__WEBPACK_IMPORTED_MODULE_6___default()(jquery__WEBPACK_IMPORTED_MODULE_0___default.a);
 
-Object(_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_5__["loadPluginStyleSheet"])('space-sync-bundle.css');
-jsviews__WEBPACK_IMPORTED_MODULE_8___default()(jquery__WEBPACK_IMPORTED_MODULE_0___default.a);
-
-const pageExpands = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
-
-var pages = [];
-function addPageGroup(pageGroup) {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.observable(pages).insert(pageGroup);
-}
-
+// read the <ci-sync-app> macro setting from the wiki page
 let appElt = jquery__WEBPACK_IMPORTED_MODULE_0___default()('ci-sync-app').first();
 let sourceSpace = appElt.data('source-space');
 let targetSpace = appElt.data('target-space');
 let sourceRootPage = appElt.data('source-root-page');
 let targetParentPage = appElt.data('target-parent-page');
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`sourceSpace="${sourceSpace}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`targetSpace="${targetSpace}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`sourceRootPage="${sourceRootPage}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`targetParentPage="${targetParentPage}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`sourceSpace="${sourceSpace}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`targetSpace="${targetSpace}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`sourceRootPage="${sourceRootPage}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`targetParentPage="${targetParentPage}"`);
+// store the targetSpace in the model for future reference
+_sync_model__WEBPACK_IMPORTED_MODULE_11__["default"].targetSpace = targetSpace;
 
-const model = {
-    output: _sync_log__WEBPACK_IMPORTED_MODULE_9__["default"].output, 
-    pages: pages,
-    host: _pluginCommon__WEBPACK_IMPORTED_MODULE_6__["host"],
-    progress: {},
-    targetSpace: targetSpace
-};
-function setScanProgress(value) {
-    if(value===null) {
-        jquery__WEBPACK_IMPORTED_MODULE_0___default.a.observable(model.progress).removeProperty('scan');
-    } else {
-        jquery__WEBPACK_IMPORTED_MODULE_0___default.a.observable(model.progress).setProperty('scan', value);
-    }
-}
-const helpers = {
-    analyze : _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_13__["default"],
-    perform: _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_14__["default"]
-};
-
-Object(_fragmentLoader__WEBPACK_IMPORTED_MODULE_7__["loadTemplate"])('sync-plugin/page-groups-table.html').then( function(tmpl) {
-    tmpl.link(appElt, model, helpers);
+// load the jsview template and link it to the model and helper functions
+Object(_fragmentLoader__WEBPACK_IMPORTED_MODULE_5__["loadTemplate"])('sync-plugin/page-groups-table.html').then( function(tmpl) {
+    tmpl.link(appElt, _sync_model__WEBPACK_IMPORTED_MODULE_11__["default"], {
+        analyze : _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_9__["default"],
+        perform: _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_10__["default"]
+    });
 });
 
-scanSpace();
-
-async function scanSpace() {
-    setScanProgress(0);
-    let sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContent"])(sourceSpace, sourceRootPage, pageExpands);
-    var pageCount = 0;
-    let pageSearchResult = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["searchPagesWithCQL"])(sourceSpace, "ancestor = "+sourcePage.id, 100);
-    pageCount += pageSearchResult.size;
-    while (pageSearchResult._links.next) {
-        pageSearchResult = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get(pageSearchResult._links.next);
-        pageCount += pageSearchResult.size;
-    }
-    var pageFoundCout = 0;
-    function pageFoundCallback() {
-        setScanProgress( Math.round(100*(++pageFoundCout)/pageCount) ); 
-    }
-
-    
-    listPageGroups(sourceSpace, sourceRootPage, sourcePage, pageFoundCallback).subscribe(
-        pageGroup => {
-            Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Found page group: ${pageGroup.title}`);
-            pageGroup.descendants = descendants(pageGroup, pageGroup.children);
-            addPageGroup(pageGroup);
-        },
-        e => {
-            Object(_sync_notify__WEBPACK_IMPORTED_MODULE_15__["default"])(`Error while listing Page Groups: ${e}`);
-            setScanProgress();
-        },
-        () => {
-            Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])('Page group listing complete');
-            setScanProgress();
-        }
-    );
-}
-
-
-const INDENT = "  ";
-function descendants(context, children, level) {
-    let descendantsRes = [];
-    level = level || INDENT;
-    for (let child of children) {
-        if (!child.skipSync(context)) {
-            child.level = level;
-            descendantsRes.push(child);
-            descendantsRes = descendantsRes.concat(descendants(context, child.children, level+INDENT));
-        }
-    }
-    return descendantsRes;
-}
-
-function listPageGroups(sourceSpaceKey, sourcePageTitle, sourcePage, pageFoundCallback) {
-    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_11__["Observable"].create(observer => {
-        (async () => {
-            Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])();
-            Object(_sync_log__WEBPACK_IMPORTED_MODULE_9__["default"])(`Listing page groups to sync from ${sourceSpaceKey}:${sourcePageTitle}...`);
-            //let targetParent = await getContent(targetSpaceKey,targetParentPage);
-            await scanPageGroups(sourcePage, null, observer, pageFoundCallback);
-            observer.complete();
-        })().then(null, e=>observer.error(e));
-    });
-}
-
-
-
-
-/** emits page groups to the observer (the root and subtrees starting from pages with a given label).
- * Wraps all pages in PageWrapper. */
-async function scanPageGroups(sourcePage, parentPageWrapper, observer, pageFoundCallback) {
-    let thisPageWrapper = new _sync_PageWrapper__WEBPACK_IMPORTED_MODULE_10__["default"](sourcePage, parentPageWrapper);
-    pageFoundCallback();
-    let children = sourcePage.children.page;
-    let allChildren = [];
-    while (children) {
-        allChildren = allChildren.concat(await Promise.all(children.results.map(async child => {
-            let childDetails = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(child.id, pageExpands);
-            let childWrapper = await scanPageGroups(childDetails, thisPageWrapper, observer, pageFoundCallback);
-            return childWrapper;
-        })));
-        if (children._links.next) {
-            children = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.ajax(children._links.next);
-        } else {
-            children = null;
-        }
-    }
-    thisPageWrapper.children = allChildren;
-
-    if (thisPageWrapper.isPageGroup) {
-        observer.next(thisPageWrapper);
-    }
-    return thisPageWrapper;
-}
-
-
-
-
-
-
-
+// trigger the scan of the space for pages to sync
+Object(_sync_spaceScanner__WEBPACK_IMPORTED_MODULE_12__["default"])(sourceSpace, sourceRootPage);
 
 
 /***/ }),
@@ -1560,6 +1442,32 @@ function append(message) {
 
 /***/ }),
 
+/***/ "./js/mainframe/sync/model.js":
+/*!************************************!*\
+  !*** ./js/mainframe/sync/model.js ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
+/* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../pluginCommon */ "./js/mainframe/pluginCommon.js");
+
+
+
+const model = {
+    output: _log__WEBPACK_IMPORTED_MODULE_0__["default"].output, 
+    pages: [],
+    host: _pluginCommon__WEBPACK_IMPORTED_MODULE_1__["host"],
+    progress: {}
+};
+
+/** Exports the singleton root jsview model */
+/* harmony default export */ __webpack_exports__["default"] = (model);
+
+/***/ }),
+
 /***/ "./js/mainframe/sync/notify.js":
 /*!*************************************!*\
   !*** ./js/mainframe/sync/notify.js ***!
@@ -1755,6 +1663,160 @@ async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStat
     }));
 }
 
+
+/***/ }),
+
+/***/ "./js/mainframe/sync/spaceScanner.js":
+/*!*******************************************!*\
+  !*** ./js/mainframe/sync/spaceScanner.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return spaceScanner; });
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./model */ "./js/mainframe/sync/model.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _notify__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./notify */ "./js/mainframe/sync/notify.js");
+/* harmony import */ var _PageWrapper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./PageWrapper */ "./js/mainframe/sync/PageWrapper.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
+
+
+
+
+
+
+
+
+const PAGE_EXPANDS = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
+const MIN_PROGRESS=10;
+const SCAN_ACTION = 'scan';
+const INDENT = "  ";
+
+async function spaceScanner(sourceSpace, sourceRootPage) {
+    setScanProgress(0);
+    let sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_5__["getContent"])(sourceSpace, sourceRootPage, PAGE_EXPANDS);
+    var pageCount = 0;
+    let pageSearchResult = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_5__["searchPagesWithCQL"])(sourceSpace, "ancestor = "+sourcePage.id, 100);
+    pageCount += pageSearchResult.size;
+    while (pageSearchResult._links.next) {
+        pageSearchResult = await jquery__WEBPACK_IMPORTED_MODULE_1___default.a.get(pageSearchResult._links.next);
+        pageCount += pageSearchResult.size;
+    }
+    var pageFoundCout = 0;
+    function pageFoundCallback() {
+        setScanProgress( Math.round(100*(++pageFoundCout)/pageCount) ); 
+    }
+
+    
+    listPageGroups(sourceSpace, sourceRootPage, sourcePage, pageFoundCallback).subscribe(
+        pageGroup => {
+            Object(_log__WEBPACK_IMPORTED_MODULE_6__["default"])(`Found page group: ${pageGroup.title}`);
+            pageGroup.descendants = descendants(pageGroup, pageGroup.children);
+            addPageGroup(pageGroup);
+        },
+        e => {
+            Object(_notify__WEBPACK_IMPORTED_MODULE_2__["default"])(`Error while listing Page Groups: ${e}`);
+            setScanProgress();
+        },
+        () => {
+            Object(_log__WEBPACK_IMPORTED_MODULE_6__["default"])('Page group listing complete');
+            setScanProgress();
+        }
+    );
+}
+
+function addPageGroup(pageGroup) {
+    jquery__WEBPACK_IMPORTED_MODULE_1___default.a.observable(_model__WEBPACK_IMPORTED_MODULE_0__["default"].pages).insert(pageGroup);
+}
+
+function setScanProgress(percent) {
+    if(typeof percent!=='number') {
+        jquery__WEBPACK_IMPORTED_MODULE_1___default.a.observable(_model__WEBPACK_IMPORTED_MODULE_0__["default"].progress).removeProperty(SCAN_ACTION);
+    } else {
+        // percent is always scaled to start from MIN_PROGRESS%, so that the progress bar is visible from the start
+        jquery__WEBPACK_IMPORTED_MODULE_1___default.a.observable(_model__WEBPACK_IMPORTED_MODULE_0__["default"].progress).setProperty(SCAN_ACTION, MIN_PROGRESS + Math.round((100-MIN_PROGRESS)*percent / 100.));
+    }
+}
+
+function descendants(context, children, level) {
+    let descendantsRes = [];
+    level = level || INDENT;
+    for (let child of children) {
+        if (!child.skipSync(context)) {
+            child.level = level;
+            descendantsRes.push(child);
+            descendantsRes = descendantsRes.concat(descendants(context, child.children, level+INDENT));
+        }
+    }
+    return descendantsRes;
+}
+
+function listPageGroups(sourceSpaceKey, sourcePageTitle, sourcePage, pageFoundCallback) {
+    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_4__["Observable"].create(observer => {
+        (async () => {
+            Object(_log__WEBPACK_IMPORTED_MODULE_6__["default"])();
+            Object(_log__WEBPACK_IMPORTED_MODULE_6__["default"])(`Listing page groups to sync from ${sourceSpaceKey}:${sourcePageTitle}...`);
+            await scanPageGroups(sourcePage, null, observer, pageFoundCallback);
+            observer.complete();
+        })().then(null, e=>observer.error(e));
+    });
+}
+
+/** emits page groups to the observer (the root and subtrees starting from pages with a given label).
+ * Wraps all pages in PageWrapper. */
+async function scanPageGroups(sourcePage, parentPageWrapper, observer, pageFoundCallback) {
+    let thisPageWrapper = new _PageWrapper__WEBPACK_IMPORTED_MODULE_3__["default"](sourcePage, parentPageWrapper);
+    pageFoundCallback();
+    let children = sourcePage.children.page;
+    let allChildren = [];
+    while (children) {
+        allChildren = allChildren.concat(await Promise.all(children.results.map(async child => {
+            let childDetails = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_5__["getContentById"])(child.id, PAGE_EXPANDS);
+            let childWrapper = await scanPageGroups(childDetails, thisPageWrapper, observer, pageFoundCallback);
+            return childWrapper;
+        })));
+        if (children._links.next) {
+            children = await jquery__WEBPACK_IMPORTED_MODULE_1___default.a.ajax(children._links.next);
+        } else {
+            children = null;
+        }
+    }
+    thisPageWrapper.children = allChildren;
+
+    if (thisPageWrapper.isPageGroup) {
+        observer.next(thisPageWrapper);
+    }
+    return thisPageWrapper;
+}
+
+
+/***/ }),
+
+/***/ "./js/mainframe/sync/tooltip.js":
+/*!**************************************!*\
+  !*** ./js/mainframe/sync/tooltip.js ***!
+  \**************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+
+
+jquery__WEBPACK_IMPORTED_MODULE_0___default()(function () {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').tooltip({
+        selector:'[data-toggle=tooltip]',
+        delay: { "show": 200, "hide": 200 }
+    });
+});
 
 /***/ }),
 
