@@ -183,8 +183,6 @@ async function singleSyncCheck(elt) {
     let targetSpace = getTargetSpace(elt);
     let pageWrapper = getData(elt);
     await pageWrapper.computeSyncStatus(targetSpace, true);
-    pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
-    // pageSyncAnalyzer(pageGroup, targetSpace); this would check all statuses
 }
 
 function setMenuTitle(cssClass, title) {

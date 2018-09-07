@@ -14,21 +14,26 @@ export default class PageWrapper {
         this.page = page;
         this.children = null;
         this.parentPage = parent;
-        this.pagesToPush = [];
-        this.pagesToPull = [];
-        this.syncedPages = [];
-        this.conflictingPages = [];
-        this.descendants = [];
-        this.analyzing = false;
-        this.analyzed = false;
-        this.progress = {};
         this.isPageGroup = isPageGroupRoot(page, parent);
+        this.pageGroupRoot = findRoot(this); // cache the pageGroup that contains this page
+
+        // PageGroup specific properties
+        if (this.isPageGroup) {
+            this.pagesToPush = [];
+            this.pagesToPull = [];
+            this.syncedPages = [];
+            this.conflictingPages = [];
+            this.descendants = [];
+            this.analyzing = false;
+            this.analyzed = false;
+            this.progress = {};
+        }
         
     }
     skipSync(context) {
         return context.title!=this.title && this.isPageGroup;
     }
-    updateWithSyncStatus(syncStatus) {
+    _updateWithSyncStatus(syncStatus) {
         this.removeExistingBySourcePageId(syncStatus.sourcePage.id);
         switch (syncStatus.status) {
             case SyncStatusEnum.TARGET_MISSING: return this.addPageToPush(syncStatus);
@@ -95,6 +100,7 @@ export default class PageWrapper {
             targetPage = await getContentById(syncTimeStamp.sourceContentId, TARGET_EXPANDS);
             syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
+            // target based on syncTimeStamp id is missing
             console.debug("Normal error ",err);
           }
         }
@@ -102,17 +108,20 @@ export default class PageWrapper {
           try {
             targetPage = await getContent(targetSpaceKey, pageToCopy.title, TARGET_EXPANDS);
             syncTimeStamp = await getTargetSyncTimeStamp(targetPage.id, pageToCopy.space.key);
-            // Do a full initial sync
-            // TODO filter links
             syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
-            // Create the new page 
-            // TODO filter links
+            // target with same title as source is missing
             syncStatus = new SyncStatus(this, targetSpaceKey)
           }
         }
         $.observable(this).setProperty("syncStatus", syncStatus);
-      }
+        this.pageGroupRoot._updateWithSyncStatus(syncStatus);
+    }
+}
+
+function findRoot(pageWrapper) {
+    if (pageWrapper.parentPage ==null || pageWrapper.isPageGroup) return pageWrapper;
+    return findRoot(pageWrapper.parentPage);
 }
 
 const PAGE_GROUP_LABELS = ['service-dashboard','ci-publish-package'];

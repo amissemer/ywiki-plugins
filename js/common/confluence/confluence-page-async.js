@@ -1,4 +1,5 @@
 import {throttleRead, throttleWrite} from './confluence-throttle';
+import Page from './Page';
 
 export async function movePages(sourceSpaceKey, sourcePageTitle,targetSpaceKey, targetParentTitle) {
   var sourcePage = await getContent(sourceSpaceKey, sourcePageTitle);
@@ -83,28 +84,34 @@ export async function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
 */
 export async function copyPage(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor) {
   var pageToCopy = await getContent(fromSpaceKey, fromPageTitle, 'space,body.storage,metadata.labels');
-  await templateProcessor.transformPage(pageToCopy);
-  // Create the new page under toPageTitle
-  return await createPage(pageToCopy,toSpaceKey,toPageTitle);
+  let newPage = Page.copyFrom(pageToCopy);
+  await templateProcessor.transformPage(newPage);
+  // Find the parent
+  var targetParentPage = await getContent(toSpaceKey,toPageTitle,'space');
+  console.log("targetParentPage: space=",targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
+  newPage.setSpaceKey(toSpaceKey).setParentId(targetParentPage.id);
+  return await createPageUnderPageId(newPage);
 }
 
 export async function copyPageToSpace(sourcePageId, targetSpaceKey, targetParentId) {
   let pageToCopy = await getContentById(sourcePageId, 'space,body.storage,metadata.labels');
   try {
     return await getContent(targetSpaceKey, pageToCopy.title);
-    // if it exists, do nothing
+    // if it exists, do nothing (we should update the content, still)
   } catch (err) {
     // Create the new page 
-    return await createPageUnderPageId(pageToCopy,targetSpaceKey,targetParentId);
+    let newPage = Page.copyFrom(pageToCopy).setSpaceKey(targetSpaceKey).setParentId(targetParentId);
+    return await createPageUnderPageId(newPage);
   }
 }
 
 export async function createPageFromTemplate(templateSpace, templateTitle, targetSpaceKey, targetPageId, templateProcessor) {
   var pageToCopy = await getContent(templateSpace, templateTitle, 'space,body.storage,metadata.labels');
   //var parentPage = await getContentById(targetPageId, 'space');
-  await templateProcessor.transformPage(pageToCopy);
-  // Create the new page under toPageTitle
-  return await createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId);
+  let newPage = Page.copyFrom(pageToCopy).setSpaceKey(targetSpaceKey).setParentId(targetPageId);
+  await templateProcessor.transformPage(newPage);
+  // Create the new page
+  return await createPageUnderPageId(newPage);
 }
 
 export async function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor, copiedPages) {
@@ -116,11 +123,13 @@ export async function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey,
 
 export async function copyPageRecursiveInternal(sourcePageId, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
   var pageToCopy = await getContentById(sourcePageId, 'space,body.storage,children.page,metadata.labels');
-  if (templateProcessor.isApplicableTemplatePage(pageToCopy)) {
-    await templateProcessor.transformPage(pageToCopy);
+  let newPage = Page.copyFrom(pageToCopy);
+  if (templateProcessor.isApplicableTemplatePage(newPage)) {
+    await templateProcessor.transformPage(newPage);
+    newPage.setSpaceKey(targetSpaceKey).setParentId(targetPageId);
 
     // Create the new page under targetSpaceKey:targetPageId
-    var copiedPage = await createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId);
+    var copiedPage = await createPageUnderPageId(newPage);
     copiedPages.push(copiedPage);
     return await copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
   } else {
@@ -141,23 +150,19 @@ export async function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, 
   return copiedChildren;
 }
 
-export async function createPage(page, targetSpaceKey, targetParentTitle) {
-  var targetParentPage = await getContent(targetSpaceKey,targetParentTitle,'space');
-  console.log("targetParentPage: space=",targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
-  return await createPageUnderPageId(page, targetParentPage.space.key, targetParentPage.id);
-}
-
-export async function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
-  let newPage = {
-    space : { key: targetSpaceKey },
-    body: { storage: page.body.storage},
-    ancestors: [ { id: targetPageId } ],
-    metadata: page.metadata,
-    title: page.title,
-    type: page.type
-  };
-  console.log("New Page", newPage);
-  
+/** 
+ * Creates a new page in Confluence. Typically create the newPage with
+ * import Page from './Page';
+ * let newPage = new Page('title','body','spaceKey',parentId);
+ * createPageUnderPageId(newPage);
+ * 
+ * or 
+ * 
+ * let newPage = Page.copyFrom(otherPage).setParentId(newParent).setSpaceKey('otherSpace');
+ * createPageUnderPageId(newPage);
+ */
+export async function createPageUnderPageId(/* type Page */ newPage) {
+  console.log("Posting new page", newPage);
   return await postPage(newPage);
 }
 
@@ -172,6 +177,8 @@ export async function postPage(page) {
   ));
 }
 
+/* Typically you create the page with Page.newVersionOf(page, "optional message", isMajorEdit);
+then set the body and title you want to update with setBody and setTitle. */
 export async function updateContent(page) {
   return await throttleWrite( () => $.ajax(
     {

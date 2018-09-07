@@ -58,7 +58,6 @@ async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStat
         await actionRef.perform(syncStatus);
         let targetSpace = syncStatus.targetSpaceKey;
         await pageWrapper.computeSyncStatus(targetSpace, true);
-        pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
         callback(); // count 1 sync
     }
     // in any case, check the children

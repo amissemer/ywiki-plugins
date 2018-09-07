@@ -114,11 +114,87 @@ const DEFAULT_RESTRICTION_GROUP = 'dl sap customer experience all employees (ext
 
 /***/ }),
 
+/***/ "./js/common/confluence/Page.js":
+/*!**************************************!*\
+  !*** ./js/common/confluence/Page.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function Page(title, body, spaceKey, parentId) {
+  this.setTitle(title);
+  this.setBody(body);
+  this.setSpaceKey(spaceKey);
+  this.setParentId(parentId);
+  this.type = "page";
+};
+Page.prototype.toString = function() {
+  return JSON.stringify(this);
+};
+Page.prototype._setId = function(id) {
+    this.id=id;
+    return this;
+}
+Page.prototype.setParentId = function(parentId) {
+    this.ancestors = [ { id: parentId}];
+    return this;
+};
+Page.prototype.setSpaceKey = function(spaceKey) {
+    this.space = {
+        key: spaceKey
+    };
+    return this;
+};
+Page.prototype.setBody = function(body) {
+    this.body = { 
+        storage: { 
+          representation: "storage",
+          value: body
+        }
+    };
+    return this;
+};
+Page.prototype.setBodyFromPage = function(page) {
+    return this.setBody(page.body && page.body.storage ? page.body.storage.value : null);
+}
+Page.prototype.setTitle = function(title) {
+    this.title = title;
+    return this;
+};
+Page.prototype.setVersion = function(versionNumber, message, isMajorEdit) {
+    this.version = {
+        number: versionNumber,
+        minorEdit: true
+    };
+    if (message) {
+        this.version.message = message;
+    }
+    if (isMajorEdit) {
+        this.version.minorEdit = false;
+    }
+    return this;
+}
+// static builder
+Page.copyFrom = function(page) {
+    let spaceKey = page.space ? page.space.key : '';
+    let parentId = page.ancestors && page.ancestors.length ? page.ancestors[0].id : 0;
+    let body = page.body && page.body.storage ? page.body.storage.value : null;
+    return new Page(page.title, body, spaceKey, parentId);
+};
+Page.newVersionOf = function(page, message, isMajorEdit) {
+    return Page.copyFrom(page)._setId(page.id).setVersion(page.version.number+1, message, isMajorEdit);
+}
+/* harmony default export */ __webpack_exports__["default"] = (Page);
+
+/***/ }),
+
 /***/ "./js/common/confluence/confluence-page-async.js":
 /*!*******************************************************!*\
   !*** ./js/common/confluence/confluence-page-async.js ***!
   \*******************************************************/
-/*! exports provided: movePages, movePagesById, getContent, getContentById, searchPagesWithCQL, copyPage, copyPageToSpace, createPageFromTemplate, copyPageRecursive, copyPageRecursiveInternal, copyAllChildren, createPage, createPageUnderPageId, postPage, updateContent, getPageTree */
+/*! exports provided: movePages, movePagesById, getContent, getContentById, searchPagesWithCQL, copyPage, copyPageToSpace, createPageFromTemplate, copyPageRecursive, copyPageRecursiveInternal, copyAllChildren, createPageUnderPageId, postPage, updateContent, getPageTree */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -134,12 +210,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageRecursive", function() { return copyPageRecursive; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageRecursiveInternal", function() { return copyPageRecursiveInternal; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyAllChildren", function() { return copyAllChildren; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPage", function() { return createPage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPageUnderPageId", function() { return createPageUnderPageId; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postPage", function() { return postPage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateContent", function() { return updateContent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPageTree", function() { return getPageTree; });
 /* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
+/* harmony import */ var _Page__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Page */ "./js/common/confluence/Page.js");
+
 
 
 async function movePages(sourceSpaceKey, sourcePageTitle,targetSpaceKey, targetParentTitle) {
@@ -225,28 +302,34 @@ async function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
 */
 async function copyPage(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor) {
   var pageToCopy = await getContent(fromSpaceKey, fromPageTitle, 'space,body.storage,metadata.labels');
-  await templateProcessor.transformPage(pageToCopy);
-  // Create the new page under toPageTitle
-  return await createPage(pageToCopy,toSpaceKey,toPageTitle);
+  let newPage = _Page__WEBPACK_IMPORTED_MODULE_1__["default"].copyFrom(pageToCopy);
+  await templateProcessor.transformPage(newPage);
+  // Find the parent
+  var targetParentPage = await getContent(toSpaceKey,toPageTitle,'space');
+  console.log("targetParentPage: space=",targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
+  newPage.setSpaceKey(toSpaceKey).setParentId(targetParentPage.id);
+  return await createPageUnderPageId(newPage);
 }
 
 async function copyPageToSpace(sourcePageId, targetSpaceKey, targetParentId) {
   let pageToCopy = await getContentById(sourcePageId, 'space,body.storage,metadata.labels');
   try {
     return await getContent(targetSpaceKey, pageToCopy.title);
-    // if it exists, do nothing
+    // if it exists, do nothing (we should update the content, still)
   } catch (err) {
     // Create the new page 
-    return await createPageUnderPageId(pageToCopy,targetSpaceKey,targetParentId);
+    let newPage = _Page__WEBPACK_IMPORTED_MODULE_1__["default"].copyFrom(pageToCopy).setSpaceKey(targetSpaceKey).setParentId(targetParentId);
+    return await createPageUnderPageId(newPage);
   }
 }
 
 async function createPageFromTemplate(templateSpace, templateTitle, targetSpaceKey, targetPageId, templateProcessor) {
   var pageToCopy = await getContent(templateSpace, templateTitle, 'space,body.storage,metadata.labels');
   //var parentPage = await getContentById(targetPageId, 'space');
-  await templateProcessor.transformPage(pageToCopy);
-  // Create the new page under toPageTitle
-  return await createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId);
+  let newPage = _Page__WEBPACK_IMPORTED_MODULE_1__["default"].copyFrom(pageToCopy).setSpaceKey(targetSpaceKey).setParentId(targetPageId);
+  await templateProcessor.transformPage(newPage);
+  // Create the new page
+  return await createPageUnderPageId(newPage);
 }
 
 async function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor, copiedPages) {
@@ -258,11 +341,13 @@ async function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPage
 
 async function copyPageRecursiveInternal(sourcePageId, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
   var pageToCopy = await getContentById(sourcePageId, 'space,body.storage,children.page,metadata.labels');
-  if (templateProcessor.isApplicableTemplatePage(pageToCopy)) {
-    await templateProcessor.transformPage(pageToCopy);
+  let newPage = _Page__WEBPACK_IMPORTED_MODULE_1__["default"].copyFrom(pageToCopy);
+  if (templateProcessor.isApplicableTemplatePage(newPage)) {
+    await templateProcessor.transformPage(newPage);
+    newPage.setSpaceKey(targetSpaceKey).setParentId(targetPageId);
 
     // Create the new page under targetSpaceKey:targetPageId
-    var copiedPage = await createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId);
+    var copiedPage = await createPageUnderPageId(newPage);
     copiedPages.push(copiedPage);
     return await copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
   } else {
@@ -283,23 +368,19 @@ async function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templat
   return copiedChildren;
 }
 
-async function createPage(page, targetSpaceKey, targetParentTitle) {
-  var targetParentPage = await getContent(targetSpaceKey,targetParentTitle,'space');
-  console.log("targetParentPage: space=",targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
-  return await createPageUnderPageId(page, targetParentPage.space.key, targetParentPage.id);
-}
-
-async function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
-  let newPage = {
-    space : { key: targetSpaceKey },
-    body: { storage: page.body.storage},
-    ancestors: [ { id: targetPageId } ],
-    metadata: page.metadata,
-    title: page.title,
-    type: page.type
-  };
-  console.log("New Page", newPage);
-  
+/** 
+ * Creates a new page in Confluence. Typically create the newPage with
+ * import Page from './Page';
+ * let newPage = new Page('title','body','spaceKey',parentId);
+ * createPageUnderPageId(newPage);
+ * 
+ * or 
+ * 
+ * let newPage = Page.copyFrom(otherPage).setParentId(newParent).setSpaceKey('otherSpace');
+ * createPageUnderPageId(newPage);
+ */
+async function createPageUnderPageId(/* type Page */ newPage) {
+  console.log("Posting new page", newPage);
   return await postPage(newPage);
 }
 
@@ -314,6 +395,8 @@ async function postPage(page) {
   ));
 }
 
+/* Typically you create the page with Page.newVersionOf(page, "optional message", isMajorEdit);
+then set the body and title you want to update with setBody and setTitle. */
 async function updateContent(page) {
   return await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleWrite"])( () => $.ajax(
     {
@@ -382,12 +465,12 @@ async function postProcess(body, page) {
     }
 }
 
-async function preProcess(page, targetSpace) {
-    let sourceSpaceRegex = new RegExp('\\b'+page.space.key+'\\b','g'); // find all occurrences of the source space as a whole word
+async function preProcess(page, sourcePage, targetSpace) {
+    let sourceSpaceRegex = new RegExp('\\b'+sourcePage+'\\b','g'); // find all occurrences of the source space as a whole word
     let body = page.body.storage.value;
     if (sourceSpaceRegex.test(body)) {
         page.body.storage.value = body.replace(sourceSpaceRegex, targetSpace);
-        console.warn(`Updated 1 or more ref to space ${page.space.key} in ${page.title}`);
+        console.warn(`Updated 1 or more ref to space '${sourcePage}' in ${page.title} to '${targetSpace}'`);
     }
     return page;
 }
@@ -933,21 +1016,26 @@ class PageWrapper {
         this.page = page;
         this.children = null;
         this.parentPage = parent;
-        this.pagesToPush = [];
-        this.pagesToPull = [];
-        this.syncedPages = [];
-        this.conflictingPages = [];
-        this.descendants = [];
-        this.analyzing = false;
-        this.analyzed = false;
-        this.progress = {};
         this.isPageGroup = isPageGroupRoot(page, parent);
+        this.pageGroupRoot = findRoot(this); // cache the pageGroup that contains this page
+
+        // PageGroup specific properties
+        if (this.isPageGroup) {
+            this.pagesToPush = [];
+            this.pagesToPull = [];
+            this.syncedPages = [];
+            this.conflictingPages = [];
+            this.descendants = [];
+            this.analyzing = false;
+            this.analyzed = false;
+            this.progress = {};
+        }
         
     }
     skipSync(context) {
         return context.title!=this.title && this.isPageGroup;
     }
-    updateWithSyncStatus(syncStatus) {
+    _updateWithSyncStatus(syncStatus) {
         this.removeExistingBySourcePageId(syncStatus.sourcePage.id);
         switch (syncStatus.status) {
             case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING: return this.addPageToPush(syncStatus);
@@ -1014,6 +1102,7 @@ class PageWrapper {
             targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_2__["getContentById"])(syncTimeStamp.sourceContentId, TARGET_EXPANDS);
             syncStatus = new _SyncStatus__WEBPACK_IMPORTED_MODULE_3__["default"](this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
+            // target based on syncTimeStamp id is missing
             console.debug("Normal error ",err);
           }
         }
@@ -1021,17 +1110,20 @@ class PageWrapper {
           try {
             targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_2__["getContent"])(targetSpaceKey, pageToCopy.title, TARGET_EXPANDS);
             syncTimeStamp = await Object(_common_confluence_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_1__["getTargetSyncTimeStamp"])(targetPage.id, pageToCopy.space.key);
-            // Do a full initial sync
-            // TODO filter links
             syncStatus = new _SyncStatus__WEBPACK_IMPORTED_MODULE_3__["default"](this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
-            // Create the new page 
-            // TODO filter links
+            // target with same title as source is missing
             syncStatus = new _SyncStatus__WEBPACK_IMPORTED_MODULE_3__["default"](this, targetSpaceKey)
           }
         }
         jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this).setProperty("syncStatus", syncStatus);
-      }
+        this.pageGroupRoot._updateWithSyncStatus(syncStatus);
+    }
+}
+
+function findRoot(pageWrapper) {
+    if (pageWrapper.parentPage ==null || pageWrapper.isPageGroup) return pageWrapper;
+    return findRoot(pageWrapper.parentPage);
 }
 
 const PAGE_GROUP_LABELS = ['service-dashboard','ci-publish-package'];
@@ -1067,13 +1159,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
 /* harmony import */ var _common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/confluence/confluence-page-postprocessor */ "./js/common/confluence/confluence-page-postprocessor.js");
 /* harmony import */ var _common_confluence_confluence_sync_timestamps__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/confluence/confluence-sync-timestamps */ "./js/common/confluence/confluence-sync-timestamps.js");
+/* harmony import */ var _common_confluence_Page__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../common/confluence/Page */ "./js/common/confluence/Page.js");
+
 
 
 
 
 
 const COPY_EXPANDS = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
-
+const STYLES = {
+    [_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING]: "create-target",
+    [_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_UPDATED]: "push",
+    [_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_UPDATED]: "pull",
+    [_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].CONFLICTING]: "conflict"
+};
 
 function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
     let sourcePage = pageWrapper.page;
@@ -1104,54 +1203,47 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
 
     async function noop() {}
   
-    async function performUpdate() {
-      await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(sourcePage, targetSpaceKey);
-      targetPage.version.number++;
-      targetPage.body = targetPage.body || {};
-      targetPage.body.storage = sourcePage.body.storage; // TODO filtering
-      targetPage.title = sourcePage.title;
-      await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(targetPage);
-      await this.markSynced()
-    }
-  
     async function createPage() {
+        // make sure the parent syncStatus was determined first
         if (!pageWrapper.parentPage.syncStatus) {
             await pageWrapper.parentPage.computeSyncStatus(targetSpaceKey,false);
         }
+        // make sure the target parent page exists
         if (pageWrapper.parentPage.syncStatus.status===_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING && !pageWrapper.parentPage.syncStatus.targetPage) {
             await pageWrapper.parentPage.syncStatus.performPush(); // create the parent recursively if necessary
         }
-        this.targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["createPageUnderPageId"])(sourcePage, targetSpaceKey, pageWrapper.parentPage.syncStatus.targetPage.id);
-        await this.markSynced()
+        // now create the page under the target parent page
+        let newPage = _common_confluence_Page__WEBPACK_IMPORTED_MODULE_4__["default"].copyFrom(sourcePage);
+       
+        await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(newPage, sourcePage.space.key, targetSpaceKey);
+        newPage.setSpaceKey(targetSpaceKey).setParentId(pageWrapper.parentPage.syncStatus.targetPage.id);
+
+        this.targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["createPageUnderPageId"])(newPage);
+        await this.markSynced();
+    }
+
+    async function performUpdate() {
+        let updatedTargetPage = _common_confluence_Page__WEBPACK_IMPORTED_MODULE_4__["default"].newVersionOf(this.targetPage, `pushed from ${this.sourcePage.space.key} with ysync`, true);
+        updatedTargetPage.setBodyFromPage(this.sourcePage).setTitle(this.sourcePage.title);
+        await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(updatedTargetPage, this.sourcePage.space.key, targetSpaceKey);
+        this.targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(updatedTargetPage);
+        await this.markSynced();
     }
   
     async function performPull() {
         if (!this.targetPage.body || !this.targetPage.body.storage) {
             this.targetPage = targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(targetPage.id, COPY_EXPANDS);
         }
-        await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(this.targetPage, sourcePage.space.key);
-        sourcePage.version.number++;
-        sourcePage.body = sourcePage.body || {};
-        sourcePage.body.storage = sourcePage.body.storage; // TODO filtering
-        sourcePage.title = targetPage.title;
-        await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(sourcePage);
+        let updatedSourcePage = _common_confluence_Page__WEBPACK_IMPORTED_MODULE_4__["default"].newVersionOf(this.sourcePage, `pulled from ${this.targetPage.space.key} with ysync`);
+        updatedSourcePage.setBodyFromPage(this.targetPage).setTitle(this.targetPage.title);
+        await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(updatedSourcePage, this.targetPage.space.key, this.sourcePage.space.key);
+        this.sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(updatedSourcePage);
         await this.markSynced()
     }
 }
 
 SyncStatus.prototype.style = function() {
-    switch(this.status) {
-        case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING:
-            return "create-target";
-        case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_UPDATED:
-            return "push";
-        case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_UPDATED:
-            return "pull";
-        case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].CONFLICTING:
-            return "conflict";
-        default:
-            return "";
-    }
+    return STYLES[this.status] || "";
 };
 
 SyncStatus.prototype.markSynced = async function() {
@@ -1389,8 +1481,6 @@ async function singleSyncCheck(elt) {
     let targetSpace = getTargetSpace(elt);
     let pageWrapper = getData(elt);
     await pageWrapper.computeSyncStatus(targetSpace, true);
-    pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
-    // pageSyncAnalyzer(pageGroup, targetSpace); this would check all statuses
 }
 
 function setMenuTitle(cssClass, title) {
@@ -1576,7 +1666,6 @@ async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, 
     let children = pageWrapper.children;
     let page = pageWrapper.page;
     await pageWrapper.computeSyncStatus(targetSpaceKey, syncAttachments);
-    pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
     callback();
     await Promise.all(children.map(async child => {
         if (!child.skipSync(pageGroup)) {
@@ -1664,7 +1753,6 @@ async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStat
         await actionRef.perform(syncStatus);
         let targetSpace = syncStatus.targetSpaceKey;
         await pageWrapper.computeSyncStatus(targetSpace, true);
-        pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
         callback(); // count 1 sync
     }
     // in any case, check the children

@@ -41,7 +41,6 @@ async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, 
     let children = pageWrapper.children;
     let page = pageWrapper.page;
     await pageWrapper.computeSyncStatus(targetSpaceKey, syncAttachments);
-    pageGroup.updateWithSyncStatus(pageWrapper.syncStatus);
     callback();
     await Promise.all(children.map(async child => {
         if (!child.skipSync(pageGroup)) {

@@ -11,6 +11,7 @@ const onAttachmentCopyFailure = "log";
  * Synchronizes a single page between spaces, with or without attachments.
  * If the page doesn't exist in the target, it is created under targetParentId.
  */
+/*
 export async function syncPageToSpace(pageToCopy, targetSpaceKey, targetParentId, syncAttachments) {
     await preProcess(pageToCopy, targetSpaceKey);
     let targetPage;
@@ -46,7 +47,7 @@ export async function syncPageToSpace(pageToCopy, targetSpaceKey, targetParentId
     }
 
     return targetPage;
-}
+}*/
 
 async function syncLabels(sourcePage, targetPage) {
   async function labels(page) {
