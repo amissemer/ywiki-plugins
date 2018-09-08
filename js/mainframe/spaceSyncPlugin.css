@@ -131,3 +131,7 @@
 .sync-table > tfoot > tr > td {
   padding: 5px;
 }
+.sync-table .btn-sm, .sync-table .btn-group-sm > .btn {
+    padding: 2px 8px 0px 8px;
+    font-size: 16px;
+}

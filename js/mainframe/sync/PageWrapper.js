@@ -23,6 +23,7 @@ export default class PageWrapper {
             this.pagesToPush = [];
             this.pagesToPull = [];
             this.syncedPages = [];
+            this.unsyncedLabels = [];
             this.conflictingPages = [];
             this.descendants = [];
             this.analyzing = false;
