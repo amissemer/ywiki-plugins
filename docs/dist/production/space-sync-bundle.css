@@ -6878,6 +6878,17 @@ button.close {
 	width: 100%;
 	height: 5px;
 }
+.sync-table .nav > li > a {
+    padding: 5px 10px;
+}
+.sync-table > thead > tr > th,
+.sync-table > tbody > tr > th,
+.sync-table > tfoot > tr > th,
+.sync-table > thead > tr > td,
+.sync-table > tbody > tr > td,
+.sync-table > tfoot > tr > td {
+  padding: 5px;
+}
 @charset "UTF-8";/*!
  * jQuery contextMenu - Plugin for simple contextMenu handling
  *
