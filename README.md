@@ -30,3 +30,22 @@ npm run watch
 
 See [Continuous Improvement - The Golden Button](https://wiki.hybris.com/display/ps/Continuous+Improvement+-+The+Golden+Button)
 
+
+## Tests
+
+To run the set of unit tests, create a wiki page with following content in an `{html}` macro.
+
+```
+ <div id="mocha"></div>
+
+  <script src="https://unpkg.com/chai/chai.js"></script>
+  <script src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
+
+  <script src="https://localhost/ywiki-plugins/dist/tests-bundle.js"></script>
+```
+
+Set some edit restriction on the page to let Confluence execute the `{html}` macro.
+
+The `tests-bundle.js` created by webpack contains all `*.test.js` files written with `mocha` and `chai`.
+They can use Confluence API since the tests directly execute within the context of the wiki page.
+Note that for now, some page identifiers and titles are harcoded in tests and are necessary for the tests to pass.

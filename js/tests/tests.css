@@ -1,0 +1,9 @@
+#mocha-stats {
+    position: relative;
+}
+#mocha-stats .progress {
+    float: none;
+}
+#mocha {
+    margin: 0;
+}

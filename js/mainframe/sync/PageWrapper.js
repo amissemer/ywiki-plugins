@@ -1,9 +1,9 @@
 import SyncStatusEnum from './SyncStatusEnum';
-import {getTargetSyncTimeStamp, getSourceSyncTimeStamp} from '../../common/confluence/confluence-sync-timestamps';
 import {getContent,getContentById} from '../../common/confluence/confluence-page-async';
 import SyncStatus from './SyncStatus';
 import {loadPageForSync} from './spaceScanner';
 import $ from 'jquery';
+import SyncTimeStamp from './SyncTimeStamp';
 
 const TARGET_EXPANDS = 'version,metadata.labels,space';
 const MIN_PROGRESS = 20; // in percent, what's the min size of the progress bars
@@ -93,31 +93,29 @@ export default class PageWrapper {
         o.setProperty('analyzed', true);
     }
     getSourceDiff() {
-        return getDiffUrl(this.syncStatus.sourcePage, this.syncStatus.syncTimeStamp.targetVersion);
+        return getDiffUrl(this.syncStatus.sourcePage, this.syncStatus.syncTimeStamp.getPage(this.syncStatus.sourcePage.id).version);
     }
     getTargetDiff() {
-        return getDiffUrl(this.syncStatus.targetPage, this.syncStatus.syncTimeStamp.sourceVersion);
+        return getDiffUrl(this.syncStatus.targetPage, this.syncStatus.syncTimeStamp.getPage(this.syncStatus.targetPage.id).version);
     }
     async computeSyncStatus(targetSpaceKey, syncAttachments) {
         let syncStatus;
         let targetPage;
         let pageToCopy = this.page;
-        let syncTimeStamp = await getSourceSyncTimeStamp(pageToCopy.id, targetSpaceKey);
-        if (syncTimeStamp && syncTimeStamp.targetContentId!=pageToCopy.id) {
-          log(`Error syncTimeStamp`);
-        } else if (syncTimeStamp) {
+        let syncTimeStamp = await SyncTimeStamp.loadLastSyncFromContentWithSpace(pageToCopy.id, targetSpaceKey);
+        if (!syncTimeStamp.isNew()) {
           try {
-            targetPage = await getContentById(syncTimeStamp.sourceContentId, TARGET_EXPANDS);
+            targetPage = await getContentById(syncTimeStamp.getOtherPage(sourceContentId).contentId, TARGET_EXPANDS);
             syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
             // target based on syncTimeStamp id is missing
             console.debug("Normal error ",err);
           }
         }
-        if (!syncStatus && !targetPage) {
+        if (!syncStatus && !targetPage) { // lookup by title
           try {
             targetPage = await getContent(targetSpaceKey, pageToCopy.title, TARGET_EXPANDS);
-            syncTimeStamp = await getTargetSyncTimeStamp(targetPage.id, pageToCopy.space.key);
+            syncTimeStamp = await SyncTimeStamp.loadLastSyncFromContentWithSpace(targetPage.id, pageToCopy.space.key);
             syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
             // target with same title as source is missing

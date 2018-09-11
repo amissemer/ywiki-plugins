@@ -16,7 +16,10 @@ export async function addLabels(contentId, labels) {
 
 export async function removeLabels(contentId, labels) {
     for (let label of labels) {
-        await $.delete(BASE_URL + contentId + '/label?name='+encodeURIComponent(label));
+        await $.ajax({
+            url: BASE_URL + contentId + '/label?name='+encodeURIComponent(label),
+            type: 'DELETE'
+        });
     }
     return labels;
 }

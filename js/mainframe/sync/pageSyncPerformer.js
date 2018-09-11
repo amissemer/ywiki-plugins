@@ -26,6 +26,7 @@ export default function pageSyncPerformer(action, pageGroup) {
         e => {
             if (e.name === PERMISSION_ERROR) {
                 notify.error(`Cannot ${action} on ${e.page.title}, target page is write protected, click here to check permissions, then retry`, e.page._links.webui);
+                // TODO attempt to use the confluence-permissions-async.js API to fix the problem
             } else {
                 notify.error(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`);
             }

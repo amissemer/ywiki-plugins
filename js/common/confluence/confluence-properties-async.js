@@ -26,3 +26,18 @@ export async function update(contentId, propertyData)  {
         data: JSON.stringify( propertyData )
     });
 }
+
+export async function deleteProperty(contentId, key)  {
+    // does the prop exist already?
+    try {
+        await load(contentId, key);
+    } catch (err) {
+        // does not exist, skip
+        return;
+    }
+    let url = BASE_URL + `${contentId}/property/${key}`; 
+    return $.ajax({
+        url: url,
+        type: "DELETE"
+    });
+}

@@ -1,6 +1,5 @@
 import {getContentById, getContent, createPageUnderPageId, updateContent} from './confluence-page-async';
 import {cloneAttachment,lookupAttachment} from './confluence-attachment-async';
-import {getTargetSyncTimeStamp, setSyncTimeStamps, getSourceSyncTimeStamp} from './confluence-sync-timestamps';
 import {addLabels,removeLabels} from './confluence-labels-async';
 import {postProcess,preProcess} from './confluence-page-postprocessor';
 import SyncStatusEnum from '../../mainframe/sync/SyncStatusEnum';
@@ -49,31 +48,31 @@ export async function syncPageToSpace(pageToCopy, targetSpaceKey, targetParentId
     return targetPage;
 }*/
 
-async function syncLabels(sourcePage, targetPage) {
-  async function labels(page) {
-    if (!page.metadata) {
-      page = await getContentById(page.id, 'metadata.labels');
-    }
-    let labelArray = [];
-    for (let label of page.metadata.labels.results) {
-      labelArray.push(label.name);
-    }
-    labelArray.sort();
-    return labelArray;
-  }
-  let srcLabels = await labels(sourcePage);
-  let tgtLabels = await labels(targetPage);
-  if (JSON.stringify(srcLabels) != JSON.stringify(tgtLabels)) {
-    let toRemove = tgtLabels.minus(srcLabels);
-    let toAdd = srcLabels.minus(tgtLabels);
-    await addLabels(targetPage.id, toAdd);
-    await removeLabels(targetPage.id, toRemove);
-  }
-}
+// async function syncLabels(sourcePage, targetPage) {
+//   async function labels(page) {
+//     if (!page.metadata) {
+//       page = await getContentById(page.id, 'metadata.labels');
+//     }
+//     let labelArray = [];
+//     for (let label of page.metadata.labels.results) {
+//       labelArray.push(label.name);
+//     }
+//     labelArray.sort();
+//     return labelArray;
+//   }
+//   let srcLabels = await labels(sourcePage);
+//   let tgtLabels = await labels(targetPage);
+//   if (JSON.stringify(srcLabels) != JSON.stringify(tgtLabels)) {
+//     let toRemove = tgtLabels.minus(srcLabels);
+//     let toAdd = srcLabels.minus(tgtLabels);
+//     await addLabels(targetPage.id, toAdd);
+//     await removeLabels(targetPage.id, toRemove);
+//   }
+// }
 
-Array.prototype.minus = function(a) {
-  return this.filter( i=> a.indexOf(i) < 0 );
-};
+// Array.prototype.minus = function(a) {
+//   return this.filter( i=> a.indexOf(i) < 0 );
+// };
 
 async function updateContentIfNecessary(sourcePage, targetPage, syncTimeStamp) {
   if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.targetVersion) {

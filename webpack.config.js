@@ -9,6 +9,7 @@ function config(production) {
     entry: {
       "golden-button": './js/mainframe/main.js',
       "golden-form": './js/iframe/golden-form.js',
+      "tests-bundle": './js/tests/tests.js',
       "create-jira-form": './js/iframe/create-jira-form.js',
       "space-sync-bundle": './js/mainframe/spaceSyncPlugin.js'
     },

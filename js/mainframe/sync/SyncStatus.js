@@ -1,7 +1,6 @@
 import SyncStatusEnum from './SyncStatusEnum';
 import {createPageUnderPageId, updateContent, getContentById} from '../../common/confluence/confluence-page-async';
 import {preProcess} from '../../common/confluence/confluence-page-postprocessor';
-import {setSyncTimeStamps} from '../../common/confluence/confluence-sync-timestamps';
 import Page from '../../common/confluence/Page';
 import log from './log';
 
@@ -97,8 +96,8 @@ SyncStatus.prototype.style = function() {
 };
 
 SyncStatus.prototype.markSynced = async function() {
-    // source and target in timeStamps are reversed, for now
-    return setSyncTimeStamps(this.targetPage, this.sourcePage, this.targetPage.space.key, this.sourcePage.space.key);
+    this.syncTimeStamp.setSyncedPages(this.sourcePage, this.targetPage);
+    await this.syncTimeStamp.save();
 }
 
 export default SyncStatus; 
