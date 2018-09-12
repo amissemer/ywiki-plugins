@@ -11,6 +11,13 @@ export async function lookupAttachment(containerId, attachmentTitle) {
     }
 }
 
+export async function deleteAttachment(attachmentId) {
+    return await $.ajax({
+        url: BASE_URL + encodeURIComponent(attachmentId),
+        type: 'DELETE'
+    });
+}
+
 export async function cloneAttachment(attachmentUrl, targetContainerId, title, /* optional */ targetId) {
     let blobData = await loadBlob(attachmentUrl);
     let attachment = JSON.parse(await storeBlob(targetContainerId, blobData, title, targetId));

@@ -79,6 +79,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
+	"./common/confluence/Attachment.test.js": "./js/common/confluence/Attachment.test.js",
 	"./common/confluence/Labels.test.js": "./js/common/confluence/Labels.test.js",
 	"./common/confluence/Property.test.js": "./js/common/confluence/Property.test.js",
 	"./common/confluence/confluence-permissions-async.test.js": "./js/common/confluence/confluence-permissions-async.test.js",
@@ -153,6 +154,80 @@ const PROP_KEY = 'ysync';
 const DEFAULT_RESTRICTION_GROUP = 'dl sap customer experience all employees (external)';
 const PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
 
+
+/***/ }),
+
+/***/ "./js/common/confluence/Attachment.js":
+/*!********************************************!*\
+  !*** ./js/common/confluence/Attachment.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
+
+
+const Attachment = {
+    getOrCreateAttachment: async function(pageId, attachmentTitle) {
+        return {
+            _internal: await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["lookupAttachment"])(pageId, attachmentTitle),
+            id: function() {
+                return this._internal ? this._internal.id:null;
+            },
+            cloneFromUrl: async function(url) {
+                this._internal = await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["cloneAttachment"])(url, pageId, attachmentTitle, this.id());
+            },
+            delete: async function() {
+                let id = this.id();
+                if (id) {
+                    await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["deleteAttachment"])(id);
+                }
+            }
+        };
+    }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Attachment);
+
+/***/ }),
+
+/***/ "./js/common/confluence/Attachment.test.js":
+/*!*************************************************!*\
+  !*** ./js/common/confluence/Attachment.test.js ***!
+  \*************************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Attachment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Attachment */ "./js/common/confluence/Attachment.js");
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+const pageToCopyAttachmentsTo =  '377578548';
+const attachmentExample = '/download/attachments/257608297/Sprint%20Execution_test.png?api=v2';
+const attachmentTitle = 'Sprint Execution_test.png';
+
+describe('Attachment', function() {
+    it('should load, clone and delete', async function() {
+        let att = await _Attachment__WEBPACK_IMPORTED_MODULE_0__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
+        // make sure it does not exist
+        await att.delete();
+
+        att = await _Attachment__WEBPACK_IMPORTED_MODULE_0__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNull(att.id());
+        await att.cloneFromUrl(attachmentExample);
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNotNull(att.id());
+
+        att = await _Attachment__WEBPACK_IMPORTED_MODULE_0__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNotNull(att.id());
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNotNull(att._internal.space.key);
+    });
+});
 
 /***/ }),
 
@@ -500,6 +575,115 @@ describe("Property", function() {
     });
 });
 
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-attachment-async.js":
+/*!*************************************************************!*\
+  !*** ./js/common/confluence/confluence-attachment-async.js ***!
+  \*************************************************************/
+/*! exports provided: lookupAttachment, deleteAttachment, cloneAttachment */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lookupAttachment", function() { return lookupAttachment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteAttachment", function() { return deleteAttachment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cloneAttachment", function() { return cloneAttachment; });
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
+
+
+const BASE_URL = '/rest/api/content/';
+
+async function lookupAttachment(containerId, attachmentTitle) {
+    let results = await $.get(BASE_URL+`${containerId}/child/attachment?filename=${encodeURIComponent(attachmentTitle)}&expand=space,version,container`);
+    if (results && results.results && results.results.length) {
+        return results.results[0];
+    } else {
+        return null;
+    }
+}
+
+async function deleteAttachment(attachmentId) {
+    return await $.ajax({
+        url: BASE_URL + encodeURIComponent(attachmentId),
+        type: 'DELETE'
+    });
+}
+
+async function cloneAttachment(attachmentUrl, targetContainerId, title, /* optional */ targetId) {
+    let blobData = await loadBlob(attachmentUrl);
+    let attachment = JSON.parse(await storeBlob(targetContainerId, blobData, title, targetId));
+    if (attachment.results && attachment.results instanceof Array ) {
+        // the attachment API returns an array
+        attachment = attachment.results[0]; 
+    } 
+    // populate the space.key to save a GET, since we need it to store the sync timestamp
+    if (!attachment.space) {
+        attachment.space = {
+            key: attachment._expandable.space.replace(/.*\//,'')
+        };
+    }
+    return attachment;
+}
+
+/** 
+ * ContentId is mandatory when updating an existing attachment, and must be omitted when
+ * creating a new attachment.
+ */
+async function storeBlob(containerId, blobData, title, /* optional */ contentId) {
+    let url = BASE_URL;
+    url += containerId;
+    url += '/child/attachment';
+    if (contentId) {
+        url += '/' + contentId + '/data';
+    }
+    let formData = new FormData();
+    formData.append('file', blobData, title);
+    formData.append('minorEdit', 'true');
+    return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleWrite"])( () => postBinary(url, formData));
+}
+
+
+
+async function loadBlob(url) {
+    return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleRead"])( () => loadBinary(url) );
+}
+
+async function postBinary(url, formData) {
+    return new Promise( (resolve, reject) => {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.onerror = reject;
+        xhr.setRequestHeader('X-Atlassian-Token','nocheck');
+        xhr.onload = function (e) {
+            if (this.status == 200) {
+                resolve(this.response);
+            } else {
+                reject(`Could not POST to ${url}: ${this.status} ${this.statusText}, details: ${this.responseText}`);
+            }
+        };
+        xhr.send(formData);
+    });
+}
+async function loadBinary(url) {
+    return new Promise( (resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'blob';
+        xhr.onerror = reject;
+        xhr.onload = function(e) {
+          if (this.status == 200) {
+            // get binary data as a response
+            let blob = this.response;
+            resolve(blob);
+          } else {
+            reject(e);
+          }
+        };
+        xhr.send();
+    });
+}
 
 /***/ }),
 
@@ -959,7 +1143,7 @@ let norestrictionPage = '158963161';
 let pageMissingRestriction = '375593605';
 
 describe("confluence-permissions-async", function() {
-    it("should load permissions", async function() {
+    it("getEditorRestrictions should load permissions", async function() {
         console.log("Editor restrictions", await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["getEditorRestrictions"])(restrictedPage));
     });
     it("getEditorRestrictions should return false when page doesn't have restrictions", async function() {

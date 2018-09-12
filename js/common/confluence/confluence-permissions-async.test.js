@@ -8,7 +8,7 @@ let norestrictionPage = '158963161';
 let pageMissingRestriction = '375593605';
 
 describe("confluence-permissions-async", function() {
-    it("should load permissions", async function() {
+    it("getEditorRestrictions should load permissions", async function() {
         console.log("Editor restrictions", await getEditorRestrictions(restrictedPage));
     });
     it("getEditorRestrictions should return false when page doesn't have restrictions", async function() {
