@@ -81,6 +81,7 @@
 var map = {
 	"./common/confluence/Labels.test.js": "./js/common/confluence/Labels.test.js",
 	"./common/confluence/Property.test.js": "./js/common/confluence/Property.test.js",
+	"./common/confluence/confluence-permissions-async.test.js": "./js/common/confluence/confluence-permissions-async.test.js",
 	"./common/rate-limit.test.js": "./js/common/rate-limit.test.js",
 	"./mainframe/sync/SyncTimeStamp.test.js": "./js/mainframe/sync/SyncTimeStamp.test.js"
 };
@@ -113,7 +114,7 @@ webpackContext.id = "./js sync recursive .+\\.test\\.js?$";
 /*!*****************************!*\
   !*** ./js/common/config.js ***!
   \*****************************/
-/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL, PROP_KEY, DEFAULT_RESTRICTION_GROUP */
+/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL, PROP_KEY, DEFAULT_RESTRICTION_GROUP, PORTFOLIO_GROUP */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -133,6 +134,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "XSLT_ENDPOINT_URL", function() { return XSLT_ENDPOINT_URL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PROP_KEY", function() { return PROP_KEY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_RESTRICTION_GROUP", function() { return DEFAULT_RESTRICTION_GROUP; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PORTFOLIO_GROUP", function() { return PORTFOLIO_GROUP; });
 const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 const DEFAULT_JIRA_ISSUE_COUNT = 10;
 const MAIN_JIRA_LABEL = "CI";
@@ -149,6 +151,8 @@ const XSLT_ENDPOINT_URL = 'https://bzycrip1eh.execute-api.eu-central-1.amazonaws
 // export const WIKI_HOST = 'performancewiki2.hybris.com';
 const PROP_KEY = 'ysync';
 const DEFAULT_RESTRICTION_GROUP = 'dl sap customer experience all employees (external)';
+const PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
+
 
 /***/ }),
 
@@ -436,7 +440,17 @@ const Property = {
             save: async function() { 
                 if (confluenceInternal.id) {
                     confluenceInternal.version.number++;
-                    confluenceInternal = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["update"])(contentId, confluenceInternal);
+                    try {
+                        confluenceInternal = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["update"])(contentId, confluenceInternal);
+                    } catch (err) { // workaround for Confluence bug https://jira.atlassian.com/browse/CRA-1259
+                        if (err.message.indexOf("Can't add an owner from another space")>=0) {
+                            // then we delete and recreate the prop
+                            await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["deleteProperty"])(contentId, key);
+                            confluenceInternal.id = null;
+                            confluenceInternal.version.number = null;
+                            confluenceInternal = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["create"])(contentId, confluenceInternal);
+                        }
+                    }
                 } else {
                     confluenceInternal = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["create"])(contentId, confluenceInternal);
                 }
@@ -782,6 +796,190 @@ async function getPageTree( pageId, parentId, parentTitle, counter ) {
 
 /***/ }),
 
+/***/ "./js/common/confluence/confluence-permissions-async.js":
+/*!**************************************************************!*\
+  !*** ./js/common/confluence/confluence-permissions-async.js ***!
+  \**************************************************************/
+/*! exports provided: getEditorRestrictions, removeRestrictions, setMyselfAsEditor, setEditorRestriction */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getEditorRestrictions", function() { return getEditorRestrictions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeRestrictions", function() { return removeRestrictions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setMyselfAsEditor", function() { return setMyselfAsEditor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setEditorRestriction", function() { return setEditorRestriction; });
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _confluence_user_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./confluence-user-async */ "./js/common/confluence/confluence-user-async.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../config */ "./js/common/config.js");
+
+
+
+
+/**
+ * returns either false if no edit restriction exist, or an object with a user and a group property 
+ * containing the list of user names and group names with edit restriction.
+ */
+async function getEditorRestrictions(contentId) {
+    let resp = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get('/rest/api/content/'+contentId+'/restriction/byOperation/update');
+    let restrictions = { user: [], group: []};
+    if (resp && resp.restrictions) {
+        if (resp.restrictions.group && resp.restrictions.group.results) {
+            restrictions.group = resp.restrictions.group.results.map(r=>r.name);
+        }
+        if (resp.restrictions.user && resp.restrictions.user.results) {
+            restrictions.user = resp.restrictions.user.results.map(r=>r.username);
+        }
+    }
+    if (restrictions.user.length + restrictions.group.length == 0) {
+        restrictions = false;
+    }
+    return restrictions;
+}
+
+async function removeRestrictions(contentId, spaceKey) {
+    let atlToken = jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name=ajs-atl-token]').attr("content");
+    let form = {
+        "viewPermissionsUsers": '',
+        "editPermissionsUsers": '',
+        "viewPermissionsGroups": '',
+        "editPermissionsGroups": '',
+        "contentId": contentId,
+        "atl_token": atlToken
+    };
+    await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post({
+        url: '/pages/setcontentpermissions.action',
+        contentType: 'application/x-www-form-urlencoded',
+        data: jquery__WEBPACK_IMPORTED_MODULE_0___default.a.param(form)
+    });
+}
+
+async function setMyselfAsEditor(contentId, spaceKey) {
+    let atlToken = jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name=ajs-atl-token]').attr("content");
+    let me = await Object(_confluence_user_async__WEBPACK_IMPORTED_MODULE_1__["getUserKey"])();
+    let current = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get(`/pages/getcontentpermissions.action?contentId=${contentId}&spaceKey=${spaceKey}&atl_token=${atlToken}&_=${Math.random()}`);
+    let form = {
+        "viewPermissionsUsers": [],
+        "editPermissionsUsers": [],
+        "viewPermissionsGroups": [],
+        "editPermissionsGroups": [],
+        "contentId": contentId,
+        "atl_token": atlToken
+    };
+    // parse current permissions into the form to be posted
+    const FIELDS = {
+        PERM_TYPE: 0,
+        PRINCIPAL_TYPE: 1,
+        PRINCIPAL_ID: 2,
+        TARGET_PAGE_ID: 3
+    };
+    for (let p of current.permissions) {
+        if (p[FIELDS.TARGET_PAGE_ID] == contentId) {
+            let field;
+            switch(p[FIELDS.PERM_TYPE] + " " + p[FIELDS.PRINCIPAL_TYPE]) {
+                case "Edit user": field = form.editPermissionsUsers; break;
+                case "Edit group": field = form.editPermissionsGroups; break;
+                case "View user": field = form.viewPermissionsUsers; break;
+                case "View group": field = form.viewPermissionsGroups; break;
+            }
+            if (field) {
+                field.push(p[FIELDS.PRINCIPAL_ID]);
+            }
+        }
+    }
+    // add ourselves
+    form.editPermissionsUsers.push(me);
+    // add read permission if any are set
+    if (form.viewPermissionsUsers.length || form.viewPermissionsGroups.length) {
+        form.viewPermissionsUsers.push(me);
+    }
+    // transform the form
+    form.viewPermissionsUsers = form.viewPermissionsUsers.join(',');
+    form.editPermissionsUsers = form.editPermissionsUsers.join(',');
+    form.viewPermissionsGroups = form.viewPermissionsGroups.join(',');
+    form.editPermissionsGroups = form.editPermissionsGroups.join(',');
+    await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post({
+        url: '/pages/setcontentpermissions.action',
+        contentType: 'application/x-www-form-urlencoded',
+        data: jquery__WEBPACK_IMPORTED_MODULE_0___default.a.param(form)
+    });
+}
+
+async function setEditorRestriction(contentId, groupName) {
+    if (!groupName) {
+        groupName = _config__WEBPACK_IMPORTED_MODULE_2__["DEFAULT_RESTRICTION_GROUP"];
+    }
+    let username = await Object(_confluence_user_async__WEBPACK_IMPORTED_MODULE_1__["getUser"])();
+    // set ourselves as editor
+    await experimental('/rest/experimental/content/'+contentId+'/restriction/byOperation/update/user?userName=' + encodeURIComponent(username));
+    // and the whole group as well
+    await experimental('/rest/experimental/content/'+contentId+'/restriction/byOperation/update/group/' + encodeURIComponent(groupName));
+}
+
+/** the experimental restriction API resturns 200 OK without any content which
+ * jquery considers as an error, so we need to catch the error
+ */
+async function experimental(url) {
+    try { 
+        await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.ajax({
+            url: url,
+            type: 'PUT'
+        });
+    } catch (err) {
+        if (err.status != 200 && err.status  != 204) { // is this a real error
+            throw err; // rethrow
+        } // else success
+    }
+}
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-permissions-async.test.js":
+/*!*******************************************************************!*\
+  !*** ./js/common/confluence/confluence-permissions-async.test.js ***!
+  \*******************************************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-permissions-async */ "./js/common/confluence/confluence-permissions-async.js");
+/* harmony import */ var _confluence_user_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./confluence-user-async */ "./js/common/confluence/confluence-user-async.js");
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
+
+
+
+
+
+let restrictedPage = '326181263';
+let norestrictionPage = '158963161';
+let pageMissingRestriction = '375593605';
+
+describe("confluence-permissions-async", function() {
+    it("should load permissions", async function() {
+        console.log("Editor restrictions", await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["getEditorRestrictions"])(restrictedPage));
+    });
+    it("getEditorRestrictions should return false when page doesn't have restrictions", async function() {
+        chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isFalse(await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["getEditorRestrictions"])(norestrictionPage));
+    });
+    it("setMyselfAsEditor", async function() {
+        let page = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_3__["getContentById"])(pageMissingRestriction, 'space');
+        await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["removeRestrictions"])(pageMissingRestriction, page.space.key);
+        let user = await Object(_confluence_user_async__WEBPACK_IMPORTED_MODULE_1__["getUser"])();
+        let r = await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["getEditorRestrictions"])(pageMissingRestriction);
+        chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isOk(!r || r.user.indexOf(user)<0, `${user} shouldn't already be an editor`);
+        await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["setMyselfAsEditor"])(pageMissingRestriction, page.space.key);
+        
+        r = await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["getEditorRestrictions"])(pageMissingRestriction);
+        chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isOk(r.user.indexOf(user)>=0, `${user} should be in the edit restrictions`);
+    });
+});
+
+/***/ }),
+
 /***/ "./js/common/confluence/confluence-properties-async.js":
 /*!*************************************************************!*\
   !*** ./js/common/confluence/confluence-properties-async.js ***!
@@ -859,6 +1057,38 @@ const MAX_PARALLEL_WRITE = 1;
 const throttleRead = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_READ);
 const throttleWrite = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_WRITE);
 
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-user-async.js":
+/*!*******************************************************!*\
+  !*** ./js/common/confluence/confluence-user-async.js ***!
+  \*******************************************************/
+/*! exports provided: getUser, getUserKey */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getUser", function() { return getUser; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getUserKey", function() { return getUserKey; });
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+
+
+let _user;
+
+async function getUser() {
+    return (await load()).username;
+}
+async function getUserKey() {
+    return (await load()).userKey;
+}
+async function load() {
+    if (!_user) {
+        _user = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get('/rest/api/user/current');
+    }
+    return _user;
+}
 
 /***/ }),
 
@@ -1092,13 +1322,14 @@ const SyncTimeStamp = {
   clearAll: async function(contentId) {
     await _common_confluence_Property__WEBPACK_IMPORTED_MODULE_1__["default"].reset(contentId, _common_config__WEBPACK_IMPORTED_MODULE_0__["PROP_KEY"]);
   },
+  /** Always returns a SyncTimeStamp, even when none already exist in Confluence - if necessary, a new TS is created, ready for use and to be saved. */
   loadLastSyncFromContentWithSpace : async function (contentId, otherSpaceKey) {
     let syncProperty = await _common_confluence_Property__WEBPACK_IMPORTED_MODULE_1__["default"].load(contentId, _common_config__WEBPACK_IMPORTED_MODULE_0__["PROP_KEY"]);
     let value = syncProperty.value();
     let legacySyncTS;
 
     // Convert legacy format
-    if ( (value.syncTargets && value.syncTargets[otherSpaceKey]) || (value.syncSources && value.syncSources[otherSpaceKey])) { // old format
+    if (value.syncTargets && value.syncTargets[otherSpaceKey]) { // legacy format
         legacySyncTS = value.syncTargets[otherSpaceKey];
         delete value.syncTargets[otherSpaceKey];
     }
@@ -1140,6 +1371,7 @@ const SyncTimeStamp = {
     }
 
     function getOtherPage(pageId) {
+        if (!syncTS().pages) return null;
         return syncTS().pages.find( e=>e.contentId!=pageId );
     }
 
@@ -1157,6 +1389,7 @@ const SyncTimeStamp = {
         syncTSTarget.syncTime = syncTSFrom.syncTime;
     }
     function getPage(pageId) {
+        if (!syncTS().pages) return null;
         return syncTS().pages.find( e=>e.contentId==pageId );
     }
     
@@ -1374,7 +1607,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mainframe/stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
 /* harmony import */ var _tests_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tests.css */ "./js/tests/tests.css");
 /* harmony import */ var _tests_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_tests_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var chai_as_promised__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! chai-as-promised */ "./node_modules/chai-as-promised/lib/chai-as-promised.js");
+/* harmony import */ var chai_as_promised__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(chai_as_promised__WEBPACK_IMPORTED_MODULE_3__);
 
+
+
+
+chai__WEBPACK_IMPORTED_MODULE_2___default.a.use(chai_as_promised__WEBPACK_IMPORTED_MODULE_3___default.a);
 
 Object(_mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_0__["loadStyleSheet"])(null, 'https://unpkg.com/mocha@5.2.0/mocha.css');
 Object(_mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_0__["loadPluginStyleSheet"])('tests-bundle.css');
@@ -1511,6 +1752,379 @@ AssertionError.prototype.toJSON = function (stack) {
 
   return props;
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/chai-as-promised/lib/chai-as-promised.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/chai-as-promised/lib/chai-as-promised.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/* eslint-disable no-invalid-this */
+let checkError = __webpack_require__(/*! check-error */ "./node_modules/check-error/index.js");
+
+module.exports = (chai, utils) => {
+    const Assertion = chai.Assertion;
+    const assert = chai.assert;
+    const proxify = utils.proxify;
+
+    // If we are using a version of Chai that has checkError on it,
+    // we want to use that version to be consistent. Otherwise, we use
+    // what was passed to the factory.
+    if (utils.checkError) {
+        checkError = utils.checkError;
+    }
+
+    function isLegacyJQueryPromise(thenable) {
+        // jQuery promises are Promises/A+-compatible since 3.0.0. jQuery 3.0.0 is also the first version
+        // to define the catch method.
+        return typeof thenable.catch !== "function" &&
+               typeof thenable.always === "function" &&
+               typeof thenable.done === "function" &&
+               typeof thenable.fail === "function" &&
+               typeof thenable.pipe === "function" &&
+               typeof thenable.progress === "function" &&
+               typeof thenable.state === "function";
+    }
+
+    function assertIsAboutPromise(assertion) {
+        if (typeof assertion._obj.then !== "function") {
+            throw new TypeError(utils.inspect(assertion._obj) + " is not a thenable.");
+        }
+        if (isLegacyJQueryPromise(assertion._obj)) {
+            throw new TypeError("Chai as Promised is incompatible with thenables of jQuery<3.0.0, sorry! Please " +
+                                "upgrade jQuery or use another Promises/A+ compatible library (see " +
+                                "http://promisesaplus.com/).");
+        }
+    }
+
+    function proxifyIfSupported(assertion) {
+        return proxify === undefined ? assertion : proxify(assertion);
+    }
+
+    function method(name, asserter) {
+        utils.addMethod(Assertion.prototype, name, function () {
+            assertIsAboutPromise(this);
+            return asserter.apply(this, arguments);
+        });
+    }
+
+    function property(name, asserter) {
+        utils.addProperty(Assertion.prototype, name, function () {
+            assertIsAboutPromise(this);
+            return proxifyIfSupported(asserter.apply(this, arguments));
+        });
+    }
+
+    function doNotify(promise, done) {
+        promise.then(() => done(), done);
+    }
+
+    // These are for clarity and to bypass Chai refusing to allow `undefined` as actual when used with `assert`.
+    function assertIfNegated(assertion, message, extra) {
+        assertion.assert(true, null, message, extra.expected, extra.actual);
+    }
+
+    function assertIfNotNegated(assertion, message, extra) {
+        assertion.assert(false, message, null, extra.expected, extra.actual);
+    }
+
+    function getBasePromise(assertion) {
+        // We need to chain subsequent asserters on top of ones in the chain already (consider
+        // `eventually.have.property("foo").that.equals("bar")`), only running them after the existing ones pass.
+        // So the first base-promise is `assertion._obj`, but after that we use the assertions themselves, i.e.
+        // previously derived promises, to chain off of.
+        return typeof assertion.then === "function" ? assertion : assertion._obj;
+    }
+
+    function getReasonName(reason) {
+        return reason instanceof Error ? reason.toString() : checkError.getConstructorName(reason);
+    }
+
+    // Grab these first, before we modify `Assertion.prototype`.
+
+    const propertyNames = Object.getOwnPropertyNames(Assertion.prototype);
+
+    const propertyDescs = {};
+    for (const name of propertyNames) {
+        propertyDescs[name] = Object.getOwnPropertyDescriptor(Assertion.prototype, name);
+    }
+
+    property("fulfilled", function () {
+        const derivedPromise = getBasePromise(this).then(
+            value => {
+                assertIfNegated(this,
+                                "expected promise not to be fulfilled but it was fulfilled with #{act}",
+                                { actual: value });
+                return value;
+            },
+            reason => {
+                assertIfNotNegated(this,
+                                   "expected promise to be fulfilled but it was rejected with #{act}",
+                                   { actual: getReasonName(reason) });
+                return reason;
+            }
+        );
+
+        module.exports.transferPromiseness(this, derivedPromise);
+        return this;
+    });
+
+    property("rejected", function () {
+        const derivedPromise = getBasePromise(this).then(
+            value => {
+                assertIfNotNegated(this,
+                                   "expected promise to be rejected but it was fulfilled with #{act}",
+                                   { actual: value });
+                return value;
+            },
+            reason => {
+                assertIfNegated(this,
+                                "expected promise not to be rejected but it was rejected with #{act}",
+                                { actual: getReasonName(reason) });
+
+                // Return the reason, transforming this into a fulfillment, to allow further assertions, e.g.
+                // `promise.should.be.rejected.and.eventually.equal("reason")`.
+                return reason;
+            }
+        );
+
+        module.exports.transferPromiseness(this, derivedPromise);
+        return this;
+    });
+
+    method("rejectedWith", function (errorLike, errMsgMatcher, message) {
+        let errorLikeName = null;
+        const negate = utils.flag(this, "negate") || false;
+
+        // rejectedWith with that is called without arguments is
+        // the same as a plain ".rejected" use.
+        if (errorLike === undefined && errMsgMatcher === undefined &&
+            message === undefined) {
+            /* eslint-disable no-unused-expressions */
+            return this.rejected;
+            /* eslint-enable no-unused-expressions */
+        }
+
+        if (message !== undefined) {
+            utils.flag(this, "message", message);
+        }
+
+        if (errorLike instanceof RegExp || typeof errorLike === "string") {
+            errMsgMatcher = errorLike;
+            errorLike = null;
+        } else if (errorLike && errorLike instanceof Error) {
+            errorLikeName = errorLike.toString();
+        } else if (typeof errorLike === "function") {
+            errorLikeName = checkError.getConstructorName(errorLike);
+        } else {
+            errorLike = null;
+        }
+        const everyArgIsDefined = Boolean(errorLike && errMsgMatcher);
+
+        let matcherRelation = "including";
+        if (errMsgMatcher instanceof RegExp) {
+            matcherRelation = "matching";
+        }
+
+        const derivedPromise = getBasePromise(this).then(
+            value => {
+                let assertionMessage = null;
+                let expected = null;
+
+                if (errorLike) {
+                    assertionMessage = "expected promise to be rejected with #{exp} but it was fulfilled with #{act}";
+                    expected = errorLikeName;
+                } else if (errMsgMatcher) {
+                    assertionMessage = `expected promise to be rejected with an error ${matcherRelation} #{exp} but ` +
+                                       `it was fulfilled with #{act}`;
+                    expected = errMsgMatcher;
+                }
+
+                assertIfNotNegated(this, assertionMessage, { expected, actual: value });
+                return value;
+            },
+            reason => {
+                const errorLikeCompatible = errorLike && (errorLike instanceof Error ?
+                                                        checkError.compatibleInstance(reason, errorLike) :
+                                                        checkError.compatibleConstructor(reason, errorLike));
+
+                const errMsgMatcherCompatible = errMsgMatcher && checkError.compatibleMessage(reason, errMsgMatcher);
+
+                const reasonName = getReasonName(reason);
+
+                if (negate && everyArgIsDefined) {
+                    if (errorLikeCompatible && errMsgMatcherCompatible) {
+                        this.assert(true,
+                                    null,
+                                    "expected promise not to be rejected with #{exp} but it was rejected " +
+                                    "with #{act}",
+                                    errorLikeName,
+                                    reasonName);
+                    }
+                } else {
+                    if (errorLike) {
+                        this.assert(errorLikeCompatible,
+                                    "expected promise to be rejected with #{exp} but it was rejected with #{act}",
+                                    "expected promise not to be rejected with #{exp} but it was rejected " +
+                                    "with #{act}",
+                                    errorLikeName,
+                                    reasonName);
+                    }
+
+                    if (errMsgMatcher) {
+                        this.assert(errMsgMatcherCompatible,
+                                    `expected promise to be rejected with an error ${matcherRelation} #{exp} but got ` +
+                                    `#{act}`,
+                                    `expected promise not to be rejected with an error ${matcherRelation} #{exp}`,
+                                    errMsgMatcher,
+                                    checkError.getMessage(reason));
+                    }
+                }
+
+                return reason;
+            }
+        );
+
+        module.exports.transferPromiseness(this, derivedPromise);
+        return this;
+    });
+
+    property("eventually", function () {
+        utils.flag(this, "eventually", true);
+        return this;
+    });
+
+    method("notify", function (done) {
+        doNotify(getBasePromise(this), done);
+        return this;
+    });
+
+    method("become", function (value, message) {
+        return this.eventually.deep.equal(value, message);
+    });
+
+    // ### `eventually`
+
+    // We need to be careful not to trigger any getters, thus `Object.getOwnPropertyDescriptor` usage.
+    const methodNames = propertyNames.filter(name => {
+        return name !== "assert" && typeof propertyDescs[name].value === "function";
+    });
+
+    methodNames.forEach(methodName => {
+        Assertion.overwriteMethod(methodName, originalMethod => function () {
+            return doAsserterAsyncAndAddThen(originalMethod, this, arguments);
+        });
+    });
+
+    const getterNames = propertyNames.filter(name => {
+        return name !== "_obj" && typeof propertyDescs[name].get === "function";
+    });
+
+    getterNames.forEach(getterName => {
+        // Chainable methods are things like `an`, which can work both for `.should.be.an.instanceOf` and as
+        // `should.be.an("object")`. We need to handle those specially.
+        const isChainableMethod = Assertion.prototype.__methods.hasOwnProperty(getterName);
+
+        if (isChainableMethod) {
+            Assertion.overwriteChainableMethod(
+                getterName,
+                originalMethod => function () {
+                    return doAsserterAsyncAndAddThen(originalMethod, this, arguments);
+                },
+                originalGetter => function () {
+                    return doAsserterAsyncAndAddThen(originalGetter, this);
+                }
+            );
+        } else {
+            Assertion.overwriteProperty(getterName, originalGetter => function () {
+                return proxifyIfSupported(doAsserterAsyncAndAddThen(originalGetter, this));
+            });
+        }
+    });
+
+    function doAsserterAsyncAndAddThen(asserter, assertion, args) {
+        // Since we're intercepting all methods/properties, we need to just pass through if they don't want
+        // `eventually`, or if we've already fulfilled the promise (see below).
+        if (!utils.flag(assertion, "eventually")) {
+            asserter.apply(assertion, args);
+            return assertion;
+        }
+
+        const derivedPromise = getBasePromise(assertion).then(value => {
+            // Set up the environment for the asserter to actually run: `_obj` should be the fulfillment value, and
+            // now that we have the value, we're no longer in "eventually" mode, so we won't run any of this code,
+            // just the base Chai code that we get to via the short-circuit above.
+            assertion._obj = value;
+            utils.flag(assertion, "eventually", false);
+
+            return args ? module.exports.transformAsserterArgs(args) : args;
+        }).then(newArgs => {
+            asserter.apply(assertion, newArgs);
+
+            // Because asserters, for example `property`, can change the value of `_obj` (i.e. change the "object"
+            // flag), we need to communicate this value change to subsequent chained asserters. Since we build a
+            // promise chain paralleling the asserter chain, we can use it to communicate such changes.
+            return assertion._obj;
+        });
+
+        module.exports.transferPromiseness(assertion, derivedPromise);
+        return assertion;
+    }
+
+    // ### Now use the `Assertion` framework to build an `assert` interface.
+    const originalAssertMethods = Object.getOwnPropertyNames(assert).filter(propName => {
+        return typeof assert[propName] === "function";
+    });
+
+    assert.isFulfilled = (promise, message) => (new Assertion(promise, message)).to.be.fulfilled;
+
+    assert.isRejected = (promise, errorLike, errMsgMatcher, message) => {
+        const assertion = new Assertion(promise, message);
+        return assertion.to.be.rejectedWith(errorLike, errMsgMatcher, message);
+    };
+
+    assert.becomes = (promise, value, message) => assert.eventually.deepEqual(promise, value, message);
+
+    assert.doesNotBecome = (promise, value, message) => assert.eventually.notDeepEqual(promise, value, message);
+
+    assert.eventually = {};
+    originalAssertMethods.forEach(assertMethodName => {
+        assert.eventually[assertMethodName] = function (promise) {
+            const otherArgs = Array.prototype.slice.call(arguments, 1);
+
+            let customRejectionHandler;
+            const message = arguments[assert[assertMethodName].length - 1];
+            if (typeof message === "string") {
+                customRejectionHandler = reason => {
+                    throw new chai.AssertionError(`${message}\n\nOriginal reason: ${utils.inspect(reason)}`);
+                };
+            }
+
+            const returnedPromise = promise.then(
+                fulfillmentValue => assert[assertMethodName].apply(assert, [fulfillmentValue].concat(otherArgs)),
+                customRejectionHandler
+            );
+
+            returnedPromise.notify = done => {
+                doNotify(returnedPromise, done);
+            };
+
+            return returnedPromise;
+        };
+    });
+};
+
+module.exports.transferPromiseness = (assertion, promise) => {
+    assertion.then = promise.then.bind(promise);
+};
+
+module.exports.transformAsserterArgs = values => values;
 
 
 /***/ }),

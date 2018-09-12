@@ -36,7 +36,7 @@
                 <td>
                     <!-- ACTIONS -->
                     <!-- INITIAL ANALYSIS BUTTON -->
-                    <button type="button" data-toggle="tooltip" title="Check Synchronization" data-link="{on ~analyze #data ~root.targetSpace} class{: analyzed?'btn btn-sm btn-progress btn-default':'btn btn-sm btn-progress btn-primary'}">
+                    <button type="button" data-toggle="tooltip" data-placement="left" title="Check Synchronization" data-link="{on ~analyze #data ~root.targetSpace} class{: analyzed?'btn btn-sm btn-progress btn-default':'btn btn-sm btn-progress btn-primary'}">
                             <span class="glyphicon glyphicon-refresh"></span>
                             <div class="progress built-in-progress" data-link="class{merge:progress.sync toggle='show'}">
                                 <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.sync + '%'}" role="progressbar" style="width: 0%;"></div>
@@ -47,25 +47,25 @@
                     
                     <!-- GROUP OF PUSH/PULL BUTTONS -->
                     <div class="btn-group" role="group">
-                        <button class="btn btn-sm btn-primary btn-progress" type="button" data-toggle="tooltip" data-link="{on ~perform 'push' #data} title{: 'Publish '+ pagesToPush.length+' page(s)'} disabled{:pagesToPush.length==0}" >
+                        <button class="btn btn-sm btn-primary btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~perform 'push' #data} title{: 'Publish '+ pagesToPush.length+' page(s)'} disabled{:pagesToPush.length==0}" >
                             <span class="glyphicon glyphicon-upload"></span>
                             <div class="progress built-in-progress" data-link="class{merge:progress.push toggle='show'}">
                                 <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.push + '%'}" role="progressbar" style="width: 0%;"></div>
                             </div>
                         </button>
-                        <button class="btn btn-sm btn-default btn-progress" type="button" data-toggle="tooltip" data-link="{on ~perform 'pull' #data} title{: 'Pull '+ pagesToPull.length+' remote page(s)'} disabled{:pagesToPull.length==0}" >
+                        <button class="btn btn-sm btn-default btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~perform 'pull' #data} title{: 'Pull '+ pagesToPull.length+' remote page(s)'} disabled{:pagesToPull.length==0}" >
                             <span class="glyphicon glyphicon-download text-primary"></span>
                             <div class="progress built-in-progress" data-link="class{merge:progress.pull toggle='show'}">
                                 <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.pull + '%'}" role="progressbar" style="width: 0%;"></div>
                             </div>
                         </button>
-                        <button class="btn btn-sm btn-danger btn-progress" type="button" data-toggle="tooltip" data-link="{on ~perform 'pushConflicting' #data} title{: 'Overwrite '+ conflictingPages.length+' conflicting page(s)'} disabled{:conflictingPages.length==0}" >
+                        <button class="btn btn-sm btn-danger btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~perform 'pushConflicting' #data} title{: 'Overwrite '+ conflictingPages.length+' conflicting page(s)'} disabled{:conflictingPages.length==0}" >
                             <span class="glyphicon glyphicon-upload"></span>
                             <div class="progress built-in-progress" data-link="class{merge:progress.pushConflicting toggle='show'}">
                                 <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.pushConflicting + '%'}" role="progressbar" style="width: 0%;"></div>
                             </div>
                         </button>
-                        <button class="btn btn-sm btn-default btn-progress" type="button" data-toggle="tooltip" data-link="{on ~perform 'syncLabels' #data} title{: 'Sync labels on '+ unsyncedLabels.length+' page(s)'} disabled{:unsyncedLabels.length==0}" >
+                        <button class="btn btn-sm btn-default btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~perform 'syncLabels' #data} title{: 'Sync labels on '+ unsyncedLabels.length+' page(s)'} disabled{:unsyncedLabels.length==0}" >
                             <span class="glyphicon glyphicon glyphicon-tags"></span>
                             <div class="progress built-in-progress" data-link="class{merge:progress.syncLabels toggle='show'}">
                                 <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.syncLabels + '%'}" role="progressbar" style="width: 0%;"></div>
@@ -83,19 +83,19 @@
                 <td>
                         {^{if analyzed}}
                         <div class="btn-group" role="group">
-                                <button class="btn btn-sm btn-primary btn-progress" type="button" data-toggle="tooltip" data-link="{on ~perform 'pushAttachments' #data} title{: 'Publish '+ attachmentsToPush.length+' attachment(s)'} disabled{:attachmentsToPush.length==0}" >
+                                <button class="btn btn-sm btn-primary btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~perform 'pushAttachments' #data} title{: 'Publish '+ attachmentsToPush.length+' attachment(s)'} disabled{:attachmentsToPush.length==0}" >
                                     <span class="glyphicon glyphicon-export"></span>
                                     <div class="progress built-in-progress" data-link="class{merge:progress.pushAttachments toggle='show'}">
                                         <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.pushAttachments + '%'}" role="progressbar" style="width: 0%;"></div>
                                     </div>
                                 </button>
-                                <button class="btn btn-sm btn-default btn-progress" type="button" data-toggle="tooltip" data-link="{on ~perform 'pullAttachments' #data} title{: 'Pull '+ attachmentsToPull.length+' remote attachment(s)'} disabled{:attachmentsToPull.length==0}" >
+                                <button class="btn btn-sm btn-default btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~perform 'pullAttachments' #data} title{: 'Pull '+ attachmentsToPull.length+' remote attachment(s)'} disabled{:attachmentsToPull.length==0}" >
                                     <span class="glyphicon glyphicon-import text-primary"></span>
                                     <div class="progress built-in-progress" data-link="class{merge:progress.pullAttachments toggle='show'}">
                                         <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.pullAttachments + '%'}" role="progressbar" style="width: 0%;"></div>
                                     </div>
                                 </button>
-                                <button class="btn btn-sm btn-danger btn-progress" type="button" data-toggle="tooltip" data-link="{on ~perform 'pushConflictingAttachments' #data} title{: 'Overwrite '+ conflictingAttachments.length+' conflicting attachment(s)'} disabled{:conflictingAttachments.length==0}" >
+                                <button class="btn btn-sm btn-danger btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~perform 'pushConflictingAttachments' #data} title{: 'Overwrite '+ conflictingAttachments.length+' conflicting attachment(s)'} disabled{:conflictingAttachments.length==0}" >
                                     <span class="glyphicon glyphicon-export"></span>
                                     <div class="progress built-in-progress" data-link="class{merge:progress.pushConflictingAttachments toggle='show'}">
                                         <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.pushConflictingAttachments + '%'}" role="progressbar" style="width: 0%;"></div>

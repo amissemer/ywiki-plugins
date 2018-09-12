@@ -1,6 +1,8 @@
 import log from './log';
 import {Observable} from 'rxjs/Observable';
 import notify from './notify';
+import {setMyselfAsEditor,getEditorRestrictions} from '../../common/confluence/confluence-permissions-async';
+import {getUser} from '../../common/confluence/confluence-user-async';
 
 const PERMISSION_ERROR = "Confluence Permission Error";
 const ACTIONS = {
@@ -28,6 +30,7 @@ export default function pageSyncPerformer(action, pageGroup) {
                 notify.error(`Cannot ${action} on ${e.page.title}, target page is write protected, click here to check permissions, then retry`, e.page._links.webui);
                 // TODO attempt to use the confluence-permissions-async.js API to fix the problem
             } else {
+                console.warn(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e}`, e);
                 notify.error(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`);
             }
             pageGroup.removeProgress(action);
@@ -65,7 +68,16 @@ async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStat
             await actionRef.perform(syncStatus);
         } catch (err) {
             if (err.status == 403) { // HTTP 403 Forbidden
-                throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
+                // if we can gain write permission
+                if (await attemptToGetPermission(syncStatus)) {
+                    try { // retry
+                        await actionRef.perform(syncStatus);
+                    } catch (err) {
+                        throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
+                    }
+                } else {
+                    throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
+                }
             } else {
                 throw err;
             }
@@ -82,4 +94,19 @@ async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStat
             return null;
         }
     }));
+}
+
+async function attemptToGetPermission(syncStatus) {
+    try {
+        let page = syncStatus.targetPage;
+        let user = await getUser();
+        let r = await getEditorRestrictions(page.id);
+        if (!r || r.user.indexOf(user)>=0) {
+            return false; // we already have permission
+        }
+        await setMyselfAsEditor(page.id, syncStatus.targetSpaceKey);r
+        return true; 
+    } catch (e) {
+        console.warn(`Failed to get write permission on ${syncStatus.targetSpaceKey}:${syncStatus.targetPage.title}`,e);
+    }
 }

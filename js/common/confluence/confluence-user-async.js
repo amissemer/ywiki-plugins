@@ -1,9 +1,16 @@
 import $ from 'jquery';
 
-let userCached;
+let _user;
 
-export default async function getUser() {
-    if (userCached) return userCached;
-    userCached = (await $.get('/rest/api/user/current') ).username;
-    return userCached;
+export async function getUser() {
+    return (await load()).username;
+}
+export async function getUserKey() {
+    return (await load()).userKey;
+}
+async function load() {
+    if (!_user) {
+        _user = await $.get('/rest/api/user/current');
+    }
+    return _user;
 }

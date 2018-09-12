@@ -1,10 +1,11 @@
 import {getEditorRestrictions, setEditorRestriction} from './confluence-permissions-async';
+import {PORTFOLIO_GROUP} from '../config';
 
 export async function postProcess(body, page) {
     if (body.indexOf('<ac:structured-macro ac:name="html"')>=0) {
             // if there is already editor restriction, no need to set one
         if (await getEditorRestrictions(page.id)) return;
-        await setEditorRestriction(page.id);
+        await setEditorRestriction(page.id, PORTFOLIO_GROUP);
         console.log(`Permissions set on page ${page.title}`);
     }
 }

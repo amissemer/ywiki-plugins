@@ -14,6 +14,7 @@ export default function pageSyncAnalyzer(pageGroup, targetSpace) {
     checkSyncStatus(pageGroup, targetSpace, refreshSourcePages).subscribe(
         percent => pageGroup.setProgress(SYNC_ACTION, percent),
         e => {
+            console.warn(`Error while checking synchronization of page group ${pageGroup.title}: ${e}`, e);
             notify.error(`Error while checking synchronization of page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
             pageGroup.removeProgress(SYNC_ACTION);
             pageGroup.setAnalyzed(false);

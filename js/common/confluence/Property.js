@@ -35,7 +35,17 @@ const Property = {
             save: async function() { 
                 if (confluenceInternal.id) {
                     confluenceInternal.version.number++;
-                    confluenceInternal = await update(contentId, confluenceInternal);
+                    try {
+                        confluenceInternal = await update(contentId, confluenceInternal);
+                    } catch (err) { // workaround for Confluence bug https://jira.atlassian.com/browse/CRA-1259
+                        if (err.message.indexOf("Can't add an owner from another space")>=0) {
+                            // then we delete and recreate the prop
+                            await deleteProperty(contentId, key);
+                            confluenceInternal.id = null;
+                            confluenceInternal.version.number = null;
+                            confluenceInternal = await create(contentId, confluenceInternal);
+                        }
+                    }
                 } else {
                     confluenceInternal = await create(contentId, confluenceInternal);
                 }

@@ -25,6 +25,9 @@ export default class PageWrapper {
             this.syncedPages = [];
             this.unsyncedLabels = [];
             this.conflictingPages = [];
+            this.conflictingAttachments = [];
+            this.attachmentsToPush = [];
+            this.attachmentsToPull = [];
             this.descendants = [];
             this.analyzing = false;
             this.analyzed = false;
@@ -105,7 +108,7 @@ export default class PageWrapper {
         let syncTimeStamp = await SyncTimeStamp.loadLastSyncFromContentWithSpace(pageToCopy.id, targetSpaceKey);
         if (!syncTimeStamp.isNew()) {
           try {
-            targetPage = await getContentById(syncTimeStamp.getOtherPage(sourceContentId).contentId, TARGET_EXPANDS);
+            targetPage = await getContentById(syncTimeStamp.getOtherPage(pageToCopy.id).contentId, TARGET_EXPANDS);
             syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
             // target based on syncTimeStamp id is missing
@@ -119,7 +122,7 @@ export default class PageWrapper {
             syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
             // target with same title as source is missing
-            syncStatus = new SyncStatus(this, targetSpaceKey)
+            syncStatus = new SyncStatus(this, targetSpaceKey, null, syncTimeStamp);
           }
         }
         $.observable(this).setProperty("syncStatus", syncStatus);

@@ -1,5 +1,9 @@
 import {loadStyleSheet,loadPluginStyleSheet} from '../mainframe/stylesheetPlugin';
 import './tests.css';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+chai.use(chaiAsPromised);
+
 loadStyleSheet(null, 'https://unpkg.com/mocha@5.2.0/mocha.css');
 loadPluginStyleSheet('tests-bundle.css');
 

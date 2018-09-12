@@ -75,7 +75,7 @@
 /*!*****************************!*\
   !*** ./js/common/config.js ***!
   \*****************************/
-/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL, PROP_KEY, DEFAULT_RESTRICTION_GROUP */
+/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL, PROP_KEY, DEFAULT_RESTRICTION_GROUP, PORTFOLIO_GROUP */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -95,6 +95,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "XSLT_ENDPOINT_URL", function() { return XSLT_ENDPOINT_URL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PROP_KEY", function() { return PROP_KEY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_RESTRICTION_GROUP", function() { return DEFAULT_RESTRICTION_GROUP; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PORTFOLIO_GROUP", function() { return PORTFOLIO_GROUP; });
 const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 const DEFAULT_JIRA_ISSUE_COUNT = 10;
 const MAIN_JIRA_LABEL = "CI";
@@ -111,6 +112,85 @@ const XSLT_ENDPOINT_URL = 'https://bzycrip1eh.execute-api.eu-central-1.amazonaws
 // export const WIKI_HOST = 'performancewiki2.hybris.com';
 const PROP_KEY = 'ysync';
 const DEFAULT_RESTRICTION_GROUP = 'dl sap customer experience all employees (external)';
+const PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
+
+
+/***/ }),
+
+/***/ "./js/common/confluence/Labels.js":
+/*!****************************************!*\
+  !*** ./js/common/confluence/Labels.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _confluence_labels_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-labels-async */ "./js/common/confluence/confluence-labels-async.js");
+/* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
+
+
+
+/** provides sets management feature for labels */
+const Labels = {
+    getFromPage : async function(page) {
+        let labelArray = [];
+        // read the labels of the page if necessary
+        if (!page.metadata) {
+            page = await Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(page.id, 'metadata.labels');
+        }
+        for (let label of page.metadata.labels.results) {
+            labelArray.push(label.name);
+        }
+        labelArray.sort();
+        let initialArray = Array.from(labelArray);
+
+        return {
+            labelArray: labelArray,
+            save: save,
+            mergeFrom: mergeFrom
+        }
+
+        async function save() {
+            // because this.labelArray is a mutable array, we need to sort it before saving
+            this.labelArray.sort();
+            if (JSON.stringify(this.labelArray) != JSON.stringify(initialArray)) {
+                let toAdd = this.labelArray.minus(initialArray);
+                let toRemove = initialArray.minus(this.labelArray);
+                if (toAdd.length) {
+                    await Object(_confluence_labels_async__WEBPACK_IMPORTED_MODULE_0__["addLabels"])(page.id, toAdd);
+                }
+                if (toRemove.length) {
+                    await Object(_confluence_labels_async__WEBPACK_IMPORTED_MODULE_0__["removeLabels"])(page.id, toRemove);
+                }
+            }
+        }
+        function mergeFrom(otherLabels, commonAncestor) {
+            let toAdd = otherLabels.labelArray.minus(commonAncestor);
+            let toRemove = commonAncestor.minus(otherLabels.labelArray);
+            this.labelArray.pushUnique(toAdd);
+            this.labelArray.removeAll(toRemove);
+            this.labelArray.sort();
+        }
+    }
+};
+  
+Array.prototype.minus = function(a) {
+    return this.filter( i=> a.indexOf(i) < 0 );
+};
+Array.prototype.pushUnique = function(a) {
+    for (let i of a) {
+        if (this.indexOf(i) < 0) this.push(i);
+    }
+};
+Array.prototype.removeAll = function(a) {
+    for (let i of a) {
+        let pos = this.indexOf(i);
+        if (pos >= 0) this.splice(pos, 1);
+    }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Labels);
 
 /***/ }),
 
@@ -237,7 +317,17 @@ const Property = {
             save: async function() { 
                 if (confluenceInternal.id) {
                     confluenceInternal.version.number++;
-                    confluenceInternal = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["update"])(contentId, confluenceInternal);
+                    try {
+                        confluenceInternal = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["update"])(contentId, confluenceInternal);
+                    } catch (err) { // workaround for Confluence bug https://jira.atlassian.com/browse/CRA-1259
+                        if (err.message.indexOf("Can't add an owner from another space")>=0) {
+                            // then we delete and recreate the prop
+                            await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["deleteProperty"])(contentId, key);
+                            confluenceInternal.id = null;
+                            confluenceInternal.version.number = null;
+                            confluenceInternal = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["create"])(contentId, confluenceInternal);
+                        }
+                    }
                 } else {
                     confluenceInternal = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["create"])(contentId, confluenceInternal);
                 }
@@ -251,6 +341,47 @@ const Property = {
 
 /* harmony default export */ __webpack_exports__["default"] = (Property);
 
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-labels-async.js":
+/*!*********************************************************!*\
+  !*** ./js/common/confluence/confluence-labels-async.js ***!
+  \*********************************************************/
+/*! exports provided: addLabels, removeLabels */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addLabels", function() { return addLabels; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeLabels", function() { return removeLabels; });
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+
+
+const BASE_URL = '/rest/api/content/';
+
+async function addLabels(contentId, labels) {
+    let labelsPayload = [];
+    for (let label of labels) {
+        labelsPayload.push({"prefix": "global","name":label});
+    }
+    return jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post({
+        url: BASE_URL + contentId + '/label',
+        data: JSON.stringify(labelsPayload),
+        contentType: "application/json; charset=utf-8"
+    });
+}
+
+async function removeLabels(contentId, labels) {
+    for (let label of labels) {
+        await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.ajax({
+            url: BASE_URL + contentId + '/label?name='+encodeURIComponent(label),
+            type: 'DELETE'
+        });
+    }
+    return labels;
+}
 
 /***/ }),
 
@@ -518,13 +649,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postProcess", function() { return postProcess; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "preProcess", function() { return preProcess; });
 /* harmony import */ var _confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-permissions-async */ "./js/common/confluence/confluence-permissions-async.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../config */ "./js/common/config.js");
+
 
 
 async function postProcess(body, page) {
     if (body.indexOf('<ac:structured-macro ac:name="html"')>=0) {
             // if there is already editor restriction, no need to set one
         if (await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["getEditorRestrictions"])(page.id)) return;
-        await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["setEditorRestriction"])(page.id);
+        await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["setEditorRestriction"])(page.id, _config__WEBPACK_IMPORTED_MODULE_1__["PORTFOLIO_GROUP"]);
         console.log(`Permissions set on page ${page.title}`);
     }
 }
@@ -545,12 +678,14 @@ async function preProcess(page, sourcePage, targetSpace) {
 /*!**************************************************************!*\
   !*** ./js/common/confluence/confluence-permissions-async.js ***!
   \**************************************************************/
-/*! exports provided: getEditorRestrictions, setEditorRestriction */
+/*! exports provided: getEditorRestrictions, removeRestrictions, setMyselfAsEditor, setEditorRestriction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getEditorRestrictions", function() { return getEditorRestrictions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeRestrictions", function() { return removeRestrictions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setMyselfAsEditor", function() { return setMyselfAsEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setEditorRestriction", function() { return setEditorRestriction; });
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
@@ -581,11 +716,79 @@ async function getEditorRestrictions(contentId) {
     return restrictions;
 }
 
+async function removeRestrictions(contentId, spaceKey) {
+    let atlToken = jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name=ajs-atl-token]').attr("content");
+    let form = {
+        "viewPermissionsUsers": '',
+        "editPermissionsUsers": '',
+        "viewPermissionsGroups": '',
+        "editPermissionsGroups": '',
+        "contentId": contentId,
+        "atl_token": atlToken
+    };
+    await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post({
+        url: '/pages/setcontentpermissions.action',
+        contentType: 'application/x-www-form-urlencoded',
+        data: jquery__WEBPACK_IMPORTED_MODULE_0___default.a.param(form)
+    });
+}
+
+async function setMyselfAsEditor(contentId, spaceKey) {
+    let atlToken = jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name=ajs-atl-token]').attr("content");
+    let me = await Object(_confluence_user_async__WEBPACK_IMPORTED_MODULE_1__["getUserKey"])();
+    let current = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get(`/pages/getcontentpermissions.action?contentId=${contentId}&spaceKey=${spaceKey}&atl_token=${atlToken}&_=${Math.random()}`);
+    let form = {
+        "viewPermissionsUsers": [],
+        "editPermissionsUsers": [],
+        "viewPermissionsGroups": [],
+        "editPermissionsGroups": [],
+        "contentId": contentId,
+        "atl_token": atlToken
+    };
+    // parse current permissions into the form to be posted
+    const FIELDS = {
+        PERM_TYPE: 0,
+        PRINCIPAL_TYPE: 1,
+        PRINCIPAL_ID: 2,
+        TARGET_PAGE_ID: 3
+    };
+    for (let p of current.permissions) {
+        if (p[FIELDS.TARGET_PAGE_ID] == contentId) {
+            let field;
+            switch(p[FIELDS.PERM_TYPE] + " " + p[FIELDS.PRINCIPAL_TYPE]) {
+                case "Edit user": field = form.editPermissionsUsers; break;
+                case "Edit group": field = form.editPermissionsGroups; break;
+                case "View user": field = form.viewPermissionsUsers; break;
+                case "View group": field = form.viewPermissionsGroups; break;
+            }
+            if (field) {
+                field.push(p[FIELDS.PRINCIPAL_ID]);
+            }
+        }
+    }
+    // add ourselves
+    form.editPermissionsUsers.push(me);
+    // add read permission if any are set
+    if (form.viewPermissionsUsers.length || form.viewPermissionsGroups.length) {
+        form.viewPermissionsUsers.push(me);
+    }
+    // transform the form
+    form.viewPermissionsUsers = form.viewPermissionsUsers.join(',');
+    form.editPermissionsUsers = form.editPermissionsUsers.join(',');
+    form.viewPermissionsGroups = form.viewPermissionsGroups.join(',');
+    form.editPermissionsGroups = form.editPermissionsGroups.join(',');
+    await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post({
+        url: '/pages/setcontentpermissions.action',
+        contentType: 'application/x-www-form-urlencoded',
+        data: jquery__WEBPACK_IMPORTED_MODULE_0___default.a.param(form)
+    });
+}
+
 async function setEditorRestriction(contentId, groupName) {
     if (!groupName) {
         groupName = _config__WEBPACK_IMPORTED_MODULE_2__["DEFAULT_RESTRICTION_GROUP"];
     }
-    let username = await Object(_confluence_user_async__WEBPACK_IMPORTED_MODULE_1__["default"])();
+    let username = await Object(_confluence_user_async__WEBPACK_IMPORTED_MODULE_1__["getUser"])();
     // set ourselves as editor
     await experimental('/rest/experimental/content/'+contentId+'/restriction/byOperation/update/user?userName=' + encodeURIComponent(username));
     // and the whole group as well
@@ -694,22 +897,30 @@ const throttleWrite = __webpack_require__(/*! throat */ "./node_modules/throat/i
 /*!*******************************************************!*\
   !*** ./js/common/confluence/confluence-user-async.js ***!
   \*******************************************************/
-/*! exports provided: default */
+/*! exports provided: getUser, getUserKey */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return getUser; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getUser", function() { return getUser; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getUserKey", function() { return getUserKey; });
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
 
 
-let userCached;
+let _user;
 
 async function getUser() {
-    if (userCached) return userCached;
-    userCached = (await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get('/rest/api/user/current') ).username;
-    return userCached;
+    return (await load()).username;
+}
+async function getUserKey() {
+    return (await load()).userKey;
+}
+async function load() {
+    if (!_user) {
+        _user = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get('/rest/api/user/current');
+    }
+    return _user;
 }
 
 /***/ }),
@@ -963,6 +1174,9 @@ class PageWrapper {
             this.syncedPages = [];
             this.unsyncedLabels = [];
             this.conflictingPages = [];
+            this.conflictingAttachments = [];
+            this.attachmentsToPush = [];
+            this.attachmentsToPull = [];
             this.descendants = [];
             this.analyzing = false;
             this.analyzed = false;
@@ -1043,7 +1257,7 @@ class PageWrapper {
         let syncTimeStamp = await _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_5__["default"].loadLastSyncFromContentWithSpace(pageToCopy.id, targetSpaceKey);
         if (!syncTimeStamp.isNew()) {
           try {
-            targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(syncTimeStamp.getOtherPage(sourceContentId).contentId, TARGET_EXPANDS);
+            targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(syncTimeStamp.getOtherPage(pageToCopy.id).contentId, TARGET_EXPANDS);
             syncStatus = new _SyncStatus__WEBPACK_IMPORTED_MODULE_2__["default"](this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
             // target based on syncTimeStamp id is missing
@@ -1057,7 +1271,7 @@ class PageWrapper {
             syncStatus = new _SyncStatus__WEBPACK_IMPORTED_MODULE_2__["default"](this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
             // target with same title as source is missing
-            syncStatus = new _SyncStatus__WEBPACK_IMPORTED_MODULE_2__["default"](this, targetSpaceKey)
+            syncStatus = new _SyncStatus__WEBPACK_IMPORTED_MODULE_2__["default"](this, targetSpaceKey, null, syncTimeStamp);
           }
         }
         jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this).setProperty("syncStatus", syncStatus);
@@ -1104,6 +1318,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/confluence/confluence-page-postprocessor */ "./js/common/confluence/confluence-page-postprocessor.js");
 /* harmony import */ var _common_confluence_Page__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/confluence/Page */ "./js/common/confluence/Page.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
+/* harmony import */ var _common_confluence_Labels__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../common/confluence/Labels */ "./js/common/confluence/Labels.js");
+
 
 
 
@@ -1127,22 +1343,28 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
     this.performPush = noop;
     this.performPull = noop;
     this.targetSpaceKey = targetSpaceKey;
+    let syncSourceVersion = version(syncTimeStamp.getPage(this.sourcePage.id));
+    let syncTargetVersion = version(syncTimeStamp.getOtherPage(this.sourcePage.id));
     if (!targetPage) {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING;
       this.performPush = createPage;
-    } else if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.sourceVersion && sourcePage.version.number === syncTimeStamp.targetVersion) {
+    } else if (syncTimeStamp && targetPage.version.number !== syncTargetVersion && sourcePage.version.number === syncSourceVersion) {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_UPDATED;
       this.performPull = performPull;
       return;
-    } else if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.sourceVersion) {
+    } else if (syncTimeStamp && targetPage.version.number !== syncTargetVersion) {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].CONFLICTING;
       this.performPush = performUpdate;
       this.performPull = performPull;
-    } else if (syncTimeStamp && sourcePage.version.number === syncTimeStamp.targetVersion) {
+    } else if (syncTimeStamp && sourcePage.version.number === syncSourceVersion) {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].UP_TO_DATE;
     } else {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_UPDATED;
       this.performPush = performUpdate;
+    }
+
+    function version(page) {
+        return page?page.version:null;
     }
 
     async function noop() {}
@@ -1164,6 +1386,8 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
 
         this.targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["createPageUnderPageId"])(newPage);
         Object(_log__WEBPACK_IMPORTED_MODULE_4__["default"])(`Created page ${nameAndVersion(this.targetPage)} from ${identifier(sourcePage)}`);
+        await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["postProcess"])(sourcePage.body.storage.value, this.targetPage); // TODO we shouldn't use the source body, but it's fine here
+        await this.syncLabels(false);
         await this.markSynced();
     }
 
@@ -1173,6 +1397,8 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
         await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(updatedTargetPage, this.sourcePage.space.key, targetSpaceKey);
         this.targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(updatedTargetPage);
         Object(_log__WEBPACK_IMPORTED_MODULE_4__["default"])(`Pushed page ${nameAndVersion(this.targetPage)} (status=${this.status}) from ${identifier(this.sourcePage)}`);
+        await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["postProcess"])(this.sourcePage.body.storage.value, this.targetPage); // TODO we shouldn't use the source body, but it's fine here
+        await this.syncLabels(false);
         await this.markSynced();
     }
 
@@ -1192,6 +1418,7 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
         await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(updatedSourcePage, this.targetPage.space.key, this.sourcePage.space.key);
         this.sourcePage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(updatedSourcePage);
         Object(_log__WEBPACK_IMPORTED_MODULE_4__["default"])(`Pulled page ${nameAndVersion(this.sourcePage)} (status=${this.status}) from ${identifier(this.targetPage)}`);
+        await this.syncLabels(false);
         await this.markSynced();
         await this.pageWrapper.refreshSourcePage();
     }
@@ -1204,6 +1431,27 @@ SyncStatus.prototype.style = function() {
 SyncStatus.prototype.markSynced = async function() {
     this.syncTimeStamp.setSyncedPages(this.sourcePage, this.targetPage);
     await this.syncTimeStamp.save();
+}
+
+/** bidirectional sync of labels on source and target */
+SyncStatus.prototype.syncLabels = async function(saveTimeStamp) {
+    let sourceLabels = await _common_confluence_Labels__WEBPACK_IMPORTED_MODULE_5__["default"].getFromPage(this.sourcePage);
+    let targetLabels = await _common_confluence_Labels__WEBPACK_IMPORTED_MODULE_5__["default"].getFromPage(this.targetPage);
+    let lastSyncedLabels = this.syncTimeStamp.lastSyncedLabels();
+    if (lastSyncedLabels) { // can do 3-way merge
+        sourceLabels.mergeFrom(targetLabels, lastSyncedLabels);
+        targetLabels.mergeFrom(sourceLabels, lastSyncedLabels);
+        await sourceLabels.save();
+        await targetLabels.save();
+    } else {
+        // just copy to target
+        targetLabels.labelArray = sourceLabels.labelArray;
+        await targetLabels.save();
+    }
+    this.syncTimeStamp.setSyncedLabels(sourceLabels.labelArray);
+    if (saveTimeStamp) { // we may not want to save immediately if we have more changes to save
+        await this.syncTimeStamp.save();
+    }
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (SyncStatus); 
@@ -1249,13 +1497,14 @@ const SyncTimeStamp = {
   clearAll: async function(contentId) {
     await _common_confluence_Property__WEBPACK_IMPORTED_MODULE_1__["default"].reset(contentId, _common_config__WEBPACK_IMPORTED_MODULE_0__["PROP_KEY"]);
   },
+  /** Always returns a SyncTimeStamp, even when none already exist in Confluence - if necessary, a new TS is created, ready for use and to be saved. */
   loadLastSyncFromContentWithSpace : async function (contentId, otherSpaceKey) {
     let syncProperty = await _common_confluence_Property__WEBPACK_IMPORTED_MODULE_1__["default"].load(contentId, _common_config__WEBPACK_IMPORTED_MODULE_0__["PROP_KEY"]);
     let value = syncProperty.value();
     let legacySyncTS;
 
     // Convert legacy format
-    if ( (value.syncTargets && value.syncTargets[otherSpaceKey]) || (value.syncSources && value.syncSources[otherSpaceKey])) { // old format
+    if (value.syncTargets && value.syncTargets[otherSpaceKey]) { // legacy format
         legacySyncTS = value.syncTargets[otherSpaceKey];
         delete value.syncTargets[otherSpaceKey];
     }
@@ -1297,6 +1546,7 @@ const SyncTimeStamp = {
     }
 
     function getOtherPage(pageId) {
+        if (!syncTS().pages) return null;
         return syncTS().pages.find( e=>e.contentId!=pageId );
     }
 
@@ -1314,6 +1564,7 @@ const SyncTimeStamp = {
         syncTSTarget.syncTime = syncTSFrom.syncTime;
     }
     function getPage(pageId) {
+        if (!syncTS().pages) return null;
         return syncTS().pages.find( e=>e.contentId==pageId );
     }
     
@@ -1731,6 +1982,7 @@ function pageSyncAnalyzer(pageGroup, targetSpace) {
     checkSyncStatus(pageGroup, targetSpace, refreshSourcePages).subscribe(
         percent => pageGroup.setProgress(SYNC_ACTION, percent),
         e => {
+            console.warn(`Error while checking synchronization of page group ${pageGroup.title}: ${e}`, e);
             _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Error while checking synchronization of page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`)
             pageGroup.removeProgress(SYNC_ACTION);
             pageGroup.setAnalyzed(false);
@@ -1792,6 +2044,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
 /* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _notify__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./notify */ "./js/mainframe/sync/notify.js");
+/* harmony import */ var _common_confluence_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/confluence/confluence-permissions-async */ "./js/common/confluence/confluence-permissions-async.js");
+/* harmony import */ var _common_confluence_confluence_user_async__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../common/confluence/confluence-user-async */ "./js/common/confluence/confluence-user-async.js");
+
+
 
 
 
@@ -1822,6 +2078,7 @@ function pageSyncPerformer(action, pageGroup) {
                 _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Cannot ${action} on ${e.page.title}, target page is write protected, click here to check permissions, then retry`, e.page._links.webui);
                 // TODO attempt to use the confluence-permissions-async.js API to fix the problem
             } else {
+                console.warn(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e}`, e);
                 _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`);
             }
             pageGroup.removeProgress(action);
@@ -1859,7 +2116,16 @@ async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStat
             await actionRef.perform(syncStatus);
         } catch (err) {
             if (err.status == 403) { // HTTP 403 Forbidden
-                throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
+                // if we can gain write permission
+                if (await attemptToGetPermission(syncStatus)) {
+                    try { // retry
+                        await actionRef.perform(syncStatus);
+                    } catch (err) {
+                        throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
+                    }
+                } else {
+                    throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
+                }
             } else {
                 throw err;
             }
@@ -1878,6 +2144,20 @@ async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStat
     }));
 }
 
+async function attemptToGetPermission(syncStatus) {
+    try {
+        let page = syncStatus.targetPage;
+        let user = await Object(_common_confluence_confluence_user_async__WEBPACK_IMPORTED_MODULE_4__["getUser"])();
+        let r = await Object(_common_confluence_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__["getEditorRestrictions"])(page.id);
+        if (!r || r.user.indexOf(user)>=0) {
+            return false; // we already have permission
+        }
+        await Object(_common_confluence_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__["setMyselfAsEditor"])(page.id, syncStatus.targetSpaceKey);r
+        return true; 
+    } catch (e) {
+        console.warn(`Failed to get write permission on ${syncStatus.targetSpaceKey}:${syncStatus.targetPage.title}`,e);
+    }
+}
 
 /***/ }),
 
@@ -2031,11 +2311,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
 
 
+const ENABLE_TOOLTIPS = false;
+
 jquery__WEBPACK_IMPORTED_MODULE_0___default()(function () {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').tooltip({
-        selector:'[data-toggle=tooltip]',
-        delay: { "show": 200, "hide": 200 }
-    });
+    if (ENABLE_TOOLTIPS) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').tooltip({
+            selector:'[data-toggle=tooltip]',
+            delay: { "show": 200, "hide": 200 }
+        });
+    }
 });
 
 /***/ }),

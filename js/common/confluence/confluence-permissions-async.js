@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import getUser from './confluence-user-async';
+import {getUserKey,getUser} from './confluence-user-async';
 import {DEFAULT_RESTRICTION_GROUP} from '../config';
 
 /**
@@ -21,6 +21,74 @@ export async function getEditorRestrictions(contentId) {
         restrictions = false;
     }
     return restrictions;
+}
+
+export async function removeRestrictions(contentId, spaceKey) {
+    let atlToken = $('meta[name=ajs-atl-token]').attr("content");
+    let form = {
+        "viewPermissionsUsers": '',
+        "editPermissionsUsers": '',
+        "viewPermissionsGroups": '',
+        "editPermissionsGroups": '',
+        "contentId": contentId,
+        "atl_token": atlToken
+    };
+    await $.post({
+        url: '/pages/setcontentpermissions.action',
+        contentType: 'application/x-www-form-urlencoded',
+        data: $.param(form)
+    });
+}
+
+export async function setMyselfAsEditor(contentId, spaceKey) {
+    let atlToken = $('meta[name=ajs-atl-token]').attr("content");
+    let me = await getUserKey();
+    let current = await $.get(`/pages/getcontentpermissions.action?contentId=${contentId}&spaceKey=${spaceKey}&atl_token=${atlToken}&_=${Math.random()}`);
+    let form = {
+        "viewPermissionsUsers": [],
+        "editPermissionsUsers": [],
+        "viewPermissionsGroups": [],
+        "editPermissionsGroups": [],
+        "contentId": contentId,
+        "atl_token": atlToken
+    };
+    // parse current permissions into the form to be posted
+    const FIELDS = {
+        PERM_TYPE: 0,
+        PRINCIPAL_TYPE: 1,
+        PRINCIPAL_ID: 2,
+        TARGET_PAGE_ID: 3
+    };
+    for (let p of current.permissions) {
+        if (p[FIELDS.TARGET_PAGE_ID] == contentId) {
+            let field;
+            switch(p[FIELDS.PERM_TYPE] + " " + p[FIELDS.PRINCIPAL_TYPE]) {
+                case "Edit user": field = form.editPermissionsUsers; break;
+                case "Edit group": field = form.editPermissionsGroups; break;
+                case "View user": field = form.viewPermissionsUsers; break;
+                case "View group": field = form.viewPermissionsGroups; break;
+            }
+            if (field) {
+                field.push(p[FIELDS.PRINCIPAL_ID]);
+            }
+        }
+    }
+    // add ourselves
+    form.editPermissionsUsers.push(me);
+    // add read permission if any are set
+    if (form.viewPermissionsUsers.length || form.viewPermissionsGroups.length) {
+        form.viewPermissionsUsers.push(me);
+    }
+    // transform the form
+    form.viewPermissionsUsers = form.viewPermissionsUsers.join(',');
+    form.editPermissionsUsers = form.editPermissionsUsers.join(',');
+    form.viewPermissionsGroups = form.viewPermissionsGroups.join(',');
+    form.editPermissionsGroups = form.editPermissionsGroups.join(',');
+    await $.post({
+        url: '/pages/setcontentpermissions.action',
+        contentType: 'application/x-www-form-urlencoded',
+        data: $.param(form)
+    });
 }
 
 export async function setEditorRestriction(contentId, groupName) {

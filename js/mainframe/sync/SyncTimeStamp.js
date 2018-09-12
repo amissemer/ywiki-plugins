@@ -5,13 +5,14 @@ const SyncTimeStamp = {
   clearAll: async function(contentId) {
     await Property.reset(contentId, PROP_KEY);
   },
+  /** Always returns a SyncTimeStamp, even when none already exist in Confluence - if necessary, a new TS is created, ready for use and to be saved. */
   loadLastSyncFromContentWithSpace : async function (contentId, otherSpaceKey) {
     let syncProperty = await Property.load(contentId, PROP_KEY);
     let value = syncProperty.value();
     let legacySyncTS;
 
     // Convert legacy format
-    if ( (value.syncTargets && value.syncTargets[otherSpaceKey]) || (value.syncSources && value.syncSources[otherSpaceKey])) { // old format
+    if (value.syncTargets && value.syncTargets[otherSpaceKey]) { // legacy format
         legacySyncTS = value.syncTargets[otherSpaceKey];
         delete value.syncTargets[otherSpaceKey];
     }
@@ -53,6 +54,7 @@ const SyncTimeStamp = {
     }
 
     function getOtherPage(pageId) {
+        if (!syncTS().pages) return null;
         return syncTS().pages.find( e=>e.contentId!=pageId );
     }
 
@@ -70,6 +72,7 @@ const SyncTimeStamp = {
         syncTSTarget.syncTime = syncTSFrom.syncTime;
     }
     function getPage(pageId) {
+        if (!syncTS().pages) return null;
         return syncTS().pages.find( e=>e.contentId==pageId );
     }
     

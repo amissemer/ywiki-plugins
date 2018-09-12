@@ -1,8 +1,9 @@
 import SyncStatusEnum from './SyncStatusEnum';
 import {createPageUnderPageId, updateContent, getContentById} from '../../common/confluence/confluence-page-async';
-import {preProcess} from '../../common/confluence/confluence-page-postprocessor';
+import {preProcess,postProcess} from '../../common/confluence/confluence-page-postprocessor';
 import Page from '../../common/confluence/Page';
 import log from './log';
+import Labels from '../../common/confluence/Labels';
 
 const COPY_EXPANDS = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
 const STYLES = {
@@ -21,22 +22,28 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
     this.performPush = noop;
     this.performPull = noop;
     this.targetSpaceKey = targetSpaceKey;
+    let syncSourceVersion = version(syncTimeStamp.getPage(this.sourcePage.id));
+    let syncTargetVersion = version(syncTimeStamp.getOtherPage(this.sourcePage.id));
     if (!targetPage) {
       this.status = SyncStatusEnum.TARGET_MISSING;
       this.performPush = createPage;
-    } else if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.sourceVersion && sourcePage.version.number === syncTimeStamp.targetVersion) {
+    } else if (syncTimeStamp && targetPage.version.number !== syncTargetVersion && sourcePage.version.number === syncSourceVersion) {
       this.status = SyncStatusEnum.TARGET_UPDATED;
       this.performPull = performPull;
       return;
-    } else if (syncTimeStamp && targetPage.version.number !== syncTimeStamp.sourceVersion) {
+    } else if (syncTimeStamp && targetPage.version.number !== syncTargetVersion) {
       this.status = SyncStatusEnum.CONFLICTING;
       this.performPush = performUpdate;
       this.performPull = performPull;
-    } else if (syncTimeStamp && sourcePage.version.number === syncTimeStamp.targetVersion) {
+    } else if (syncTimeStamp && sourcePage.version.number === syncSourceVersion) {
       this.status = SyncStatusEnum.UP_TO_DATE;
     } else {
       this.status = SyncStatusEnum.SOURCE_UPDATED;
       this.performPush = performUpdate;
+    }
+
+    function version(page) {
+        return page?page.version:null;
     }
 
     async function noop() {}
@@ -58,6 +65,8 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
 
         this.targetPage = await createPageUnderPageId(newPage);
         log(`Created page ${nameAndVersion(this.targetPage)} from ${identifier(sourcePage)}`);
+        await postProcess(sourcePage.body.storage.value, this.targetPage); // TODO we shouldn't use the source body, but it's fine here
+        await this.syncLabels(false);
         await this.markSynced();
     }
 
@@ -67,6 +76,8 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
         await preProcess(updatedTargetPage, this.sourcePage.space.key, targetSpaceKey);
         this.targetPage = await updateContent(updatedTargetPage);
         log(`Pushed page ${nameAndVersion(this.targetPage)} (status=${this.status}) from ${identifier(this.sourcePage)}`);
+        await postProcess(this.sourcePage.body.storage.value, this.targetPage); // TODO we shouldn't use the source body, but it's fine here
+        await this.syncLabels(false);
         await this.markSynced();
     }
 
@@ -86,6 +97,7 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
         await preProcess(updatedSourcePage, this.targetPage.space.key, this.sourcePage.space.key);
         this.sourcePage = await updateContent(updatedSourcePage);
         log(`Pulled page ${nameAndVersion(this.sourcePage)} (status=${this.status}) from ${identifier(this.targetPage)}`);
+        await this.syncLabels(false);
         await this.markSynced();
         await this.pageWrapper.refreshSourcePage();
     }
@@ -98,6 +110,27 @@ SyncStatus.prototype.style = function() {
 SyncStatus.prototype.markSynced = async function() {
     this.syncTimeStamp.setSyncedPages(this.sourcePage, this.targetPage);
     await this.syncTimeStamp.save();
+}
+
+/** bidirectional sync of labels on source and target */
+SyncStatus.prototype.syncLabels = async function(saveTimeStamp) {
+    let sourceLabels = await Labels.getFromPage(this.sourcePage);
+    let targetLabels = await Labels.getFromPage(this.targetPage);
+    let lastSyncedLabels = this.syncTimeStamp.lastSyncedLabels();
+    if (lastSyncedLabels) { // can do 3-way merge
+        sourceLabels.mergeFrom(targetLabels, lastSyncedLabels);
+        targetLabels.mergeFrom(sourceLabels, lastSyncedLabels);
+        await sourceLabels.save();
+        await targetLabels.save();
+    } else {
+        // just copy to target
+        targetLabels.labelArray = sourceLabels.labelArray;
+        await targetLabels.save();
+    }
+    this.syncTimeStamp.setSyncedLabels(sourceLabels.labelArray);
+    if (saveTimeStamp) { // we may not want to save immediately if we have more changes to save
+        await this.syncTimeStamp.save();
+    }
 }
 
 export default SyncStatus; 
