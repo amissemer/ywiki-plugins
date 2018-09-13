@@ -46,7 +46,8 @@ const SyncTimeStamp = {
         isNew:isNew,
         getOtherPage:getOtherPage,
         lastSyncedLabels:lastSyncedLabels,
-        getPage:getPage
+        getPage:getPage,
+        getPages:getPages
     };
 
     function isNew() {
@@ -56,6 +57,9 @@ const SyncTimeStamp = {
     function getOtherPage(pageId) {
         if (!syncTS().pages) return null;
         return syncTS().pages.find( e=>e.contentId!=pageId );
+    }
+    function getPages() {
+        return syncTS().pages;
     }
 
     function lastSyncedLabels() {

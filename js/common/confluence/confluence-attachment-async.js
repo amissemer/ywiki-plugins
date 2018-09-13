@@ -63,11 +63,11 @@ async function postBinary(url, formData) {
         xhr.open("POST", url, true);
         xhr.onerror = reject;
         xhr.setRequestHeader('X-Atlassian-Token','nocheck');
-        xhr.onload = function (e) {
+        xhr.onload = function () {
             if (this.status == 200) {
                 resolve(this.response);
             } else {
-                reject(`Could not POST to ${url}: ${this.status} ${this.statusText}, details: ${this.responseText}`);
+                reject(this);
             }
         };
         xhr.send(formData);

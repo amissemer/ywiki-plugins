@@ -169,25 +169,72 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
 
 
-const Attachment = {
-    getOrCreateAttachment: async function(pageId, attachmentTitle) {
-        return {
-            _internal: await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["lookupAttachment"])(pageId, attachmentTitle),
-            id: function() {
-                return this._internal ? this._internal.id:null;
-            },
-            cloneFromUrl: async function(url) {
-                this._internal = await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["cloneAttachment"])(url, pageId, attachmentTitle, this.id());
-            },
-            delete: async function() {
-                let id = this.id();
-                if (id) {
-                    await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["deleteAttachment"])(id);
+async function from(internalAttachment) {
+    let containerId = internalAttachment.container? internalAttachment.container.id : internalAttachment._expandable.container.replace(/.*\//g,'');
+    return getOrCreateAttachment(containerId, internalAttachment.title, internalAttachment);
+}
+
+async function getOrCreateAttachment(pageId, attachmentTitle, /* optional */ internalAttachment) {
+    if (!internalAttachment) {
+        internalAttachment = await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["lookupAttachment"])(pageId, attachmentTitle);
+    }
+    return {
+        _internal: internalAttachment,
+        id: function() {
+            return this._internal ? this._internal.id:null;
+        },
+        containerId: function() {
+            return pageId;
+        },
+        toString: function() {
+            return `${this.id()}:${pageId}:${this.title()}:${this.version()}`;
+        },
+        title: function() {
+            return attachmentTitle;
+        },
+        exists: function() {
+            return this._internal!=null;
+        },
+        downloadUrl: function() {
+            return this._internal?this._internal._links.download:null;
+        },
+        version: function() {
+            return this._internal?this._internal.version.number:null;
+        },
+        spaceKey: function() {
+            return this._internal?this._internal.space.key:null;
+        },
+        cloneFrom: async function(url) {
+            if (typeof url !== 'string') {
+                // assume it is another Attachment or confluence attachment
+                let otherAttachment = url;
+                url = null;
+                if (typeof otherAttachment.downloadUrl === 'function') {
+                    url = otherAttachment.downloadUrl();
+                } else if (otherAttachment._links && typeof otherAttachment._links.download === 'string') {
+                    url = otherAttachment._links.download;
                 }
             }
-        };
-    }
+            if (!url) {
+                throw 'invalid url to clone from';
+            }
+            this._internal = await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["cloneAttachment"])(url, pageId, attachmentTitle, this.id());
+        },
+        delete: async function() {
+            let id = this.id();
+            if (id) {
+                await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["deleteAttachment"])(id);
+            }
+            this._internal = null;
+        }
+    };
+}
+
+const Attachment = {
+    from: from,
+    getOrCreateAttachment: getOrCreateAttachment 
 };
+
 
 /* harmony default export */ __webpack_exports__["default"] = (Attachment);
 
@@ -220,12 +267,33 @@ describe('Attachment', function() {
 
         att = await _Attachment__WEBPACK_IMPORTED_MODULE_0__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
         chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNull(att.id());
-        await att.cloneFromUrl(attachmentExample);
+        await att.cloneFrom(attachmentExample);
         chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNotNull(att.id());
 
         att = await _Attachment__WEBPACK_IMPORTED_MODULE_0__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
         chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNotNull(att.id());
         chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNotNull(att._internal.space.key);
+    });
+    it('should clone from another attachment', async function() {
+        let from = await _Attachment__WEBPACK_IMPORTED_MODULE_0__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
+        let to   = await _Attachment__WEBPACK_IMPORTED_MODULE_0__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle + '_2');
+        await to.cloneFrom(from);
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNotNull(to.id(), 'after cloning, id should be populated');
+        await to.delete();
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNull(to.id(), 'after delete(), id should be null');
+    });
+    it('existing attachment should return version() and downloadUrl()', async function() {
+        let att = await _Attachment__WEBPACK_IMPORTED_MODULE_0__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNotNull(att.id());
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNotNull(att.version(), 'version() should not be null');
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].equal(1, att.version(), 'first version() should be 1');
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNotNull(att.downloadUrl(), 'downloadUrl() should not be null');
+    });
+    it('unexisting attachment should return null version() and downloadUrl()', async function() {
+        let att = await _Attachment__WEBPACK_IMPORTED_MODULE_0__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, 'notAttitle');
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNull(att.id());
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNull(att.version(), 'version() should be null');
+        chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isNull(att.downloadUrl(), 'downloadUrl() should be null');
     });
 });
 
@@ -656,11 +724,11 @@ async function postBinary(url, formData) {
         xhr.open("POST", url, true);
         xhr.onerror = reject;
         xhr.setRequestHeader('X-Atlassian-Token','nocheck');
-        xhr.onload = function (e) {
+        xhr.onload = function () {
             if (this.status == 200) {
                 resolve(this.response);
             } else {
-                reject(`Could not POST to ${url}: ${this.status} ${this.statusText}, details: ${this.responseText}`);
+                reject(this);
             }
         };
         xhr.send(formData);
@@ -984,13 +1052,14 @@ async function getPageTree( pageId, parentId, parentTitle, counter ) {
 /*!**************************************************************!*\
   !*** ./js/common/confluence/confluence-permissions-async.js ***!
   \**************************************************************/
-/*! exports provided: getEditorRestrictions, removeRestrictions, setMyselfAsEditor, setEditorRestriction */
+/*! exports provided: getEditorRestrictions, removeRestrictions, ensureEditRestrictions, setMyselfAsEditor, setEditorRestriction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getEditorRestrictions", function() { return getEditorRestrictions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeRestrictions", function() { return removeRestrictions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ensureEditRestrictions", function() { return ensureEditRestrictions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setMyselfAsEditor", function() { return setMyselfAsEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setEditorRestriction", function() { return setEditorRestriction; });
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
@@ -1037,6 +1106,17 @@ async function removeRestrictions(contentId, spaceKey) {
         contentType: 'application/x-www-form-urlencoded',
         data: jquery__WEBPACK_IMPORTED_MODULE_0___default.a.param(form)
     });
+}
+
+/** Ensures some edit restrictions are set if necessary (if restrictAllPages is true,
+ * or if the bodyContent is not provided, or if the bodyContent contains the html macro) */
+async function ensureEditRestrictions(pageId, group, bodyContent, restrictAllPages) {
+    // if there is no group set or there are already editor restrictions, just skip
+    if (!group || await getEditorRestrictions(pageId)) return;
+    if (restrictAllPages || !bodyContent || bodyContent.indexOf('<ac:structured-macro ac:name="html"')>=0) {
+        await setEditorRestriction(pageId, group);
+        console.log(`Permissions set on page ${pageId}`);
+    }
 }
 
 async function setMyselfAsEditor(contentId, spaceKey) {
@@ -1547,7 +1627,8 @@ const SyncTimeStamp = {
         isNew:isNew,
         getOtherPage:getOtherPage,
         lastSyncedLabels:lastSyncedLabels,
-        getPage:getPage
+        getPage:getPage,
+        getPages:getPages
     };
 
     function isNew() {
@@ -1557,6 +1638,9 @@ const SyncTimeStamp = {
     function getOtherPage(pageId) {
         if (!syncTS().pages) return null;
         return syncTS().pages.find( e=>e.contentId!=pageId );
+    }
+    function getPages() {
+        return syncTS().pages;
     }
 
     function lastSyncedLabels() {
@@ -1804,7 +1888,7 @@ chai__WEBPACK_IMPORTED_MODULE_2___default.a.use(chai_as_promised__WEBPACK_IMPORT
 Object(_mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_0__["loadStyleSheet"])(null, 'https://unpkg.com/mocha@5.2.0/mocha.css');
 Object(_mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_0__["loadPluginStyleSheet"])('tests-bundle.css');
 
-mocha.setup({ui:'bdd', timeout:7000, ignoreLeaks:true})
+mocha.setup({ui:'bdd', timeout:10000, ignoreLeaks:true})
 
 let context = __webpack_require__("./js sync recursive .+\\.test\\.js?$");
 context.keys().forEach(context);

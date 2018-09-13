@@ -1,9 +1,10 @@
 import SyncStatusEnum from './SyncStatusEnum';
 import {createPageUnderPageId, updateContent, getContentById} from '../../common/confluence/confluence-page-async';
-import {preProcess,postProcess} from '../../common/confluence/confluence-page-postprocessor';
+import {preProcess} from '../../common/confluence/confluence-page-postprocessor';
 import Page from '../../common/confluence/Page';
 import log from './log';
 import Labels from '../../common/confluence/Labels';
+import {ensureEditRestrictions} from '../../common/confluence/confluence-permissions-async';
 
 const COPY_EXPANDS = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
 const STYLES = {
@@ -17,6 +18,7 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
     let sourcePage = pageWrapper.page;
     this.targetPage = targetPage;
     this.sourcePage = sourcePage;
+    this.id = this.sourcePage.id;
     this.syncTimeStamp = syncTimeStamp;
     this.pageWrapper = pageWrapper;
     this.performPush = noop;
@@ -65,7 +67,8 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
 
         this.targetPage = await createPageUnderPageId(newPage);
         log(`Created page ${nameAndVersion(this.targetPage)} from ${identifier(sourcePage)}`);
-        await postProcess(sourcePage.body.storage.value, this.targetPage); // TODO we shouldn't use the source body, but it's fine here
+        await ensureEditRestrictions(this.targetPage.id, this.pageWrapper.pageGroupRoot.editGroup, sourcePage.body.storage.value);
+        
         await this.syncLabels(false);
         await this.markSynced();
     }
@@ -76,7 +79,7 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
         await preProcess(updatedTargetPage, this.sourcePage.space.key, targetSpaceKey);
         this.targetPage = await updateContent(updatedTargetPage);
         log(`Pushed page ${nameAndVersion(this.targetPage)} (status=${this.status}) from ${identifier(this.sourcePage)}`);
-        await postProcess(this.sourcePage.body.storage.value, this.targetPage); // TODO we shouldn't use the source body, but it's fine here
+        await ensureEditRestrictions(this.targetPage.id, this.pageWrapper.pageGroupRoot.editGroup, this.sourcePage.body.storage.value);
         await this.syncLabels(false);
         await this.markSynced();
     }

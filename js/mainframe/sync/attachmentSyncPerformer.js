@@ -5,19 +5,18 @@ import {setMyselfAsEditor,getEditorRestrictions} from '../../common/confluence/c
 import {getUser} from '../../common/confluence/confluence-user-async';
 
 const PERMISSION_ERROR = "Confluence Permission Error";
-const SYNC_ATTACHMENT = true;
 
 const ACTIONS = {
-    "push" : {
-        getList: pageGroup => pageGroup.pagesToPush,
+    "pushAttachments" : {
+        getList: pageGroup => pageGroup.attachmentsToPush,
         perform: async syncStatus => syncStatus.performPush()
     },
-    "pull" : {
-        getList: pageGroup => pageGroup.pagesToPull,
+    "pullAttachments" : {
+        getList: pageGroup => pageGroup.attachmentsToPull,
         perform: async syncStatus => syncStatus.performPull()
     },
-    "pushConflicting" : {
-        getList: pageGroup => pageGroup.conflictingPages,
+    "pushConflictingAttachments" : {
+        getList: pageGroup => pageGroup.conflictingAttachments,
         perform: async syncStatus => syncStatus.performPush()
     }
 }
@@ -27,7 +26,7 @@ const ACTIONS = {
  * instead of traversing the tree again. Except we need to ensure the pages are created in the children order
  * because we cannot change the target children after creation.
 */
-export default function pageSyncPerformer(action, pageGroup) {
+export default function attachmentSyncPerformer(action, pageGroup) {
     log(`Performing ${action} for ${pageGroup.title}`);
     pageGroup.setProgress(action, 0);
     doSync(action, pageGroup).subscribe(
@@ -51,72 +50,58 @@ export default function pageSyncPerformer(action, pageGroup) {
 
 function doSync(action, pageGroup) {
     let actionRef = ACTIONS[action];
-    let listOfSyncStatus = actionRef.getList(pageGroup);
+    let listOfSyncStatus = Array.from(actionRef.getList(pageGroup));
+    // shallow copy it because it will be concurrently modified while we loop over it
+
     return Observable.create(observer => {
         (async () => {
             const total = listOfSyncStatus.length;
             let synced = 0;
-            let options = {
-                actionRef: actionRef,
-                pageGroup: pageGroup,
-                listOfSyncStatus: listOfSyncStatus,
-                syncAttachments: SYNC_ATTACHMENT,
-                callback: () => observer.next( Math.round((100* (++synced))/total) )
-            };
-            await doSyncRecursive(pageGroup, options);
+            for (let syncStatus of listOfSyncStatus) {
+                await doSyncOne(syncStatus, actionRef.perform);
+                observer.next( Math.round((100* (++synced))/total) );
+            }
             observer.complete();
-
-            
         })().then(null, e=>observer.error(e));
     });
 }
 
-async function doSyncRecursive(pageWrapper, options) {
-    let page = pageWrapper.page;
-    let syncStatus = options.listOfSyncStatus.find(e=>e.sourcePage.id==page.id);
-    if (syncStatus) { // is there a syncStatus to perform for current page?
-        try {
-            await options.actionRef.perform(syncStatus);
-        } catch (err) {
-            if (err.status == 403) { // HTTP 403 Forbidden
-                // if we can gain write permission
-                if (await attemptToGetPermission(syncStatus)) {
-                    try { // retry
-                        await options.actionRef.perform(syncStatus);
-                    } catch (err) {
-                        throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
-                    }
-                } else {
+// Perform the action with a retry in case of write permission issue
+async function doSyncOne(syncStatus, perform) {
+    try {
+        await perform(syncStatus);
+    } catch (err) {
+        if (err.status == 403 || err.statusCode == 403) { // HTTP 403 Forbidden
+            // if we can gain write permission
+            if (await attemptToGetPermission(syncStatus)) {
+                try { // retry
+                    await perform(syncStatus);
+                } catch (err) {
                     throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
                 }
             } else {
-                throw err;
+                throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
             }
-        }
-        await pageWrapper.computeSyncStatus(syncStatus.targetSpaceKey, options.syncAttachments); 
-        options.callback(); // count 1 sync
-    }
-    // in any case, check the children
-    await Promise.all(pageWrapper.children.map(async child => {
-        if (!child.skipSync(options.pageGroup)) {
-            return doSyncRecursive(child, options)
         } else {
-            return null;
+            throw err;
         }
-    }));
+    }
+    // TODO RECOMPUTE THE SYNC STATUS just for the attachment
+    // await pageWrapper.computeSyncStatus(syncStatus.targetSpaceKey, options.syncAttachments); 
 }
 
 async function attemptToGetPermission(syncStatus) {
+    let pageId = syncStatus.targetAttachment.containerId();
+    let spaceKey = syncStatus.parentSyncStatus.targetSpaceKey;
     try {
-        let page = syncStatus.targetPage;
         let user = await getUser();
-        let r = await getEditorRestrictions(page.id);
+        let r = await getEditorRestrictions(pageId);
         if (!r || r.user.indexOf(user)>=0) {
             return false; // we already have permission
         }
-        await setMyselfAsEditor(page.id, syncStatus.targetSpaceKey);r
+        await setMyselfAsEditor(pageId, spaceKey);
         return true; 
     } catch (e) {
-        console.warn(`Failed to get write permission on ${syncStatus.targetSpaceKey}:${syncStatus.targetPage.title}`,e);
+        console.warn(`Failed to get write permission on page ${spaceKey}:${pageId}`,e);
     }
 }

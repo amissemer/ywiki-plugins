@@ -25,9 +25,9 @@
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="#" target="_blank" data-link="class{: 'link-'+syncStatus^style() onerror='link-default'}">{^{>title}}</a></li>
+                                <li><a href="#" target="_blank" data-link="class{: 'link-'+syncStatus^style() onerror='link-default'}">{^{>title}}{{if attachments && attachments.length}}&nbsp;<span class="badge">{{>attachments.length}} <span class="glyphicon glyphicon-paperclip"></span></span>{{/if}}</a></li>
                                 {^{for descendants}}
-                                <li><a href="#" target="_blank" data-link="class{: 'link-'+syncStatus^style() onerror='link-default'}">{^{>level + title}}</a></li>
+                                <li><a href="#" target="_blank" data-link="class{: 'link-'+syncStatus^style() onerror='link-default'}">{^{>level + title}}{{if attachments && attachments.length}}&nbsp;<span class="badge">{{>attachments.length}} <span class="glyphicon glyphicon-paperclip"></span></span>{{/if}}</a></li>
                                 {{/for}}
                             </ul>
                         </li>
@@ -36,7 +36,7 @@
                 <td>
                     <!-- ACTIONS -->
                     <!-- INITIAL ANALYSIS BUTTON -->
-                    <button type="button" data-toggle="tooltip" data-placement="left" title="Check Synchronization" data-link="{on ~analyze #data ~root.targetSpace} class{: analyzed?'btn btn-sm btn-progress btn-default':'btn btn-sm btn-progress btn-primary'}">
+                    <button type="button" data-toggle="tooltip" data-placement="left" title="Check Synchronization" data-link="{on ~analyze #data ~root.globalOptions} class{: analyzed?'btn btn-sm btn-progress btn-default':'btn btn-sm btn-progress btn-primary'}">
                             <span class="glyphicon glyphicon-refresh"></span>
                             <div class="progress built-in-progress" data-link="class{merge:progress.sync toggle='show'}">
                                 <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.sync + '%'}" role="progressbar" style="width: 0%;"></div>
@@ -83,19 +83,19 @@
                 <td>
                         {^{if analyzed}}
                         <div class="btn-group" role="group">
-                                <button class="btn btn-sm btn-primary btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~perform 'pushAttachments' #data} title{: 'Publish '+ attachmentsToPush.length+' attachment(s)'} disabled{:attachmentsToPush.length==0}" >
+                                <button class="btn btn-sm btn-primary btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~performAttachment 'pushAttachments' #data} title{: 'Publish '+ attachmentsToPush.length+' attachment(s)'} disabled{:attachmentsToPush.length==0}" >
                                     <span class="glyphicon glyphicon-export"></span>
                                     <div class="progress built-in-progress" data-link="class{merge:progress.pushAttachments toggle='show'}">
                                         <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.pushAttachments + '%'}" role="progressbar" style="width: 0%;"></div>
                                     </div>
                                 </button>
-                                <button class="btn btn-sm btn-default btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~perform 'pullAttachments' #data} title{: 'Pull '+ attachmentsToPull.length+' remote attachment(s)'} disabled{:attachmentsToPull.length==0}" >
+                                <button class="btn btn-sm btn-default btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~performAttachment 'pullAttachments' #data} title{: 'Pull '+ attachmentsToPull.length+' remote attachment(s)'} disabled{:attachmentsToPull.length==0}" >
                                     <span class="glyphicon glyphicon-import text-primary"></span>
                                     <div class="progress built-in-progress" data-link="class{merge:progress.pullAttachments toggle='show'}">
                                         <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.pullAttachments + '%'}" role="progressbar" style="width: 0%;"></div>
                                     </div>
                                 </button>
-                                <button class="btn btn-sm btn-danger btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~perform 'pushConflictingAttachments' #data} title{: 'Overwrite '+ conflictingAttachments.length+' conflicting attachment(s)'} disabled{:conflictingAttachments.length==0}" >
+                                <button class="btn btn-sm btn-danger btn-progress" type="button" data-toggle="tooltip" data-placement="right" data-link="{on ~performAttachment 'pushConflictingAttachments' #data} title{: 'Overwrite '+ conflictingAttachments.length+' conflicting attachment(s)'} disabled{:conflictingAttachments.length==0}" >
                                     <span class="glyphicon glyphicon-export"></span>
                                     <div class="progress built-in-progress" data-link="class{merge:progress.pushConflictingAttachments toggle='show'}">
                                         <div class="progress-bar progress-bar-striped active" data-link="css-width{: progress.pushConflictingAttachments + '%'}" role="progressbar" style="width: 0%;"></div>

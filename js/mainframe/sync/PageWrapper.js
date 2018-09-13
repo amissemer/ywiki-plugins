@@ -1,11 +1,13 @@
 import SyncStatusEnum from './SyncStatusEnum';
 import {getContent,getContentById} from '../../common/confluence/confluence-page-async';
 import SyncStatus from './SyncStatus';
+import AttachmentSyncStatus from './AttachmentSyncStatus';
 import {loadPageForSync} from './spaceScanner';
 import $ from 'jquery';
 import SyncTimeStamp from './SyncTimeStamp';
+import Attachment from '../../common/confluence/Attachment';
 
-const TARGET_EXPANDS = 'version,metadata.labels,space';
+const TARGET_EXPANDS = 'version,metadata.labels,space,children.attachment.version,children.attachment.space';
 const MIN_PROGRESS = 20; // in percent, what's the min size of the progress bars
 
 export default class PageWrapper {
@@ -15,6 +17,7 @@ export default class PageWrapper {
         this.page = page;
         this.children = null;
         this.parentPage = parent;
+        this.attachments = page.children.attachment.results;
         this.isPageGroup = isPageGroupRoot(page, parent);
         this.pageGroupRoot = findRoot(this); // cache the pageGroup that contains this page
 
@@ -22,7 +25,7 @@ export default class PageWrapper {
         if (this.isPageGroup) {
             this.pagesToPush = [];
             this.pagesToPull = [];
-            this.syncedPages = [];
+            //this.syncedPages = [];
             this.unsyncedLabels = [];
             this.conflictingPages = [];
             this.conflictingAttachments = [];
@@ -47,35 +50,39 @@ export default class PageWrapper {
         return context.title!=this.title && this.isPageGroup;
     }
     _updateWithSyncStatus(syncStatus) {
-        this.removeExistingBySourcePageId(syncStatus.sourcePage.id);
+        this._removeExistingBySourceContentId(syncStatus.id);
+        let property;
         switch (syncStatus.status) {
-            case SyncStatusEnum.TARGET_MISSING: return this.addPageToPush(syncStatus);
-            case SyncStatusEnum.TARGET_UPDATED: return this.addPageToPull(syncStatus);
-            case SyncStatusEnum.CONFLICTING: return this.addConflictingPage(syncStatus);
-            case SyncStatusEnum.UP_TO_DATE: return this.addSyncedPage(syncStatus);
-            case SyncStatusEnum.SOURCE_UPDATED: return this.addPageToPush(syncStatus);
+            case SyncStatusEnum.TARGET_MISSING: property = this.pagesToPush; break;
+            case SyncStatusEnum.TARGET_UPDATED: property = this.pagesToPull; break;
+            case SyncStatusEnum.CONFLICTING: property = this.conflictingPages; break;
+            //case SyncStatusEnum.UP_TO_DATE: property = this.syncedPages; break; // not used
+            case SyncStatusEnum.SOURCE_UPDATED: property = this.pagesToPush; break;
+
+            case SyncStatusEnum.TARGET_ATTACHMENT_MISSING: property = this.attachmentsToPush; break;
+            case SyncStatusEnum.TARGET_ATTACHMENT_UPDATED: property = this.attachmentsToPull; break;
+            case SyncStatusEnum.ATTACHMENT_CONFLICTING: property = this.conflictingAttachments; break;
+            //case SyncStatusEnum.ATTACHMENT_UP_TO_DATE: property = this.syncedPages; break; // not used
+            case SyncStatusEnum.SOURCE_ATTACHMENT_UPDATED: property = this.attachmentsToPush; break;
+        }
+        if (property) {
+            return this.insertStatusInto(syncStatus, property);
         }
     }
-    removeExistingBySourcePageId(pageId) {
-        this.removeFromArray(this.pagesToPush, pageId);
-        this.removeFromArray(this.pagesToPull, pageId);
-        this.removeFromArray(this.conflictingPages, pageId);
-        this.removeFromArray(this.syncedPages, pageId);
+    _removeExistingBySourceContentId(contentId) {
+        this.removeFromArray(this.pagesToPush, contentId);
+        this.removeFromArray(this.pagesToPull, contentId);
+        this.removeFromArray(this.conflictingPages, contentId);
+        //this.removeFromArray(this.syncedPages, contentId);
+        this.removeFromArray(this.attachmentsToPush, contentId);
+        this.removeFromArray(this.attachmentsToPull, contentId);
+        this.removeFromArray(this.conflictingAttachments, contentId);
     }
-    addPageToPush(page) {
-        $.observable(this.pagesToPush).insert(page);
-    }
-    addPageToPull(page) {
-        $.observable(this.pagesToPull).insert(page);
-    }
-    addConflictingPage(page) {
-        $.observable(this.conflictingPages).insert(page);
-    }
-    addSyncedPage(page) {
-        $.observable(this.syncedPages).insert(page);
+    insertStatusInto(syncStatus, property) {
+        $.observable(property).insert(syncStatus);
     }
     removeFromArray(arr, pageId) {
-        let idx = arr.findIndex(s=>s.sourcePage.id==pageId);
+        let idx = arr.findIndex(s=>s.id==pageId);
         if (idx >= 0) {
             $.observable(arr).remove(idx);
         }
@@ -127,9 +134,39 @@ export default class PageWrapper {
         }
         $.observable(this).setProperty("syncStatus", syncStatus);
         this.pageGroupRoot._updateWithSyncStatus(syncStatus);
+
+        if (syncAttachments) {
+            await this.computeAllAttachmentsSyncStatus(pageToCopy.children.attachment);
+        }
+    }
+    async computeAllAttachmentsSyncStatus(attachmentListResponse) {
+        for (let attachmentInternal of attachmentListResponse.results) {
+            let sourceAttachment = await Attachment.from(attachmentInternal);
+            await this.computeAttachmentSyncStatus(sourceAttachment);
+        }
+        if (attachmentListResponse._links.next) {
+            console.log("More than 25 attachments, loading next page");
+            let next = await $.get(attachmentListResponse._links.next + "&expand=space,version");
+            await this.computeAllAttachmentsSyncStatus(next);
+        }
+    }
+    async computeAttachmentSyncStatus(sourceAttachment) {
+        let attachmentSyncStatus;
+        let targetAttachment;
+        let containerId;
+        let syncTimeStamp = await SyncTimeStamp.loadLastSyncFromContentWithSpace(sourceAttachment.id(), this.syncStatus.targetSpaceKey);
+        if (this.syncStatus.targetPage && this.syncStatus.targetPage.id) {
+            containerId = this.syncStatus.targetPage.id;
+            targetAttachment = await Attachment.getOrCreateAttachment(containerId, sourceAttachment.title());
+            if (targetAttachment.exists() && syncTimeStamp.isNew()) {
+                // try and get the syncTimeStamp from the target
+                syncTimeStamp = await SyncTimeStamp.loadLastSyncFromContentWithSpace(targetAttachment.id(), sourceAttachment.spaceKey());
+            }
+        }
+        attachmentSyncStatus = new AttachmentSyncStatus(this.syncStatus, sourceAttachment, targetAttachment, syncTimeStamp);
+        this.pageGroupRoot._updateWithSyncStatus(attachmentSyncStatus);
     }
 }
-
 function findRoot(pageWrapper) {
     if (pageWrapper.parentPage ==null || pageWrapper.isPageGroup) return pageWrapper;
     return findRoot(pageWrapper.parentPage);

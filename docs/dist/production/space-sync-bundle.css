@@ -6786,9 +6786,15 @@ button.close {
     margin-top: 13px;
     margin-left: 5px;
 }
+.wiki-content .dropdown-menu > li > a.link-default, .wiki-content .dropdown-menu > li > a.link- {
+    display: flex;
+    justify-content: space-between;
+}
 .wiki-content .dropdown-menu > li > a.link-conflict {
     color: #fff;
     background-color: #d9534f;
+    display: flex;
+    justify-content: space-between;
 }
 .wiki-content .dropdown-menu > li > a.link-conflict:hover {
     background-color: #c9302c;
@@ -6796,6 +6802,8 @@ button.close {
 .wiki-content .dropdown-menu > li > a.link-push, .wiki-content .dropdown-menu > li > a.link-create-target {
     color: #fff;
     background-color: #337ab7;
+    display: flex;
+    justify-content: space-between;
 }
 .wiki-content .dropdown-menu > li > a.link-push:hover, .wiki-content .dropdown-menu > li > a.link-create-target:hover {
     background-color: #286090;
@@ -6803,6 +6811,8 @@ button.close {
 .wiki-content .dropdown-menu > li > a.link-pull {
     color: #337ab7;
     background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
 }
 .wiki-content .dropdown-menu > li > a.link-pull:hover {
     color: #286090;

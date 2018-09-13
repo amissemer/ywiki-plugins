@@ -40,6 +40,17 @@ export async function removeRestrictions(contentId, spaceKey) {
     });
 }
 
+/** Ensures some edit restrictions are set if necessary (if restrictAllPages is true,
+ * or if the bodyContent is not provided, or if the bodyContent contains the html macro) */
+export async function ensureEditRestrictions(pageId, group, bodyContent, restrictAllPages) {
+    // if there is no group set or there are already editor restrictions, just skip
+    if (!group || await getEditorRestrictions(pageId)) return;
+    if (restrictAllPages || !bodyContent || bodyContent.indexOf('<ac:structured-macro ac:name="html"')>=0) {
+        await setEditorRestriction(pageId, group);
+        console.log(`Permissions set on page ${pageId}`);
+    }
+}
+
 export async function setMyselfAsEditor(contentId, spaceKey) {
     let atlToken = $('meta[name=ajs-atl-token]').attr("content");
     let me = await getUserKey();

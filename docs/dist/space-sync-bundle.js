@@ -117,6 +117,89 @@ const PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
 
 /***/ }),
 
+/***/ "./js/common/confluence/Attachment.js":
+/*!********************************************!*\
+  !*** ./js/common/confluence/Attachment.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
+
+
+async function from(internalAttachment) {
+    let containerId = internalAttachment.container? internalAttachment.container.id : internalAttachment._expandable.container.replace(/.*\//g,'');
+    return getOrCreateAttachment(containerId, internalAttachment.title, internalAttachment);
+}
+
+async function getOrCreateAttachment(pageId, attachmentTitle, /* optional */ internalAttachment) {
+    if (!internalAttachment) {
+        internalAttachment = await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["lookupAttachment"])(pageId, attachmentTitle);
+    }
+    return {
+        _internal: internalAttachment,
+        id: function() {
+            return this._internal ? this._internal.id:null;
+        },
+        containerId: function() {
+            return pageId;
+        },
+        toString: function() {
+            return `${this.id()}:${pageId}:${this.title()}:${this.version()}`;
+        },
+        title: function() {
+            return attachmentTitle;
+        },
+        exists: function() {
+            return this._internal!=null;
+        },
+        downloadUrl: function() {
+            return this._internal?this._internal._links.download:null;
+        },
+        version: function() {
+            return this._internal?this._internal.version.number:null;
+        },
+        spaceKey: function() {
+            return this._internal?this._internal.space.key:null;
+        },
+        cloneFrom: async function(url) {
+            if (typeof url !== 'string') {
+                // assume it is another Attachment or confluence attachment
+                let otherAttachment = url;
+                url = null;
+                if (typeof otherAttachment.downloadUrl === 'function') {
+                    url = otherAttachment.downloadUrl();
+                } else if (otherAttachment._links && typeof otherAttachment._links.download === 'string') {
+                    url = otherAttachment._links.download;
+                }
+            }
+            if (!url) {
+                throw 'invalid url to clone from';
+            }
+            this._internal = await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["cloneAttachment"])(url, pageId, attachmentTitle, this.id());
+        },
+        delete: async function() {
+            let id = this.id();
+            if (id) {
+                await Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_0__["deleteAttachment"])(id);
+            }
+            this._internal = null;
+        }
+    };
+}
+
+const Attachment = {
+    from: from,
+    getOrCreateAttachment: getOrCreateAttachment 
+};
+
+
+/* harmony default export */ __webpack_exports__["default"] = (Attachment);
+
+/***/ }),
+
 /***/ "./js/common/confluence/Labels.js":
 /*!****************************************!*\
   !*** ./js/common/confluence/Labels.js ***!
@@ -341,6 +424,115 @@ const Property = {
 
 /* harmony default export */ __webpack_exports__["default"] = (Property);
 
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-attachment-async.js":
+/*!*************************************************************!*\
+  !*** ./js/common/confluence/confluence-attachment-async.js ***!
+  \*************************************************************/
+/*! exports provided: lookupAttachment, deleteAttachment, cloneAttachment */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lookupAttachment", function() { return lookupAttachment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteAttachment", function() { return deleteAttachment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cloneAttachment", function() { return cloneAttachment; });
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
+
+
+const BASE_URL = '/rest/api/content/';
+
+async function lookupAttachment(containerId, attachmentTitle) {
+    let results = await $.get(BASE_URL+`${containerId}/child/attachment?filename=${encodeURIComponent(attachmentTitle)}&expand=space,version,container`);
+    if (results && results.results && results.results.length) {
+        return results.results[0];
+    } else {
+        return null;
+    }
+}
+
+async function deleteAttachment(attachmentId) {
+    return await $.ajax({
+        url: BASE_URL + encodeURIComponent(attachmentId),
+        type: 'DELETE'
+    });
+}
+
+async function cloneAttachment(attachmentUrl, targetContainerId, title, /* optional */ targetId) {
+    let blobData = await loadBlob(attachmentUrl);
+    let attachment = JSON.parse(await storeBlob(targetContainerId, blobData, title, targetId));
+    if (attachment.results && attachment.results instanceof Array ) {
+        // the attachment API returns an array
+        attachment = attachment.results[0]; 
+    } 
+    // populate the space.key to save a GET, since we need it to store the sync timestamp
+    if (!attachment.space) {
+        attachment.space = {
+            key: attachment._expandable.space.replace(/.*\//,'')
+        };
+    }
+    return attachment;
+}
+
+/** 
+ * ContentId is mandatory when updating an existing attachment, and must be omitted when
+ * creating a new attachment.
+ */
+async function storeBlob(containerId, blobData, title, /* optional */ contentId) {
+    let url = BASE_URL;
+    url += containerId;
+    url += '/child/attachment';
+    if (contentId) {
+        url += '/' + contentId + '/data';
+    }
+    let formData = new FormData();
+    formData.append('file', blobData, title);
+    formData.append('minorEdit', 'true');
+    return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleWrite"])( () => postBinary(url, formData));
+}
+
+
+
+async function loadBlob(url) {
+    return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleRead"])( () => loadBinary(url) );
+}
+
+async function postBinary(url, formData) {
+    return new Promise( (resolve, reject) => {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.onerror = reject;
+        xhr.setRequestHeader('X-Atlassian-Token','nocheck');
+        xhr.onload = function () {
+            if (this.status == 200) {
+                resolve(this.response);
+            } else {
+                reject(this);
+            }
+        };
+        xhr.send(formData);
+    });
+}
+async function loadBinary(url) {
+    return new Promise( (resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'blob';
+        xhr.onerror = reject;
+        xhr.onload = function(e) {
+          if (this.status == 200) {
+            // get binary data as a response
+            let blob = this.response;
+            resolve(blob);
+          } else {
+            reject(e);
+          }
+        };
+        xhr.send();
+    });
+}
 
 /***/ }),
 
@@ -641,26 +833,12 @@ async function getPageTree( pageId, parentId, parentTitle, counter ) {
 /*!***************************************************************!*\
   !*** ./js/common/confluence/confluence-page-postprocessor.js ***!
   \***************************************************************/
-/*! exports provided: postProcess, preProcess */
+/*! exports provided: preProcess */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postProcess", function() { return postProcess; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "preProcess", function() { return preProcess; });
-/* harmony import */ var _confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-permissions-async */ "./js/common/confluence/confluence-permissions-async.js");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../config */ "./js/common/config.js");
-
-
-
-async function postProcess(body, page) {
-    if (body.indexOf('<ac:structured-macro ac:name="html"')>=0) {
-            // if there is already editor restriction, no need to set one
-        if (await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["getEditorRestrictions"])(page.id)) return;
-        await Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_0__["setEditorRestriction"])(page.id, _config__WEBPACK_IMPORTED_MODULE_1__["PORTFOLIO_GROUP"]);
-        console.log(`Permissions set on page ${page.title}`);
-    }
-}
 
 async function preProcess(page, sourcePage, targetSpace) {
     let sourceSpaceRegex = new RegExp('\\b'+sourcePage+'\\b','g'); // find all occurrences of the source space as a whole word
@@ -678,13 +856,14 @@ async function preProcess(page, sourcePage, targetSpace) {
 /*!**************************************************************!*\
   !*** ./js/common/confluence/confluence-permissions-async.js ***!
   \**************************************************************/
-/*! exports provided: getEditorRestrictions, removeRestrictions, setMyselfAsEditor, setEditorRestriction */
+/*! exports provided: getEditorRestrictions, removeRestrictions, ensureEditRestrictions, setMyselfAsEditor, setEditorRestriction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getEditorRestrictions", function() { return getEditorRestrictions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeRestrictions", function() { return removeRestrictions; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ensureEditRestrictions", function() { return ensureEditRestrictions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setMyselfAsEditor", function() { return setMyselfAsEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setEditorRestriction", function() { return setEditorRestriction; });
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
@@ -731,6 +910,17 @@ async function removeRestrictions(contentId, spaceKey) {
         contentType: 'application/x-www-form-urlencoded',
         data: jquery__WEBPACK_IMPORTED_MODULE_0___default.a.param(form)
     });
+}
+
+/** Ensures some edit restrictions are set if necessary (if restrictAllPages is true,
+ * or if the bodyContent is not provided, or if the bodyContent contains the html macro) */
+async function ensureEditRestrictions(pageId, group, bodyContent, restrictAllPages) {
+    // if there is no group set or there are already editor restrictions, just skip
+    if (!group || await getEditorRestrictions(pageId)) return;
+    if (restrictAllPages || !bodyContent || bodyContent.indexOf('<ac:structured-macro ac:name="html"')>=0) {
+        await setEditorRestriction(pageId, group);
+        console.log(`Permissions set on page ${pageId}`);
+    }
 }
 
 async function setMyselfAsEditor(contentId, spaceKey) {
@@ -1045,9 +1235,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _sync_contextMenu__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./sync/contextMenu */ "./js/mainframe/sync/contextMenu.js");
 /* harmony import */ var _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./sync/pageSyncAnalyzer */ "./js/mainframe/sync/pageSyncAnalyzer.js");
 /* harmony import */ var _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./sync/pageSyncPerformer */ "./js/mainframe/sync/pageSyncPerformer.js");
-/* harmony import */ var _sync_model__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./sync/model */ "./js/mainframe/sync/model.js");
-/* harmony import */ var _sync_spaceScanner__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./sync/spaceScanner */ "./js/mainframe/sync/spaceScanner.js");
-/* harmony import */ var _sync_tooltip__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./sync/tooltip */ "./js/mainframe/sync/tooltip.js");
+/* harmony import */ var _sync_attachmentSyncPerformer__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./sync/attachmentSyncPerformer */ "./js/mainframe/sync/attachmentSyncPerformer.js");
+/* harmony import */ var _sync_model__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./sync/model */ "./js/mainframe/sync/model.js");
+/* harmony import */ var _sync_spaceScanner__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./sync/spaceScanner */ "./js/mainframe/sync/spaceScanner.js");
+/* harmony import */ var _sync_tooltip__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./sync/tooltip */ "./js/mainframe/sync/tooltip.js");
+/* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
 // Entry point of the sync tool
 // Load main dependencies and css
 
@@ -1066,33 +1258,41 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
 Object(_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_4__["loadPluginStyleSheet"])('space-sync-bundle.css');
 // load jsviews and binds it to jQuery
 jsviews__WEBPACK_IMPORTED_MODULE_6___default()(jquery__WEBPACK_IMPORTED_MODULE_0___default.a);
 
 // read the <ci-sync-app> macro setting from the wiki page
 let appElt = jquery__WEBPACK_IMPORTED_MODULE_0___default()('ci-sync-app').first();
-let sourceSpace = appElt.data('source-space');
-let targetSpace = appElt.data('target-space');
-let sourceRootPage = appElt.data('source-root-page');
-let targetParentPage = appElt.data('target-parent-page');
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`sourceSpace="${sourceSpace}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`targetSpace="${targetSpace}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`sourceRootPage="${sourceRootPage}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`targetParentPage="${targetParentPage}"`);
+const globalOptions = {
+    sourceSpace : appElt.data('source-space'),
+    targetSpace : appElt.data('target-space'),
+    sourceRootPage : appElt.data('source-root-page'),
+    targetParentPage : appElt.data('target-parent-page'),
+    editGroup : appElt.data('edit-group') || _common_config__WEBPACK_IMPORTED_MODULE_15__["DEFAULT_RESTRICTION_GROUP"],
+    restrictAllPages : appElt.data('restrict-all-pages')
+};
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`sourceSpace="${globalOptions.sourceSpace}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`targetSpace="${globalOptions.targetSpace}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`sourceRootPage="${globalOptions.sourceRootPage}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`editGroup="${globalOptions.editGroup}"`);
+Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`restrictAllPages="${globalOptions.restrictAllPages}"`);
 // store the targetSpace in the model for future reference
-_sync_model__WEBPACK_IMPORTED_MODULE_11__["default"].targetSpace = targetSpace;
+_sync_model__WEBPACK_IMPORTED_MODULE_12__["default"].globalOptions = globalOptions;
 
 // load the jsview template and link it to the model and helper functions
 Object(_fragmentLoader__WEBPACK_IMPORTED_MODULE_5__["loadTemplate"])('sync-plugin/page-groups-table.html').then( function(tmpl) {
-    tmpl.link(appElt, _sync_model__WEBPACK_IMPORTED_MODULE_11__["default"], {
+    tmpl.link(appElt, _sync_model__WEBPACK_IMPORTED_MODULE_12__["default"], {
         analyze : _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_9__["default"],
-        perform: _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_10__["default"]
+        perform: _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_10__["default"],
+        performAttachment: _sync_attachmentSyncPerformer__WEBPACK_IMPORTED_MODULE_11__["default"]
     });
 });
 
 // trigger the scan of the space for pages to sync
-Object(_sync_spaceScanner__WEBPACK_IMPORTED_MODULE_12__["default"])(sourceSpace, sourceRootPage);
+Object(_sync_spaceScanner__WEBPACK_IMPORTED_MODULE_13__["default"])(globalOptions.sourceSpace, globalOptions.sourceRootPage);
 
 
 /***/ }),
@@ -1130,6 +1330,173 @@ function loadPluginStyleSheet(filename) {
 
 /***/ }),
 
+/***/ "./js/mainframe/sync/AttachmentSyncStatus.js":
+/*!***************************************************!*\
+  !*** ./js/mainframe/sync/AttachmentSyncStatus.js ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SyncStatusEnum */ "./js/mainframe/sync/SyncStatusEnum.js");
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
+/* harmony import */ var _common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/confluence/Attachment */ "./js/common/confluence/Attachment.js");
+
+
+
+
+function AttachmentSyncStatus(parentSyncStatus, sourceAttachment, targetAttachment, syncTimeStamp) {
+    this.parentSyncStatus = parentSyncStatus;
+    this.sourceAttachment = sourceAttachment;
+    this.id = this.sourceAttachment.id();
+    this.targetAttachment = targetAttachment;
+    this.syncTimeStamp = syncTimeStamp;
+
+    this.performPush = noop;
+    this.performPull = noop;
+    this.recheckSyncStatus = recheckSyncStatus;
+
+    let syncSourceVersion = version(syncTimeStamp.getPage(this.sourceAttachment.id()));
+    let syncTargetVersion = version(syncTimeStamp.getOtherPage(this.sourceAttachment.id()));
+    if (!this.targetAttachment || !this.targetAttachment.exists()) { // the target doesn't exist
+      this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_ATTACHMENT_MISSING;
+      this.performPush = createAttachment;
+    } else if (syncTimeStamp.isNew()) { // the target exists but we did not find the timestamp
+      this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].ATTACHMENT_CONFLICTING;
+      this.performPush = performUpdate;
+      this.performPull = performPull;
+    } else if (this.targetAttachment.version() !== syncTargetVersion && this.sourceAttachment.version() === syncSourceVersion) {
+        // the target was updated and not the source
+      this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_ATTACHMENT_UPDATED;
+      this.performPull = performPull;
+    } else if (this.targetAttachment.version() !== syncTargetVersion) {
+        // the target was updated (and the source too of course)
+      this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].ATTACHMENT_CONFLICTING;
+      this.performPush = performUpdate;
+      this.performPull = performPull;
+    } else if (this.sourceAttachment.version() === syncSourceVersion) {
+        // the target wasn't updated, nor the source
+      this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].ATTACHMENT_UP_TO_DATE;
+    } else {
+        // the target wasn't updated, but the source was
+      this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_ATTACHMENT_UPDATED;
+      this.performPush = performUpdate;
+    }
+
+    function version(page) {
+        return page?page.version:null;
+    }
+
+    async function noop() {}
+  
+    async function createAttachment() {
+        // make sure the parent container exists
+        if (this.parentSyncStatus.status===_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING) {
+            throw 'Cannot push attachments because some pages are missing, push the pages first';
+        }
+        let parentContainerId = this.parentSyncStatus.targetPage.id;
+        this.targetAttachment = await _common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_2__["default"].getOrCreateAttachment(parentContainerId, this.sourceAttachment.title());
+        await performUpdate.apply(this);
+    }
+
+    async function performUpdate() {
+        await this.targetAttachment.cloneFrom(this.sourceAttachment);
+        Object(_log__WEBPACK_IMPORTED_MODULE_1__["default"])(`Pushed attachment ${identifier(this.targetAttachment)} (status=${this.status}) from ${identifier(this.sourceAttachment)}`);
+        await this.markSynced();
+        await this.recheckSyncStatus();
+    }
+  
+    async function performPull() {
+        await this.sourceAttachment.cloneFrom(this.targetAttachment);
+        Object(_log__WEBPACK_IMPORTED_MODULE_1__["default"])(`Pulled attachment ${identifier(this.sourceAttachment)} (status=${this.status}) from ${identifier(this.targetAttachment)}`);
+        await this.markSynced();
+        await this.recheckSyncStatus();
+    }
+
+    async function recheckSyncStatus() {
+        await this.parentSyncStatus.pageWrapper.computeAttachmentSyncStatus(this.sourceAttachment);
+    }
+
+    function identifier(attachment) {
+        return attachment.toString();
+    }
+}
+
+AttachmentSyncStatus.prototype.markSynced = async function() {
+    this.syncTimeStamp.setSyncedPages(this.sourceAttachment._internal, this.targetAttachment._internal);
+    await this.syncTimeStamp.save();
+}
+
+
+/* harmony default export */ __webpack_exports__["default"] = (AttachmentSyncStatus); 
+
+
+
+    // if (!syncTimeStamp.isNew() && targetAttachment.exists()) {
+    //                 // we have the source and target attachments and a syncTimeStamp, first check consistency
+    //                 if (syncTimeStamp.getPage(attachment.id)==null || syncTimeStamp.getPage(targetAttachment.id())==null) {
+    //                     syncStatus = new AttachmentSyncStatus();
+    //                 }
+    //             } && (syncTimeStamp.getPage(targetAttachment.id())  !== syncTimeStamp.targetContentId || targetAttachment.version.number !== syncTimeStamp.targetVersion ) ) {
+    //                 throw `Attachment ${targetAttachmentId} was modified on target, should we overwrite?`;
+    //             }
+    //             if (syncTimeStamp && targetAttachmentId!=null && attachment.version.number === syncTimeStamp.sourceVersion) {
+    //                 console.log(`attachment ${targetAttachmentId} was already up-to-date, synced with source version ${attachment.version.number}`);
+    //                 return targetAttachment;
+    
+    
+    //         }
+                //let cloned = await syncAttachment(attachment, targetContainerId, syncTimeStamp);
+            //synced.push(cloned);
+    
+            // if (!syncTimeStamp.isNew()) {
+            //     try {
+            //       targetPage = await getContentById(syncTimeStamp.getOtherPage(pageToCopy.id).contentId, TARGET_EXPANDS);
+            //       syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
+            //     } catch (err) {
+            //       // target based on syncTimeStamp id is missing
+            //       console.debug("Normal error ",err);
+            //     }
+            //   }
+            //   if (!syncStatus && !targetPage) { // lookup by title
+            //     try {
+            //       targetPage = await getContent(targetSpaceKey, pageToCopy.title, TARGET_EXPANDS);
+            //       syncTimeStamp = await SyncTimeStamp.loadLastSyncFromContentWithSpace(targetPage.id, pageToCopy.space.key);
+            //       syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
+            //     } catch (err) {
+            //       // target with same title as source is missing
+            //       syncStatus = new SyncStatus(this, targetSpaceKey, null, syncTimeStamp);
+            //     }
+            //   }
+            //   $.observable(this).setProperty("syncStatus", syncStatus);
+            //   this.pageGroupRoot._updateWithSyncStatus(syncStatus);
+      
+
+
+
+// export async function syncAttachment(attachment, targetContainerId, syncTimeStamp) {
+//     let targetAttachment = await lookupAttachment(targetContainerId, attachment.title);
+//     let targetAttachmentId = targetAttachment ? targetAttachment.id:null;
+//     if (targetAttachmentId && !syncTimeStamp) {
+//       // try and get it from the target
+//       syncTimeStamp = await getSourceSyncTimeStamp(targetAttachmentId, attachment.space.key);
+//     }
+//     if (syncTimeStamp && targetAttachmentId!=null && (targetAttachmentId !== syncTimeStamp.targetContentId || targetAttachment.version.number !== syncTimeStamp.targetVersion ) ) {
+//         throw `Attachment ${targetAttachmentId} was modified on target, should we overwrite?`;
+//     }
+//     if (syncTimeStamp && targetAttachmentId!=null && attachment.version.number === syncTimeStamp.sourceVersion) {
+//         console.log(`attachment ${targetAttachmentId} was already up-to-date, synced with source version ${attachment.version.number}`);
+//         return targetAttachment;
+//     } else {
+//         let cloned = await cloneAttachment(attachment._links.download, targetContainerId, attachment.title, targetAttachmentId);
+//         await setSyncTimeStamps(attachment, cloned, attachment.space.key, cloned.space.key);
+//         return cloned;
+//     }
+//   }
+
+/***/ }),
+
 /***/ "./js/mainframe/sync/PageWrapper.js":
 /*!******************************************!*\
   !*** ./js/mainframe/sync/PageWrapper.js ***!
@@ -1143,10 +1510,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SyncStatusEnum */ "./js/mainframe/sync/SyncStatusEnum.js");
 /* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
 /* harmony import */ var _SyncStatus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SyncStatus */ "./js/mainframe/sync/SyncStatus.js");
-/* harmony import */ var _spaceScanner__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./spaceScanner */ "./js/mainframe/sync/spaceScanner.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./SyncTimeStamp */ "./js/mainframe/sync/SyncTimeStamp.js");
+/* harmony import */ var _AttachmentSyncStatus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AttachmentSyncStatus */ "./js/mainframe/sync/AttachmentSyncStatus.js");
+/* harmony import */ var _spaceScanner__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./spaceScanner */ "./js/mainframe/sync/spaceScanner.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./SyncTimeStamp */ "./js/mainframe/sync/SyncTimeStamp.js");
+/* harmony import */ var _common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../common/confluence/Attachment */ "./js/common/confluence/Attachment.js");
 
 
 
@@ -1154,7 +1523,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const TARGET_EXPANDS = 'version,metadata.labels,space';
+
+
+const TARGET_EXPANDS = 'version,metadata.labels,space,children.attachment.version,children.attachment.space';
 const MIN_PROGRESS = 20; // in percent, what's the min size of the progress bars
 
 class PageWrapper {
@@ -1164,6 +1535,7 @@ class PageWrapper {
         this.page = page;
         this.children = null;
         this.parentPage = parent;
+        this.attachments = page.children.attachment.results;
         this.isPageGroup = isPageGroupRoot(page, parent);
         this.pageGroupRoot = findRoot(this); // cache the pageGroup that contains this page
 
@@ -1171,7 +1543,7 @@ class PageWrapper {
         if (this.isPageGroup) {
             this.pagesToPush = [];
             this.pagesToPull = [];
-            this.syncedPages = [];
+            //this.syncedPages = [];
             this.unsyncedLabels = [];
             this.conflictingPages = [];
             this.conflictingAttachments = [];
@@ -1185,8 +1557,8 @@ class PageWrapper {
         
     }
     async refreshSourcePage() {
-        let page = await Object(_spaceScanner__WEBPACK_IMPORTED_MODULE_3__["loadPageForSync"])(this.page.id);
-        let o = jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this);
+        let page = await Object(_spaceScanner__WEBPACK_IMPORTED_MODULE_4__["loadPageForSync"])(this.page.id);
+        let o = jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this);
         o.setProperty("page", page);
         o.setProperty("title", page.title);
         o.setProperty("url", page._links.webui);
@@ -1196,51 +1568,55 @@ class PageWrapper {
         return context.title!=this.title && this.isPageGroup;
     }
     _updateWithSyncStatus(syncStatus) {
-        this.removeExistingBySourcePageId(syncStatus.sourcePage.id);
+        this._removeExistingBySourceContentId(syncStatus.id);
+        let property;
         switch (syncStatus.status) {
-            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING: return this.addPageToPush(syncStatus);
-            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_UPDATED: return this.addPageToPull(syncStatus);
-            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].CONFLICTING: return this.addConflictingPage(syncStatus);
-            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].UP_TO_DATE: return this.addSyncedPage(syncStatus);
-            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_UPDATED: return this.addPageToPush(syncStatus);
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING: property = this.pagesToPush; break;
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_UPDATED: property = this.pagesToPull; break;
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].CONFLICTING: property = this.conflictingPages; break;
+            //case SyncStatusEnum.UP_TO_DATE: property = this.syncedPages; break; // not used
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_UPDATED: property = this.pagesToPush; break;
+
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_ATTACHMENT_MISSING: property = this.attachmentsToPush; break;
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_ATTACHMENT_UPDATED: property = this.attachmentsToPull; break;
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].ATTACHMENT_CONFLICTING: property = this.conflictingAttachments; break;
+            //case SyncStatusEnum.ATTACHMENT_UP_TO_DATE: property = this.syncedPages; break; // not used
+            case _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_ATTACHMENT_UPDATED: property = this.attachmentsToPush; break;
+        }
+        if (property) {
+            return this.insertStatusInto(syncStatus, property);
         }
     }
-    removeExistingBySourcePageId(pageId) {
-        this.removeFromArray(this.pagesToPush, pageId);
-        this.removeFromArray(this.pagesToPull, pageId);
-        this.removeFromArray(this.conflictingPages, pageId);
-        this.removeFromArray(this.syncedPages, pageId);
+    _removeExistingBySourceContentId(contentId) {
+        this.removeFromArray(this.pagesToPush, contentId);
+        this.removeFromArray(this.pagesToPull, contentId);
+        this.removeFromArray(this.conflictingPages, contentId);
+        //this.removeFromArray(this.syncedPages, contentId);
+        this.removeFromArray(this.attachmentsToPush, contentId);
+        this.removeFromArray(this.attachmentsToPull, contentId);
+        this.removeFromArray(this.conflictingAttachments, contentId);
     }
-    addPageToPush(page) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.pagesToPush).insert(page);
-    }
-    addPageToPull(page) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.pagesToPull).insert(page);
-    }
-    addConflictingPage(page) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.conflictingPages).insert(page);
-    }
-    addSyncedPage(page) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.syncedPages).insert(page);
+    insertStatusInto(syncStatus, property) {
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(property).insert(syncStatus);
     }
     removeFromArray(arr, pageId) {
-        let idx = arr.findIndex(s=>s.sourcePage.id==pageId);
+        let idx = arr.findIndex(s=>s.id==pageId);
         if (idx >= 0) {
-            jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(arr).remove(idx);
+            jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(arr).remove(idx);
         }
     }
     setProgress(action, percent) {
         // percent is always scaled to start from MIN_PROGRESS%, so that the progress bar is visible from the start
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.progress).setProperty(action, MIN_PROGRESS + Math.round((100-MIN_PROGRESS)*percent / 100.));
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this.progress).setProperty(action, MIN_PROGRESS + Math.round((100-MIN_PROGRESS)*percent / 100.));
     }
     removeProgress(action) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this.progress).removeProperty(action);
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this.progress).removeProperty(action);
     }
     setAnalyzing(analyzing) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this).setProperty('analyzing', analyzing);
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this).setProperty('analyzing', analyzing);
     }
     setAnalyzed(analyzed) {
-        let o = jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this);
+        let o = jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this);
         o.setProperty('analyzing', false);
         o.setProperty('analyzed', true);
     }
@@ -1254,7 +1630,7 @@ class PageWrapper {
         let syncStatus;
         let targetPage;
         let pageToCopy = this.page;
-        let syncTimeStamp = await _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_5__["default"].loadLastSyncFromContentWithSpace(pageToCopy.id, targetSpaceKey);
+        let syncTimeStamp = await _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_6__["default"].loadLastSyncFromContentWithSpace(pageToCopy.id, targetSpaceKey);
         if (!syncTimeStamp.isNew()) {
           try {
             targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContentById"])(syncTimeStamp.getOtherPage(pageToCopy.id).contentId, TARGET_EXPANDS);
@@ -1267,18 +1643,48 @@ class PageWrapper {
         if (!syncStatus && !targetPage) { // lookup by title
           try {
             targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["getContent"])(targetSpaceKey, pageToCopy.title, TARGET_EXPANDS);
-            syncTimeStamp = await _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_5__["default"].loadLastSyncFromContentWithSpace(targetPage.id, pageToCopy.space.key);
+            syncTimeStamp = await _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_6__["default"].loadLastSyncFromContentWithSpace(targetPage.id, pageToCopy.space.key);
             syncStatus = new _SyncStatus__WEBPACK_IMPORTED_MODULE_2__["default"](this, targetSpaceKey, targetPage, syncTimeStamp);
           } catch (err) {
             // target with same title as source is missing
             syncStatus = new _SyncStatus__WEBPACK_IMPORTED_MODULE_2__["default"](this, targetSpaceKey, null, syncTimeStamp);
           }
         }
-        jquery__WEBPACK_IMPORTED_MODULE_4___default.a.observable(this).setProperty("syncStatus", syncStatus);
+        jquery__WEBPACK_IMPORTED_MODULE_5___default.a.observable(this).setProperty("syncStatus", syncStatus);
         this.pageGroupRoot._updateWithSyncStatus(syncStatus);
+
+        if (syncAttachments) {
+            await this.computeAllAttachmentsSyncStatus(pageToCopy.children.attachment);
+        }
+    }
+    async computeAllAttachmentsSyncStatus(attachmentListResponse) {
+        for (let attachmentInternal of attachmentListResponse.results) {
+            let sourceAttachment = await _common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_7__["default"].from(attachmentInternal);
+            await this.computeAttachmentSyncStatus(sourceAttachment);
+        }
+        if (attachmentListResponse._links.next) {
+            console.log("More than 25 attachments, loading next page");
+            let next = await jquery__WEBPACK_IMPORTED_MODULE_5___default.a.get(attachmentListResponse._links.next + "&expand=space,version");
+            await this.computeAllAttachmentsSyncStatus(next);
+        }
+    }
+    async computeAttachmentSyncStatus(sourceAttachment) {
+        let attachmentSyncStatus;
+        let targetAttachment;
+        let containerId;
+        let syncTimeStamp = await _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_6__["default"].loadLastSyncFromContentWithSpace(sourceAttachment.id(), this.syncStatus.targetSpaceKey);
+        if (this.syncStatus.targetPage && this.syncStatus.targetPage.id) {
+            containerId = this.syncStatus.targetPage.id;
+            targetAttachment = await _common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_7__["default"].getOrCreateAttachment(containerId, sourceAttachment.title());
+            if (targetAttachment.exists() && syncTimeStamp.isNew()) {
+                // try and get the syncTimeStamp from the target
+                syncTimeStamp = await _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_6__["default"].loadLastSyncFromContentWithSpace(targetAttachment.id(), sourceAttachment.spaceKey());
+            }
+        }
+        attachmentSyncStatus = new _AttachmentSyncStatus__WEBPACK_IMPORTED_MODULE_3__["default"](this.syncStatus, sourceAttachment, targetAttachment, syncTimeStamp);
+        this.pageGroupRoot._updateWithSyncStatus(attachmentSyncStatus);
     }
 }
-
 function findRoot(pageWrapper) {
     if (pageWrapper.parentPage ==null || pageWrapper.isPageGroup) return pageWrapper;
     return findRoot(pageWrapper.parentPage);
@@ -1319,6 +1725,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_confluence_Page__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/confluence/Page */ "./js/common/confluence/Page.js");
 /* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
 /* harmony import */ var _common_confluence_Labels__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../common/confluence/Labels */ "./js/common/confluence/Labels.js");
+/* harmony import */ var _common_confluence_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../common/confluence/confluence-permissions-async */ "./js/common/confluence/confluence-permissions-async.js");
+
 
 
 
@@ -1338,6 +1746,7 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
     let sourcePage = pageWrapper.page;
     this.targetPage = targetPage;
     this.sourcePage = sourcePage;
+    this.id = this.sourcePage.id;
     this.syncTimeStamp = syncTimeStamp;
     this.pageWrapper = pageWrapper;
     this.performPush = noop;
@@ -1386,7 +1795,8 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
 
         this.targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["createPageUnderPageId"])(newPage);
         Object(_log__WEBPACK_IMPORTED_MODULE_4__["default"])(`Created page ${nameAndVersion(this.targetPage)} from ${identifier(sourcePage)}`);
-        await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["postProcess"])(sourcePage.body.storage.value, this.targetPage); // TODO we shouldn't use the source body, but it's fine here
+        await Object(_common_confluence_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_6__["ensureEditRestrictions"])(this.targetPage.id, this.pageWrapper.pageGroupRoot.editGroup, sourcePage.body.storage.value);
+        
         await this.syncLabels(false);
         await this.markSynced();
     }
@@ -1397,7 +1807,7 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
         await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["preProcess"])(updatedTargetPage, this.sourcePage.space.key, targetSpaceKey);
         this.targetPage = await Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_1__["updateContent"])(updatedTargetPage);
         Object(_log__WEBPACK_IMPORTED_MODULE_4__["default"])(`Pushed page ${nameAndVersion(this.targetPage)} (status=${this.status}) from ${identifier(this.sourcePage)}`);
-        await Object(_common_confluence_confluence_page_postprocessor__WEBPACK_IMPORTED_MODULE_2__["postProcess"])(this.sourcePage.body.storage.value, this.targetPage); // TODO we shouldn't use the source body, but it's fine here
+        await Object(_common_confluence_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_6__["ensureEditRestrictions"])(this.targetPage.id, this.pageWrapper.pageGroupRoot.editGroup, this.sourcePage.body.storage.value);
         await this.syncLabels(false);
         await this.markSynced();
     }
@@ -1473,7 +1883,16 @@ const SyncStatusEnum = Object.freeze({
     "TARGET_UPDATED" : "TARGET_UPDATED",
     "CONFLICTING" : "CONFLICTING",
     "UP_TO_DATE" : "UP_TO_DATE",
-    "SOURCE_UPDATED" : "SOURCE_UPDATED"
+    "SOURCE_UPDATED" : "SOURCE_UPDATED",
+
+    "TARGET_ATTACHMENT_MISSING" : "TARGET_ATTACHMENT_MISSING",
+    "TARGET_ATTACHMENT_UPDATED" : "TARGET_ATTACHMENT_UPDATED",
+    "ATTACHMENT_CONFLICTING" : "ATTACHMENT_CONFLICTING",
+    "SOURCE_ATTACHMENT_UPDATED" : "SOURCE_ATTACHMENT_UPDATED",
+    "ATTACHMENT_UP_TO_DATE" : "ATTACHMENT_UP_TO_DATE",
+
+    "WRONG_PAGE_ORDER": "WRONG_PAGE_ORDER", // TODO not implemented yet
+    "UNSYNCED_LABELS": "WRONG_PAGE_ORDER" // TODO not implemented yet
 });
 /* harmony default export */ __webpack_exports__["default"] = (SyncStatusEnum);
 
@@ -1538,7 +1957,8 @@ const SyncTimeStamp = {
         isNew:isNew,
         getOtherPage:getOtherPage,
         lastSyncedLabels:lastSyncedLabels,
-        getPage:getPage
+        getPage:getPage,
+        getPages:getPages
     };
 
     function isNew() {
@@ -1548,6 +1968,9 @@ const SyncTimeStamp = {
     function getOtherPage(pageId) {
         if (!syncTS().pages) return null;
         return syncTS().pages.find( e=>e.contentId!=pageId );
+    }
+    function getPages() {
+        return syncTS().pages;
     }
 
     function lastSyncedLabels() {
@@ -1609,6 +2032,132 @@ const SyncTimeStamp = {
 
 /* harmony default export */ __webpack_exports__["default"] = (SyncTimeStamp);
 
+
+/***/ }),
+
+/***/ "./js/mainframe/sync/attachmentSyncPerformer.js":
+/*!******************************************************!*\
+  !*** ./js/mainframe/sync/attachmentSyncPerformer.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return attachmentSyncPerformer; });
+/* harmony import */ var _log__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./log */ "./js/mainframe/sync/log.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/Observable */ "./node_modules/rxjs/Observable.js");
+/* harmony import */ var rxjs_Observable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _notify__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./notify */ "./js/mainframe/sync/notify.js");
+/* harmony import */ var _common_confluence_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/confluence/confluence-permissions-async */ "./js/common/confluence/confluence-permissions-async.js");
+/* harmony import */ var _common_confluence_confluence_user_async__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../common/confluence/confluence-user-async */ "./js/common/confluence/confluence-user-async.js");
+
+
+
+
+
+
+const PERMISSION_ERROR = "Confluence Permission Error";
+
+const ACTIONS = {
+    "pushAttachments" : {
+        getList: pageGroup => pageGroup.attachmentsToPush,
+        perform: async syncStatus => syncStatus.performPush()
+    },
+    "pullAttachments" : {
+        getList: pageGroup => pageGroup.attachmentsToPull,
+        perform: async syncStatus => syncStatus.performPull()
+    },
+    "pushConflictingAttachments" : {
+        getList: pageGroup => pageGroup.conflictingAttachments,
+        perform: async syncStatus => syncStatus.performPush()
+    }
+}
+
+/** 
+ * We could use the list of SyncStatus from action.getList() and simply perform them in sequence,
+ * instead of traversing the tree again. Except we need to ensure the pages are created in the children order
+ * because we cannot change the target children after creation.
+*/
+function attachmentSyncPerformer(action, pageGroup) {
+    Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Performing ${action} for ${pageGroup.title}`);
+    pageGroup.setProgress(action, 0);
+    doSync(action, pageGroup).subscribe(
+        percent => pageGroup.setProgress(action, percent),
+        e => {
+            if (e.name === PERMISSION_ERROR) {
+                _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Cannot ${action} on ${e.page.title}, target page is write protected, click here to check permissions, then retry`, e.page._links.webui);
+                // TODO attempt to use the confluence-permissions-async.js API to fix the problem
+            } else {
+                console.warn(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e}`, e);
+                _notify__WEBPACK_IMPORTED_MODULE_2__["default"].error(`Error while synchronizing (${action}) page group ${pageGroup.title}: ${e} ${JSON.stringify(e)}`);
+            }
+            pageGroup.removeProgress(action);
+        },
+        () => {
+            Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`${action} complete for ${pageGroup.title}`);
+            pageGroup.removeProgress(action);
+        }
+    );
+}
+
+function doSync(action, pageGroup) {
+    let actionRef = ACTIONS[action];
+    let listOfSyncStatus = Array.from(actionRef.getList(pageGroup));
+    // shallow copy it because it will be concurrently modified while we loop over it
+
+    return rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(observer => {
+        (async () => {
+            const total = listOfSyncStatus.length;
+            let synced = 0;
+            for (let syncStatus of listOfSyncStatus) {
+                await doSyncOne(syncStatus, actionRef.perform);
+                observer.next( Math.round((100* (++synced))/total) );
+            }
+            observer.complete();
+        })().then(null, e=>observer.error(e));
+    });
+}
+
+// Perform the action with a retry in case of write permission issue
+async function doSyncOne(syncStatus, perform) {
+    try {
+        await perform(syncStatus);
+    } catch (err) {
+        if (err.status == 403 || err.statusCode == 403) { // HTTP 403 Forbidden
+            // if we can gain write permission
+            if (await attemptToGetPermission(syncStatus)) {
+                try { // retry
+                    await perform(syncStatus);
+                } catch (err) {
+                    throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
+                }
+            } else {
+                throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
+            }
+        } else {
+            throw err;
+        }
+    }
+    // TODO RECOMPUTE THE SYNC STATUS just for the attachment
+    // await pageWrapper.computeSyncStatus(syncStatus.targetSpaceKey, options.syncAttachments); 
+}
+
+async function attemptToGetPermission(syncStatus) {
+    let pageId = syncStatus.targetAttachment.containerId();
+    let spaceKey = syncStatus.parentSyncStatus.targetSpaceKey;
+    try {
+        let user = await Object(_common_confluence_confluence_user_async__WEBPACK_IMPORTED_MODULE_4__["getUser"])();
+        let r = await Object(_common_confluence_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__["getEditorRestrictions"])(pageId);
+        if (!r || r.user.indexOf(user)>=0) {
+            return false; // we already have permission
+        }
+        await Object(_common_confluence_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__["setMyselfAsEditor"])(pageId, spaceKey);
+        return true; 
+    } catch (e) {
+        console.warn(`Failed to get write permission on page ${spaceKey}:${pageId}`,e);
+    }
+}
 
 /***/ }),
 
@@ -1971,15 +2520,20 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const SYNC_ACTION = 'sync';
-function pageSyncAnalyzer(pageGroup, targetSpace) {
+const CHECK_ATTACHMENT_SYNC = true;
+
+/** This action performs the initial difference analysis for a page group compared to a target space. */
+function pageSyncAnalyzer(pageGroup, globalOptions) {
     Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Checking synchronization status for ${pageGroup.title} - ${pageGroup.page.id}...`);
     let refreshSourcePages = false;
     if (pageGroup.analyzed) { // this is a refresh, we should refresh the source pages
         refreshSourcePages = true;
     }
+    pageGroup.editGroup = globalOptions.editGroup;
+    pageGroup.restrictAllPages = globalOptions.restrictAllPages;
     pageGroup.setAnalyzing(true);
     pageGroup.setProgress(SYNC_ACTION, 0);
-    checkSyncStatus(pageGroup, targetSpace, refreshSourcePages).subscribe(
+    checkSyncStatus(pageGroup, globalOptions, refreshSourcePages).subscribe(
         percent => pageGroup.setProgress(SYNC_ACTION, percent),
         e => {
             console.warn(`Error while checking synchronization of page group ${pageGroup.title}: ${e}`, e);
@@ -1995,32 +2549,34 @@ function pageSyncAnalyzer(pageGroup, targetSpace) {
     );
 }
 
-function checkSyncStatus(pageGroup, targetSpace, refreshSourcePages) {
+function checkSyncStatus(pageGroup, globalOptions, refreshSourcePages) {
     return rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(observer => {
         (async () => {
             let numPages = 1 + pageGroup.descendants.length;
             let synced = 0;
-            await checkSyncStatusRecursive(pageGroup, pageGroup, targetSpace, true, callback, refreshSourcePages);
+            let options = {
+                pageGroup: pageGroup, 
+                targetSpaceKey: globalOptions.targetSpace,
+                syncAttachments: CHECK_ATTACHMENT_SYNC, 
+                callback: () => observer.next( Math.round((100* (++synced))/numPages) ),
+                refreshSourcePages: refreshSourcePages
+            };
+            await checkSyncStatusRecursive(pageGroup, options);
             observer.complete();
-
-            function callback() {
-                observer.next( Math.round((100* (++synced))/numPages) );
-            }
 
         })().then(null, e=>observer.error(e));
     });
 }
 
-async function checkSyncStatusRecursive(pageGroup, pageWrapper, targetSpaceKey, syncAttachments, callback, refreshSourcePages) {
-    if (refreshSourcePages) {
+async function checkSyncStatusRecursive(pageWrapper, options) {
+    if (options.refreshSourcePages) {
         await pageWrapper.refreshSourcePage();
     }
-    let children = pageWrapper.children;
-    await pageWrapper.computeSyncStatus(targetSpaceKey, syncAttachments);
-    callback();
-    await Promise.all(children.map(async child => {
-        if (!child.skipSync(pageGroup)) {
-            return checkSyncStatusRecursive(pageGroup, child, targetSpaceKey, syncAttachments, callback, refreshSourcePages)
+    await pageWrapper.computeSyncStatus(options.targetSpaceKey, options.syncAttachments);
+    options.callback();
+    await Promise.all(pageWrapper.children.map(async child => {
+        if (!child.skipSync(options.pageGroup)) {
+            return checkSyncStatusRecursive(child, options);
         } else {
             return null;
         }
@@ -2053,6 +2609,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const PERMISSION_ERROR = "Confluence Permission Error";
+const SYNC_ATTACHMENT = true;
+
 const ACTIONS = {
     "push" : {
         getList: pageGroup => pageGroup.pagesToPush,
@@ -2068,8 +2626,13 @@ const ACTIONS = {
     }
 }
 
+/** 
+ * We could use the list of SyncStatus from action.getList() and simply perform them in sequence,
+ * instead of traversing the tree again. Except we need to ensure the pages are created in the children order
+ * because we cannot change the target children after creation.
+*/
 function pageSyncPerformer(action, pageGroup) {
-    Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Performing sync for ${pageGroup.title}`);
+    Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Performing ${action} for ${pageGroup.title}`);
     pageGroup.setProgress(action, 0);
     doSync(action, pageGroup).subscribe(
         percent => pageGroup.setProgress(action, percent),
@@ -2084,7 +2647,7 @@ function pageSyncPerformer(action, pageGroup) {
             pageGroup.removeProgress(action);
         },
         () => {
-            Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`Sync complete for ${pageGroup.title}`);
+            Object(_log__WEBPACK_IMPORTED_MODULE_0__["default"])(`${action} complete for ${pageGroup.title}`);
             pageGroup.removeProgress(action);
         }
     );
@@ -2095,31 +2658,35 @@ function doSync(action, pageGroup) {
     let listOfSyncStatus = actionRef.getList(pageGroup);
     return rxjs_Observable__WEBPACK_IMPORTED_MODULE_1__["Observable"].create(observer => {
         (async () => {
-            let numPages = listOfSyncStatus.length;
+            const total = listOfSyncStatus.length;
             let synced = 0;
-            await doSyncRecursive(actionRef, pageGroup, pageGroup, listOfSyncStatus, true, callback);
+            let options = {
+                actionRef: actionRef,
+                pageGroup: pageGroup,
+                listOfSyncStatus: listOfSyncStatus,
+                syncAttachments: SYNC_ATTACHMENT,
+                callback: () => observer.next( Math.round((100* (++synced))/total) )
+            };
+            await doSyncRecursive(pageGroup, options);
             observer.complete();
 
-            function callback() {
-                observer.next( Math.round((100* (++synced))/numPages) );
-            }
+            
         })().then(null, e=>observer.error(e));
     });
 }
 
-async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStatus, syncAttachments, callback) {
-    let children = pageWrapper.children;
+async function doSyncRecursive(pageWrapper, options) {
     let page = pageWrapper.page;
-    let syncStatus = listOfSyncStatus.find(e=>e.sourcePage.id==page.id);
+    let syncStatus = options.listOfSyncStatus.find(e=>e.sourcePage.id==page.id);
     if (syncStatus) { // is there a syncStatus to perform for current page?
         try {
-            await actionRef.perform(syncStatus);
+            await options.actionRef.perform(syncStatus);
         } catch (err) {
             if (err.status == 403) { // HTTP 403 Forbidden
                 // if we can gain write permission
                 if (await attemptToGetPermission(syncStatus)) {
                     try { // retry
-                        await actionRef.perform(syncStatus);
+                        await options.actionRef.perform(syncStatus);
                     } catch (err) {
                         throw { name: PERMISSION_ERROR, page: syncStatus.targetPage };
                     }
@@ -2130,14 +2697,13 @@ async function doSyncRecursive(actionRef, pageGroup, pageWrapper, listOfSyncStat
                 throw err;
             }
         }
-        let targetSpace = syncStatus.targetSpaceKey;
-        await pageWrapper.computeSyncStatus(targetSpace, true); // TODO this doesn't seem to work in case of a batch pull. Also page titles aren't properly pushed
-        callback(); // count 1 sync
+        await pageWrapper.computeSyncStatus(syncStatus.targetSpaceKey, options.syncAttachments); 
+        options.callback(); // count 1 sync
     }
     // in any case, check the children
-    await Promise.all(children.map(async child => {
-        if (!child.skipSync(pageGroup)) {
-            return doSyncRecursive(actionRef, pageGroup, child, listOfSyncStatus, syncAttachments, callback)
+    await Promise.all(pageWrapper.children.map(async child => {
+        if (!child.skipSync(options.pageGroup)) {
+            return doSyncRecursive(child, options)
         } else {
             return null;
         }

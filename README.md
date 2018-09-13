@@ -51,11 +51,6 @@ They can use Confluence API since the tests directly execute within the context 
 Note that for now, some page identifiers and titles are harcoded in tests and are necessary for the tests to pass.
 
 
-
-## TODO
-
-Check permissions on the source - we have to edit the source TS. The error message canbe wrong
-
 ## Sync Tool
 
 Add the following to an `{html}` macro on empty page with edit restrictions:
@@ -67,3 +62,8 @@ Add the following to an `{html}` macro on empty page with edit restrictions:
 
 
 Provided you have admin permission on the target space, the syncTool will attempt to get edit permission on the pages that need to be published.
+
+### TODO
+
+Check permissions on the source - we have to edit the source TS. The error message canbe wrong
+Handle removal from source and new pages added to target
