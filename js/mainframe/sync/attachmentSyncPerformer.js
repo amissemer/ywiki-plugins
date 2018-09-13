@@ -3,8 +3,10 @@ import {Observable} from 'rxjs/Observable';
 import notify from './notify';
 import {setMyselfAsEditor,getEditorRestrictions} from '../../common/confluence/confluence-permissions-async';
 import {getUser} from '../../common/confluence/confluence-user-async';
+import throat from 'throat';
 
 const PERMISSION_ERROR = "Confluence Permission Error";
+const PARALLEL_ATTACHMENT_CLONE = 3;
 
 const ACTIONS = {
     "pushAttachments" : {
@@ -52,17 +54,24 @@ function doSync(action, pageGroup) {
     let actionRef = ACTIONS[action];
     let listOfSyncStatus = Array.from(actionRef.getList(pageGroup));
     // shallow copy it because it will be concurrently modified while we loop over it
-
+    let abort = false;
     return Observable.create(observer => {
         (async () => {
             const total = listOfSyncStatus.length;
             let synced = 0;
-            for (let syncStatus of listOfSyncStatus) {
-                await doSyncOne(syncStatus, actionRef.perform);
-                observer.next( Math.round((100* (++synced))/total) );
-            }
+            // process attachments in parallel, maximum PARALLEL_ATTACHMENT_CLONE at a time
+            // abort at the first error
+            await Promise.all(listOfSyncStatus.map(throat(PARALLEL_ATTACHMENT_CLONE, async syncStatus => {
+                if (!abort) {
+                    await doSyncOne(syncStatus, actionRef.perform);
+                    observer.next( Math.round((100* (++synced))/total) );
+                } // else skip, it means an error already occurred on another attachment
+            })));
             observer.complete();
-        })().then(null, e=>observer.error(e));
+        })().then(null, e=>{
+            observer.error(e);
+            abort=true;
+        });
     });
 }
 

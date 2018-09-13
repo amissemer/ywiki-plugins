@@ -546,6 +546,8 @@ Page.newVersionOf = function(page, message, isMajorEdit) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./confluence-properties-async */ "./js/common/confluence/confluence-properties-async.js");
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
+
 
 
 /** A wrapper for Confluence properties.
@@ -559,6 +561,12 @@ __webpack_require__.r(__webpack_exports__);
 
 const Property = {
     reset: async function(contentId, key) {
+        try {
+            await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["load"])(contentId, key);
+        } catch (err) {
+            // does not exist, skip
+            return;
+        }
         await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["deleteProperty"])(contentId, key);
     },
     load : async function(contentId, key) {
@@ -586,12 +594,20 @@ const Property = {
                     try {
                         confluenceInternal = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["update"])(contentId, confluenceInternal);
                     } catch (err) { // workaround for Confluence bug https://jira.atlassian.com/browse/CRA-1259
-                        if (err.message.indexOf("Can't add an owner from another space")>=0) {
+                        let msg;
+                        if (err.message) {
+                            msg = err.message;
+                        } else if (err.responseText) {
+                            msg = err.responseText;
+                        }
+                        if (msg && msg.indexOf("Can't add an owner from another space")>=0) {
                             // then we delete and recreate the prop
                             await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["deleteProperty"])(contentId, key);
                             confluenceInternal.id = null;
                             confluenceInternal.version.number = null;
                             confluenceInternal = await Object(_confluence_properties_async__WEBPACK_IMPORTED_MODULE_0__["create"])(contentId, confluenceInternal);
+                        } else {
+                            throw err;
                         }
                     }
                 } else {
@@ -664,7 +680,7 @@ __webpack_require__.r(__webpack_exports__);
 const BASE_URL = '/rest/api/content/';
 
 async function lookupAttachment(containerId, attachmentTitle) {
-    let results = await $.get(BASE_URL+`${containerId}/child/attachment?filename=${encodeURIComponent(attachmentTitle)}&expand=space,version,container`);
+    let results = await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleRead"])( () => $.get(BASE_URL+`${containerId}/child/attachment?filename=${encodeURIComponent(attachmentTitle)}&expand=space,version,container`) );
     if (results && results.results && results.results.length) {
         return results.results[0];
     } else {
@@ -673,10 +689,10 @@ async function lookupAttachment(containerId, attachmentTitle) {
 }
 
 async function deleteAttachment(attachmentId) {
-    return await $.ajax({
+    return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleWrite"])( () => $.ajax({
         url: BASE_URL + encodeURIComponent(attachmentId),
         type: 'DELETE'
-    });
+    }) );
 }
 
 async function cloneAttachment(attachmentUrl, targetContainerId, title, /* optional */ targetId) {
@@ -1066,6 +1082,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _confluence_user_async__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./confluence-user-async */ "./js/common/confluence/confluence-user-async.js");
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../config */ "./js/common/config.js");
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
 
 
 
@@ -1075,7 +1092,7 @@ __webpack_require__.r(__webpack_exports__);
  * containing the list of user names and group names with edit restriction.
  */
 async function getEditorRestrictions(contentId) {
-    let resp = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get('/rest/api/content/'+contentId+'/restriction/byOperation/update');
+    let resp = await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])( () => jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get('/rest/api/content/'+contentId+'/restriction/byOperation/update') );
     let restrictions = { user: [], group: []};
     if (resp && resp.restrictions) {
         if (resp.restrictions.group && resp.restrictions.group.results) {
@@ -1101,11 +1118,11 @@ async function removeRestrictions(contentId, spaceKey) {
         "contentId": contentId,
         "atl_token": atlToken
     };
-    await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post({
+    await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])( () => jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post({
         url: '/pages/setcontentpermissions.action',
         contentType: 'application/x-www-form-urlencoded',
         data: jquery__WEBPACK_IMPORTED_MODULE_0___default.a.param(form)
-    });
+    }) );
 }
 
 /** Ensures some edit restrictions are set if necessary (if restrictAllPages is true,
@@ -1122,7 +1139,7 @@ async function ensureEditRestrictions(pageId, group, bodyContent, restrictAllPag
 async function setMyselfAsEditor(contentId, spaceKey) {
     let atlToken = jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name=ajs-atl-token]').attr("content");
     let me = await Object(_confluence_user_async__WEBPACK_IMPORTED_MODULE_1__["getUserKey"])();
-    let current = await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get(`/pages/getcontentpermissions.action?contentId=${contentId}&spaceKey=${spaceKey}&atl_token=${atlToken}&_=${Math.random()}`);
+    let current = await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])( () => jquery__WEBPACK_IMPORTED_MODULE_0___default.a.get(`/pages/getcontentpermissions.action?contentId=${contentId}&spaceKey=${spaceKey}&atl_token=${atlToken}&_=${Math.random()}`));
     let form = {
         "viewPermissionsUsers": [],
         "editPermissionsUsers": [],
@@ -1163,11 +1180,11 @@ async function setMyselfAsEditor(contentId, spaceKey) {
     form.editPermissionsUsers = form.editPermissionsUsers.join(',');
     form.viewPermissionsGroups = form.viewPermissionsGroups.join(',');
     form.editPermissionsGroups = form.editPermissionsGroups.join(',');
-    await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post({
+    await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])( () => jquery__WEBPACK_IMPORTED_MODULE_0___default.a.post({
         url: '/pages/setcontentpermissions.action',
         contentType: 'application/x-www-form-urlencoded',
         data: jquery__WEBPACK_IMPORTED_MODULE_0___default.a.param(form)
-    });
+    }) );
 }
 
 async function setEditorRestriction(contentId, groupName) {
@@ -1186,10 +1203,10 @@ async function setEditorRestriction(contentId, groupName) {
  */
 async function experimental(url) {
     try { 
-        await jquery__WEBPACK_IMPORTED_MODULE_0___default.a.ajax({
+        await Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])( () => jquery__WEBPACK_IMPORTED_MODULE_0___default.a.ajax({
             url: url,
             type: 'PUT'
-        });
+        }) );
     } catch (err) {
         if (err.status != 200 && err.status  != 204) { // is this a real error
             throw err; // rethrow
@@ -1264,42 +1281,35 @@ const BASE_URL = '/rest/api/content/';
 
 async function load(contentId, key)  {
     let url = BASE_URL + `${contentId}/property/${key}`; 
-    return $.get(url);
+    return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleRead"])( () => $.get(url) );
 }
 
 async function create(contentId, propertyData)  {
     let url = BASE_URL + `${contentId}/property`; 
-    return $.ajax({
+    return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleWrite"])( () => $.ajax({
         url: url, 
         contentType: "application/json;charset=UTF-8",
         type: "POST",
         data: JSON.stringify( propertyData )
-    });
+    }) );
 }
 
 async function update(contentId, propertyData)  {
     let url = BASE_URL + `${contentId}/property/${propertyData.key}`; 
-    return $.ajax({
+    return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleWrite"])( () => $.ajax({
         url: url, 
         contentType: "application/json;charset=UTF-8",
         type: "PUT",
         data: JSON.stringify( propertyData )
-    });
+    }) );
 }
 
 async function deleteProperty(contentId, key)  {
-    // does the prop exist already?
-    try {
-        await load(contentId, key);
-    } catch (err) {
-        // does not exist, skip
-        return;
-    }
     let url = BASE_URL + `${contentId}/property/${key}`; 
-    return $.ajax({
+    return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_0__["throttleWrite"])( () => $.ajax({
         url: url,
         type: "DELETE"
-    });
+    }) );
 }
 
 
@@ -1316,7 +1326,7 @@ async function deleteProperty(contentId, key)  {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "throttleRead", function() { return throttleRead; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "throttleWrite", function() { return throttleWrite; });
-const MAX_PARALLEL_READ = 3;
+const MAX_PARALLEL_READ = 4;
 const MAX_PARALLEL_WRITE = 1;
 const throttleRead = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_READ);
 const throttleWrite = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_WRITE);

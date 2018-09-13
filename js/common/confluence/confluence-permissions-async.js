@@ -1,13 +1,13 @@
 import $ from 'jquery';
 import {getUserKey,getUser} from './confluence-user-async';
 import {DEFAULT_RESTRICTION_GROUP} from '../config';
-
+import {throttleRead, throttleWrite} from './confluence-throttle';
 /**
  * returns either false if no edit restriction exist, or an object with a user and a group property 
  * containing the list of user names and group names with edit restriction.
  */
 export async function getEditorRestrictions(contentId) {
-    let resp = await $.get('/rest/api/content/'+contentId+'/restriction/byOperation/update');
+    let resp = await throttleRead( () => $.get('/rest/api/content/'+contentId+'/restriction/byOperation/update') );
     let restrictions = { user: [], group: []};
     if (resp && resp.restrictions) {
         if (resp.restrictions.group && resp.restrictions.group.results) {
@@ -33,11 +33,11 @@ export async function removeRestrictions(contentId, spaceKey) {
         "contentId": contentId,
         "atl_token": atlToken
     };
-    await $.post({
+    await throttleWrite( () => $.post({
         url: '/pages/setcontentpermissions.action',
         contentType: 'application/x-www-form-urlencoded',
         data: $.param(form)
-    });
+    }) );
 }
 
 /** Ensures some edit restrictions are set if necessary (if restrictAllPages is true,
@@ -54,7 +54,7 @@ export async function ensureEditRestrictions(pageId, group, bodyContent, restric
 export async function setMyselfAsEditor(contentId, spaceKey) {
     let atlToken = $('meta[name=ajs-atl-token]').attr("content");
     let me = await getUserKey();
-    let current = await $.get(`/pages/getcontentpermissions.action?contentId=${contentId}&spaceKey=${spaceKey}&atl_token=${atlToken}&_=${Math.random()}`);
+    let current = await throttleRead( () => $.get(`/pages/getcontentpermissions.action?contentId=${contentId}&spaceKey=${spaceKey}&atl_token=${atlToken}&_=${Math.random()}`));
     let form = {
         "viewPermissionsUsers": [],
         "editPermissionsUsers": [],
@@ -95,11 +95,11 @@ export async function setMyselfAsEditor(contentId, spaceKey) {
     form.editPermissionsUsers = form.editPermissionsUsers.join(',');
     form.viewPermissionsGroups = form.viewPermissionsGroups.join(',');
     form.editPermissionsGroups = form.editPermissionsGroups.join(',');
-    await $.post({
+    await throttleWrite( () => $.post({
         url: '/pages/setcontentpermissions.action',
         contentType: 'application/x-www-form-urlencoded',
         data: $.param(form)
-    });
+    }) );
 }
 
 export async function setEditorRestriction(contentId, groupName) {
@@ -118,10 +118,10 @@ export async function setEditorRestriction(contentId, groupName) {
  */
 async function experimental(url) {
     try { 
-        await $.ajax({
+        await throttleWrite( () => $.ajax({
             url: url,
             type: 'PUT'
-        });
+        }) );
     } catch (err) {
         if (err.status != 200 && err.status  != 204) { // is this a real error
             throw err; // rethrow
