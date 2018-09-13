@@ -1422,7 +1422,7 @@ function logCreationWithVersion(version, logToPage, createdPage) {
 				var logLine = '<li><ac:link><ri:user ri:userkey="[userkey]" /></ac:link> created&nbsp;<ac:link><ri:page ri:space-key="[spaceKey]" ri:content-title="[pagetitle]" /></ac:link> on&nbsp;<time datetime="[date]" />&nbsp;'+versionMsg+'</li>';
 				logLine=logLine
 				  .replace('[userkey]',options.currentUserKey)
-				  .replace('[pagetitle]',createdPage.title)
+				  .replace('[pagetitle]',  jquery__WEBPACK_IMPORTED_MODULE_2___default()("<div>").text(createdPage.title).html())
 				  .replace('[date]',formattedDate)
 				  .replace('[spaceKey]',createdPage.space.key);
 				logPageJson.body.storage.value=bodyContent.replace('</ul>',logLine+'</ul>');
