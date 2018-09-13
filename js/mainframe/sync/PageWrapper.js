@@ -6,6 +6,7 @@ import {loadPageForSync} from './spaceScanner';
 import $ from 'jquery';
 import SyncTimeStamp from './SyncTimeStamp';
 import Attachment from '../../common/confluence/Attachment';
+import Labels from '../../common/confluence/Labels';
 
 const TARGET_EXPANDS = 'version,metadata.labels,space,children.attachment.version,children.attachment.space';
 const MIN_PROGRESS = 20; // in percent, what's the min size of the progress bars
@@ -174,15 +175,8 @@ function findRoot(pageWrapper) {
 
 const PAGE_GROUP_LABELS = ['service-dashboard','ci-publish-package'];
 
-function hasLabel(page, labelsToFind) {
-    for (let label of page.metadata.labels.results) {
-        if (labelsToFind.indexOf(label.name)>=0) return true;
-    }
-    return false;
-}
-
 function isPageGroupRoot(page, parentPage) {
-    return (!parentPage) || hasLabel(page, PAGE_GROUP_LABELS);
+    return (!parentPage) || Labels.hasLabel(page, PAGE_GROUP_LABELS);
 }
 
 /* URL to display changes since last synchro */

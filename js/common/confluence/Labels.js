@@ -42,6 +42,15 @@ const Labels = {
             this.labelArray.removeAll(toRemove);
             this.labelArray.sort();
         }
+    },
+    hasLabel: function(page, labelsToFind) {
+        if (typeof labelsToFind === 'string') {
+            labelsToFind = [ labelsToFind ];
+        }
+        for (let label of page.metadata.labels.results) {
+            if (labelsToFind.indexOf(label.name)>=0) return true;
+        }
+        return false;
     }
 };
   

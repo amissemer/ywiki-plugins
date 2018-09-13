@@ -87,6 +87,18 @@ $(function(){
     });
     $.contextMenu({
         // define which elements trigger this menu
+        selector: ".sync-table tr .link-ignored",
+        className: 'context-menu-with-title context-menu-ignored',
+        // define the elements of the menu
+        items: {
+            openSource: MENU_ITEMS.openSourceItem,
+            openTarget: MENU_ITEMS.openTargetItem
+        },
+        zIndex: DEFAULT_Z_INDEX,
+        trigger: TRIGGER
+    });
+    $.contextMenu({
+        // define which elements trigger this menu
         selector: ".sync-table tr .link-default",
         //className: 'context-menu-with-title context-menu-default',
         // define the elements of the menu
@@ -100,6 +112,7 @@ $(function(){
     setMenuTitle('.context-menu-pull', "Target is more recent");
     setMenuTitle('.context-menu-push', "Source is more recent");
     setMenuTitle('.context-menu-none', "Page is synchronized");
+    setMenuTitle('.context-menu-ignored', "Page is labelled as ignored");
     setMenuTitle('.context-menu-create-target', "Target doesn't exist");
 });
 

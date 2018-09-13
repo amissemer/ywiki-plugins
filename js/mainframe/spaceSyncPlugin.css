@@ -32,6 +32,10 @@
     display: flex;
     justify-content: space-between;
 }
+.wiki-content .dropdown-menu > li > a.link-ignored {
+    color: #999;
+    font-style: italic;
+}
 .wiki-content .dropdown-menu > li > a.link-conflict {
     color: #fff;
     background-color: #d9534f;

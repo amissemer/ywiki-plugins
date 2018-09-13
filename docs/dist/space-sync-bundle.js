@@ -255,6 +255,15 @@ const Labels = {
             this.labelArray.removeAll(toRemove);
             this.labelArray.sort();
         }
+    },
+    hasLabel: function(page, labelsToFind) {
+        if (typeof labelsToFind === 'string') {
+            labelsToFind = [ labelsToFind ];
+        }
+        for (let label of page.metadata.labels.results) {
+            if (labelsToFind.indexOf(label.name)>=0) return true;
+        }
+        return false;
     }
 };
   
@@ -1526,6 +1535,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./SyncTimeStamp */ "./js/mainframe/sync/SyncTimeStamp.js");
 /* harmony import */ var _common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../common/confluence/Attachment */ "./js/common/confluence/Attachment.js");
+/* harmony import */ var _common_confluence_Labels__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../common/confluence/Labels */ "./js/common/confluence/Labels.js");
+
 
 
 
@@ -1702,15 +1713,8 @@ function findRoot(pageWrapper) {
 
 const PAGE_GROUP_LABELS = ['service-dashboard','ci-publish-package'];
 
-function hasLabel(page, labelsToFind) {
-    for (let label of page.metadata.labels.results) {
-        if (labelsToFind.indexOf(label.name)>=0) return true;
-    }
-    return false;
-}
-
 function isPageGroupRoot(page, parentPage) {
-    return (!parentPage) || hasLabel(page, PAGE_GROUP_LABELS);
+    return (!parentPage) || _common_confluence_Labels__WEBPACK_IMPORTED_MODULE_8__["default"].hasLabel(page, PAGE_GROUP_LABELS);
 }
 
 /* URL to display changes since last synchro */
@@ -1744,8 +1748,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const IGNORE_UPDATES_LABEL = 'ci-ignore-updates';
 const COPY_EXPANDS = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
 const STYLES = {
+    [_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].IGNORED]: "ignored",
     [_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING]: "create-target",
     [_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].SOURCE_UPDATED]: "push",
     [_SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_UPDATED]: "pull",
@@ -1767,6 +1773,8 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
     if (!targetPage) {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_MISSING;
       this.performPush = createPage;
+    } else if (_common_confluence_Labels__WEBPACK_IMPORTED_MODULE_5__["default"].hasLabel(this.sourcePage, IGNORE_UPDATES_LABEL)) {
+        this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].IGNORED;
     } else if (syncTimeStamp && targetPage.version.number !== syncTargetVersion && sourcePage.version.number === syncSourceVersion) {
       this.status = _SyncStatusEnum__WEBPACK_IMPORTED_MODULE_0__["default"].TARGET_UPDATED;
       this.performPull = performPull;
@@ -1892,6 +1900,7 @@ const SyncStatusEnum = Object.freeze({
     "TARGET_MISSING" : "TARGET_MISSING",
     "TARGET_UPDATED" : "TARGET_UPDATED",
     "CONFLICTING" : "CONFLICTING",
+    "IGNORED" : "IGNORED",
     "UP_TO_DATE" : "UP_TO_DATE",
     "SOURCE_UPDATED" : "SOURCE_UPDATED",
 
@@ -2291,6 +2300,18 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(function(){
     });
     jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
         // define which elements trigger this menu
+        selector: ".sync-table tr .link-ignored",
+        className: 'context-menu-with-title context-menu-ignored',
+        // define the elements of the menu
+        items: {
+            openSource: MENU_ITEMS.openSourceItem,
+            openTarget: MENU_ITEMS.openTargetItem
+        },
+        zIndex: DEFAULT_Z_INDEX,
+        trigger: TRIGGER
+    });
+    jquery__WEBPACK_IMPORTED_MODULE_0___default.a.contextMenu({
+        // define which elements trigger this menu
         selector: ".sync-table tr .link-default",
         //className: 'context-menu-with-title context-menu-default',
         // define the elements of the menu
@@ -2304,6 +2325,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(function(){
     setMenuTitle('.context-menu-pull', "Target is more recent");
     setMenuTitle('.context-menu-push', "Source is more recent");
     setMenuTitle('.context-menu-none', "Page is synchronized");
+    setMenuTitle('.context-menu-ignored', "Page is labelled as ignored");
     setMenuTitle('.context-menu-create-target', "Target doesn't exist");
 });
 

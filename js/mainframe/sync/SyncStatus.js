@@ -6,8 +6,10 @@ import log from './log';
 import Labels from '../../common/confluence/Labels';
 import {ensureEditRestrictions} from '../../common/confluence/confluence-permissions-async';
 
+const IGNORE_UPDATES_LABEL = 'ci-ignore-updates';
 const COPY_EXPANDS = 'version,space,body.storage,metadata.labels,children.page,children.attachment.version,children.attachment.space';
 const STYLES = {
+    [SyncStatusEnum.IGNORED]: "ignored",
     [SyncStatusEnum.TARGET_MISSING]: "create-target",
     [SyncStatusEnum.SOURCE_UPDATED]: "push",
     [SyncStatusEnum.TARGET_UPDATED]: "pull",
@@ -29,6 +31,8 @@ function SyncStatus(pageWrapper, targetSpaceKey, targetPage, syncTimeStamp) {
     if (!targetPage) {
       this.status = SyncStatusEnum.TARGET_MISSING;
       this.performPush = createPage;
+    } else if (Labels.hasLabel(this.sourcePage, IGNORE_UPDATES_LABEL)) {
+        this.status = SyncStatusEnum.IGNORED;
     } else if (syncTimeStamp && targetPage.version.number !== syncTargetVersion && sourcePage.version.number === syncSourceVersion) {
       this.status = SyncStatusEnum.TARGET_UPDATED;
       this.performPull = performPull;
