@@ -20,10 +20,10 @@ $(function(){
             openSource: MENU_ITEMS.openSourceItem,
             openTarget: MENU_ITEMS.openTargetItem,
             "sep1": MENU_ITEMS.separator,
-            checkTargetChanges: MENU_ITEMS.checkTargetChangesItem,
             checkSourceChanges: MENU_ITEMS.checkSourceChangesItem,
+            checkTargetChanges: MENU_ITEMS.checkTargetChangesItem,
+            overwriteSourceChanges: MENU_ITEMS.pullItem("Overwrite source", WARN),
             overwriteTargetChanges: MENU_ITEMS.pushItem("Overwrite target", WARN),
-            overwriteSourceChanges: MENU_ITEMS.pullItem("Overwrite source", WARN)
         },
         zIndex: DEFAULT_Z_INDEX,
         trigger: TRIGGER
