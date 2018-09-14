@@ -9,7 +9,9 @@ function config(production) {
     entry: {
       "golden-button": './js/mainframe/main.js',
       "golden-form": './js/iframe/golden-form.js',
-      "create-jira-form": './js/iframe/create-jira-form.js'
+      "tests-bundle": './js/tests/tests.js',
+      "create-jira-form": './js/iframe/create-jira-form.js',
+      "space-sync-bundle": './js/mainframe/spaceSyncPlugin.js'
     },
     output: {
       filename: '[name].js',
@@ -29,6 +31,9 @@ function config(production) {
         { test: /\.(gif|eot|woff|woff2|svg|ttf)([\?]?.*)$/, loader: "file-loader" },
         // tweak to bundle bootstrap, which require jquery as a global variable
         { test: /bootstrap.+\.(jsx|js)$/, loader: 'imports-loader?jQuery=jquery,$=jquery,this=>window' },
+        { test: /jquery.*\.js$/, loader: 'imports-loader?define=>false,jQuery=jquery' },
+        { test: /jsviews.*\.js$/, loader: 'imports-loader?window=>{}' },
+        { test: /widget\.js$/, loader: 'imports-loader?jQuery=jquery' }
       ]
     },
     // generate a separate bundled css file for each bundle

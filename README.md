@@ -30,3 +30,40 @@ npm run watch
 
 See [Continuous Improvement - The Golden Button](https://wiki.hybris.com/display/ps/Continuous+Improvement+-+The+Golden+Button)
 
+
+## Tests
+
+To run the set of unit tests, create a wiki page with following content in an `{html}` macro.
+
+```
+ <div id="mocha"></div>
+
+  <script src="https://unpkg.com/chai/chai.js"></script>
+  <script src="https://unpkg.com/mocha@5.2.0/mocha.js"></script>
+
+  <script src="https://localhost/ywiki-plugins/dist/tests-bundle.js"></script>
+```
+
+Set some edit restriction on the page to let Confluence execute the `{html}` macro.
+
+The `tests-bundle.js` created by webpack contains all `*.test.js` files written with `mocha` and `chai`.
+They can use Confluence API since the tests directly execute within the context of the wiki page.
+Note that for now, some page identifiers and titles are harcoded in tests and are necessary for the tests to pass.
+
+
+## Sync Tool
+
+Add the following to an `{html}` macro on empty page with edit restrictions:
+
+```
+<ci-sync-app data-source-space="espw" data-target-space="servportfolio" data-source-root-page="Services Portfolio - Services" data-target-parent-page="Services Portfolio" />
+<script src="https://localhost/ywiki-plugins/dist/space-sync-bundle.js"></script>
+```
+
+
+Provided you have admin permission on the target space, the syncTool will attempt to get edit permission on the pages that need to be published.
+
+### TODO
+
+Check permissions on the source - we have to edit the source TS. The error message canbe wrong
+Handle removal from source and new pages added to target

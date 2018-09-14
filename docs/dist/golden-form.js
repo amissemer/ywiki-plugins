@@ -86,7 +86,7 @@
 /*!*****************************!*\
   !*** ./js/common/config.js ***!
   \*****************************/
-/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL */
+/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL, PROP_KEY, DEFAULT_RESTRICTION_GROUP, PORTFOLIO_GROUP */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -104,6 +104,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CISTATS_DATA_PAGE", function() { return CISTATS_DATA_PAGE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_CUSTOMER_PAGE_TEMPLATE", function() { return DEFAULT_CUSTOMER_PAGE_TEMPLATE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "XSLT_ENDPOINT_URL", function() { return XSLT_ENDPOINT_URL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PROP_KEY", function() { return PROP_KEY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_RESTRICTION_GROUP", function() { return DEFAULT_RESTRICTION_GROUP; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PORTFOLIO_GROUP", function() { return PORTFOLIO_GROUP; });
 const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 const DEFAULT_JIRA_ISSUE_COUNT = 10;
 const MAIN_JIRA_LABEL = "CI";
@@ -118,6 +121,9 @@ const CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
 const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
 const XSLT_ENDPOINT_URL = 'https://bzycrip1eh.execute-api.eu-central-1.amazonaws.com/dev/page/transform';
 // export const WIKI_HOST = 'performancewiki2.hybris.com';
+const PROP_KEY = 'ysync';
+const DEFAULT_RESTRICTION_GROUP = 'dl sap customer experience all employees (external)';
+const PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
 
 
 /***/ }),
@@ -6768,8 +6774,13 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+
 
 module.exports = __webpack_require__(/*! ./lib/jquery-deferred */ "./node_modules/jquery-deferred/lib/jquery-deferred.js");
+
 
 /***/ }),
 
@@ -6779,6 +6790,10 @@ module.exports = __webpack_require__(/*! ./lib/jquery-deferred */ "./node_module
   \**************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 var jQuery = module.exports = __webpack_require__(/*! ./jquery-core.js */ "./node_modules/jquery-deferred/lib/jquery-core.js"),
 	core_rspace = /\s+/;
@@ -6988,6 +7003,7 @@ jQuery.Callbacks = function( options ) {
 
 
 
+
 /***/ }),
 
 /***/ "./node_modules/jquery-deferred/lib/jquery-core.js":
@@ -6995,7 +7011,11 @@ jQuery.Callbacks = function( options ) {
   !*** ./node_modules/jquery-deferred/lib/jquery-core.js ***!
   \*********************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /**
 * jQuery core object.
@@ -7154,6 +7174,7 @@ function extend() {
 
 
 
+
 /***/ }),
 
 /***/ "./node_modules/jquery-deferred/lib/jquery-deferred.js":
@@ -7162,6 +7183,10 @@ function extend() {
   \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 
 /*!
@@ -7328,6 +7353,7 @@ jQuery.extend({
 });
 
 
+
 /***/ }),
 
 /***/ "./node_modules/jquery-ui-bundle/jquery-ui.js":
@@ -7337,20 +7363,25 @@ jQuery.extend({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! jQuery UI - v1.12.1 - 2017-03-19
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+
+/*! jQuery UI - v1.12.1 - 2017-03-19
 * http://jqueryui.com
 * Includes: widget.js, position.js, data.js, disable-selection.js, focusable.js, form-reset-mixin.js, jquery-1-7.js, keycode.js, labels.js, scroll-parent.js, tabbable.js, unique-id.js, widgets/draggable.js, widgets/droppable.js, widgets/resizable.js, widgets/selectable.js, widgets/sortable.js, widgets/accordion.js, widgets/autocomplete.js, widgets/button.js, widgets/checkboxradio.js, widgets/controlgroup.js, widgets/datepicker.js, widgets/dialog.js, widgets/menu.js, widgets/mouse.js, widgets/progressbar.js, widgets/selectmenu.js, widgets/slider.js, widgets/spinner.js, widgets/tabs.js, widgets/tooltip.js, effect.js, effects/effect-blind.js, effects/effect-bounce.js, effects/effect-clip.js, effects/effect-drop.js, effects/effect-explode.js, effects/effect-fade.js, effects/effect-fold.js, effects/effect-highlight.js, effects/effect-puff.js, effects/effect-pulsate.js, effects/effect-scale.js, effects/effect-shake.js, effects/effect-size.js, effects/effect-slide.js, effects/effect-transfer.js
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
 (function( factory ) {
-	if ( true ) {
+	if ( typeof define === "function" && define.amd ) {
 
 		// AMD. Register as an anonymous module.
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [ __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js") ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else {}
+		define([ "jquery" ], factory );
+	} else {
+
+		// Browser globals
+		factory( jQuery );
+	}
 }(function( $ ) {
 
 $.ui = $.ui || {};
@@ -26043,6 +26074,7 @@ var effectsEffectTransfer = effect;
 
 }));
 
+
 /***/ }),
 
 /***/ "./node_modules/jquery/dist/jquery.js":
@@ -26052,7 +26084,11 @@ var effectsEffectTransfer = effect;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+
+/*!
  * jQuery JavaScript Library v3.3.1
  * https://jquery.com/
  *
@@ -36375,11 +36411,10 @@ jQuery.isNumeric = function( obj ) {
 // AMD loader is present. jQuery is a special case. For more information, see
 // https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
 
-if ( true ) {
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+if ( typeof define === "function" && define.amd ) {
+	define( "jquery", [], function() {
 		return jQuery;
-	}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} );
 }
 
 
@@ -36417,6 +36452,7 @@ if ( !noGlobal ) {
 
 return jQuery;
 } );
+
 
 
 /***/ }),

@@ -108,7 +108,7 @@
 /*!*****************************!*\
   !*** ./js/common/config.js ***!
   \*****************************/
-/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL */
+/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL, PROP_KEY, DEFAULT_RESTRICTION_GROUP, PORTFOLIO_GROUP */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -126,6 +126,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CISTATS_DATA_PAGE", function() { return CISTATS_DATA_PAGE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_CUSTOMER_PAGE_TEMPLATE", function() { return DEFAULT_CUSTOMER_PAGE_TEMPLATE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "XSLT_ENDPOINT_URL", function() { return XSLT_ENDPOINT_URL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PROP_KEY", function() { return PROP_KEY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_RESTRICTION_GROUP", function() { return DEFAULT_RESTRICTION_GROUP; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PORTFOLIO_GROUP", function() { return PORTFOLIO_GROUP; });
 const DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 const DEFAULT_JIRA_ISSUE_COUNT = 10;
 const MAIN_JIRA_LABEL = "CI";
@@ -140,6 +143,9 @@ const CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
 const DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
 const XSLT_ENDPOINT_URL = 'https://bzycrip1eh.execute-api.eu-central-1.amazonaws.com/dev/page/transform';
 // export const WIKI_HOST = 'performancewiki2.hybris.com';
+const PROP_KEY = 'ysync';
+const DEFAULT_RESTRICTION_GROUP = 'dl sap customer experience all employees (external)';
+const PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
 
 
 /***/ }),
@@ -749,10 +755,11 @@ bootstrap(_pluginCommon__WEBPACK_IMPORTED_MODULE_4__["host"],_pluginCommon__WEBP
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _stylesheetPlugin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
-/* harmony import */ var _goldenButtonPlugin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./goldenButtonPlugin */ "./js/mainframe/goldenButtonPlugin.js");
+/* harmony import */ var _goldenButtonPlugin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./goldenButtonPlugin */ "./js/mainframe/goldenButtonPlugin.js");
+/* harmony import */ var _stylesheetPlugin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
 
 
+Object(_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_1__["loadPluginStyleSheet"])('golden-button.css');
 
 
 /***/ }),
@@ -813,11 +820,13 @@ console.log("plugin Host="+host+", cacheBuster="+cacheBuster);
 /*!******************************************!*\
   !*** ./js/mainframe/stylesheetPlugin.js ***!
   \******************************************/
-/*! no exports provided */
+/*! exports provided: loadStyleSheet, loadPluginStyleSheet */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadStyleSheet", function() { return loadStyleSheet; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadPluginStyleSheet", function() { return loadPluginStyleSheet; });
 /* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
 
 
@@ -834,8 +843,9 @@ function loadStyleSheet(host, url) {
   console.log('style loaded');
 }
 
-loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["host"],'dist/golden-button.css'+_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["cacheBuster"]);
-
+function loadPluginStyleSheet(filename) {
+  return loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["host"], 'dist/'+filename+_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["cacheBuster"]);
+}
 
 /***/ }),
 
@@ -846,7 +856,11 @@ loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_0__["host"],'dist/golden-b
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+/*** IMPORTS FROM imports-loader ***/
+var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+
+/*!
  * jQuery JavaScript Library v3.3.1
  * https://jquery.com/
  *
@@ -11169,11 +11183,10 @@ jQuery.isNumeric = function( obj ) {
 // AMD loader is present. jQuery is a special case. For more information, see
 // https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
 
-if ( true ) {
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+if ( typeof define === "function" && define.amd ) {
+	define( "jquery", [], function() {
 		return jQuery;
-	}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} );
 }
 
 
@@ -11211,6 +11224,7 @@ if ( !noGlobal ) {
 
 return jQuery;
 } );
+
 
 
 /***/ })
