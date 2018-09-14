@@ -6776,6 +6776,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 
 /*** IMPORTS FROM imports-loader ***/
 var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 
 module.exports = __webpack_require__(/*! ./lib/jquery-deferred */ "./node_modules/jquery-deferred/lib/jquery-deferred.js");
@@ -6792,6 +6793,7 @@ module.exports = __webpack_require__(/*! ./lib/jquery-deferred */ "./node_module
 
 /*** IMPORTS FROM imports-loader ***/
 var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 var jQuery = module.exports = __webpack_require__(/*! ./jquery-core.js */ "./node_modules/jquery-deferred/lib/jquery-core.js"),
 	core_rspace = /\s+/;
@@ -7009,10 +7011,11 @@ jQuery.Callbacks = function( options ) {
   !*** ./node_modules/jquery-deferred/lib/jquery-core.js ***!
   \*********************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
 var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /**
 * jQuery core object.
@@ -7183,6 +7186,7 @@ function extend() {
 
 /*** IMPORTS FROM imports-loader ***/
 var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 
 /*!
@@ -7357,10 +7361,11 @@ jQuery.extend({
   !*** ./node_modules/jquery-ui-bundle/jquery-ui.js ***!
   \****************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
 var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /*! jQuery UI - v1.12.1 - 2017-03-19
 * http://jqueryui.com
@@ -26077,10 +26082,11 @@ var effectsEffectTransfer = effect;
   !*** ./node_modules/jquery/dist/jquery.js ***!
   \********************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
 var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /*!
  * jQuery JavaScript Library v3.3.1

@@ -31,7 +31,7 @@ function config(production) {
         { test: /\.(gif|eot|woff|woff2|svg|ttf)([\?]?.*)$/, loader: "file-loader" },
         // tweak to bundle bootstrap, which require jquery as a global variable
         { test: /bootstrap.+\.(jsx|js)$/, loader: 'imports-loader?jQuery=jquery,$=jquery,this=>window' },
-        { test: /jquery.*\.js$/, loader: 'imports-loader?define=>false' },
+        { test: /jquery.*\.js$/, loader: 'imports-loader?define=>false,jQuery=jquery' },
         { test: /jsviews.*\.js$/, loader: 'imports-loader?window=>{}' },
         { test: /widget\.js$/, loader: 'imports-loader?jQuery=jquery' }
       ]

@@ -854,10 +854,11 @@ function loadPluginStyleSheet(filename) {
   !*** ./node_modules/jquery/dist/jquery.js ***!
   \********************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
 var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /*!
  * jQuery JavaScript Library v3.3.1

@@ -3361,6 +3361,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
 /*** IMPORTS FROM imports-loader ***/
 var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /**
  * jQuery contextMenu v2.7.0 - Plugin for simple contextMenu handling
@@ -5506,6 +5507,7 @@ var define = false;
 
 /*** IMPORTS FROM imports-loader ***/
 var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /*** IMPORTS FROM imports-loader ***/
 var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
@@ -6254,10 +6256,11 @@ return $.widget;
   !*** ./node_modules/jquery/dist/jquery.js ***!
   \********************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
 var define = false;
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 
 /*!
  * jQuery JavaScript Library v3.3.1
