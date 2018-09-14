@@ -20,8 +20,7 @@ $(function(){
             openSource: MENU_ITEMS.openSourceItem,
             openTarget: MENU_ITEMS.openTargetItem,
             "sep1": MENU_ITEMS.separator,
-            checkSourceChanges: MENU_ITEMS.checkSourceChangesItem,
-            checkTargetChanges: MENU_ITEMS.checkTargetChangesItem,
+            checkSourceChanges: MENU_ITEMS.checkBothChangesItem,
             overwriteSourceChanges: MENU_ITEMS.pullItem("Overwrite source", WARN),
             overwriteTargetChanges: MENU_ITEMS.pushItem("Overwrite target", WARN),
         },
@@ -160,6 +159,14 @@ const MENU_ITEMS = {
         callback: function() {
             let data = getData(this);
             window.open(data.getSourceDiff());
+        }
+    },
+    checkBothChangesItem : {
+        name: "Check changes", 
+        callback: function() {
+            let data = getData(this);
+            window.open(data.getSourceDiff());
+            window.open(data.getTargetDiff());
         }
     },
     checkSyncItem : {
