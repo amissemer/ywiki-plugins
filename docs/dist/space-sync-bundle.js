@@ -1283,36 +1283,44 @@ Object(_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_4__["loadPluginStyleSheet"])('
 // load jsviews and binds it to jQuery
 jsviews__WEBPACK_IMPORTED_MODULE_6___default()(jquery__WEBPACK_IMPORTED_MODULE_0___default.a);
 
-// read the <ci-sync-app> macro setting from the wiki page
-let appElt = jquery__WEBPACK_IMPORTED_MODULE_0___default()('ci-sync-app').first();
-const globalOptions = {
-    sourceSpace : appElt.data('source-space'),
-    targetSpace : appElt.data('target-space'),
-    sourceRootPage : appElt.data('source-root-page'),
-    targetParentPage : appElt.data('target-parent-page'),
-    editGroup : appElt.data('edit-group') || _common_config__WEBPACK_IMPORTED_MODULE_15__["DEFAULT_RESTRICTION_GROUP"],
-    restrictAllPages : appElt.data('restrict-all-pages')
-};
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`sourceSpace="${globalOptions.sourceSpace}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`targetSpace="${globalOptions.targetSpace}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`sourceRootPage="${globalOptions.sourceRootPage}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`editGroup="${globalOptions.editGroup}"`);
-Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`restrictAllPages="${globalOptions.restrictAllPages}"`);
-// store the targetSpace in the model for future reference
-_sync_model__WEBPACK_IMPORTED_MODULE_12__["default"].globalOptions = globalOptions;
+jquery__WEBPACK_IMPORTED_MODULE_0___default()(function() {
+    // read the <ci-sync-app> macro setting from the wiki page
+    let appElt = jquery__WEBPACK_IMPORTED_MODULE_0___default()('ci-sync-app').first();
+    const globalOptions = {
+        sourceSpace : appElt.data('source-space'),
+        targetSpace : appElt.data('target-space'),
+        sourceRootPage : appElt.data('source-root-page'),
+        targetParentPage : appElt.data('target-parent-page'),
+        editGroup : appElt.data('edit-group') || _common_config__WEBPACK_IMPORTED_MODULE_15__["DEFAULT_RESTRICTION_GROUP"],
+        restrictAllPages : appElt.data('restrict-all-pages')
+    };
+    let conflictViewElt = jquery__WEBPACK_IMPORTED_MODULE_0___default()('ci-sync-conflicts').first();
 
-// load the jsview template and link it to the model and helper functions
-Object(_fragmentLoader__WEBPACK_IMPORTED_MODULE_5__["loadTemplate"])('sync-plugin/page-groups-table.html').then( function(tmpl) {
-    tmpl.link(appElt, _sync_model__WEBPACK_IMPORTED_MODULE_12__["default"], {
-        analyze : _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_9__["default"],
-        perform: _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_10__["default"],
-        performAttachment: _sync_attachmentSyncPerformer__WEBPACK_IMPORTED_MODULE_11__["default"]
+    Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`sourceSpace="${globalOptions.sourceSpace}"`);
+    Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`targetSpace="${globalOptions.targetSpace}"`);
+    Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`sourceRootPage="${globalOptions.sourceRootPage}"`);
+    Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`editGroup="${globalOptions.editGroup}"`);
+    Object(_sync_log__WEBPACK_IMPORTED_MODULE_7__["default"])(`restrictAllPages="${globalOptions.restrictAllPages}"`);
+    // store the targetSpace in the model for future reference
+    _sync_model__WEBPACK_IMPORTED_MODULE_12__["default"].globalOptions = globalOptions;
+
+    // load the jsview template and link it to the model and helper functions
+    Object(_fragmentLoader__WEBPACK_IMPORTED_MODULE_5__["loadTemplate"])('sync-plugin/page-groups-table.html').then( function(tmpl) {
+        tmpl.link(appElt, _sync_model__WEBPACK_IMPORTED_MODULE_12__["default"], {
+            analyze : _sync_pageSyncAnalyzer__WEBPACK_IMPORTED_MODULE_9__["default"],
+            perform: _sync_pageSyncPerformer__WEBPACK_IMPORTED_MODULE_10__["default"],
+            performAttachment: _sync_attachmentSyncPerformer__WEBPACK_IMPORTED_MODULE_11__["default"]
+        });
     });
+    if (conflictViewElt.length) {
+        Object(_fragmentLoader__WEBPACK_IMPORTED_MODULE_5__["loadTemplate"])('sync-plugin/sync-conflicts-table.html').then( function(tmpl) {
+            tmpl.link(conflictViewElt, _sync_model__WEBPACK_IMPORTED_MODULE_12__["default"]);
+        });
+    }
+
+    // trigger the scan of the space for pages to sync
+    Object(_sync_spaceScanner__WEBPACK_IMPORTED_MODULE_13__["default"])(globalOptions.sourceSpace, globalOptions.sourceRootPage);
 });
-
-// trigger the scan of the space for pages to sync
-Object(_sync_spaceScanner__WEBPACK_IMPORTED_MODULE_13__["default"])(globalOptions.sourceSpace, globalOptions.sourceRootPage);
-
 
 /***/ }),
 
