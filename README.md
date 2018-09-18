@@ -56,7 +56,12 @@ Note that for now, some page identifiers and titles are harcoded in tests and ar
 Add the following to an `{html}` macro on empty page with edit restrictions:
 
 ```
-<ci-sync-app data-source-space="espw" data-target-space="servportfolio" data-source-root-page="Services Portfolio - Services" data-target-parent-page="Services Portfolio" />
+<div>
+  <ci-sync-app data-source-space="espw" data-target-space="servportfolio" data-source-root-page="Services Portfolio - Services" data-target-parent-page="Services Portfolio" data-edit-group="DL SAP CX Services Portfolio" data-restrict-all-pages="true" />
+</div>
+<div>
+  <ci-sync-conflicts />
+</div>
 <script src="https://localhost/ywiki-plugins/dist/space-sync-bundle.js"></script>
 ```
 
