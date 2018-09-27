@@ -143,9 +143,10 @@ export async function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, 
   var copiedChildren = [];
   console.log("In copyAllChildren", pageToCopy,targetPageId);
   if (pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results) {
-    for (let child of pageToCopy.children.page.results) {
-      copiedChildren.push(await copyPageRecursiveInternal(child.id, targetSpaceKey, targetPageId, templateProcessor, copiedPages));
-    }
+    await pageToCopy.children.page.results.forEachSerial(async child=>{
+      let childrenP = await copyPageRecursiveInternal(child.id, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
+      copiedChildren.push(childrenP);
+    });
   }
   return copiedChildren;
 }
@@ -198,9 +199,7 @@ export async function getPageTree( pageId, parentId, parentTitle, counter ) {
   var childrenP = [];
   var childrenPages = pageAndChildren.children.page;
   while (childrenPages && childrenPages.size>0) {
-    for (let child of childrenPages.results) {
-      childrenP.push(getPageTree(child.id, pageId, pageAndChildren.title, counter));
-    }
+    childrenPages.results.forEach(child=> childrenP.push(getPageTree(child.id, pageId, pageAndChildren.title, counter)) );
     // get next page if any
     if (childrenPages._links.next) {
       console.log(`Queueing GET next page of children for ${pageAndChildren.title}: ${childrenPages._links.next}`);

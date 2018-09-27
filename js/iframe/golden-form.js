@@ -1,5 +1,7 @@
 import $ from 'jquery';
+import "@babel/polyfill";
 import '../lib/polyfills';
+import '../lib/Array.ext';
 import * as proxy from './proxyService';
 import * as wizardService from './wizardService';
 import 'jquery-ui-bundle';

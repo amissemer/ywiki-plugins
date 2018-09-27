@@ -70,7 +70,7 @@ export async function setMyselfAsEditor(contentId, spaceKey) {
         PRINCIPAL_ID: 2,
         TARGET_PAGE_ID: 3
     };
-    for (let p of current.permissions) {
+    current.permissions.forEach(p=>{
         if (p[FIELDS.TARGET_PAGE_ID] == contentId) {
             let field;
             switch(p[FIELDS.PERM_TYPE] + " " + p[FIELDS.PRINCIPAL_TYPE]) {
@@ -83,7 +83,7 @@ export async function setMyselfAsEditor(contentId, spaceKey) {
                 field.push(p[FIELDS.PRINCIPAL_ID]);
             }
         }
-    }
+    });
     // add ourselves
     form.editPermissionsUsers.push(me);
     // add read permission if any are set

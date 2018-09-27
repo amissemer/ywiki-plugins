@@ -9,9 +9,7 @@ const Labels = {
         if (!page.metadata) {
             page = await getContentById(page.id, 'metadata.labels');
         }
-        for (let label of page.metadata.labels.results) {
-            labelArray.push(label.name);
-        }
+        page.metadata.labels.results.forEach(label=>labelArray.push(label.name));
         labelArray.sort();
         let initialArray = Array.from(labelArray);
 
@@ -47,26 +45,23 @@ const Labels = {
         if (typeof labelsToFind === 'string') {
             labelsToFind = [ labelsToFind ];
         }
-        for (let label of page.metadata.labels.results) {
-            if (labelsToFind.indexOf(label.name)>=0) return true;
-        }
-        return false;
+        return null != page.metadata.labels.results.find( l => labelsToFind.indexOf(l.name)>=0 );
     }
 };
   
 Array.prototype.minus = function(a) {
     return this.filter( i=> a.indexOf(i) < 0 );
 };
-Array.prototype.pushUnique = function(a) {
-    for (let i of a) {
+Array.prototype.pushUnique = function(arr) {
+    arr.forEach(i=>{
         if (this.indexOf(i) < 0) this.push(i);
-    }
+    });
 };
-Array.prototype.removeAll = function(a) {
-    for (let i of a) {
+Array.prototype.removeAll = function(arr) {
+    arr.forEach(i=>{
         let pos = this.indexOf(i);
         if (pos >= 0) this.splice(pos, 1);
-    }
+    });
 };
 
 export default Labels;

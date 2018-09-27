@@ -33,7 +33,25 @@ function config(production) {
         { test: /bootstrap.+\.(jsx|js)$/, loader: 'imports-loader?jQuery=jquery,$=jquery,this=>window' },
         { test: /jquery.*\.js$/, loader: 'imports-loader?define=>false,jQuery=jquery' },
         { test: /jsviews.*\.js$/, loader: 'imports-loader?window=>{}' },
-        { test: /widget\.js$/, loader: 'imports-loader?jQuery=jquery' }
+        { test: /widget\.js$/, loader: 'imports-loader?jQuery=jquery' },
+        { test: /\.js$/, exclude: /node_modules/, use: {
+          loader: "babel-loader",
+          options: {
+            presets: [
+              ['@babel/preset-env',
+              {
+                "useBuiltIns": "usage",
+                "targets": {
+                  "chrome":"67",
+                  "edge":"16",
+                  "firefox":"60",
+                  "ie":"11",
+                  "safari":"11" 
+                },
+                //"debug": true
+              }]],
+          }
+        }}
       ]
     },
     // generate a separate bundled css file for each bundle
