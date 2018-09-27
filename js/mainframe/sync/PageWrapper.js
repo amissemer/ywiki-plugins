@@ -141,10 +141,10 @@ export default class PageWrapper {
         }
     }
     async computeAllAttachmentsSyncStatus(attachmentListResponse) {
-        for (let attachmentInternal of attachmentListResponse.results) {
+        await attachmentListResponse.results.forEachParallel(async attachmentInternal => {
             let sourceAttachment = await Attachment.from(attachmentInternal);
             await this.computeAttachmentSyncStatus(sourceAttachment);
-        }
+        } );
         if (attachmentListResponse._links.next) {
             console.log("More than 25 attachments, loading next page");
             let next = await $.get(attachmentListResponse._links.next + "&expand=space,version");

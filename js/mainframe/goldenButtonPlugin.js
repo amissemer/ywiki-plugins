@@ -122,7 +122,7 @@ function wireJiraIssueSummary(options) {
       clearCache:true
   };
   $.ajax({
-    url:"https://"+WIKI_HOST+"/rest/jiraanywhere/1.0/jira/renderTable",
+    url:"/rest/jiraanywhere/1.0/jira/renderTable",
     type: "POST",
     data: JSON.stringify(reqPayload),
     contentType: "application/json",

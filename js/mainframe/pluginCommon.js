@@ -1,13 +1,16 @@
 const WHITELISTED_ORIGIN = [
   'https://localhost',
   'https://amissemer.github.io',
-  'https://es-global-ci.github.io'
+  'https://amissemer.github.io:443',
+  'https://es-global-ci.github.io',
+  'https://es-global-ci.github.io:443'
 ];
 
 function getOriginLocation() {
   var scripts = document.getElementsByTagName('script');
   var candidates = [];
-  for (let s of scripts) {
+  for (let i=0;i<scripts.length;i++) {
+    let s = scripts[i];
     var url = s.getAttribute("src");
     if (url && url.indexOf('http')==0) candidates.push(url);
   }

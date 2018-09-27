@@ -1,0 +1,46 @@
+<table class="table table-striped table-bordered table-hover sync-table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Page Group</th>
+            <th>Pages</th>
+            <th>Attachments</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {^{for pages}}
+        <tr>    <th>Page Group</th>
+                <th>
+                    <a href="#" target="_blank" data-link="href{: url}">{^{>title}}</a>
+                </th>
+                <th>{^{> pagesToPush.length+pagesToPull.length+conflictingPages.length}} pages to sync ({^{>conflictingPages.length}} conflicts)</th>
+                <th>{^{> attachmentsToPush.length+attachmentsToPull.length+conflictingAttachments.length}} attachments to sync ({^{>conflictingAttachments.length}} conflicts)</th>
+                <th>
+                        {^{if analyzed && !analyzing && pagesToPush.length+pagesToPull.length+conflictingPages.length+attachmentsToPush.length+attachmentsToPull.length+conflictingAttachments.length==0}}
+                        Already synced
+                        {{/if}}
+                </th>
+        </tr>
+        {^{for conflictingPages}}
+        <tr>
+            <td>Conflicting Page</td>
+            <td>{^{>pageWrapper.pageGroupRoot.title}}</td>
+            <td><a href="#" target="_blank" data-link="href{: pageWrapper.url}">{^{>pageWrapper.title}}</a></td>
+            <td></td>
+            <td>Page Conflict</td>
+        </tr>
+        {{/for}}
+        {^{for conflictingAttachments}}
+        <tr>
+            <td>Conflicting Attachment</td>
+            <td>{^{>parentSyncStatus.pageWrapper.pageGroupRoot.title}}</td>
+            <td>{^{>parentSyncStatus.pageWrapper.title}}</td>
+            <td><a href="#" target="_blank" data-link="href{: '/pages/viewpageattachments.action?pageId=' + parentSyncStatus.pageWrapper.page.id}">{^{>sourceAttachment.title()}}</a></td>
+            <td>Attachment Conflict</td>
+        </tr>
+        {{/for}}
+        <tr><td colspan="5"></td></tr>
+        {{/for}}
+    </tbody>
+</table>

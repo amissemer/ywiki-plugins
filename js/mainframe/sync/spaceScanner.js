@@ -60,13 +60,13 @@ function setScanProgress(percent) {
 function descendants(context, children, level) {
     let descendantsRes = [];
     level = level || INDENT;
-    for (let child of children) {
+    children.forEach(child=> {
         if (!child.skipSync(context)) {
             child.level = level;
             descendantsRes.push(child);
             descendantsRes = descendantsRes.concat(descendants(context, child.children, level+INDENT));
         }
-    }
+    });
     return descendantsRes;
 }
 
