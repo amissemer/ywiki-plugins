@@ -3660,7 +3660,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.regexp.search */ "./node_modules/core-js/modules/es6.regexp.search.js");
 /* harmony import */ var core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_0__);
 
-var WHITELISTED_ORIGIN = ['https://localhost', 'https://amissemer.github.io', 'https://es-global-ci.github.io'];
+var WHITELISTED_ORIGIN = ['https://localhost', 'https://amissemer.github.io', 'https://amissemer.github.io:443', 'https://es-global-ci.github.io', 'https://es-global-ci.github.io:443'];
 
 function getOriginLocation() {
   var scripts = document.getElementsByTagName('script');

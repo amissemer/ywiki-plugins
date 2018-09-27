@@ -1,7 +1,9 @@
 const WHITELISTED_ORIGIN = [
   'https://localhost',
   'https://amissemer.github.io',
-  'https://es-global-ci.github.io'
+  'https://amissemer.github.io:443',
+  'https://es-global-ci.github.io',
+  'https://es-global-ci.github.io:443'
 ];
 
 function getOriginLocation() {
