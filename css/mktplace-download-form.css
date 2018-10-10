@@ -1,0 +1,51 @@
+.modal {
+}
+.vertical-alignment-helper {
+    display:table;
+    height: 100%;
+    width: 100%;
+}
+.vertical-align-center {
+    /* To center vertically */
+    display: table-cell;
+    vertical-align: middle;
+}
+.modal-content {
+    /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+    width:inherit;
+    height:inherit;
+    /* To center horizontally */
+    margin: 0 auto;
+}
+
+
+.btn-marketplace-download{
+    visibility: hidden;
+}
+
+#form-close {
+    margin-top: 8px;
+}
+.bootstrap-select img {
+    width: 16px;
+    height: auto;
+}
+.form-group.required label:after {
+    content:" *";
+    color:red;
+}
+#progress-indicator {
+    display: none;
+    margin-left: 10px;
+}
+#error-display, #authenticateWarning {
+    display: none;
+    padding: 10px;
+    margin-top: 10px;
+}
+#resultPanel {
+    display: none;
+}
+.mb-spacer {
+    margin-bottom: 15px;
+}

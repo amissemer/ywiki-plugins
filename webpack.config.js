@@ -11,7 +11,8 @@ function config(production) {
       "golden-form": './js/iframe/golden-form.js',
       "tests-bundle": './js/tests/tests.js',
       "create-jira-form": './js/iframe/create-jira-form.js',
-      "space-sync-bundle": './js/mainframe/spaceSyncPlugin.js'
+      "space-sync-bundle": './js/mainframe/spaceSyncPlugin.js',
+      "mktplace-download-form": "./js/mktplace/plugins/mktplace-download-form-plugin.js"
     },
     output: {
       filename: '[name].js',

@@ -41,7 +41,7 @@ export async function cloneAttachment(attachmentUrl, targetContainerId, title, /
  * ContentId is mandatory when updating an existing attachment, and must be omitted when
  * creating a new attachment.
  */
-async function storeBlob(containerId, blobData, title, /* optional */ contentId) {
+export async function storeBlob(containerId, blobData, title, /* optional */ contentId) {
     let url = BASE_URL;
     url += containerId;
     url += '/child/attachment';
@@ -49,15 +49,31 @@ async function storeBlob(containerId, blobData, title, /* optional */ contentId)
         url += '/' + contentId + '/data';
     }
     let formData = new FormData();
-    formData.append('file', blobData, title);
+    formData.append('file', blob, title);
     formData.append('minorEdit', 'true');
     return throttleWrite( () => postBinary(url, formData));
 }
 
 
+export async function storeAttachmentContent(containerId, blobData, title,  contentId, contentType) {
+    let url = BASE_URL;
+    url += containerId;
+    url += '/child/attachment';
+    if (contentId) {
+        url += '/' + contentId + '/data';
+    }
+    let formData = new FormData();
+    var blob = new Blob([blobData], { type: contentType});
+    formData.append('file', blob, title);
+    formData.append('minorEdit', 'true');
+    return throttleWrite( () => postBinary(url, formData));
+}
 
-async function loadBlob(url) {
+export async function loadBlob(url) {
     return throttleRead( () => loadBinary(url) );
+}
+export async function loadResource(url,responseType){
+    return throttleRead( () => loadUrlResource(url,responseType) );
 }
 
 async function postBinary(url, formData) {
@@ -76,20 +92,26 @@ async function postBinary(url, formData) {
         xhr.send(formData);
     });
 }
+
+
 async function loadBinary(url) {
+    return await loadUrlResource(url,'blob')
+}
+
+async function loadUrlResource(url,responseType){
     return new Promise( (resolve, reject) => {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
-        xhr.responseType = 'blob';
+        xhr.responseType = responseType;
         xhr.onerror = reject;
         xhr.onload = function(e) {
-          if (this.status == 200) {
-            // get binary data as a response
-            let blob = this.response;
-            resolve(blob);
-          } else {
-            reject(e);
-          }
+            if (this.status == 200) {
+                // get binary data as a response
+                let resource = this.response;
+                resolve(resource);
+            } else {
+                reject(e);
+            }
         };
         xhr.send();
     });
