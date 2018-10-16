@@ -114,7 +114,7 @@ function wireJiraIssueSummary(options) {
   if (options.summaryType=="done") {
     jql+=' AND status IN (Resolved, "Verified/Closed", Done, Fixed, Complete)';
   } else if (options.summaryType=="todo") {
-    jql+=' AND status NOT IN (Resolved, "Verified/Closed", Done, Fixed, Complete, Cancelled)';
+    jql+=' AND status NOT IN (Resolved, "Verified/Closed", Done, Fixed, Complete, Cancelled, Rejected)';
   }
   var postQuery = '<ac:structured-macro ac:name="jira" ac:schema-version="1" ><ac:parameter ac:name="columns">'+options.jiraColumns+'</ac:parameter><ac:parameter ac:name="maximumIssues">'+options.jiraIssueCount+'</ac:parameter><ac:parameter ac:name="jqlQuery">'+jql+'</ac:parameter></ac:structured-macro>';
   var reqPayload = {
