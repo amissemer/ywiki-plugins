@@ -5,7 +5,6 @@ import 'bootstrap/dist/js/bootstrap.min';
 import 'bootstrap/dist/css/bootstrap.css';
 // resets some default
 import './spaceSyncPlugin.css';
-import "@babel/polyfill";
 import '../lib/Array.ext';
 import {loadPluginStyleSheet} from './stylesheetPlugin';
 import {loadTemplate} from './fragmentLoader';

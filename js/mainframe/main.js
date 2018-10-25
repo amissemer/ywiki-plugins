@@ -1,4 +1,3 @@
-import "@babel/polyfill";
 import '../lib/Array.ext';
 import './goldenButtonPlugin';
 import {loadPluginStyleSheet} from './stylesheetPlugin';
