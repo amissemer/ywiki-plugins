@@ -215,6 +215,8 @@ function bootstrap(host, cacheBuster) {
       issueType: jEl.data('issue-type') || "Improvement",
       issueComponent: jEl.data('issue-component'),
       issueLabel: jEl.data('issue-label') || jEl.data('jira-label'),
+      //issueTypeSelect: jEl.data('issue-type-select'),
+      //issueComponentSelect: jEl.data('issue-component-select'),
     });
   });
   $('[data-activate="issue-summary"]').each( function() {
