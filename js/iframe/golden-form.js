@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import "@babel/polyfill";
 import '../lib/polyfills';
 import '../lib/Array.ext';
 import * as proxy from './proxyService';

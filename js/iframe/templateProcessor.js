@@ -5,10 +5,23 @@ var fixLocalLinksXsl = require('raw-loader!./xslt/fix-local-links.xsl');
 
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
 
-export function TemplateProcessor(placeholderReplacements, variantOptions, forceTitle) {
-
-  var placeholderReplacements = placeholderReplacements;
-  var variantOptions = variantOptions; // [ { name : "hosting", value : "ccv2" | "other" } ]
+/**
+ * Construct TemplateProcessor.
+ *
+ * @constructor
+ * @this {TemplateProcessor}
+ * @param {Object} options
+ * @param {Object} options.placeholderReplacements
+ * @param {Object} options.variantOptions
+ * @param {boolean} options.forceTitle
+ * @param {boolean} options.copyAttachments
+ */
+export function TemplateProcessor(options) {
+  if (!(this instanceof TemplateProcessor)) return new TemplateProcessor(options);
+  var placeholderReplacements = options.placeholderReplacements;
+  var variantOptions = options.variantOptions; // [ { name : "hosting", value : "ccv2" | "other" } ]
+  var forceTitle = options.forceTitle;
+  this.copyAttachments = options.copyAttachments;
 
   /** Filters only pages that contain [placeholders] */
   function isTemplatePage(page) {
@@ -98,24 +111,25 @@ export function TemplateProcessor(placeholderReplacements, variantOptions, force
     return variantOptionsTransform(content, variantOptions);
   }
 
-  return {
-    /** 
-     * Determines if a page is a template page and should be used to create the workspace, based on the variantOptions.
-     * @param page a confluence page with its title and labels
-     * @returns true|false
-     **/
-    isApplicableTemplatePage : function(page) {
-      return isTemplatePage(page) && isApplicableToVariantOptions(page);
-    },
-    /**
-     * Transforms a page a per placeholderReplacements and selected variantOptions
-     * /!\ Working through side-effect, directly on the input page.
-     */
-    transformPage : async function(page) {
-      replacePlaceholderInPage(page);
-      await filterVariant(page);
-      await fixLocalLinks(page);
-    }
-  };
+  /** 
+   * Determines if a page is a template page and should be used to create the workspace, based on the variantOptions.
+   * @param page a confluence page with its title and labels
+   * @returns true|false
+   **/
+  this.isApplicableTemplatePage = function(page) {
+    return isTemplatePage(page) && isApplicableToVariantOptions(page);
+  }
+  /**
+   * Transforms a page a per placeholderReplacements and selected variantOptions
+   * /!\ Working through side-effect, directly on the input page.
+   */
+  this.transformPage = async function(page) {
+    replacePlaceholderInPage(page);
+    await filterVariant(page);
+    await fixLocalLinks(page);
+  }
 
-};
+}
+
+
+

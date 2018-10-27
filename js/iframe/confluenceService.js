@@ -2,7 +2,8 @@ import * as proxy from './proxyService';
 import $ from 'jquery';
 import rateLimit from '../common/rate-limit';
 import {MAX_WIKI_PAGE_CREATION_RATE} from '../common/config';
-
+import AttachmentFactory from '../common/confluence/Attachment';
+const Attachment = AttachmentFactory(proxy);
 /**
  * An API for confluence that runs ajax queries through the proxy object to bypass the CORS restriction.
  */
@@ -160,16 +161,35 @@ export function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPag
 }
 
 async function copyPageRecursiveInternal(sourcePageId, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
-  let pageToCopy = await getContentById(sourcePageId, 'space,body.storage,children.page,metadata.labels');
+  let pageToCopy = await getContentById(sourcePageId, 'space,body.storage,children.page,children.attachment,metadata.labels');
   if (templateProcessor.isApplicableTemplatePage(pageToCopy)) {
       await templateProcessor.transformPage(pageToCopy);
       // Create the new page under targetSpaceKey:targetPageId
       let copiedPage = await createPageUnderPageId(pageToCopy,targetSpaceKey,targetPageId);
+      if (templateProcessor.copyAttachments) {
+        await copyAllAttachments(pageToCopy, copiedPage.id);
+      }
       copiedPages.push(copiedPage);
       return await copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
   } else {
       console.log("Page is not a template, not copied, but children will be copied: ",pageToCopy.title);
       return await copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
+  }
+}
+
+async function copyAllAttachments(pageToCopy, targetContainerId) {
+  let attachmentResults = pageToCopy.children.attachment;
+  while (attachmentResults && attachmentResults.results.length) {
+    for (let attachmentInternal of attachmentResults.results) {
+      let sourceAttachment = await Attachment.from(attachmentInternal);
+      var targetAttachment = await Attachment.getOrCreateAttachment(targetContainerId, sourceAttachment.title());
+      await targetAttachment.cloneFrom(sourceAttachment);
+    }
+    if (attachmentResults._links.next) {
+      attachmentResults = await proxy.ajax(attachmentResults._links.next);
+    } else {
+      attachmentResults = false;
+    }
   }
 }
 
@@ -204,10 +224,15 @@ export function createPage(page, targetSpaceKey, targetParentTitle) {
 }
 
 export function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
-  page.ancestors=[ { id: targetPageId } ];
-  console.log("New Page",page);
-  page.space={ key: targetSpaceKey };
-  return postPageRateLimited(page);
+  let pageToCreate = {
+    ancestors: [ { id: targetPageId } ],
+    space: { key: targetSpaceKey },
+    body: {storage: {representation: 'storage', value: page.body.storage.value}},
+    title: page.title,
+    type: 'page'
+  };
+  console.log("New Page",pageToCreate);
+  return postPageRateLimited(pageToCreate);
 }
 
 var postPageRateLimited = rateLimit(postPage, MAX_WIKI_PAGE_CREATION_RATE);

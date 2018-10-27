@@ -1,4 +1,3 @@
-import "@babel/polyfill";
 import '../lib/Array.ext';
 import {loadStyleSheet,loadPluginStyleSheet} from '../mainframe/stylesheetPlugin';
 import './tests.css';
