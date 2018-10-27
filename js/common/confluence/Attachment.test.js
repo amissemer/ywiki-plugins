@@ -1,4 +1,5 @@
-import Attachment from './Attachment';
+import AttachmentFactory from './Attachment';
+const Attachment = AttachmentFactory();
 import {assert} from 'chai';
 
 const pageToCopyAttachmentsTo =  '377578548';

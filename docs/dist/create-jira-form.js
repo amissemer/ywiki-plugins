@@ -786,7 +786,7 @@ function getJiraTicketKey(data) {
 /*!***********************************!*\
   !*** ./js/iframe/proxyService.js ***!
   \***********************************/
-/*! exports provided: ajax, localStorageSetItem, localStorageGetItem, closeFrame, redirect, $metacontent, $text, $arrayGetText, $tableCellsGetHtml */
+/*! exports provided: ajax, localStorageSetItem, localStorageGetItem, closeFrame, redirect, $metacontent, $text, $arrayGetText, $tableCellsGetHtml, cloneAttachment */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -800,6 +800,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "$text", function() { return $text; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "$arrayGetText", function() { return $arrayGetText; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "$tableCellsGetHtml", function() { return $tableCellsGetHtml; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cloneAttachment", function() { return cloneAttachment; });
 /* harmony import */ var _common_iframeWrapper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/iframeWrapper */ "./js/common/iframeWrapper.js");
 /* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
 
@@ -860,6 +861,14 @@ function $arrayGetText(cssSelector) {
 }
 function $tableCellsGetHtml(cssSelector) {
   return wrapper.call("$tableCellsGetHtml", cssSelector);
+}
+function cloneAttachment(attachmentUrl, targetContainerId, title, targetId) {
+  return wrapper.call("cloneAttachment", {
+    attachmentUrl: attachmentUrl,
+    targetContainerId: targetContainerId,
+    title: title,
+    targetId: targetId
+  });
 }
 
 /***/ }),

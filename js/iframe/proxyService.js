@@ -54,3 +54,7 @@ export function $arrayGetText(cssSelector) {
 export function $tableCellsGetHtml(cssSelector) {
   return wrapper.call("$tableCellsGetHtml", cssSelector);
 }
+
+export function cloneAttachment(attachmentUrl, targetContainerId, title, targetId) {
+  return wrapper.call("cloneAttachment", {attachmentUrl, targetContainerId, title, targetId});
+}

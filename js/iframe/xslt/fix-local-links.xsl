@@ -13,6 +13,10 @@
             <xsl:apply-templates select="@*|node()"/>
         </xsl:copy>
     </xsl:template>
+
+    <!-- Remove the <ac:parameter ac:name="revision">*</ac:parameter> tag in the <ac:structured-macro ac:name="drawio"> tags,
+    to avoid binding draw.io macros to wrong version of diagram -->
+    <xsl:template match="ac:structured-macro[@ac:name='drawio']/ac:parameter[@ac:name='revision']" />
     
     <!-- Copy everything else as is -->   
     <xsl:template match="@*|node()">

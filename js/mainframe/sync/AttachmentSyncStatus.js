@@ -1,6 +1,7 @@
 import SyncStatusEnum from './SyncStatusEnum';
 import log from './log';
-import Attachment from '../../common/confluence/Attachment';
+import AttachmentFactory from '../../common/confluence/Attachment';
+const Attachment = AttachmentFactory();
 
 function AttachmentSyncStatus(parentSyncStatus, sourceAttachment, targetAttachment, syncTimeStamp) {
     this.parentSyncStatus = parentSyncStatus;
@@ -88,65 +89,3 @@ AttachmentSyncStatus.prototype.markSynced = async function() {
 export default AttachmentSyncStatus; 
 
 
-
-    // if (!syncTimeStamp.isNew() && targetAttachment.exists()) {
-    //                 // we have the source and target attachments and a syncTimeStamp, first check consistency
-    //                 if (syncTimeStamp.getPage(attachment.id)==null || syncTimeStamp.getPage(targetAttachment.id())==null) {
-    //                     syncStatus = new AttachmentSyncStatus();
-    //                 }
-    //             } && (syncTimeStamp.getPage(targetAttachment.id())  !== syncTimeStamp.targetContentId || targetAttachment.version.number !== syncTimeStamp.targetVersion ) ) {
-    //                 throw `Attachment ${targetAttachmentId} was modified on target, should we overwrite?`;
-    //             }
-    //             if (syncTimeStamp && targetAttachmentId!=null && attachment.version.number === syncTimeStamp.sourceVersion) {
-    //                 console.log(`attachment ${targetAttachmentId} was already up-to-date, synced with source version ${attachment.version.number}`);
-    //                 return targetAttachment;
-    
-    
-    //         }
-                //let cloned = await syncAttachment(attachment, targetContainerId, syncTimeStamp);
-            //synced.push(cloned);
-    
-            // if (!syncTimeStamp.isNew()) {
-            //     try {
-            //       targetPage = await getContentById(syncTimeStamp.getOtherPage(pageToCopy.id).contentId, TARGET_EXPANDS);
-            //       syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
-            //     } catch (err) {
-            //       // target based on syncTimeStamp id is missing
-            //       console.debug("Normal error ",err);
-            //     }
-            //   }
-            //   if (!syncStatus && !targetPage) { // lookup by title
-            //     try {
-            //       targetPage = await getContent(targetSpaceKey, pageToCopy.title, TARGET_EXPANDS);
-            //       syncTimeStamp = await SyncTimeStamp.loadLastSyncFromContentWithSpace(targetPage.id, pageToCopy.space.key);
-            //       syncStatus = new SyncStatus(this, targetSpaceKey, targetPage, syncTimeStamp);
-            //     } catch (err) {
-            //       // target with same title as source is missing
-            //       syncStatus = new SyncStatus(this, targetSpaceKey, null, syncTimeStamp);
-            //     }
-            //   }
-            //   $.observable(this).setProperty("syncStatus", syncStatus);
-            //   this.pageGroupRoot._updateWithSyncStatus(syncStatus);
-      
-
-
-
-// export async function syncAttachment(attachment, targetContainerId, syncTimeStamp) {
-//     let targetAttachment = await lookupAttachment(targetContainerId, attachment.title);
-//     let targetAttachmentId = targetAttachment ? targetAttachment.id:null;
-//     if (targetAttachmentId && !syncTimeStamp) {
-//       // try and get it from the target
-//       syncTimeStamp = await getSourceSyncTimeStamp(targetAttachmentId, attachment.space.key);
-//     }
-//     if (syncTimeStamp && targetAttachmentId!=null && (targetAttachmentId !== syncTimeStamp.targetContentId || targetAttachment.version.number !== syncTimeStamp.targetVersion ) ) {
-//         throw `Attachment ${targetAttachmentId} was modified on target, should we overwrite?`;
-//     }
-//     if (syncTimeStamp && targetAttachmentId!=null && attachment.version.number === syncTimeStamp.sourceVersion) {
-//         console.log(`attachment ${targetAttachmentId} was already up-to-date, synced with source version ${attachment.version.number}`);
-//         return targetAttachment;
-//     } else {
-//         let cloned = await cloneAttachment(attachment._links.download, targetContainerId, attachment.title, targetAttachmentId);
-//         await setSyncTimeStamps(attachment, cloned, attachment.space.key, cloned.space.key);
-//         return cloned;
-//     }
-//   }
