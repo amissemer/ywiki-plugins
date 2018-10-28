@@ -4,24 +4,20 @@
 
 The page where the marketplace db will be stored needs to be created first:
 
-* Create a page named after the DB_SPACE and DB_PAGE_TITLE constants from the mktplace-config.js file
+* Create a page named after the DB_SPACE and DB_PAGE_TITLE constants from the [mktplace-config.js](mktplace-config.js) file.
 
 ### Modify your add-on solution wiki pages
 
-For each wiki page with a link to a solution-addon repo:
-* Add an HTML macro to the top of your page with the following content:
-```
-<div id="mktplace-div-download-form"></div>
-```
-* Add a button or link macro pointing to your repository URL and set the ID value to **mktplace-addon-download**
-* Add another HTML macro at the bottom of your page with:
+For each wiki page of a tool/addon in the GitHub repos whitelisted in the `mktplace-config.js`, just add regular links to the repositories main page.
+
+* If you can get the whole space whitelisted for the HTML macro, add the macro to the footer of the page template at the space level.
+* Else (for testing purpose), add the HTML macro at the botton of each page and add a Write restriction to each page
+
 ```
 <script src="https://localhost/ywiki-plugins/dist/mktplace-download-form.js"></script>
-<button class="btn btn-primary btn-lg btn-marketplace-download" data-toggle="modal" data-target="#myModal" style="display:none;">Launch Download form</button>
 ```
-* Save your changes.
 
-
+Adjust the hostname if necessary.
 
 ### Technical notes
 
@@ -32,6 +28,5 @@ For each wiki page with a link to a solution-addon repo:
 * jquery, bootstrap are the required libraries and minimal modifications were made to the confluence-attachment-async.js file to support multiple content types for wiki attachments. 
 
 ### TODO
-* Code can be further improved to use state-of-the-art javascript syntax.
 * Junits for javascript files.
 * Improve form customer experience if feel appropiated.
