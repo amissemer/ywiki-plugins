@@ -138,15 +138,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PORTFOLIO_GROUP", function() { return PORTFOLIO_GROUP; });
 var DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 var DEFAULT_JIRA_ISSUE_COUNT = 10;
-var MAIN_JIRA_LABEL = "CI";
-var TAGS_FIELD = "customfield_10032";
+var MAIN_JIRA_LABEL = 'CI';
+var TAGS_FIELD = 'customfield_10032';
 var WIKI_HOST = 'wiki.hybris.com';
 var MAX_WIKI_PAGE_CREATION_RATE = 50; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
 
 var SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
 
-var PREFIX = "ywiki-plugins.";
-var PREFERRED_REGION_KEY = "preferred.region";
+var PREFIX = 'ywiki-plugins.';
+var PREFERRED_REGION_KEY = 'preferred.region';
 var DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
 var CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
 var DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
@@ -363,7 +363,6 @@ function Attachment(jQuery) {
   }
 }
 
-;
 /* harmony default export */ __webpack_exports__["default"] = (Attachment);
 
 /***/ }),
@@ -381,9 +380,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Attachment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Attachment */ "./js/common/confluence/Attachment.js");
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Attachment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Attachment */ "./js/common/confluence/Attachment.js");
 
 
 
@@ -392,8 +391,8 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
-var Attachment = Object(_Attachment__WEBPACK_IMPORTED_MODULE_2__["default"])();
 
+var Attachment = Object(_Attachment__WEBPACK_IMPORTED_MODULE_3__["default"])();
 var pageToCopyAttachmentsTo = '377578548';
 var attachmentExample = '/download/attachments/257608297/Sprint%20Execution_test.png?api=v2';
 var attachmentTitle = 'Sprint Execution_test.png';
@@ -422,19 +421,19 @@ describe('Attachment', function () {
 
           case 7:
             att = _context.sent;
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNull(att.id());
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNull(att.id());
             _context.next = 11;
             return att.cloneFrom(attachmentExample);
 
           case 11:
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNotNull(att.id());
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNotNull(att.id());
             _context.next = 14;
             return Attachment.getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
 
           case 14:
             att = _context.sent;
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNotNull(att.id());
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNotNull(att._internal.space.key);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNotNull(att.id());
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNotNull(att._internal.space.key);
 
           case 17:
           case "end":
@@ -459,7 +458,7 @@ describe('Attachment', function () {
           case 2:
             from = _context2.sent;
             _context2.next = 5;
-            return Attachment.getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle + '_2');
+            return Attachment.getOrCreateAttachment(pageToCopyAttachmentsTo, "".concat(attachmentTitle, "_2"));
 
           case 5:
             to = _context2.sent;
@@ -467,12 +466,12 @@ describe('Attachment', function () {
             return to.cloneFrom(from);
 
           case 8:
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNotNull(to.id(), 'after cloning, id should be populated');
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNotNull(to.id(), 'after cloning, id should be populated');
             _context2.next = 11;
             return to.delete();
 
           case 11:
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNull(to.id(), 'after delete(), id should be null');
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNull(to.id(), 'after delete(), id should be null');
 
           case 12:
           case "end":
@@ -496,10 +495,10 @@ describe('Attachment', function () {
 
           case 2:
             att = _context3.sent;
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNotNull(att.id());
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNotNull(att.version(), 'version() should not be null');
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].equal(1, att.version(), 'first version() should be 1');
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNotNull(att.downloadUrl(), 'downloadUrl() should not be null');
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNotNull(att.id());
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNotNull(att.version(), 'version() should not be null');
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(1, att.version(), 'first version() should be 1');
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNotNull(att.downloadUrl(), 'downloadUrl() should not be null');
 
           case 7:
           case "end":
@@ -523,9 +522,9 @@ describe('Attachment', function () {
 
           case 2:
             att = _context4.sent;
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNull(att.id());
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNull(att.version(), 'version() should be null');
-            chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNull(att.downloadUrl(), 'downloadUrl() should be null');
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNull(att.id());
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNull(att.version(), 'version() should be null');
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isNull(att.downloadUrl(), 'downloadUrl() should be null');
 
           case 6:
           case "end":
@@ -563,6 +562,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _confluence_labels_async__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./confluence-labels-async */ "./js/common/confluence/confluence-labels-async.js");
 /* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
+/* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_confluence_page_async__WEBPACK_IMPORTED_MODULE_8__);
 
 
 
@@ -691,9 +691,9 @@ var Labels = {
       labelsToFind = [labelsToFind];
     }
 
-    return null != page.metadata.labels.results.find(function (l) {
+    return page.metadata.labels.results.find(function (l) {
       return labelsToFind.indexOf(l.name) >= 0;
-    });
+    }) != null;
   }
 };
 
@@ -738,10 +738,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Labels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Labels */ "./js/common/confluence/Labels.js");
-/* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Labels__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Labels */ "./js/common/confluence/Labels.js");
+/* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
+/* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__);
 
 
 
@@ -756,8 +757,8 @@ var page1Id = '257597020'; // in ~adrien.missemer@sap.com
 
 var page2Id = '404455459'; // in ps
 
-describe("Labels", function () {
-  it("should load (lazily or not) and save properly",
+describe('Labels', function () {
+  it('should load (lazily or not) and save properly',
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
@@ -797,8 +798,8 @@ describe("Labels", function () {
 
           case 17:
             labels2 = _context.sent;
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].deepEqual(labels1.labelArray, []);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].deepEqual(labels2.labelArray, ['a', 'b', 'c']); // labels get sorted
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].deepEqual(labels1.labelArray, []);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].deepEqual(labels2.labelArray, ['a', 'b', 'c']); // labels get sorted
 
           case 20:
           case "end":
@@ -807,7 +808,7 @@ describe("Labels", function () {
       }
     }, _callee, this);
   })));
-  it("should remove or add labels",
+  it('should remove or add labels',
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
@@ -847,8 +848,8 @@ describe("Labels", function () {
 
           case 17:
             labels2 = _context2.sent;
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].deepEqual(labels1.labelArray, ['new1', 'new2']);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].deepEqual(labels2.labelArray, ['z']);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].deepEqual(labels1.labelArray, ['new1', 'new2']);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].deepEqual(labels2.labelArray, ['z']);
 
           case 20:
           case "end":
@@ -857,7 +858,7 @@ describe("Labels", function () {
       }
     }, _callee2, this);
   })));
-  it("should merge labels",
+  it('should merge labels',
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
@@ -901,12 +902,12 @@ describe("Labels", function () {
             // merge changes from page 2 into page 1
 
             labels1.mergeFrom(labels2, initial);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].deepEqual(labels1.labelArray, ['b', 'c', 'd', 'z']);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].deepEqual(labels2.labelArray, ['b', 'c', 'z']); // merge changes from page 1 into page 2
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].deepEqual(labels1.labelArray, ['b', 'c', 'd', 'z']);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].deepEqual(labels2.labelArray, ['b', 'c', 'z']); // merge changes from page 1 into page 2
 
             labels2.mergeFrom(labels1, initial);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].deepEqual(labels1.labelArray, ['b', 'c', 'd', 'z']);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].deepEqual(labels2.labelArray, ['b', 'c', 'd', 'z']);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].deepEqual(labels1.labelArray, ['b', 'c', 'd', 'z']);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].deepEqual(labels2.labelArray, ['b', 'c', 'd', 'z']);
 
           case 25:
           case "end":
@@ -932,11 +933,11 @@ function _loadLabels() {
           case 0:
             expand = lazyLoad ? '' : 'metadata.labels';
             _context4.next = 3;
-            return Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_3__["getContentById"])(pageId, expand);
+            return Object(_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__["getContentById"])(pageId, expand);
 
           case 3:
             page = _context4.sent;
-            return _context4.abrupt("return", _Labels__WEBPACK_IMPORTED_MODULE_2__["default"].getFromPage(page));
+            return _context4.abrupt("return", _Labels__WEBPACK_IMPORTED_MODULE_3__["default"].getFromPage(page));
 
           case 5:
           case "end":
@@ -947,100 +948,6 @@ function _loadLabels() {
   }));
   return _loadLabels.apply(this, arguments);
 }
-
-/***/ }),
-
-/***/ "./js/common/confluence/Page.js":
-/*!**************************************!*\
-  !*** ./js/common/confluence/Page.js ***!
-  \**************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-function Page(title, body, spaceKey, parentId) {
-  this.setTitle(title);
-  this.setBody(body);
-  this.setSpaceKey(spaceKey);
-  this.setParentId(parentId);
-  this.type = "page";
-}
-
-;
-
-Page.prototype.toString = function () {
-  return JSON.stringify(this);
-};
-
-Page.prototype._setId = function (id) {
-  this.id = id;
-  return this;
-};
-
-Page.prototype.setParentId = function (parentId) {
-  this.ancestors = [{
-    id: parentId
-  }];
-  return this;
-};
-
-Page.prototype.setSpaceKey = function (spaceKey) {
-  this.space = {
-    key: spaceKey
-  };
-  return this;
-};
-
-Page.prototype.setBody = function (body) {
-  this.body = {
-    storage: {
-      representation: "storage",
-      value: body
-    }
-  };
-  return this;
-};
-
-Page.prototype.setBodyFromPage = function (page) {
-  return this.setBody(page.body && page.body.storage ? page.body.storage.value : null);
-};
-
-Page.prototype.setTitle = function (title) {
-  this.title = title;
-  return this;
-};
-
-Page.prototype.setVersion = function (versionNumber, message, isMajorEdit) {
-  this.version = {
-    number: versionNumber,
-    minorEdit: true
-  };
-
-  if (message) {
-    this.version.message = message;
-  }
-
-  if (isMajorEdit) {
-    this.version.minorEdit = false;
-  }
-
-  return this;
-}; // static builder
-
-
-Page.copyFrom = function (page) {
-  var spaceKey = page.space ? page.space.key : '';
-  var parentId = page.ancestors && page.ancestors.length ? page.ancestors[0].id : 0;
-  var body = page.body && page.body.storage ? page.body.storage.value : null;
-  return new Page(page.title, body, spaceKey, parentId);
-};
-
-Page.newVersionOf = function (page, message, isMajorEdit) {
-  return Page.copyFrom(page)._setId(page.id).setVersion(page.version.number + 1, message, isMajorEdit);
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (Page);
 
 /***/ }),
 
@@ -1069,7 +976,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 /** A wrapper for Confluence properties.
- * 
+ *
  * let prop = await Property.load(contentId, key);
  * // you can then update the value
  * prop.value().foo = 'bar'
@@ -1277,7 +1184,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var CONTENT_ID = '410924257';
 var KEY = 'test1';
-describe("Property", function () {
+describe('Property', function () {
   it('should handle load and save',
   /*#__PURE__*/
   _asyncToGenerator(
@@ -1293,11 +1200,11 @@ describe("Property", function () {
 
           case 2:
             prop = _context.sent;
-            console.log("old value", prop.value());
-            prop.value().test = "test ABC";
+            console.log('old value', prop.value());
+            prop.value().test = 'test ABC';
             prop.value().test2 = {
-              g: "g",
-              h: "h"
+              g: 'g',
+              h: 'h'
             };
             _context.next = 8;
             return prop.save();
@@ -1310,13 +1217,13 @@ describe("Property", function () {
           case 11:
             _context.t1 = _context.sent.value();
 
-            _context.t0.log.call(_context.t0, "intermediate val", _context.t1);
+            _context.t0.log.call(_context.t0, 'intermediate val', _context.t1);
 
-            prop.value().test = "test ABCD";
+            prop.value().test = 'test ABCD';
             prop.value().test2 = {
-              g: "g",
-              h: "h",
-              i: "i"
+              g: 'g',
+              h: 'h',
+              i: 'i'
             };
             _context.next = 17;
             return prop.save();
@@ -1329,7 +1236,7 @@ describe("Property", function () {
           case 20:
             _context.t3 = _context.sent.value();
 
-            _context.t2.log.call(_context.t2, "final val", _context.t3);
+            _context.t2.log.call(_context.t2, 'final val', _context.t3);
 
           case 22:
           case "end":
@@ -1386,23 +1293,23 @@ function _lookupAttachment() {
           case 0:
             _context.next = 2;
             return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
-              return ajax(BASE_URL + "".concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
+              return ajax("".concat(BASE_URL).concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
             });
 
           case 2:
             results = _context.sent;
 
             if (!(results && results.results && results.results.length)) {
-              _context.next = 7;
+              _context.next = 5;
               break;
             }
 
             return _context.abrupt("return", results.results[0]);
 
-          case 7:
+          case 5:
             return _context.abrupt("return", null);
 
-          case 8:
+          case 6:
           case "end":
             return _context.stop();
         }
@@ -1444,7 +1351,7 @@ function _deleteAttachment() {
 function cloneAttachment(_x6, _x7, _x8, _x9, _x10) {
   return _cloneAttachment.apply(this, arguments);
 }
-/** 
+/**
  * ContentId is mandatory when updating an existing attachment, and must be omitted when
  * creating a new attachment.
  */
@@ -1525,7 +1432,7 @@ function _storeBlob() {
             url += '/child/attachment';
 
             if (contentId) {
-              url += '/' + contentId + '/data';
+              url += "/".concat(contentId, "/data");
             }
 
             formData = new FormData();
@@ -1585,7 +1492,7 @@ function _postBinary() {
           case 0:
             return _context6.abrupt("return", new Promise(function (resolve, reject) {
               var xhr = new XMLHttpRequest();
-              xhr.open("POST", url, true);
+              xhr.open('POST', url, true);
               xhr.onerror = reject;
               xhr.setRequestHeader('X-Atlassian-Token', 'nocheck');
 
@@ -1698,14 +1605,14 @@ function _addLabels() {
             labelsPayload = [];
             labels.forEach(function (label) {
               return labelsPayload.push({
-                "prefix": "global",
-                "name": label
+                prefix: 'global',
+                name: label
               });
             });
             return _context.abrupt("return", jquery__WEBPACK_IMPORTED_MODULE_3___default.a.post({
-              url: BASE_URL + contentId + '/label',
+              url: "".concat(BASE_URL + contentId, "/label"),
               data: JSON.stringify(labelsPayload),
-              contentType: "application/json; charset=utf-8"
+              contentType: 'application/json; charset=utf-8'
             }));
 
           case 3:
@@ -1742,7 +1649,7 @@ function _removeLabels() {
                     switch (_context2.prev = _context2.next) {
                       case 0:
                         return _context2.abrupt("return", jquery__WEBPACK_IMPORTED_MODULE_3___default.a.ajax({
-                          url: BASE_URL + contentId + '/label?name=' + encodeURIComponent(label),
+                          url: "".concat(BASE_URL + contentId, "/label?name=").concat(encodeURIComponent(label)),
                           type: 'DELETE'
                         }));
 
@@ -1778,837 +1685,10 @@ function _removeLabels() {
 /*!*******************************************************!*\
   !*** ./js/common/confluence/confluence-page-async.js ***!
   \*******************************************************/
-/*! exports provided: movePages, movePagesById, getContent, getContentById, searchPagesWithCQL, copyPage, copyPageToSpace, createPageFromTemplate, copyPageRecursive, copyPageRecursiveInternal, copyAllChildren, createPageUnderPageId, postPage, updateContent, getPageTree */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "movePages", function() { return movePages; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "movePagesById", function() { return movePagesById; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getContent", function() { return getContent; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getContentById", function() { return getContentById; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "searchPagesWithCQL", function() { return searchPagesWithCQL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPage", function() { return copyPage; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageToSpace", function() { return copyPageToSpace; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPageFromTemplate", function() { return createPageFromTemplate; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageRecursive", function() { return copyPageRecursive; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageRecursiveInternal", function() { return copyPageRecursiveInternal; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyAllChildren", function() { return copyAllChildren; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPageUnderPageId", function() { return createPageUnderPageId; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postPage", function() { return postPage; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateContent", function() { return updateContent; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPageTree", function() { return getPageTree; });
-/* harmony import */ var core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.function.name */ "./node_modules/core-js/modules/es6.function.name.js");
-/* harmony import */ var core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
-/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.string.iterator */ "./node_modules/core-js/modules/es6.string.iterator.js");
-/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.number.is-integer */ "./node_modules/core-js/modules/es6.number.is-integer.js");
-/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
-/* harmony import */ var _Page__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Page */ "./js/common/confluence/Page.js");
-
-
-
-
-
-
-
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
-
-function movePages(_x, _x2, _x3, _x4) {
-  return _movePages.apply(this, arguments);
-}
-
-function _movePages() {
-  _movePages = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee(sourceSpaceKey, sourcePageTitle, targetSpaceKey, targetParentTitle) {
-    var sourcePage;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.next = 2;
-            return getContent(sourceSpaceKey, sourcePageTitle);
-
-          case 2:
-            sourcePage = _context.sent;
-            _context.next = 5;
-            return movePagesById(sourcePage.id, targetSpaceKey, targetParentTitle);
-
-          case 5:
-            return _context.abrupt("return", _context.sent);
-
-          case 6:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee, this);
-  }));
-  return _movePages.apply(this, arguments);
-}
-
-function getAtlToken() {
-  return $('meta[name=ajs-atl-token]').attr("content");
-}
-
-function movePagesById(_x5, _x6, _x7) {
-  return _movePagesById.apply(this, arguments);
-}
-/**
-* Get a page by spaceKey and title from Confluence and returns a deferred for that page.
-* See $.ajax().done()
-* Failures are logged and ignored.
-* The deferred is resolved with the first matching page is any, else it is rejected.
-*/
-
-function _movePagesById() {
-  _movePagesById = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee3(sourcePageId, targetSpaceKey, target) {
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.next = 2;
-            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleWrite"])(
-            /*#__PURE__*/
-            _asyncToGenerator(
-            /*#__PURE__*/
-            regeneratorRuntime.mark(function _callee2() {
-              var targetParentTitle, targetParent, url, resp;
-              return regeneratorRuntime.wrap(function _callee2$(_context2) {
-                while (1) {
-                  switch (_context2.prev = _context2.next) {
-                    case 0:
-                      if (!Number.isInteger(Number(target))) {
-                        _context2.next = 7;
-                        break;
-                      }
-
-                      _context2.next = 3;
-                      return getContentById(Number(target));
-
-                    case 3:
-                      targetParent = _context2.sent;
-                      targetParentTitle = targetParent.title;
-                      _context2.next = 8;
-                      break;
-
-                    case 7:
-                      targetParentTitle = target;
-
-                    case 8:
-                      if (targetParentTitle) {
-                        _context2.next = 10;
-                        break;
-                      }
-
-                      throw 'targetParentTitle is mandatory (for source ' + sourcePageId + ' and target ' + target + ')';
-
-                    case 10:
-                      url = '/pages/movepage.action?pageId=' + encodeURIComponent(sourcePageId) + '&spaceKey=' + encodeURIComponent(targetSpaceKey) + '&targetTitle=' + encodeURIComponent(targetParentTitle) + '&position=append&atl_token=' + getAtlToken() + '&_=' + Math.random();
-                      console.log("Moving page ", sourcePageId, " under ", targetSpaceKey + ":" + targetParentTitle, url);
-                      _context2.next = 14;
-                      return $.ajax(url);
-
-                    case 14:
-                      resp = _context2.sent;
-
-                      if (!(typeof resp === 'string' && resp.indexOf('Not Permitted' >= 0))) {
-                        _context2.next = 19;
-                        break;
-                      }
-
-                      throw 'Not Permitted';
-
-                    case 19:
-                      if (!(typeof resp === 'string')) {
-                        _context2.next = 23;
-                        break;
-                      }
-
-                      throw 'Generic move error';
-
-                    case 23:
-                      if (!resp.actionErrors) {
-                        _context2.next = 25;
-                        break;
-                      }
-
-                      throw resp.actionErrors.join();
-
-                    case 25:
-                    case "end":
-                      return _context2.stop();
-                  }
-                }
-              }, _callee2, this);
-            })));
-
-          case 2:
-            return _context3.abrupt("return", _context3.sent);
-
-          case 3:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3, this);
-  }));
-  return _movePagesById.apply(this, arguments);
-}
-
-function getContent(_x8, _x9, _x10) {
-  return _getContent.apply(this, arguments);
-}
-
-function _getContent() {
-  _getContent = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee4(spaceKey, pageTitle, expand) {
-    var expandParam, url, response, page;
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            expandParam = "";
-
-            if (expand) {
-              expandParam = '&expand=' + encodeURIComponent(expand);
-            }
-
-            url = '/rest/api/content?type=page&spaceKey=' + encodeURIComponent(spaceKey) + '&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
-            console.log("Getting page content from " + url);
-            _context4.next = 6;
-            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleRead"])(function () {
-              return $.ajax(url);
-            });
-
-          case 6:
-            response = _context4.sent;
-            console.log("Filtering AJAX response", response);
-
-            if (!(response.results && response.results.length > 0)) {
-              _context4.next = 14;
-              break;
-            }
-
-            page = response.results[0];
-            console.log("Returning ", page);
-            return _context4.abrupt("return", page);
-
-          case 14:
-            throw "Page Not found: '" + spaceKey + ":" + pageTitle + "'";
-
-          case 15:
-          case "end":
-            return _context4.stop();
-        }
-      }
-    }, _callee4, this);
-  }));
-  return _getContent.apply(this, arguments);
-}
-
-function getContentById(_x11, _x12) {
-  return _getContentById.apply(this, arguments);
-}
-/** search for content with CQL
-for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
-
-function _getContentById() {
-  _getContentById = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee5(pageId, expand) {
-    var expandParam, url;
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            expandParam = "";
-
-            if (expand) {
-              expandParam = '?expand=' + encodeURIComponent(expand);
-            }
-
-            url = '/rest/api/content/' + encodeURIComponent(pageId) + expandParam;
-            console.log(url);
-            _context5.next = 6;
-            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleRead"])(function () {
-              return $.ajax(url);
-            });
-
-          case 6:
-            return _context5.abrupt("return", _context5.sent);
-
-          case 7:
-          case "end":
-            return _context5.stop();
-        }
-      }
-    }, _callee5, this);
-  }));
-  return _getContentById.apply(this, arguments);
-}
-
-function searchPagesWithCQL(_x13, _x14, _x15, _x16) {
-  return _searchPagesWithCQL.apply(this, arguments);
-}
-/**
-* Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
-* and do a placeholder replacement the page title using the templateProcessor.
-*/
-
-function _searchPagesWithCQL() {
-  _searchPagesWithCQL = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee6(spaceKey, cqlQuery, limit, expand) {
-    var expandParam;
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            if (!limit || limit < 0) {
-              limit = 15;
-            }
-
-            expandParam = expand ? "&expand=" + encodeURIComponent(expand) : "";
-            _context6.next = 4;
-            return $.ajax('/rest/api/content/search?limit=' + encodeURIComponent(limit) + '&cql=' + encodeURIComponent(cqlQuery + ' and type=page and space=\'' + spaceKey + '\'') + expandParam);
-
-          case 4:
-            return _context6.abrupt("return", _context6.sent);
-
-          case 5:
-          case "end":
-            return _context6.stop();
-        }
-      }
-    }, _callee6, this);
-  }));
-  return _searchPagesWithCQL.apply(this, arguments);
-}
-
-function copyPage(_x17, _x18, _x19, _x20, _x21) {
-  return _copyPage.apply(this, arguments);
-}
-
-function _copyPage() {
-  _copyPage = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee7(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor) {
-    var pageToCopy, newPage, targetParentPage;
-    return regeneratorRuntime.wrap(function _callee7$(_context7) {
-      while (1) {
-        switch (_context7.prev = _context7.next) {
-          case 0:
-            _context7.next = 2;
-            return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage,metadata.labels');
-
-          case 2:
-            pageToCopy = _context7.sent;
-            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy);
-            _context7.next = 6;
-            return templateProcessor.transformPage(newPage);
-
-          case 6:
-            _context7.next = 8;
-            return getContent(toSpaceKey, toPageTitle, 'space');
-
-          case 8:
-            targetParentPage = _context7.sent;
-            console.log("targetParentPage: space=", targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
-            newPage.setSpaceKey(toSpaceKey).setParentId(targetParentPage.id);
-            _context7.next = 13;
-            return createPageUnderPageId(newPage);
-
-          case 13:
-            return _context7.abrupt("return", _context7.sent);
-
-          case 14:
-          case "end":
-            return _context7.stop();
-        }
-      }
-    }, _callee7, this);
-  }));
-  return _copyPage.apply(this, arguments);
-}
-
-function copyPageToSpace(_x22, _x23, _x24) {
-  return _copyPageToSpace.apply(this, arguments);
-}
-
-function _copyPageToSpace() {
-  _copyPageToSpace = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee8(sourcePageId, targetSpaceKey, targetParentId) {
-    var pageToCopy, newPage;
-    return regeneratorRuntime.wrap(function _callee8$(_context8) {
-      while (1) {
-        switch (_context8.prev = _context8.next) {
-          case 0:
-            _context8.next = 2;
-            return getContentById(sourcePageId, 'space,body.storage,metadata.labels');
-
-          case 2:
-            pageToCopy = _context8.sent;
-            _context8.prev = 3;
-            _context8.next = 6;
-            return getContent(targetSpaceKey, pageToCopy.title);
-
-          case 6:
-            return _context8.abrupt("return", _context8.sent);
-
-          case 9:
-            _context8.prev = 9;
-            _context8.t0 = _context8["catch"](3);
-            // Create the new page 
-            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy).setSpaceKey(targetSpaceKey).setParentId(targetParentId);
-            _context8.next = 14;
-            return createPageUnderPageId(newPage);
-
-          case 14:
-            return _context8.abrupt("return", _context8.sent);
-
-          case 15:
-          case "end":
-            return _context8.stop();
-        }
-      }
-    }, _callee8, this, [[3, 9]]);
-  }));
-  return _copyPageToSpace.apply(this, arguments);
-}
-
-function createPageFromTemplate(_x25, _x26, _x27, _x28, _x29) {
-  return _createPageFromTemplate.apply(this, arguments);
-}
-
-function _createPageFromTemplate() {
-  _createPageFromTemplate = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee9(templateSpace, templateTitle, targetSpaceKey, targetPageId, templateProcessor) {
-    var pageToCopy, newPage;
-    return regeneratorRuntime.wrap(function _callee9$(_context9) {
-      while (1) {
-        switch (_context9.prev = _context9.next) {
-          case 0:
-            _context9.next = 2;
-            return getContent(templateSpace, templateTitle, 'space,body.storage,metadata.labels');
-
-          case 2:
-            pageToCopy = _context9.sent;
-            //var parentPage = await getContentById(targetPageId, 'space');
-            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy).setSpaceKey(targetSpaceKey).setParentId(targetPageId);
-            _context9.next = 6;
-            return templateProcessor.transformPage(newPage);
-
-          case 6:
-            _context9.next = 8;
-            return createPageUnderPageId(newPage);
-
-          case 8:
-            return _context9.abrupt("return", _context9.sent);
-
-          case 9:
-          case "end":
-            return _context9.stop();
-        }
-      }
-    }, _callee9, this);
-  }));
-  return _createPageFromTemplate.apply(this, arguments);
-}
-
-function copyPageRecursive(_x30, _x31, _x32, _x33, _x34, _x35) {
-  return _copyPageRecursive.apply(this, arguments);
-}
-
-function _copyPageRecursive() {
-  _copyPageRecursive = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee10(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor, copiedPages) {
-    var sourcePagePromise, targetPagePromise, pages;
-    return regeneratorRuntime.wrap(function _callee10$(_context10) {
-      while (1) {
-        switch (_context10.prev = _context10.next) {
-          case 0:
-            sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
-            targetPagePromise = getContent(toSpaceKey, toPageTitle, 'space');
-            _context10.next = 4;
-            return Promise.all(sourcePagePromise, targetPagePromise);
-
-          case 4:
-            pages = _context10.sent;
-            _context10.next = 7;
-            return copyPageRecursiveInternal(pages[0].id, pages[1].space.key, pages[1].id, templateProcessor, copiedPages);
-
-          case 7:
-            return _context10.abrupt("return", _context10.sent);
-
-          case 8:
-          case "end":
-            return _context10.stop();
-        }
-      }
-    }, _callee10, this);
-  }));
-  return _copyPageRecursive.apply(this, arguments);
-}
-
-function copyPageRecursiveInternal(_x36, _x37, _x38, _x39, _x40) {
-  return _copyPageRecursiveInternal.apply(this, arguments);
-}
-
-function _copyPageRecursiveInternal() {
-  _copyPageRecursiveInternal = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee11(sourcePageId, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
-    var pageToCopy, newPage, copiedPage;
-    return regeneratorRuntime.wrap(function _callee11$(_context11) {
-      while (1) {
-        switch (_context11.prev = _context11.next) {
-          case 0:
-            _context11.next = 2;
-            return getContentById(sourcePageId, 'space,body.storage,children.page,metadata.labels');
-
-          case 2:
-            pageToCopy = _context11.sent;
-            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy);
-
-            if (!templateProcessor.isApplicableTemplatePage(newPage)) {
-              _context11.next = 17;
-              break;
-            }
-
-            _context11.next = 7;
-            return templateProcessor.transformPage(newPage);
-
-          case 7:
-            newPage.setSpaceKey(targetSpaceKey).setParentId(targetPageId); // Create the new page under targetSpaceKey:targetPageId
-
-            _context11.next = 10;
-            return createPageUnderPageId(newPage);
-
-          case 10:
-            copiedPage = _context11.sent;
-            copiedPages.push(copiedPage);
-            _context11.next = 14;
-            return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
-
-          case 14:
-            return _context11.abrupt("return", _context11.sent);
-
-          case 17:
-            console.log("Page is not a template, not copied, but children will be copied: ", pageToCopy.title);
-            _context11.next = 20;
-            return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
-
-          case 20:
-            return _context11.abrupt("return", _context11.sent);
-
-          case 21:
-          case "end":
-            return _context11.stop();
-        }
-      }
-    }, _callee11, this);
-  }));
-  return _copyPageRecursiveInternal.apply(this, arguments);
-}
-
-function copyAllChildren(_x41, _x42, _x43, _x44, _x45) {
-  return _copyAllChildren.apply(this, arguments);
-}
-/** 
- * Creates a new page in Confluence. Typically create the newPage with
- * import Page from './Page';
- * let newPage = new Page('title','body','spaceKey',parentId);
- * createPageUnderPageId(newPage);
- * 
- * or 
- * 
- * let newPage = Page.copyFrom(otherPage).setParentId(newParent).setSpaceKey('otherSpace');
- * createPageUnderPageId(newPage);
- */
-
-function _copyAllChildren() {
-  _copyAllChildren = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee13(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
-    var copiedChildren;
-    return regeneratorRuntime.wrap(function _callee13$(_context13) {
-      while (1) {
-        switch (_context13.prev = _context13.next) {
-          case 0:
-            // recursively copy all children
-            copiedChildren = [];
-            console.log("In copyAllChildren", pageToCopy, targetPageId);
-
-            if (!(pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results)) {
-              _context13.next = 5;
-              break;
-            }
-
-            _context13.next = 5;
-            return pageToCopy.children.page.results.forEachSerial(
-            /*#__PURE__*/
-            function () {
-              var _ref2 = _asyncToGenerator(
-              /*#__PURE__*/
-              regeneratorRuntime.mark(function _callee12(child) {
-                var childrenP;
-                return regeneratorRuntime.wrap(function _callee12$(_context12) {
-                  while (1) {
-                    switch (_context12.prev = _context12.next) {
-                      case 0:
-                        _context12.next = 2;
-                        return copyPageRecursiveInternal(child.id, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
-
-                      case 2:
-                        childrenP = _context12.sent;
-                        copiedChildren.push(childrenP);
-
-                      case 4:
-                      case "end":
-                        return _context12.stop();
-                    }
-                  }
-                }, _callee12, this);
-              }));
-
-              return function (_x53) {
-                return _ref2.apply(this, arguments);
-              };
-            }());
-
-          case 5:
-            return _context13.abrupt("return", copiedChildren);
-
-          case 6:
-          case "end":
-            return _context13.stop();
-        }
-      }
-    }, _callee13, this);
-  }));
-  return _copyAllChildren.apply(this, arguments);
-}
-
-function createPageUnderPageId(_x46) {
-  return _createPageUnderPageId.apply(this, arguments);
-}
-
-function _createPageUnderPageId() {
-  _createPageUnderPageId = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee14(
-  /* type Page */
-  newPage) {
-    return regeneratorRuntime.wrap(function _callee14$(_context14) {
-      while (1) {
-        switch (_context14.prev = _context14.next) {
-          case 0:
-            console.log("Posting new page", newPage);
-            _context14.next = 3;
-            return postPage(newPage);
-
-          case 3:
-            return _context14.abrupt("return", _context14.sent);
-
-          case 4:
-          case "end":
-            return _context14.stop();
-        }
-      }
-    }, _callee14, this);
-  }));
-  return _createPageUnderPageId.apply(this, arguments);
-}
-
-function postPage(_x47) {
-  return _postPage.apply(this, arguments);
-}
-/* Typically you create the page with Page.newVersionOf(page, "optional message", isMajorEdit);
-then set the body and title you want to update with setBody and setTitle. */
-
-function _postPage() {
-  _postPage = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee15(page) {
-    return regeneratorRuntime.wrap(function _callee15$(_context15) {
-      while (1) {
-        switch (_context15.prev = _context15.next) {
-          case 0:
-            _context15.next = 2;
-            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleWrite"])(function () {
-              return $.ajax({
-                url: '/rest/api/content',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(page)
-              });
-            });
-
-          case 2:
-            return _context15.abrupt("return", _context15.sent);
-
-          case 3:
-          case "end":
-            return _context15.stop();
-        }
-      }
-    }, _callee15, this);
-  }));
-  return _postPage.apply(this, arguments);
-}
-
-function updateContent(_x48) {
-  return _updateContent.apply(this, arguments);
-}
-
-function _updateContent() {
-  _updateContent = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee16(page) {
-    return regeneratorRuntime.wrap(function _callee16$(_context16) {
-      while (1) {
-        switch (_context16.prev = _context16.next) {
-          case 0:
-            _context16.next = 2;
-            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleWrite"])(function () {
-              return $.ajax({
-                url: '/rest/api/content/' + encodeURIComponent(page.id),
-                type: 'PUT',
-                contentType: 'application/json',
-                data: JSON.stringify(page)
-              });
-            });
-
-          case 2:
-            return _context16.abrupt("return", _context16.sent);
-
-          case 3:
-          case "end":
-            return _context16.stop();
-        }
-      }
-    }, _callee16, this);
-  }));
-  return _updateContent.apply(this, arguments);
-}
-
-function getPageTree(_x49, _x50, _x51, _x52) {
-  return _getPageTree.apply(this, arguments);
-}
-
-function _getPageTree() {
-  _getPageTree = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee17(pageId, parentId, parentTitle, counter) {
-    var pageAndChildren, childrenP, childrenPages;
-    return regeneratorRuntime.wrap(function _callee17$(_context17) {
-      while (1) {
-        switch (_context17.prev = _context17.next) {
-          case 0:
-            console.log("Queueing getContentById for ".concat(pageId));
-            _context17.next = 3;
-            return getContentById(pageId, 'history.lastUpdated,children.page,metadata.labels');
-
-          case 3:
-            pageAndChildren = _context17.sent;
-            counter.pages++;
-            if (counter.pages % 100 == 0) console.log("Found ".concat(counter.pages, " pages so far..."));
-            childrenP = [];
-            childrenPages = pageAndChildren.children.page;
-
-          case 8:
-            if (!(childrenPages && childrenPages.size > 0)) {
-              _context17.next = 20;
-              break;
-            }
-
-            childrenPages.results.forEach(function (child) {
-              return childrenP.push(getPageTree(child.id, pageId, pageAndChildren.title, counter));
-            }); // get next page if any
-
-            if (!childrenPages._links.next) {
-              _context17.next = 17;
-              break;
-            }
-
-            console.log("Queueing GET next page of children for ".concat(pageAndChildren.title, ": ").concat(childrenPages._links.next));
-            _context17.next = 14;
-            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleRead"])(function () {
-              return $.ajax(childrenPages._links.next);
-            });
-
-          case 14:
-            childrenPages = _context17.sent;
-            _context17.next = 18;
-            break;
-
-          case 17:
-            childrenPages = false;
-
-          case 18:
-            _context17.next = 8;
-            break;
-
-          case 20:
-            _context17.t0 = pageAndChildren.title;
-            _context17.t1 = pageId;
-            _context17.t2 = new Date(pageAndChildren.history.lastUpdated.when);
-            _context17.t3 = new Date(pageAndChildren.history.createdDate);
-            _context17.t4 = parentId;
-            _context17.t5 = parentTitle;
-            _context17.next = 28;
-            return Promise.all(childrenP);
-
-          case 28:
-            _context17.t6 = _context17.sent;
-            _context17.t7 = Array.prototype.map.call(pageAndChildren.metadata.labels.results, function (l) {
-              return l.name;
-            });
-            return _context17.abrupt("return", {
-              title: _context17.t0,
-              id: _context17.t1,
-              lastUpdated: _context17.t2,
-              createdDate: _context17.t3,
-              parentId: _context17.t4,
-              parentTitle: _context17.t5,
-              children: _context17.t6,
-              labels: _context17.t7
-            });
-
-          case 31:
-          case "end":
-            return _context17.stop();
-        }
-      }
-    }, _callee17, this);
-  }));
-  return _getPageTree.apply(this, arguments);
-}
+throw new Error("Module build failed: SyntaxError: /Users/i839902/workspace/wiki/ywiki-plugins/js/common/confluence/confluence-page-async.js: Unexpected token, expected \",\" (217:3)\n\n\u001b[0m \u001b[90m 215 | \u001b[39m      data\u001b[33m:\u001b[39m \u001b[33mJSON\u001b[39m\u001b[33m.\u001b[39mstringify(page)\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 216 | \u001b[39m    }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 217 | \u001b[39m  )\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     | \u001b[39m   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 218 | \u001b[39m}\u001b[0m\n\u001b[0m \u001b[90m 219 | \u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 220 | \u001b[39m\u001b[90m/* Typically you create the page with Page.newVersionOf(page, \"optional message\", isMajorEdit);\u001b[39m\u001b[0m\n    at Parser.raise (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:3939:15)\n    at Parser.unexpected (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:5248:16)\n    at Parser.expect (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:5236:28)\n    at Parser.parseCallExpressionArguments (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:6116:14)\n    at Parser.parseSubscript (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:6029:32)\n    at Parser.parseSubscripts (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:5944:19)\n    at Parser.parseExprSubscripts (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:5934:17)\n    at Parser.parseMaybeUnary (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:5903:21)\n    at Parser.parseAwait (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7059:26)\n    at Parser.parseExprAtom (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:6213:27)\n    at Parser.parseExprSubscripts (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:5924:21)\n    at Parser.parseMaybeUnary (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:5903:21)\n    at Parser.parseExprOps (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:5812:21)\n    at Parser.parseMaybeConditional (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:5784:21)\n    at Parser.parseMaybeAssign (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:5731:21)\n    at Parser.parseExpression (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:5684:21)\n    at Parser.parseReturnStatement (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7497:28)\n    at Parser.parseStatementContent (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7179:21)\n    at Parser.parseStatement (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7145:17)\n    at Parser.parseBlockOrModuleBlockBody (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7696:23)\n    at Parser.parseBlockBody (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7683:10)\n    at Parser.parseBlock (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7672:10)\n    at Parser.parseFunctionBody (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:6925:24)\n    at Parser.parseFunctionBodyAndFinish (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:6905:10)\n    at Parser.parseFunction (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7821:10)\n    at Parser.parseStatementContent (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7250:25)\n    at Parser.parseStatement (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7145:17)\n    at Parser.parseExportDeclaration (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:8233:17)\n    at Parser.parseExport (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:8180:31)\n    at Parser.parseStatementContent (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7232:27)\n    at Parser.parseStatement (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7145:17)\n    at Parser.parseBlockOrModuleBlockBody (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7696:23)\n    at Parser.parseBlockBody (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7683:10)\n    at Parser.parseTopLevel (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:7110:10)\n    at Parser.parse (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:8510:17)\n    at parse (/Users/i839902/workspace/wiki/ywiki-plugins/node_modules/@babel/parser/lib/index.js:10462:38)");
 
 /***/ }),
 
@@ -2653,7 +1733,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 /**
- * returns either false if no edit restriction exist, or an object with a user and a group property 
+ * returns either false if no edit restriction exist, or an object with a user and a group property
  * containing the list of user names and group names with edit restriction.
  */
 
@@ -2672,7 +1752,7 @@ function _getEditorRestrictions() {
           case 0:
             _context.next = 2;
             return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_7__["throttleRead"])(function () {
-              return jquery__WEBPACK_IMPORTED_MODULE_4___default.a.get('/rest/api/content/' + contentId + '/restriction/byOperation/update');
+              return jquery__WEBPACK_IMPORTED_MODULE_4___default.a.get("/rest/api/content/".concat(contentId, "/restriction/byOperation/update"));
             });
 
           case 2:
@@ -2727,14 +1807,14 @@ function _removeRestrictions() {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            atlToken = jquery__WEBPACK_IMPORTED_MODULE_4___default()('meta[name=ajs-atl-token]').attr("content");
+            atlToken = jquery__WEBPACK_IMPORTED_MODULE_4___default()('meta[name=ajs-atl-token]').attr('content');
             form = {
-              "viewPermissionsUsers": '',
-              "editPermissionsUsers": '',
-              "viewPermissionsGroups": '',
-              "editPermissionsGroups": '',
-              "contentId": contentId,
-              "atl_token": atlToken
+              viewPermissionsUsers: '',
+              editPermissionsUsers: '',
+              viewPermissionsGroups: '',
+              editPermissionsGroups: '',
+              contentId: contentId,
+              atl_token: atlToken
             };
             _context2.next = 4;
             return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_7__["throttleWrite"])(function () {
@@ -2823,7 +1903,7 @@ function _setMyselfAsEditor() {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            atlToken = jquery__WEBPACK_IMPORTED_MODULE_4___default()('meta[name=ajs-atl-token]').attr("content");
+            atlToken = jquery__WEBPACK_IMPORTED_MODULE_4___default()('meta[name=ajs-atl-token]').attr('content');
             _context4.next = 3;
             return Object(_confluence_user_async__WEBPACK_IMPORTED_MODULE_5__["getUserKey"])();
 
@@ -2837,12 +1917,12 @@ function _setMyselfAsEditor() {
           case 6:
             current = _context4.sent;
             form = {
-              "viewPermissionsUsers": [],
-              "editPermissionsUsers": [],
-              "viewPermissionsGroups": [],
-              "editPermissionsGroups": [],
-              "contentId": contentId,
-              "atl_token": atlToken
+              viewPermissionsUsers: [],
+              editPermissionsUsers: [],
+              viewPermissionsGroups: [],
+              editPermissionsGroups: [],
+              contentId: contentId,
+              atl_token: atlToken
             }; // parse current permissions into the form to be posted
 
             FIELDS = {
@@ -2855,20 +1935,20 @@ function _setMyselfAsEditor() {
               if (p[FIELDS.TARGET_PAGE_ID] == contentId) {
                 var field;
 
-                switch (p[FIELDS.PERM_TYPE] + " " + p[FIELDS.PRINCIPAL_TYPE]) {
-                  case "Edit user":
+                switch ("".concat(p[FIELDS.PERM_TYPE], " ").concat(p[FIELDS.PRINCIPAL_TYPE])) {
+                  case 'Edit user':
                     field = form.editPermissionsUsers;
                     break;
 
-                  case "Edit group":
+                  case 'Edit group':
                     field = form.editPermissionsGroups;
                     break;
 
-                  case "View user":
+                  case 'View user':
                     field = form.viewPermissionsUsers;
                     break;
 
-                  case "View group":
+                  case 'View group':
                     field = form.viewPermissionsGroups;
                     break;
                 }
@@ -2935,11 +2015,11 @@ function _setEditorRestriction() {
           case 3:
             username = _context5.sent;
             _context5.next = 6;
-            return experimental('/rest/experimental/content/' + contentId + '/restriction/byOperation/update/user?userName=' + encodeURIComponent(username));
+            return experimental("/rest/experimental/content/".concat(contentId, "/restriction/byOperation/update/user?userName=").concat(encodeURIComponent(username)));
 
           case 6:
             _context5.next = 8;
-            return experimental('/rest/experimental/content/' + contentId + '/restriction/byOperation/update/group/' + encodeURIComponent(groupName));
+            return experimental("/rest/experimental/content/".concat(contentId, "/restriction/byOperation/update/group/").concat(encodeURIComponent(groupName)));
 
           case 8:
           case "end":
@@ -3012,11 +2092,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _confluence_permissions_async__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./confluence-permissions-async */ "./js/common/confluence/confluence-permissions-async.js");
-/* harmony import */ var _confluence_user_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-user-async */ "./js/common/confluence/confluence-user-async.js");
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-permissions-async */ "./js/common/confluence/confluence-permissions-async.js");
+/* harmony import */ var _confluence_user_async__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./confluence-user-async */ "./js/common/confluence/confluence-user-async.js");
 /* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
+/* harmony import */ var _confluence_page_async__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_confluence_page_async__WEBPACK_IMPORTED_MODULE_5__);
 
 
 
@@ -3031,8 +2112,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var restrictedPage = '326181263';
 var norestrictionPage = '158963161';
 var pageMissingRestriction = '375593605';
-describe("confluence-permissions-async", function () {
-  it("getEditorRestrictions should load permissions",
+describe('confluence-permissions-async', function () {
+  it('getEditorRestrictions should load permissions',
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
@@ -3043,12 +2124,12 @@ describe("confluence-permissions-async", function () {
           case 0:
             _context.t0 = console;
             _context.next = 3;
-            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_2__["getEditorRestrictions"])(restrictedPage);
+            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__["getEditorRestrictions"])(restrictedPage);
 
           case 3:
             _context.t1 = _context.sent;
 
-            _context.t0.log.call(_context.t0, "Editor restrictions", _context.t1);
+            _context.t0.log.call(_context.t0, 'Editor restrictions', _context.t1);
 
           case 5:
           case "end":
@@ -3066,9 +2147,9 @@ describe("confluence-permissions-async", function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.t0 = chai__WEBPACK_IMPORTED_MODULE_4__["assert"];
+            _context2.t0 = chai__WEBPACK_IMPORTED_MODULE_2__["assert"];
             _context2.next = 3;
-            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_2__["getEditorRestrictions"])(norestrictionPage);
+            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__["getEditorRestrictions"])(norestrictionPage);
 
           case 3:
             _context2.t1 = _context2.sent;
@@ -3082,7 +2163,7 @@ describe("confluence-permissions-async", function () {
       }
     }, _callee2, this);
   })));
-  it("setMyselfAsEditor",
+  it('setMyselfAsEditor',
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
@@ -3098,30 +2179,30 @@ describe("confluence-permissions-async", function () {
           case 2:
             page = _context3.sent;
             _context3.next = 5;
-            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_2__["removeRestrictions"])(pageMissingRestriction, page.space.key);
+            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__["removeRestrictions"])(pageMissingRestriction, page.space.key);
 
           case 5:
             _context3.next = 7;
-            return Object(_confluence_user_async__WEBPACK_IMPORTED_MODULE_3__["getUser"])();
+            return Object(_confluence_user_async__WEBPACK_IMPORTED_MODULE_4__["getUser"])();
 
           case 7:
             user = _context3.sent;
             _context3.next = 10;
-            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_2__["getEditorRestrictions"])(pageMissingRestriction);
+            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__["getEditorRestrictions"])(pageMissingRestriction);
 
           case 10:
             r = _context3.sent;
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].isOk(!r || r.user.indexOf(user) < 0, "".concat(user, " shouldn't already be an editor"));
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isOk(!r || r.user.indexOf(user) < 0, "".concat(user, " shouldn't already be an editor"));
             _context3.next = 14;
-            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_2__["setMyselfAsEditor"])(pageMissingRestriction, page.space.key);
+            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__["setMyselfAsEditor"])(pageMissingRestriction, page.space.key);
 
           case 14:
             _context3.next = 16;
-            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_2__["getEditorRestrictions"])(pageMissingRestriction);
+            return Object(_confluence_permissions_async__WEBPACK_IMPORTED_MODULE_3__["getEditorRestrictions"])(pageMissingRestriction);
 
           case 16:
             r = _context3.sent;
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].isOk(r.user.indexOf(user) >= 0, "".concat(user, " should be in the edit restrictions"));
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isOk(r.user.indexOf(user) >= 0, "".concat(user, " should be in the edit restrictions"));
 
           case 18:
           case "end":
@@ -3174,7 +2255,7 @@ function _load() {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            url = BASE_URL + "".concat(contentId, "/property/").concat(key);
+            url = "".concat(BASE_URL).concat(contentId, "/property/").concat(key);
             return _context.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_2__["throttleRead"])(function () {
               return $.get(url);
             }));
@@ -3202,12 +2283,12 @@ function _create() {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            url = BASE_URL + "".concat(contentId, "/property");
+            url = "".concat(BASE_URL).concat(contentId, "/property");
             return _context2.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_2__["throttleWrite"])(function () {
               return $.ajax({
                 url: url,
-                contentType: "application/json;charset=UTF-8",
-                type: "POST",
+                contentType: 'application/json;charset=UTF-8',
+                type: 'POST',
                 data: JSON.stringify(propertyData)
               });
             }));
@@ -3235,12 +2316,12 @@ function _update() {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            url = BASE_URL + "".concat(contentId, "/property/").concat(propertyData.key);
+            url = "".concat(BASE_URL).concat(contentId, "/property/").concat(propertyData.key);
             return _context3.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_2__["throttleWrite"])(function () {
               return $.ajax({
                 url: url,
-                contentType: "application/json;charset=UTF-8",
-                type: "PUT",
+                contentType: 'application/json;charset=UTF-8',
+                type: 'PUT',
                 data: JSON.stringify(propertyData)
               });
             }));
@@ -3268,11 +2349,11 @@ function _deleteProperty() {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            url = BASE_URL + "".concat(contentId, "/property/").concat(key);
+            url = "".concat(BASE_URL).concat(contentId, "/property/").concat(key);
             return _context4.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_2__["throttleWrite"])(function () {
               return $.ajax({
                 url: url,
-                type: "DELETE"
+                type: 'DELETE'
               });
             }));
 
@@ -3506,7 +2587,6 @@ function rateLimit(func, rate) {
     return defer.promise();
   };
 }
-;
 
 /***/ }),
 
@@ -3519,11 +2599,11 @@ function rateLimit(func, rate) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _rate_limit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./rate-limit */ "./js/common/rate-limit.js");
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var jquery_deferred__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery-deferred */ "./node_modules/jquery-deferred/index.js");
-/* harmony import */ var jquery_deferred__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery_deferred__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var jquery_deferred__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery-deferred */ "./node_modules/jquery-deferred/index.js");
+/* harmony import */ var jquery_deferred__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery_deferred__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _rate_limit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./rate-limit */ "./js/common/rate-limit.js");
 
 
 
@@ -3535,10 +2615,10 @@ describe('rate-limit', function () {
       arr.push(rateLimited());
     }
 
-    jquery_deferred__WEBPACK_IMPORTED_MODULE_2___default.a.when.apply(jquery_deferred__WEBPACK_IMPORTED_MODULE_2___default.a, arr).then(function (p1, p2, p3) {
-      chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isTrue(p1);
-      chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isTrue(p2);
-      chai__WEBPACK_IMPORTED_MODULE_1__["assert"].isTrue(p3);
+    jquery_deferred__WEBPACK_IMPORTED_MODULE_1___default.a.when.apply(jquery_deferred__WEBPACK_IMPORTED_MODULE_1___default.a, arr).then(function (p1, p2, p3) {
+      chai__WEBPACK_IMPORTED_MODULE_0__["assert"].isTrue(p1);
+      chai__WEBPACK_IMPORTED_MODULE_0__["assert"].isTrue(p2);
+      chai__WEBPACK_IMPORTED_MODULE_0__["assert"].isTrue(p3);
       done();
     });
   });
@@ -3547,20 +2627,20 @@ var instance = 0;
 
 function testFunction() {
   var ownInstance = ++instance;
-  chai__WEBPACK_IMPORTED_MODULE_1__["assert"].exists(jquery_deferred__WEBPACK_IMPORTED_MODULE_2___default.a, '$ should exist');
-  chai__WEBPACK_IMPORTED_MODULE_1__["assert"].exists(jquery_deferred__WEBPACK_IMPORTED_MODULE_2___default.a.Deferred, '$.Deferred should exist'); //assert.equal(typeof $.Deferred,"fun");
+  chai__WEBPACK_IMPORTED_MODULE_0__["assert"].exists(jquery_deferred__WEBPACK_IMPORTED_MODULE_1___default.a, '$ should exist');
+  chai__WEBPACK_IMPORTED_MODULE_0__["assert"].exists(jquery_deferred__WEBPACK_IMPORTED_MODULE_1___default.a.Deferred, '$.Deferred should exist'); // assert.equal(typeof $.Deferred,"fun");
 
-  console.log("Start " + ownInstance + "..."); //console.log("jQuery",$);
+  console.log("Start ".concat(ownInstance, "...")); // console.log("jQuery",$);
 
-  var defer = jquery_deferred__WEBPACK_IMPORTED_MODULE_2___default.a.Deferred();
+  var defer = jquery_deferred__WEBPACK_IMPORTED_MODULE_1___default.a.Deferred();
   setTimeout(function () {
-    console.log("<   End " + ownInstance);
+    console.log("<   End ".concat(ownInstance));
     defer.resolve(ownInstance == instance);
   }, 100);
   return defer.promise();
 }
 
-var rateLimited = Object(_rate_limit__WEBPACK_IMPORTED_MODULE_0__["default"])(testFunction, 50);
+var rateLimited = Object(_rate_limit__WEBPACK_IMPORTED_MODULE_2__["default"])(testFunction, 50);
 
 /***/ }),
 
@@ -3682,19 +2762,19 @@ function getOriginLocation() {
 
   for (var i = 0; i < scripts.length; i++) {
     var s = scripts[i];
-    var url = s.getAttribute("src");
+    var url = s.getAttribute('src');
     if (url && url.indexOf('http') == 0) candidates.push(url);
   }
 
   console.log('Looking for script origin within', candidates);
 
   for (var idx = candidates.length - 1; idx >= 0; idx--) {
-    var l = document.createElement("a");
+    var l = document.createElement('a');
     l.href = candidates[idx];
-    if (!l.origin) l.origin = l.protocol + "//" + l.host;
+    if (!l.origin) l.origin = "".concat(l.protocol, "//").concat(l.host);
 
     if (whitelistedOrigin(l.origin)) {
-      console.log("Found own origin: ", l.origin, 'cache busting', l.search);
+      console.log('Found own origin: ', l.origin, 'cache busting', l.search);
       return l;
     }
   }
@@ -3707,9 +2787,9 @@ function whitelistedOrigin(origin) {
 }
 
 var originlocation = getOriginLocation();
-var host = originlocation.origin + '/ywiki-plugins';
+var host = "".concat(originlocation.origin, "/ywiki-plugins");
 var cacheBuster = originlocation.search;
-console.log("plugin Host=" + host + ", cacheBuster=" + cacheBuster);
+console.log("plugin Host=".concat(host, ", cacheBuster=").concat(cacheBuster));
 
 
 /***/ }),
@@ -3733,7 +2813,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function loadStyleSheet(host, url) {
   if (!url.startsWith('http')) {
-    url = host + '/' + url;
+    url = "".concat(host, "/").concat(url);
   }
 
   var link = document.createElement('link');
@@ -3744,7 +2824,7 @@ function loadStyleSheet(host, url) {
   console.log('style loaded');
 }
 function loadPluginStyleSheet(filename) {
-  return loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_1__["host"], 'dist/' + filename + _pluginCommon__WEBPACK_IMPORTED_MODULE_1__["cacheBuster"]);
+  return loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_1__["host"], "dist/".concat(filename).concat(_pluginCommon__WEBPACK_IMPORTED_MODULE_1__["cacheBuster"]));
 }
 
 /***/ }),
@@ -3821,12 +2901,12 @@ var SyncTimeStamp = {
                     while (1) {
                       switch (_context2.prev = _context2.next) {
                         case 0:
-                          if (!(!Array.isArray(syncTS().pages) || syncTS().pages.length != 2)) {
+                          if (!(!Array.isArray(syncTS().pages) || syncTS().pages.length !== 2)) {
                             _context2.next = 2;
                             break;
                           }
 
-                          throw "Can't save the SyncTimeStamp without setting the syncedPages first";
+                          throw new Error("Can't save the SyncTimeStamp without setting the syncedPages first");
 
                         case 2:
                           _context2.next = 4;
@@ -3865,14 +2945,17 @@ var SyncTimeStamp = {
               };
 
               setSyncedLabels = function _ref9(labels) {
-                if (!Array.isArray(labels)) throw 'the syncedLabels must be an array';
+                if (!Array.isArray(labels)) throw new Error('the syncedLabels must be an array');
                 syncTS().lastSyncedLabels = labels;
                 return this;
               };
 
               setSyncedPages = function _ref8(page1, page2) {
                 // checkConsistency
-                if (page1.id != contentId && page2.id != contentId) throw "one of the pages (".concat(page1.id, ",").concat(page2.id, ") should be the one we loaded the SyncTimeStamp from: ").concat(contentId);
+                if (page1.id !== contentId && page2.id !== contentId) {
+                  throw new Error("one of the pages (".concat(page1.id, ",").concat(page2.id, ") should be the one we loaded the SyncTimeStamp from: ").concat(contentId));
+                }
+
                 syncTS().pages = [{
                   contentId: page1.id,
                   version: page1.version.number,
@@ -4006,10 +3089,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SyncTimeStamp */ "./js/mainframe/sync/SyncTimeStamp.js");
-/* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SyncTimeStamp */ "./js/mainframe/sync/SyncTimeStamp.js");
+/* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
+/* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__);
 
 
 
@@ -4024,7 +3108,7 @@ var page1Id = '257597020'; // in ~adrien.missemer@sap.com
 
 var page2Id = '404455459'; // in ps
 
-describe("SyncTimeStamp", function () {
+describe('SyncTimeStamp', function () {
   it('should handle load and save',
   /*#__PURE__*/
   _asyncToGenerator(
@@ -4036,73 +3120,73 @@ describe("SyncTimeStamp", function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_3__["getContentById"])(page1Id, 'version,space');
+            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__["getContentById"])(page1Id, 'version,space');
 
           case 2:
             page1 = _context.sent;
             page1space = page1.space.key;
             _context.next = 6;
-            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_3__["getContentById"])(page2Id, 'version,space');
+            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__["getContentById"])(page2Id, 'version,space');
 
           case 6:
             page2 = _context.sent;
             page2space = page2.space.key;
             _context.next = 10;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].clearAll(page1Id);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].clearAll(page1Id);
 
           case 10:
             _context.next = 12;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].clearAll(page2Id);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].clearAll(page2Id);
 
           case 12:
             _context.next = 14;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
 
           case 14:
             ts = _context.sent;
             // set syncedPages and labels then save
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].isTrue(ts.isNew());
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isTrue(ts.isNew());
             ts.setSyncedPages(page1, page2);
             _context.next = 19;
             return ts.save();
 
           case 19:
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].notExists(ts.lastSyncedLabels());
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].notExists(ts.lastSyncedLabels());
             ts.setSyncedLabels(['hello', 'world']);
             _context.next = 23;
             return ts.save();
 
           case 23:
             _context.next = 25;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
 
           case 25:
             ts = _context.sent;
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].isFalse(ts.isNew());
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(ts.lastSyncedLabels().length, 2);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(ts.lastSyncedLabels()[0], 'hello');
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isFalse(ts.isNew());
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(ts.lastSyncedLabels().length, 2);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(ts.lastSyncedLabels()[0], 'hello');
             otherPage1 = ts.getOtherPage(page2Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage1.contentId, page1Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage1.spaceKey, page1space);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage1.contentId, page1Id);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage1.spaceKey, page1space);
             otherPage2 = ts.getOtherPage(page1Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage2.contentId, page2Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage2.spaceKey, page2space); // reload the timestamp from page2 instead of page1, it should be the same as on page1
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage2.contentId, page2Id);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage2.spaceKey, page2space); // reload the timestamp from page2 instead of page1, it should be the same as on page1
 
             _context.next = 37;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].loadLastSyncFromContentWithSpace(page2Id, page1space);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].loadLastSyncFromContentWithSpace(page2Id, page1space);
 
           case 37:
             ts = _context.sent;
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].isFalse(ts.isNew());
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(ts.lastSyncedLabels().length, 2);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(ts.lastSyncedLabels()[0], 'hello'); // load the timestamp for another space, it should be an empty TS
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isFalse(ts.isNew());
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(ts.lastSyncedLabels().length, 2);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(ts.lastSyncedLabels()[0], 'hello'); // load the timestamp for another space, it should be an empty TS
 
             _context.next = 43;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].loadLastSyncFromContentWithSpace(page2Id, 'otherSpace');
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].loadLastSyncFromContentWithSpace(page2Id, 'otherSpace');
 
           case 43:
             ts = _context.sent;
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].isTrue(ts.isNew());
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isTrue(ts.isNew());
 
           case 45:
           case "end":
@@ -4122,27 +3206,27 @@ describe("SyncTimeStamp", function () {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_3__["getContentById"])(page1Id, 'version,space');
+            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__["getContentById"])(page1Id, 'version,space');
 
           case 2:
             page1 = _context2.sent;
             page1space = page1.space.key;
             _context2.next = 6;
-            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_3__["getContentById"])(page2Id, 'version,space');
+            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__["getContentById"])(page2Id, 'version,space');
 
           case 6:
             page2 = _context2.sent;
             page2space = page2.space.key;
             _context2.next = 10;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].clearAll(page1Id);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].clearAll(page1Id);
 
           case 10:
             _context2.next = 12;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].clearAll(page2Id);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].clearAll(page2Id);
 
           case 12:
             _context2.next = 14;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
 
           case 14:
             ts = _context2.sent;
@@ -4151,10 +3235,10 @@ describe("SyncTimeStamp", function () {
             return ts.save();
 
           case 18:
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].notExists(ts.lastSyncedLabels()); // now reload and set the syncedLabels
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].notExists(ts.lastSyncedLabels()); // now reload and set the syncedLabels
 
             _context2.next = 21;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
 
           case 21:
             ts = _context2.sent;
@@ -4164,19 +3248,19 @@ describe("SyncTimeStamp", function () {
 
           case 25:
             _context2.next = 27;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
 
           case 27:
             ts = _context2.sent;
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].isFalse(ts.isNew());
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(ts.lastSyncedLabels().length, 2);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(ts.lastSyncedLabels()[0], 'hello');
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].isFalse(ts.isNew());
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(ts.lastSyncedLabels().length, 2);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(ts.lastSyncedLabels()[0], 'hello');
             otherPage1 = ts.getOtherPage(page2Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage1.contentId, page1Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage1.spaceKey, page1space);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage1.contentId, page1Id);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage1.spaceKey, page1space);
             otherPage2 = ts.getOtherPage(page1Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage2.contentId, page2Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage2.spaceKey, page2space);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage2.contentId, page2Id);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage2.spaceKey, page2space);
 
           case 37:
           case "end":
@@ -4196,27 +3280,27 @@ describe("SyncTimeStamp", function () {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_3__["getContentById"])(page1Id, 'version,space');
+            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__["getContentById"])(page1Id, 'version,space');
 
           case 2:
             page1 = _context3.sent;
             page1space = page1.space.key;
             _context3.next = 6;
-            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_3__["getContentById"])(page2Id, 'version,space');
+            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__["getContentById"])(page2Id, 'version,space');
 
           case 6:
             page2 = _context3.sent;
             page2space = page2.space.key;
             _context3.next = 10;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].clearAll(page1Id);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].clearAll(page1Id);
 
           case 10:
             _context3.next = 12;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].clearAll(page2Id);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].clearAll(page2Id);
 
           case 12:
             _context3.next = 14;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
 
           case 14:
             ts = _context3.sent;
@@ -4227,15 +3311,15 @@ describe("SyncTimeStamp", function () {
 
           case 19:
             _context3.next = 21;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
 
           case 21:
             ts = _context3.sent;
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(ts.lastSyncedLabels().length, 2);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(ts.lastSyncedLabels().length, 2);
             otherPage1 = ts.getOtherPage(page2Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage1.contentId, page1Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage1.spaceKey, page1space);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage1.version, page1.version.number); // now let's update the page sync attributes (the versions) and save
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage1.contentId, page1Id);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage1.spaceKey, page1space);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage1.version, page1.version.number); // now let's update the page sync attributes (the versions) and save
 
             page1.version.number++;
             page2.version.number++;
@@ -4245,16 +3329,16 @@ describe("SyncTimeStamp", function () {
 
           case 32:
             _context3.next = 34;
-            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_2__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
+            return _SyncTimeStamp__WEBPACK_IMPORTED_MODULE_3__["default"].loadLastSyncFromContentWithSpace(page1Id, page2space);
 
           case 34:
             ts = _context3.sent;
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(ts.lastSyncedLabels().length, 2);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(ts.lastSyncedLabels()[0], 'hello');
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(ts.lastSyncedLabels().length, 2);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(ts.lastSyncedLabels()[0], 'hello');
             otherPage1 = ts.getOtherPage(page2Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage1.version, page1.version.number);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage1.version, page1.version.number);
             otherPage2 = ts.getOtherPage(page1Id);
-            chai__WEBPACK_IMPORTED_MODULE_4__["assert"].equal(otherPage2.version, page2.version.number);
+            chai__WEBPACK_IMPORTED_MODULE_2__["assert"].equal(otherPage2.version, page2.version.number);
 
           case 41:
           case "end":
@@ -4292,13 +3376,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _lib_Array_ext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/Array.ext */ "./js/lib/Array.ext.js");
-/* harmony import */ var _mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mainframe/stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
-/* harmony import */ var _tests_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./tests.css */ "./js/tests/tests.css");
-/* harmony import */ var _tests_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_tests_css__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
-/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var chai_as_promised__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! chai-as-promised */ "./node_modules/chai-as-promised/lib/chai-as-promised.js");
-/* harmony import */ var chai_as_promised__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(chai_as_promised__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _tests_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./tests.css */ "./js/tests/tests.css");
+/* harmony import */ var _tests_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_tests_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! chai */ "./node_modules/chai/index.js");
+/* harmony import */ var chai__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(chai__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var chai_as_promised__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! chai-as-promised */ "./node_modules/chai-as-promised/lib/chai-as-promised.js");
+/* harmony import */ var chai_as_promised__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(chai_as_promised__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mainframe/stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
 
 
 
@@ -4306,9 +3390,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-chai__WEBPACK_IMPORTED_MODULE_5___default.a.use(chai_as_promised__WEBPACK_IMPORTED_MODULE_6___default.a);
-Object(_mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_3__["loadStyleSheet"])(null, 'https://unpkg.com/mocha@5.2.0/mocha.css');
-Object(_mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_3__["loadPluginStyleSheet"])('tests-bundle.css');
+chai__WEBPACK_IMPORTED_MODULE_4___default.a.use(chai_as_promised__WEBPACK_IMPORTED_MODULE_5___default.a);
+Object(_mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_6__["loadStyleSheet"])(null, 'https://unpkg.com/mocha@5.2.0/mocha.css');
+Object(_mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_6__["loadPluginStyleSheet"])('tests-bundle.css');
 mocha.setup({
   ui: 'bdd',
   timeout: 10000,
@@ -15164,26 +14248,6 @@ module.exports = !__webpack_require__(/*! ./_descriptors */ "./node_modules/core
 
 /***/ }),
 
-/***/ "./node_modules/core-js/modules/_inherit-if-required.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/core-js/modules/_inherit-if-required.js ***!
-  \**************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
-var setPrototypeOf = __webpack_require__(/*! ./_set-proto */ "./node_modules/core-js/modules/_set-proto.js").set;
-module.exports = function (that, target, C) {
-  var S = target.constructor;
-  var P;
-  if (S !== C && typeof S == 'function' && (P = S.prototype) !== C.prototype && isObject(P) && setPrototypeOf) {
-    setPrototypeOf(that, P);
-  } return that;
-};
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/modules/_invoke.js":
 /*!*************************************************!*\
   !*** ./node_modules/core-js/modules/_invoke.js ***!
@@ -15258,23 +14322,6 @@ module.exports = function (it) {
 var cof = __webpack_require__(/*! ./_cof */ "./node_modules/core-js/modules/_cof.js");
 module.exports = Array.isArray || function isArray(arg) {
   return cof(arg) == 'Array';
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/_is-integer.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/core-js/modules/_is-integer.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 20.1.2.3 Number.isInteger(number)
-var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
-var floor = Math.floor;
-module.exports = function isInteger(it) {
-  return !isObject(it) && isFinite(it) && floor(it) === it;
 };
 
 
@@ -15726,51 +14773,6 @@ module.exports = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-
 
 /***/ }),
 
-/***/ "./node_modules/core-js/modules/_object-gopd.js":
-/*!******************************************************!*\
-  !*** ./node_modules/core-js/modules/_object-gopd.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var pIE = __webpack_require__(/*! ./_object-pie */ "./node_modules/core-js/modules/_object-pie.js");
-var createDesc = __webpack_require__(/*! ./_property-desc */ "./node_modules/core-js/modules/_property-desc.js");
-var toIObject = __webpack_require__(/*! ./_to-iobject */ "./node_modules/core-js/modules/_to-iobject.js");
-var toPrimitive = __webpack_require__(/*! ./_to-primitive */ "./node_modules/core-js/modules/_to-primitive.js");
-var has = __webpack_require__(/*! ./_has */ "./node_modules/core-js/modules/_has.js");
-var IE8_DOM_DEFINE = __webpack_require__(/*! ./_ie8-dom-define */ "./node_modules/core-js/modules/_ie8-dom-define.js");
-var gOPD = Object.getOwnPropertyDescriptor;
-
-exports.f = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") ? gOPD : function getOwnPropertyDescriptor(O, P) {
-  O = toIObject(O);
-  P = toPrimitive(P, true);
-  if (IE8_DOM_DEFINE) try {
-    return gOPD(O, P);
-  } catch (e) { /* empty */ }
-  if (has(O, P)) return createDesc(!pIE.f.call(O, P), O[P]);
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/_object-gopn.js":
-/*!******************************************************!*\
-  !*** ./node_modules/core-js/modules/_object-gopn.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
-var $keys = __webpack_require__(/*! ./_object-keys-internal */ "./node_modules/core-js/modules/_object-keys-internal.js");
-var hiddenKeys = __webpack_require__(/*! ./_enum-bug-keys */ "./node_modules/core-js/modules/_enum-bug-keys.js").concat('length', 'prototype');
-
-exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
-  return $keys(O, hiddenKeys);
-};
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/modules/_object-gpo.js":
 /*!*****************************************************!*\
   !*** ./node_modules/core-js/modules/_object-gpo.js ***!
@@ -15837,18 +14839,6 @@ var enumBugKeys = __webpack_require__(/*! ./_enum-bug-keys */ "./node_modules/co
 module.exports = Object.keys || function keys(O) {
   return $keys(O, enumBugKeys);
 };
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/_object-pie.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/core-js/modules/_object-pie.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-exports.f = {}.propertyIsEnumerable;
 
 
 /***/ }),
@@ -15967,42 +14957,6 @@ __webpack_require__(/*! ./_core */ "./node_modules/core-js/modules/_core.js").in
 })(Function.prototype, TO_STRING, function toString() {
   return typeof this == 'function' && this[SRC] || $toString.call(this);
 });
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/_set-proto.js":
-/*!****************************************************!*\
-  !*** ./node_modules/core-js/modules/_set-proto.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Works with __proto__ only. Old v8 can't work with null proto objects.
-/* eslint-disable no-proto */
-var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
-var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
-var check = function (O, proto) {
-  anObject(O);
-  if (!isObject(proto) && proto !== null) throw TypeError(proto + ": can't set as prototype!");
-};
-module.exports = {
-  set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
-    function (test, buggy, set) {
-      try {
-        set = __webpack_require__(/*! ./_ctx */ "./node_modules/core-js/modules/_ctx.js")(Function.call, __webpack_require__(/*! ./_object-gopd */ "./node_modules/core-js/modules/_object-gopd.js").f(Object.prototype, '__proto__').set, 2);
-        set(test, []);
-        buggy = !(test instanceof Array);
-      } catch (e) { buggy = true; }
-      return function setPrototypeOf(O, proto) {
-        check(O, proto);
-        if (buggy) O.__proto__ = proto;
-        else set(O, proto);
-        return O;
-      };
-    }({}, false) : undefined),
-  check: check
-};
 
 
 /***/ }),
@@ -16152,60 +15106,6 @@ module.exports = function (that, searchString, NAME) {
   if (isRegExp(searchString)) throw TypeError('String#' + NAME + " doesn't accept regex!");
   return String(defined(that));
 };
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/_string-trim.js":
-/*!******************************************************!*\
-  !*** ./node_modules/core-js/modules/_string-trim.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
-var defined = __webpack_require__(/*! ./_defined */ "./node_modules/core-js/modules/_defined.js");
-var fails = __webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js");
-var spaces = __webpack_require__(/*! ./_string-ws */ "./node_modules/core-js/modules/_string-ws.js");
-var space = '[' + spaces + ']';
-var non = '\u200b\u0085';
-var ltrim = RegExp('^' + space + space + '*');
-var rtrim = RegExp(space + space + '*$');
-
-var exporter = function (KEY, exec, ALIAS) {
-  var exp = {};
-  var FORCE = fails(function () {
-    return !!spaces[KEY]() || non[KEY]() != non;
-  });
-  var fn = exp[KEY] = FORCE ? exec(trim) : spaces[KEY];
-  if (ALIAS) exp[ALIAS] = fn;
-  $export($export.P + $export.F * FORCE, 'String', exp);
-};
-
-// 1 -> String#trimLeft
-// 2 -> String#trimRight
-// 3 -> String#trim
-var trim = exporter.trim = function (string, TYPE) {
-  string = String(defined(string));
-  if (TYPE & 1) string = string.replace(ltrim, '');
-  if (TYPE & 2) string = string.replace(rtrim, '');
-  return string;
-};
-
-module.exports = exporter;
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/_string-ws.js":
-/*!****************************************************!*\
-  !*** ./node_modules/core-js/modules/_string-ws.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003' +
-  '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
 
 
 /***/ }),
@@ -16629,102 +15529,6 @@ NAME in FProto || __webpack_require__(/*! ./_descriptors */ "./node_modules/core
     }
   }
 });
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/es6.number.constructor.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/core-js/modules/es6.number.constructor.js ***!
-  \****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var global = __webpack_require__(/*! ./_global */ "./node_modules/core-js/modules/_global.js");
-var has = __webpack_require__(/*! ./_has */ "./node_modules/core-js/modules/_has.js");
-var cof = __webpack_require__(/*! ./_cof */ "./node_modules/core-js/modules/_cof.js");
-var inheritIfRequired = __webpack_require__(/*! ./_inherit-if-required */ "./node_modules/core-js/modules/_inherit-if-required.js");
-var toPrimitive = __webpack_require__(/*! ./_to-primitive */ "./node_modules/core-js/modules/_to-primitive.js");
-var fails = __webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js");
-var gOPN = __webpack_require__(/*! ./_object-gopn */ "./node_modules/core-js/modules/_object-gopn.js").f;
-var gOPD = __webpack_require__(/*! ./_object-gopd */ "./node_modules/core-js/modules/_object-gopd.js").f;
-var dP = __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js").f;
-var $trim = __webpack_require__(/*! ./_string-trim */ "./node_modules/core-js/modules/_string-trim.js").trim;
-var NUMBER = 'Number';
-var $Number = global[NUMBER];
-var Base = $Number;
-var proto = $Number.prototype;
-// Opera ~12 has broken Object#toString
-var BROKEN_COF = cof(__webpack_require__(/*! ./_object-create */ "./node_modules/core-js/modules/_object-create.js")(proto)) == NUMBER;
-var TRIM = 'trim' in String.prototype;
-
-// 7.1.3 ToNumber(argument)
-var toNumber = function (argument) {
-  var it = toPrimitive(argument, false);
-  if (typeof it == 'string' && it.length > 2) {
-    it = TRIM ? it.trim() : $trim(it, 3);
-    var first = it.charCodeAt(0);
-    var third, radix, maxCode;
-    if (first === 43 || first === 45) {
-      third = it.charCodeAt(2);
-      if (third === 88 || third === 120) return NaN; // Number('+0x1') should be NaN, old V8 fix
-    } else if (first === 48) {
-      switch (it.charCodeAt(1)) {
-        case 66: case 98: radix = 2; maxCode = 49; break; // fast equal /^0b[01]+$/i
-        case 79: case 111: radix = 8; maxCode = 55; break; // fast equal /^0o[0-7]+$/i
-        default: return +it;
-      }
-      for (var digits = it.slice(2), i = 0, l = digits.length, code; i < l; i++) {
-        code = digits.charCodeAt(i);
-        // parseInt parses a string to a first unavailable symbol
-        // but ToNumber should return NaN if a string contains unavailable symbols
-        if (code < 48 || code > maxCode) return NaN;
-      } return parseInt(digits, radix);
-    }
-  } return +it;
-};
-
-if (!$Number(' 0o1') || !$Number('0b1') || $Number('+0x1')) {
-  $Number = function Number(value) {
-    var it = arguments.length < 1 ? 0 : value;
-    var that = this;
-    return that instanceof $Number
-      // check on 1..constructor(foo) case
-      && (BROKEN_COF ? fails(function () { proto.valueOf.call(that); }) : cof(that) != NUMBER)
-        ? inheritIfRequired(new Base(toNumber(it)), that, $Number) : toNumber(it);
-  };
-  for (var keys = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") ? gOPN(Base) : (
-    // ES3:
-    'MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY,' +
-    // ES6 (in case, if modules with ES6 Number statics required before):
-    'EPSILON,isFinite,isInteger,isNaN,isSafeInteger,MAX_SAFE_INTEGER,' +
-    'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger'
-  ).split(','), j = 0, key; keys.length > j; j++) {
-    if (has(Base, key = keys[j]) && !has($Number, key)) {
-      dP($Number, key, gOPD(Base, key));
-    }
-  }
-  $Number.prototype = proto;
-  proto.constructor = $Number;
-  __webpack_require__(/*! ./_redefine */ "./node_modules/core-js/modules/_redefine.js")(global, NUMBER, $Number);
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/es6.number.is-integer.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/core-js/modules/es6.number.is-integer.js ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 20.1.2.3 Number.isInteger(number)
-var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
-
-$export($export.S, 'Number', { isInteger: __webpack_require__(/*! ./_is-integer */ "./node_modules/core-js/modules/_is-integer.js") });
 
 
 /***/ }),

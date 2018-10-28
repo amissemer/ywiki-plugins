@@ -131,15 +131,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PORTFOLIO_GROUP", function() { return PORTFOLIO_GROUP; });
 var DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 var DEFAULT_JIRA_ISSUE_COUNT = 10;
-var MAIN_JIRA_LABEL = "CI";
-var TAGS_FIELD = "customfield_10032";
+var MAIN_JIRA_LABEL = 'CI';
+var TAGS_FIELD = 'customfield_10032';
 var WIKI_HOST = 'wiki.hybris.com';
 var MAX_WIKI_PAGE_CREATION_RATE = 50; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
 
 var SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
 
-var PREFIX = "ywiki-plugins.";
-var PREFERRED_REGION_KEY = "preferred.region";
+var PREFIX = 'ywiki-plugins.';
+var PREFERRED_REGION_KEY = 'preferred.region';
 var DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
 var CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
 var DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
@@ -195,23 +195,23 @@ function _lookupAttachment() {
           case 0:
             _context.next = 2;
             return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
-              return ajax(BASE_URL + "".concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
+              return ajax("".concat(BASE_URL).concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
             });
 
           case 2:
             results = _context.sent;
 
             if (!(results && results.results && results.results.length)) {
-              _context.next = 7;
+              _context.next = 5;
               break;
             }
 
             return _context.abrupt("return", results.results[0]);
 
-          case 7:
+          case 5:
             return _context.abrupt("return", null);
 
-          case 8:
+          case 6:
           case "end":
             return _context.stop();
         }
@@ -253,7 +253,7 @@ function _deleteAttachment() {
 function cloneAttachment(_x6, _x7, _x8, _x9, _x10) {
   return _cloneAttachment.apply(this, arguments);
 }
-/** 
+/**
  * ContentId is mandatory when updating an existing attachment, and must be omitted when
  * creating a new attachment.
  */
@@ -334,7 +334,7 @@ function _storeBlob() {
             url += '/child/attachment';
 
             if (contentId) {
-              url += '/' + contentId + '/data';
+              url += "/".concat(contentId, "/data");
             }
 
             formData = new FormData();
@@ -394,7 +394,7 @@ function _postBinary() {
           case 0:
             return _context6.abrupt("return", new Promise(function (resolve, reject) {
               var xhr = new XMLHttpRequest();
-              xhr.open("POST", url, true);
+              xhr.open('POST', url, true);
               xhr.onerror = reject;
               xhr.setRequestHeader('X-Atlassian-Token', 'nocheck');
 
@@ -529,11 +529,11 @@ function iframeWrapper(postToWindow, targetHostname) {
 
   function attachActionHandler(actionName, handler) {
     function requestListener(correlationId, payload) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default.a.when(handler(payload)).done(function sendResponse(responsePayload) {
+      jquery__WEBPACK_IMPORTED_MODULE_0___default.a.when(handler(payload)).done(function (responsePayload) {
         var responseMsg = {
           correlationId: correlationId,
           responsePayload: responsePayload
-        }; //console.log("Sending response:",responseMsg);
+        }; // console.log("Sending response:",responseMsg);
 
         postToWindow.postMessage(responseMsg, targetHostname);
       }).fail(function sendError() {
@@ -559,7 +559,7 @@ function iframeWrapper(postToWindow, targetHostname) {
         var errorMsg = {
           correlationId: correlationId,
           errorPayload: payload
-        }; //console.log("Sending error response:",errorMsg);
+        }; // console.log("Sending error response:",errorMsg);
 
         postToWindow.postMessage(errorMsg, targetHostname);
       });
@@ -584,7 +584,7 @@ function iframeWrapper(postToWindow, targetHostname) {
       errorHandler: function errorHandler(errorPayload) {
         defer.reject(errorPayload);
       }
-    }); //console.log("payload",payload);
+    }); // console.log("payload",payload);
 
     postToWindow.postMessage({
       action: action,
@@ -634,17 +634,16 @@ function parseOptions(defaultOptions) {
   var params = defaultOptions || {};
 
   function decode(s) {
-    return decodeURIComponent(s.replace(/\+/g, " "));
+    return decodeURIComponent(s.replace(/\+/g, ' '));
   }
 
-  ;
   var hash = document.location.hash;
 
   while (match = re.exec(hash)) {
     var value = decode(match[2]);
 
     if (isJSON(value)) {
-      console.log("Parsing options: ", value);
+      console.log('Parsing options: ', value);
       value = JSON.parse(value);
     }
 
@@ -665,7 +664,7 @@ function encodeOptions(options) {
         value = JSON.stringify(value);
       }
 
-      res.push(key + "=" + encodeURIComponent(value));
+      res.push("".concat(key, "=").concat(encodeURIComponent(value)));
     }
   }
 
@@ -698,9 +697,9 @@ __webpack_require__.r(__webpack_exports__);
  */
 var windowEventListener = function windowEventListener() {
   // Start listening to messages (from other frames, typically)
-  var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+  var eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
   var eventer = window[eventMethod];
-  var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+  var messageEvent = eventMethod == 'attachEvent' ? 'onmessage' : 'message';
   var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
 
   var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
@@ -729,11 +728,11 @@ var windowEventListener = function windowEventListener() {
           responseListener.successHandler(e.data.responsePayload);
         }
       } else {
-        console.warn("No response listener for correlationId: ", e.data.correlationId);
+        console.warn('No response listener for correlationId: ', e.data.correlationId);
       }
     } else {
       // not an action message
-      console.log("Received non-request, non-response, message: ", e.data);
+      console.log('Received non-request, non-response, message: ', e.data);
     }
   }
   /**
@@ -744,8 +743,8 @@ var windowEventListener = function windowEventListener() {
 
 
   function registerRequestListener(action, func) {
-    if (typeof func != 'function') {
-      console.error("Cannot register request listener since not a function: ", func);
+    if (typeof func !== 'function') {
+      console.error('Cannot register request listener since not a function: ', func);
     } else {
       requestListeners[action] = func;
     }
@@ -767,17 +766,17 @@ var windowEventListener = function windowEventListener() {
 
   function registerResponseListener(correlationId, listener) {
     if (!listener.successHandler && !listener.errorHandler) {
-      console.error("Cannot register response listener as it is missing a successHandler function or errorHandler function", listener);
+      console.error('Cannot register response listener as it is missing a successHandler function or errorHandler function', listener);
       return;
     }
 
-    if (listener.successHandler && typeof listener.successHandler != 'function') {
-      console.error("Cannot register response listener as the successHandler is not a function", listener);
+    if (listener.successHandler && typeof listener.successHandler !== 'function') {
+      console.error('Cannot register response listener as the successHandler is not a function', listener);
       return;
     }
 
-    if (listener.errorHandler && typeof listener.errorHandler != 'function') {
-      console.error("Cannot register response listener as the errorHandler is not a function", listener);
+    if (listener.errorHandler && typeof listener.errorHandler !== 'function') {
+      console.error('Cannot register response listener as the errorHandler is not a function', listener);
       return;
     }
 
@@ -787,11 +786,11 @@ var windowEventListener = function windowEventListener() {
   }
 
   function defaultSuccessHandler(responsePayload) {
-    console.info("Default success handler: ", responsePayload);
+    console.info('Default success handler: ', responsePayload);
   }
 
   function defaultErrorHandler(errorPayload) {
-    console.warn("Default error handler: ", errorPayload);
+    console.warn('Default error handler: ', errorPayload);
   }
 
   return {
@@ -933,7 +932,7 @@ if (!String.prototype.format) {
   String.prototype.format = function () {
     var args = arguments;
     return this.replace(/{(\d+)}/g, function (match, number) {
-      return typeof args[number] != 'undefined' ? args[number] : match;
+      return typeof args[number] !== 'undefined' ? args[number] : match;
     });
   };
 }
@@ -1008,12 +1007,12 @@ function openIFrame(iframeElt, frameSrc, options) {
   block.fadeIn();
   $('#iframecontainer').fadeIn();
   iframeElt.bind('load', function () {
-    console.log("iframe loaded");
+    console.log('iframe loaded');
     $('#loader').fadeOut(function () {
       iframeElt.fadeIn();
     });
   });
-  iframeElt.attr('src', frameSrc + '#' + Object(_common_optionsParser__WEBPACK_IMPORTED_MODULE_6__["encodeOptions"])(options));
+  iframeElt.attr('src', "".concat(frameSrc, "#").concat(Object(_common_optionsParser__WEBPACK_IMPORTED_MODULE_6__["encodeOptions"])(options)));
   $(document).keyup(function (e) {
     if (e.keyCode == 27) {
       // ESC
@@ -1034,50 +1033,45 @@ function redirectTo(url) {
 }
 
 function attachHandlersToIFrameWindow(host, myIFrame) {
-  Object(_common_iframeWrapper__WEBPACK_IMPORTED_MODULE_4__["default"])(myIFrame[0].contentWindow, host).attachActionHandler("ajax", function (param) {
+  Object(_common_iframeWrapper__WEBPACK_IMPORTED_MODULE_4__["default"])(myIFrame[0].contentWindow, host).attachActionHandler('ajax', function (param) {
     return jQuery.ajax(param);
-  }).attachActionHandler("closeFrame", function () {
+  }).attachActionHandler('closeFrame', function () {
     return closeIFrame(myIFrame);
-  }).attachActionHandler("redirect", function (url) {
+  }).attachActionHandler('redirect', function (url) {
     return redirectTo(url);
-  }).attachActionHandler("$metacontent", function (e) {
-    return jQuery(e).attr("content");
-  }).attachActionHandler("localStorageSetItem", function (e) {
+  }).attachActionHandler('$metacontent', function (e) {
+    return jQuery(e).attr('content');
+  }).attachActionHandler('localStorageSetItem', function (e) {
     return window.localStorage.setItem(e.key, e.value);
-  }).attachActionHandler("localStorageGetItem", function (e) {
+  }).attachActionHandler('localStorageGetItem', function (e) {
     return window.localStorage.getItem(e);
-  }).attachActionHandler("$text", function (e) {
+  }).attachActionHandler('$text', function (e) {
     return jQuery(e).text();
-  }).attachActionHandler("cloneAttachment", function (e) {
+  }).attachActionHandler('cloneAttachment', function (e) {
     return Object(_common_confluence_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_8__["cloneAttachment"])(e.attachmentUrl, e.targetContainerId, e.title, e.targetId);
   });
 }
 
 function wireBanner(options) {
   var jEl = $(options.cssSelector);
-  jEl.addClass("cibanner");
+  jEl.addClass('cibanner');
 
   if (!options.disablePullUp) {
-    jEl.addClass("pullup");
+    jEl.addClass('pullup');
   }
 
-  options.buttonText = options.buttonText || "Start";
-  options.bannerText = options.bannerText || $('#title-text').text().trim();
-  $(".wiki-content .innerCell").css("overflow-x", "visible");
-  $(options.cssSelector).removeClass("rw_corners rw_page_left_section").html('<div class="cilogo">\
-              <img src="' + options.host + '/banner/service_leads_2.png" />\
-            </div>\
-            <div class="cicenter">\
-            <h1>' + options.bannerText + '</h1>\
-            </div>\
-          ');
+  options.buttonText = options.buttonText || 'Start';
+  options.bannerText = options.bannerText;
+  $('#title-text').text().trim();
+  $('.wiki-content .innerCell').css('overflow-x', 'visible');
+  $(options.cssSelector).removeClass('rw_corners rw_page_left_section').html("<div class=\"cilogo\">              <img src=\"".concat(options.host, "/banner/service_leads_2.png\" />            </div>            <div class=\"cicenter\">            <h1>").concat(options.bannerText, "</h1>            </div>          "));
 }
 
 function genericButton(options, formPath) {
   // load dependencies in order
   var myIFrame = $('#iframecontainer iframe');
   $(options.cssSelector).click(function () {
-    openIFrame(myIFrame, options.host + '/' + formPath, options);
+    openIFrame(myIFrame, "".concat(options.host, "/").concat(formPath), options);
     attachHandlersToIFrameWindow(options.host, myIFrame);
   });
 }
@@ -1093,24 +1087,25 @@ function wireJiraIssueSummary(options) {
   //   jiraColumns
   // }
   var el = $(options.cssSelector);
-  var jql = '( labels="' + options.jiraLabel + '" AND labels="' + _common_config__WEBPACK_IMPORTED_MODULE_7__["MAIN_JIRA_LABEL"] + '") ';
+  var jql = "( labels=\"".concat(options.jiraLabel, "\" AND labels=\"").concat(_common_config__WEBPACK_IMPORTED_MODULE_7__["MAIN_JIRA_LABEL"], "\") ");
 
-  if (options.summaryType == "done") {
+  if (options.summaryType == 'done') {
     jql += ' AND status IN (Resolved, "Verified/Closed", Done, Fixed, Complete)';
-  } else if (options.summaryType == "todo") {
+  } else if (options.summaryType == 'todo') {
     jql += ' AND status NOT IN (Resolved, "Verified/Closed", Done, Fixed, Complete, Cancelled, Rejected)';
   }
 
-  var postQuery = '<ac:structured-macro ac:name="jira" ac:schema-version="1" ><ac:parameter ac:name="columns">' + options.jiraColumns + '</ac:parameter><ac:parameter ac:name="maximumIssues">' + options.jiraIssueCount + '</ac:parameter><ac:parameter ac:name="jqlQuery">' + jql + '</ac:parameter></ac:structured-macro>';
+  var postQuery = '<ac:structured-macro ac:name="jira" ac:schema-version="1" ><ac:parameter ac:name="columns">';
+  "".concat(options.jiraColumns, "</ac:parameter><ac:parameter ac:name=\"maximumIssues\">").concat(options.jiraIssueCount, "</ac:parameter><ac:parameter ac:name=\"jqlQuery\">").concat(jql, "</ac:parameter></ac:structured-macro>");
   var reqPayload = {
     wikiMarkup: encodeURIComponent(postQuery),
     clearCache: true
   };
   $.ajax({
-    url: "/rest/jiraanywhere/1.0/jira/renderTable",
-    type: "POST",
+    url: '/rest/jiraanywhere/1.0/jira/renderTable',
+    type: 'POST',
     data: JSON.stringify(reqPayload),
-    contentType: "application/json",
+    contentType: 'application/json',
     complete: function complete(data) {
       el.html(JSON.parse(data.responseText).data);
     }
@@ -1119,19 +1114,14 @@ function wireJiraIssueSummary(options) {
 
 function wireStartEngagementButton(options) {
   var jEl = $(options.cssSelector);
-  jEl.addClass("cibutton btn btn-lg btn-warning btn-raised").html('<span class="text">Start</span>&nbsp;&nbsp;<i class="fa fa-play-circle fa-2x"></i>');
+  jEl.addClass('cibutton btn btn-lg btn-warning btn-raised').html('<span class="text">Start</span>&nbsp;&nbsp;<i class="fa fa-play-circle fa-2x"></i>');
   return genericButton(options, 'golden-form.html');
 }
 
 function wireCreateJiraButton(options) {
   var el = $(options.cssSelector);
   var currentText = el.text();
-  el.addClass("cibutton btn btn-lg btn-warning btn-raised").html('\
-    <span class="text">' + currentText + '</span>&nbsp;&nbsp;<span class="fa-stack" style="top: -3px">\
-      <i class="fa fa-comment-o fa-stack-2x"></i>\
-      <i class="fa fa-lightbulb-o fa-stack-1x"></i>\
-    </span>\
-  ');
+  el.addClass('cibutton btn btn-lg btn-warning btn-raised').html("    <span class=\"text\">".concat(currentText, "</span>&nbsp;&nbsp;<span class=\"fa-stack\" style=\"top: -3px\">      <i class=\"fa fa-comment-o fa-stack-2x\"></i>      <i class=\"fa fa-lightbulb-o fa-stack-1x\"></i>    </span>  "));
   return genericButton(options, 'create-jira-form.html');
 }
 
@@ -1145,18 +1135,18 @@ function readOptions(el) {
   var groups = [];
 
   function defaultNotFalse(v) {
-    return v !== undefined && v !== null && v !== false && v !== "false";
+    return v !== undefined && v !== null && v !== false && v !== 'false';
   }
 
   el.children('ci-options').each(function () {
-    var name = $(this).attr("name");
+    var name = $(this).attr('name');
     var options = [];
     $(this).children('ci-option').each(function () {
       options.push({
         name: name,
-        value: $(this).attr("value"),
+        value: $(this).attr('value'),
         label: $(this).html(),
-        default: defaultNotFalse($(this).attr("default"))
+        default: defaultNotFalse($(this).attr('default'))
       });
     });
     groups.push({
@@ -1209,7 +1199,7 @@ function bootstrap(host, cacheBuster) {
       cssSelector: this,
       jiraProjectKey: jEl.data('jira-project-key'),
       serviceDisplayName: jEl.data('service-display-name'),
-      issueType: jEl.data('issue-type') || "Improvement",
+      issueType: jEl.data('issue-type') || 'Improvement',
       issueComponent: jEl.data('issue-component'),
       issueLabel: jEl.data('issue-label') || jEl.data('jira-label')
     });
@@ -1273,19 +1263,19 @@ function getOriginLocation() {
 
   for (var i = 0; i < scripts.length; i++) {
     var s = scripts[i];
-    var url = s.getAttribute("src");
+    var url = s.getAttribute('src');
     if (url && url.indexOf('http') == 0) candidates.push(url);
   }
 
   console.log('Looking for script origin within', candidates);
 
   for (var idx = candidates.length - 1; idx >= 0; idx--) {
-    var l = document.createElement("a");
+    var l = document.createElement('a');
     l.href = candidates[idx];
-    if (!l.origin) l.origin = l.protocol + "//" + l.host;
+    if (!l.origin) l.origin = "".concat(l.protocol, "//").concat(l.host);
 
     if (whitelistedOrigin(l.origin)) {
-      console.log("Found own origin: ", l.origin, 'cache busting', l.search);
+      console.log('Found own origin: ', l.origin, 'cache busting', l.search);
       return l;
     }
   }
@@ -1298,9 +1288,9 @@ function whitelistedOrigin(origin) {
 }
 
 var originlocation = getOriginLocation();
-var host = originlocation.origin + '/ywiki-plugins';
+var host = "".concat(originlocation.origin, "/ywiki-plugins");
 var cacheBuster = originlocation.search;
-console.log("plugin Host=" + host + ", cacheBuster=" + cacheBuster);
+console.log("plugin Host=".concat(host, ", cacheBuster=").concat(cacheBuster));
 
 
 /***/ }),
@@ -1324,7 +1314,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function loadStyleSheet(host, url) {
   if (!url.startsWith('http')) {
-    url = host + '/' + url;
+    url = "".concat(host, "/").concat(url);
   }
 
   var link = document.createElement('link');
@@ -1335,7 +1325,7 @@ function loadStyleSheet(host, url) {
   console.log('style loaded');
 }
 function loadPluginStyleSheet(filename) {
-  return loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_1__["host"], 'dist/' + filename + _pluginCommon__WEBPACK_IMPORTED_MODULE_1__["cacheBuster"]);
+  return loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_1__["host"], "dist/".concat(filename).concat(_pluginCommon__WEBPACK_IMPORTED_MODULE_1__["cacheBuster"]));
 }
 
 /***/ }),

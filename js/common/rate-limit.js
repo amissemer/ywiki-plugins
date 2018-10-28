@@ -1,4 +1,4 @@
-import { delay, bind, defer, map  } from 'underscore';
+import { delay, bind, defer, map } from 'underscore';
 import jQuery from 'jquery-deferred';
 
 /* Extend the Underscore object with the following methods */
@@ -23,37 +23,40 @@ import jQuery from 'jquery-deferred';
 // * underscore.js
 //
 export default function rateLimit(func, rate) {
-    var queue = [];
-    var timeOutRef = false;
-    var currentlyEmptyingQueue = false;
-    
-    var emptyQueue = function() {
-        if (queue.length) {
-            currentlyEmptyingQueue = true;
-            delay(function() {
-                defer(function() { 
-                    var f = queue.shift(); 
-                    if (f) {
-                        jQuery.when(f.call()).then(emptyQueue); 
-                    } else {
-                        emptyQueue();
-                    }
-                });
-            }, rate);
-        } else {
-            currentlyEmptyingQueue = false;
-        }
-    };
-    
-    return function() {
-        var defer = jQuery.Deferred();
-        var args = map(arguments, function(e) { return e; }); // get arguments into an array
+  const queue = [];
+  const timeOutRef = false;
+  let currentlyEmptyingQueue = false;
 
-        queue.push( function() {
-            return jQuery.when(func.apply({}, args)).then( defer.resolve, defer.reject, defer.notify );
-         } ); // call apply so that we can pass in arguments as parameters as opposed to an array
-        if (!currentlyEmptyingQueue) { emptyQueue(); }
-        return defer.promise();
-    };
-};
+  var emptyQueue = function() {
+    if (queue.length) {
+      currentlyEmptyingQueue = true;
+      delay(() => {
+        defer(() => {
+          const f = queue.shift();
+          if (f) {
+            jQuery.when(f.call()).then(emptyQueue);
+          } else {
+            emptyQueue();
+          }
+        });
+      }, rate);
+    } else {
+      currentlyEmptyingQueue = false;
+    }
+  };
 
+  return function() {
+    const defer = jQuery.Deferred();
+    const args = map(arguments, e => {
+      return e;
+    }); // get arguments into an array
+
+    queue.push(() => {
+      return jQuery.when(func.apply({}, args)).then(defer.resolve, defer.reject, defer.notify);
+    }); // call apply so that we can pass in arguments as parameters as opposed to an array
+    if (!currentlyEmptyingQueue) {
+      emptyQueue();
+    }
+    return defer.promise();
+  };
+}

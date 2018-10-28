@@ -1,9 +1,10 @@
-import variantOptionsTransform from './variantOptionsTransform';
 import $ from 'jquery';
+import variantOptionsTransform from './variantOptionsTransform';
 import wikiPageXslt from './wikiPageXslt';
-var fixLocalLinksXsl = require('raw-loader!./xslt/fix-local-links.xsl');
 
-var template_pattern = /\[Customer\]|\[ProjectName\]/;
+const fixLocalLinksXsl = require('raw-loader!./xslt/fix-local-links.xsl');
+
+const template_pattern = /\[Customer\]|\[ProjectName\]/;
 
 /**
  * Construct TemplateProcessor.
@@ -18,9 +19,9 @@ var template_pattern = /\[Customer\]|\[ProjectName\]/;
  */
 export function TemplateProcessor(options) {
   if (!(this instanceof TemplateProcessor)) return new TemplateProcessor(options);
-  var placeholderReplacements = options.placeholderReplacements;
-  var variantOptions = options.variantOptions; // [ { name : "hosting", value : "ccv2" | "other" } ]
-  var forceTitle = options.forceTitle;
+  const placeholderReplacements = options.placeholderReplacements;
+  const variantOptions = options.variantOptions; // [ { name : "hosting", value : "ccv2" | "other" } ]
+  const forceTitle = options.forceTitle;
   this.copyAttachments = options.copyAttachments;
 
   /** Filters only pages that contain [placeholders] */
@@ -33,63 +34,65 @@ export function TemplateProcessor(options) {
    */
   function isApplicableToVariantOptions(page) {
     if (!variantOptions) return true;
-    var match = true;
-    variantOptions.forEach(function(option) {
-      var prefix = option.name+'-';
-      var expectedLabel = prefix + option.value;
-      var labels = getLabelsWithPrefix(page, prefix);
-      if (labels && labels.length>0 && ! (labels.indexOf(expectedLabel)>=0) ) match = false;
+    let match = true;
+    variantOptions.forEach(option => {
+      const prefix = `${option.name}-`;
+      const expectedLabel = prefix + option.value;
+      const labels = getLabelsWithPrefix(page, prefix);
+      if (labels && labels.length > 0 && !(labels.indexOf(expectedLabel) >= 0)) match = false;
     });
     return match;
   }
   function getLabelsWithPrefix(page, prefix) {
-    var labels = [];
+    const labels = [];
     if (page.metadata.labels && page.metadata.labels.results) {
-      page.metadata.labels.results.forEach(function(labelObject) {
+      page.metadata.labels.results.forEach(labelObject => {
         if (labelObject.name.startsWith(prefix)) labels.push(labelObject.name);
       });
     }
     return labels;
   }
-  /** 
+  /**
    * if placeholderReplacements is null, returns the template.
    * if placeholderReplacements is a simple string, returns that string
-   * if placeholderReplacements is a map, for each (key,value) pair in the map, replaces [key] placeholders with value. 
-   **/
+   * if placeholderReplacements is a map, for each (key,value) pair in the map, replaces [key] placeholders with value.
+   * */
   function replacePlaceholders(template, escapeHtml) {
     if (typeof placeholderReplacements === undefined) return template;
     if (typeof placeholderReplacements === 'string') return placeholderReplacements;
     var result = template;
-    for (var key in placeholderReplacements) {
+    for (const key in placeholderReplacements) {
       if (placeholderReplacements.hasOwnProperty(key)) {
-        var varStr = '['+key+']';
+        const varStr = `[${key}]`;
         if (result.indexOf(varStr) == -1) {
-          console.warn(varStr + " is not used in template",template);
+          console.warn(`${varStr} is not used in template`, template);
         }
-        var replacementValue = placeholderReplacements[key];
+        let replacementValue = placeholderReplacements[key];
         if (typeof replacementValue !== 'string') {
           replacementValue = replacementValue.value;
         } else if (escapeHtml) {
-          replacementValue = $("<div>").text(replacementValue).html();
+          replacementValue = $('<div>')
+            .text(replacementValue)
+            .html();
         }
         var result = result.split(varStr).join(replacementValue);
       }
     }
-    if (result.indexOf('[')!=-1) {
-      console.warn("title still has uninterpolated variables",result);
+    if (result.indexOf('[') != -1) {
+      console.warn('title still has uninterpolated variables', result);
     }
     return result;
   }
 
   function replacePlaceholderInPage(page) {
-    console.log("Found page to Copy",page);
+    console.log('Found page to Copy', page);
     if (forceTitle) {
       page.title = forceTitle;
     } else {
       page.title = replacePlaceholders(page.title);
     }
-    console.log("New Title for target page: "+page.title);
-    if (typeof placeholderReplacements!=='string') {
+    console.log(`New Title for target page: ${page.title}`);
+    if (typeof placeholderReplacements !== 'string') {
       page.body.storage.value = replacePlaceholders(page.body.storage.value, true);
     }
   }
@@ -104,21 +107,21 @@ export function TemplateProcessor(options) {
   }
   /**
    * Processes the content by stripping divbox out when their class attribute value is not relevant to the selected variantOptions.
-   * 
+   *
    * <ac:structured-macro ac:name="divbox"[^>]*><ac:parameter ac:name="class">${option.name}-${option.value}</ac:parameter>...</ac:structured-macro>
    */
   function filterVariantInContent(content) {
     return variantOptionsTransform(content, variantOptions);
   }
 
-  /** 
+  /**
    * Determines if a page is a template page and should be used to create the workspace, based on the variantOptions.
    * @param page a confluence page with its title and labels
    * @returns true|false
-   **/
+   * */
   this.isApplicableTemplatePage = function(page) {
     return isTemplatePage(page) && isApplicableToVariantOptions(page);
-  }
+  };
   /**
    * Transforms a page a per placeholderReplacements and selected variantOptions
    * /!\ Working through side-effect, directly on the input page.
@@ -127,9 +130,5 @@ export function TemplateProcessor(options) {
     replacePlaceholderInPage(page);
     await filterVariant(page);
     await fixLocalLinks(page);
-  }
-
+  };
 }
-
-
-

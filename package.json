@@ -8,14 +8,22 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --progress --watch",
-    "test": "mocha-webpack --webpack-config webpack.test.config.js \"js/**/*.test.js\""
+    "test": "mocha-webpack --webpack-config webpack.test.config.js \"js/**/*.test.js\"",
+    "prettier": "prettier --write js/**/*.js",
+    "lint": "eslint --debug js/",
+    "lint:write": "eslint js/ --fix"
+  },
+  "lint-staged": {
+    "*.(js|jsx)": [
+      "npm run lint:write",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/amissemer/ywiki-plugins.git"
   },
-  "author": "Adrien Missemer <adrien.missemer@gmail.com>",
-  "license": "ISC",
+  "author": "Adrien Missemer <adrien.missemer@sap.com>",
   "bugs": {
     "url": "https://github.com/amissemer/ywiki-plugins/issues"
   },
@@ -50,10 +58,16 @@
     "babel-loader": "^8.0.2",
     "chai": "^4.1.2",
     "css-loader": "^0.27.3",
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-prettier": "^3.0.0",
     "file-loader": "^1.1.11",
+    "lint-staged": "^7.3.0",
     "mini-css-extract-plugin": "^0.4.0",
     "mocha": "^5.2.0",
     "mocha-webpack": "^2.0.0-beta.0",
+    "prettier": "^1.14.3",
     "raw-loader": "^0.5.1",
     "throat": "^4.1.0",
     "webpack": "^4.8.3",

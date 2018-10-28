@@ -109,15 +109,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PORTFOLIO_GROUP", function() { return PORTFOLIO_GROUP; });
 var DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 var DEFAULT_JIRA_ISSUE_COUNT = 10;
-var MAIN_JIRA_LABEL = "CI";
-var TAGS_FIELD = "customfield_10032";
+var MAIN_JIRA_LABEL = 'CI';
+var TAGS_FIELD = 'customfield_10032';
 var WIKI_HOST = 'wiki.hybris.com';
 var MAX_WIKI_PAGE_CREATION_RATE = 50; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
 
 var SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
 
-var PREFIX = "ywiki-plugins.";
-var PREFERRED_REGION_KEY = "preferred.region";
+var PREFIX = 'ywiki-plugins.';
+var PREFERRED_REGION_KEY = 'preferred.region';
 var DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
 var CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
 var DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
@@ -178,11 +178,11 @@ function iframeWrapper(postToWindow, targetHostname) {
 
   function attachActionHandler(actionName, handler) {
     function requestListener(correlationId, payload) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default.a.when(handler(payload)).done(function sendResponse(responsePayload) {
+      jquery__WEBPACK_IMPORTED_MODULE_0___default.a.when(handler(payload)).done(function (responsePayload) {
         var responseMsg = {
           correlationId: correlationId,
           responsePayload: responsePayload
-        }; //console.log("Sending response:",responseMsg);
+        }; // console.log("Sending response:",responseMsg);
 
         postToWindow.postMessage(responseMsg, targetHostname);
       }).fail(function sendError() {
@@ -208,7 +208,7 @@ function iframeWrapper(postToWindow, targetHostname) {
         var errorMsg = {
           correlationId: correlationId,
           errorPayload: payload
-        }; //console.log("Sending error response:",errorMsg);
+        }; // console.log("Sending error response:",errorMsg);
 
         postToWindow.postMessage(errorMsg, targetHostname);
       });
@@ -233,7 +233,7 @@ function iframeWrapper(postToWindow, targetHostname) {
       errorHandler: function errorHandler(errorPayload) {
         defer.reject(errorPayload);
       }
-    }); //console.log("payload",payload);
+    }); // console.log("payload",payload);
 
     postToWindow.postMessage({
       action: action,
@@ -283,17 +283,16 @@ function parseOptions(defaultOptions) {
   var params = defaultOptions || {};
 
   function decode(s) {
-    return decodeURIComponent(s.replace(/\+/g, " "));
+    return decodeURIComponent(s.replace(/\+/g, ' '));
   }
 
-  ;
   var hash = document.location.hash;
 
   while (match = re.exec(hash)) {
     var value = decode(match[2]);
 
     if (isJSON(value)) {
-      console.log("Parsing options: ", value);
+      console.log('Parsing options: ', value);
       value = JSON.parse(value);
     }
 
@@ -314,7 +313,7 @@ function encodeOptions(options) {
         value = JSON.stringify(value);
       }
 
-      res.push(key + "=" + encodeURIComponent(value));
+      res.push("".concat(key, "=").concat(encodeURIComponent(value)));
     }
   }
 
@@ -347,9 +346,9 @@ __webpack_require__.r(__webpack_exports__);
  */
 var windowEventListener = function windowEventListener() {
   // Start listening to messages (from other frames, typically)
-  var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+  var eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
   var eventer = window[eventMethod];
-  var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+  var messageEvent = eventMethod == 'attachEvent' ? 'onmessage' : 'message';
   var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
 
   var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
@@ -378,11 +377,11 @@ var windowEventListener = function windowEventListener() {
           responseListener.successHandler(e.data.responsePayload);
         }
       } else {
-        console.warn("No response listener for correlationId: ", e.data.correlationId);
+        console.warn('No response listener for correlationId: ', e.data.correlationId);
       }
     } else {
       // not an action message
-      console.log("Received non-request, non-response, message: ", e.data);
+      console.log('Received non-request, non-response, message: ', e.data);
     }
   }
   /**
@@ -393,8 +392,8 @@ var windowEventListener = function windowEventListener() {
 
 
   function registerRequestListener(action, func) {
-    if (typeof func != 'function') {
-      console.error("Cannot register request listener since not a function: ", func);
+    if (typeof func !== 'function') {
+      console.error('Cannot register request listener since not a function: ', func);
     } else {
       requestListeners[action] = func;
     }
@@ -416,17 +415,17 @@ var windowEventListener = function windowEventListener() {
 
   function registerResponseListener(correlationId, listener) {
     if (!listener.successHandler && !listener.errorHandler) {
-      console.error("Cannot register response listener as it is missing a successHandler function or errorHandler function", listener);
+      console.error('Cannot register response listener as it is missing a successHandler function or errorHandler function', listener);
       return;
     }
 
-    if (listener.successHandler && typeof listener.successHandler != 'function') {
-      console.error("Cannot register response listener as the successHandler is not a function", listener);
+    if (listener.successHandler && typeof listener.successHandler !== 'function') {
+      console.error('Cannot register response listener as the successHandler is not a function', listener);
       return;
     }
 
-    if (listener.errorHandler && typeof listener.errorHandler != 'function') {
-      console.error("Cannot register response listener as the errorHandler is not a function", listener);
+    if (listener.errorHandler && typeof listener.errorHandler !== 'function') {
+      console.error('Cannot register response listener as the errorHandler is not a function', listener);
       return;
     }
 
@@ -436,11 +435,11 @@ var windowEventListener = function windowEventListener() {
   }
 
   function defaultSuccessHandler(responsePayload) {
-    console.info("Default success handler: ", responsePayload);
+    console.info('Default success handler: ', responsePayload);
   }
 
   function defaultErrorHandler(errorPayload) {
-    console.warn("Default error handler: ", errorPayload);
+    console.warn('Default error handler: ', errorPayload);
   }
 
   return {
@@ -503,13 +502,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var options = Object(_common_optionsParser__WEBPACK_IMPORTED_MODULE_12__["parseOptions"])({
-  "serviceDisplayName": "service engagements"
+  serviceDisplayName: 'service engagements'
 });
 var additionalLabel = _common_config__WEBPACK_IMPORTED_MODULE_14__["MAIN_JIRA_LABEL"];
-console.info("Form options", options);
+console.info('Form options', options);
 
 function bindDOM() {
-  jquery__WEBPACK_IMPORTED_MODULE_2___default()("#form-close").click(function () {
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()('#form-close').click(function () {
     _proxyService__WEBPACK_IMPORTED_MODULE_3__["closeFrame"]();
   });
   jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).keyup(function (e) {
@@ -518,57 +517,56 @@ function bindDOM() {
       _proxyService__WEBPACK_IMPORTED_MODULE_3__["closeFrame"]();
     }
   });
-  jquery__WEBPACK_IMPORTED_MODULE_2___default()("#cancelBtn").click(function () {
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()('#cancelBtn').click(function () {
     _proxyService__WEBPACK_IMPORTED_MODULE_3__["closeFrame"]();
   });
-  jquery__WEBPACK_IMPORTED_MODULE_2___default()("#authenticateWarning a.authenticateWarningLink").click(function () {
-    jquery__WEBPACK_IMPORTED_MODULE_2___default()("#authenticateWarning").fadeOut();
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()('#authenticateWarning a.authenticateWarningLink').click(function () {
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()('#authenticateWarning').fadeOut();
   });
-  jquery__WEBPACK_IMPORTED_MODULE_2___default()(".service-display-name").text(options.serviceDisplayName);
-  var submitBtn = jquery__WEBPACK_IMPORTED_MODULE_2___default()("#wizard-submit");
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()('.service-display-name').text(options.serviceDisplayName);
+  var submitBtn = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#wizard-submit');
   var submitProgress = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#progress-indicator');
   submitBtn.click(function () {
     console.log(submitBtn.prop('disabled'));
 
     if (submitBtn.hasClass('disabled')) {
       return true;
-    } else {
-      var labels = [additionalLabel];
-
-      if (options.issueLabel) {
-        labels.push(options.issueLabel);
-      }
-
-      var cust = jquery__WEBPACK_IMPORTED_MODULE_2___default()("#customer").val();
-
-      if (cust) {
-        labels.push(cust.replace(/[\W_]+/g, "-"));
-      }
-
-      _jiraService__WEBPACK_IMPORTED_MODULE_13__["createIssue"](options.jiraProjectKey, options.issueType, options.issueComponent, jquery__WEBPACK_IMPORTED_MODULE_2___default()("#summary").val(), jquery__WEBPACK_IMPORTED_MODULE_2___default()("#description").val(), jquery__WEBPACK_IMPORTED_MODULE_2___default()("#priority").val(), jquery__WEBPACK_IMPORTED_MODULE_2___default()("#feedback-type").val(), labels).then(function (issueKey) {
-        // RESET FORM
-        jquery__WEBPACK_IMPORTED_MODULE_2___default()("input[type=text], textarea").val("");
-        jquery__WEBPACK_IMPORTED_MODULE_2___default()("#priority").val("Minor");
-        jquery__WEBPACK_IMPORTED_MODULE_2___default()('.selectpicker').selectpicker('refresh');
-        submitBtn.prop('disabled', false);
-        submitProgress.hide();
-        jquery__WEBPACK_IMPORTED_MODULE_2___default()("#resultPanel").show();
-        console.log("Created JIRA Issue " + issueKey);
-        jquery__WEBPACK_IMPORTED_MODULE_2___default()(".issueKeyCreated").attr("href", "https://" + _jiraService__WEBPACK_IMPORTED_MODULE_13__["jiraServerHost"] + "/browse/" + encodeURIComponent(issueKey)).text(issueKey);
-      }, onSubmitError);
-      submitBtn.prop('disabled', true);
-      jquery__WEBPACK_IMPORTED_MODULE_2___default()("#resultPanel").hide();
-      submitProgress.show();
-      jquery__WEBPACK_IMPORTED_MODULE_2___default()('#error-display').hide();
     }
 
+    var labels = [additionalLabel];
+
+    if (options.issueLabel) {
+      labels.push(options.issueLabel);
+    }
+
+    var cust = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#customer').val();
+
+    if (cust) {
+      labels.push(cust.replace(/[\W_]+/g, '-'));
+    }
+
+    _jiraService__WEBPACK_IMPORTED_MODULE_13__["createIssue"](options.jiraProjectKey, options.issueType, options.issueComponent, jquery__WEBPACK_IMPORTED_MODULE_2___default()('#summary').val(), jquery__WEBPACK_IMPORTED_MODULE_2___default()('#description').val(), jquery__WEBPACK_IMPORTED_MODULE_2___default()('#priority').val(), jquery__WEBPACK_IMPORTED_MODULE_2___default()('#feedback-type').val(), labels).then(function (issueKey) {
+      // RESET FORM
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('input[type=text], textarea').val('');
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('#priority').val('Minor');
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('.selectpicker').selectpicker('refresh');
+      submitBtn.prop('disabled', false);
+      submitProgress.hide();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('#resultPanel').show();
+      console.log("Created JIRA Issue ".concat(issueKey));
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('.issueKeyCreated').attr('href', "https://".concat(_jiraService__WEBPACK_IMPORTED_MODULE_13__["jiraServerHost"], "/browse/").concat(encodeURIComponent(issueKey))).text(issueKey);
+    }, onSubmitError);
+    submitBtn.prop('disabled', true);
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()('#resultPanel').hide();
+    submitProgress.show();
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()('#error-display').hide();
     return false;
   });
 }
 
 function onSubmitError(error) {
   if (error instanceof _jira_error__WEBPACK_IMPORTED_MODULE_7__["JiraAuthError"]) {
-    jquery__WEBPACK_IMPORTED_MODULE_2___default()('#authenticateWarning a.authenticateWarningLink').attr("href", error.authenticationUri);
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()('#authenticateWarning a.authenticateWarningLink').attr('href', error.authenticationUri);
     jquery__WEBPACK_IMPORTED_MODULE_2___default()('#authenticateWarning').show();
   } else {
     jquery__WEBPACK_IMPORTED_MODULE_2___default()('#error-display .msg').text(error);
@@ -576,7 +574,7 @@ function onSubmitError(error) {
   }
 
   jquery__WEBPACK_IMPORTED_MODULE_2___default()('#progress-indicator').hide();
-  jquery__WEBPACK_IMPORTED_MODULE_2___default()("#wizard-submit").prop('disabled', false);
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()('#wizard-submit').prop('disabled', false);
 }
 
 jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(bindDOM);
@@ -639,10 +637,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var jiraServerHost = 'jira.hybris.com'; //const jiraServerHost = 'jiratest.hybris.com';
+var jiraServerHost = 'jira.hybris.com'; // const jiraServerHost = 'jiratest.hybris.com';
 
 function getJiraServer() {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"]("/rest/createjiracontent/1.0/get-jira-servers").then(function (servers) {
+  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"]('/rest/createjiracontent/1.0/get-jira-servers').then(function (servers) {
     var matchingJiraServer = jquery__WEBPACK_IMPORTED_MODULE_2___default.a.grep(servers, function (value, idx) {
       return value.url.indexOf(jiraServerHost) > 0;
     });
@@ -651,7 +649,7 @@ function getJiraServer() {
       return matchingJiraServer[0];
     }
 
-    var msg = "No jira server server with url " + jiraServerHost + " found";
+    var msg = "No jira server server with url ".concat(jiraServerHost, " found");
     console.error(msg);
     throw new _jira_error__WEBPACK_IMPORTED_MODULE_4__["JiraError"](msg);
   }).then(function (jiraServer) {
@@ -662,16 +660,16 @@ function getJiraServer() {
 function getJiraProject(jiraServerP, projectKey) {
   var jiraServerP = getJiraServer();
   return jiraServerP.then(function (serverId) {
-    return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"]("/rest/jira-integration/1.0/servers/" + serverId + "/projects");
+    return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"]("/rest/jira-integration/1.0/servers/".concat(serverId, "/projects"));
   }).then(function (result) {
     for (var i = 0; i < result.length; i++) {
       if (result[i].key === projectKey) {
-        console.log("Project", result[i]);
+        console.log('Project', result[i]);
         return result[i];
       }
     }
 
-    var msg = "No project '" + projectKey + "' found on JIRA server";
+    var msg = "No project '".concat(projectKey, "' found on JIRA server");
     console.error(msg);
     throw new _jira_error__WEBPACK_IMPORTED_MODULE_4__["JiraError"](msg);
   });
@@ -685,7 +683,7 @@ function getIssueTypeId(jiraProject, issueTypeName) {
       }
     }
 
-    var msg = "No issue type '" + issueTypeName + "' for project " + project.key;
+    var msg = "No issue type '".concat(issueTypeName, "' for project ").concat(project.key);
     console.error(msg);
     throw new _jira_error__WEBPACK_IMPORTED_MODULE_4__["JiraError"](msg);
   }).then(function (issueType) {
@@ -696,46 +694,46 @@ function getIssueTypeId(jiraProject, issueTypeName) {
 
 
 function createIssue(projectKey, issueTypeName, componentName, summary, description, priority, feedbackType, labels) {
-  var jiraServerP = getJiraServer(); //var jiraProjectP = getJiraProject(jiraServerP, projectKey);
-  //var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
+  var jiraServerP = getJiraServer(); // var jiraProjectP = getJiraProject(jiraServerP, projectKey);
+  // var issueTypeIdP = getIssueTypeId(jiraProjectP, issueTypeName);
 
-  if (typeof labels === "string") {
+  if (typeof labels === 'string') {
     labels = [labels];
   }
 
   labels = labels || [];
-  console.log("FeedbackType:", feedbackType);
+  console.log('FeedbackType:', feedbackType);
   return jquery__WEBPACK_IMPORTED_MODULE_2___default.a.when(jiraServerP).then(function (jiraServer) {
     var issue = {
-      "fields": {
-        "project": {
-          "key": projectKey
+      fields: {
+        project: {
+          key: projectKey
         },
-        "issuetype": {
-          "name": issueTypeName
+        issuetype: {
+          name: issueTypeName
         },
-        "components": [{
-          "name": componentName
+        components: [{
+          name: componentName
         }],
-        "summary": summary,
-        "description": description,
-        "priority": {
-          "name": priority
+        summary: summary,
+        description: description,
+        priority: {
+          name: priority
         },
-        "labels": labels
+        labels: labels
       }
     };
 
-    if (typeof feedbackType === "string") {
+    if (typeof feedbackType === 'string') {
       issue.fields[_common_config__WEBPACK_IMPORTED_MODULE_5__["TAGS_FIELD"]] = [feedbackType];
     }
 
     return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"]({
-      url: "/rest/jira-integration/1.0/issues?applicationId=" + jiraServer,
-      contentType: "application/json;charset=UTF-8",
-      type: "POST",
+      url: "/rest/jira-integration/1.0/issues?applicationId=".concat(jiraServer),
+      contentType: 'application/json;charset=UTF-8',
+      type: 'POST',
       data: JSON.stringify({
-        "issues": [issue]
+        issues: [issue]
       })
     });
   }).then(getJiraTicketKey);
@@ -748,8 +746,8 @@ function getJiraTicketKey(data) {
     return key;
   }
 
-  var errorMsg = "Oops, something happened during ticket creation, please try again. ";
-  console.error("Error creating JIRA ticket, full response was: ", data);
+  var errorMsg = 'Oops, something happened during ticket creation, please try again. ';
+  console.error('Error creating JIRA ticket, full response was: ', data);
 
   if (data && data.errors && data.errors[0] && data.errors[0].exceptionName == 'com.atlassian.integration.jira.JiraAuthenticationRequiredException') {
     throw new _jira_error__WEBPACK_IMPORTED_MODULE_4__["JiraAuthError"](data.errors[0].authenticationUri);
@@ -760,7 +758,7 @@ function getJiraTicketKey(data) {
   if (data && data.errors && data.errors[0] && data.errors[0].elementErrors) {
     if (data.errors[0].elementErrors.errorMessages && data.errors[0].elementErrors.errorMessages[0]) {
       data.errors[0].elementErrors.errorMessages.forEach(function (msg) {
-        errorMsg += msg + ", ";
+        errorMsg += "".concat(msg, ", ");
       });
     }
 
@@ -769,7 +767,7 @@ function getJiraTicketKey(data) {
     if (errors) {
       for (var errKey in errors) {
         if (errors.hasOwnProperty(errKey)) {
-          errorMsg += "For " + errKey + ": " + errors[errKey] + ", ";
+          errorMsg += "For ".concat(errKey, ": ").concat(errors[errKey], ", ");
         }
       }
     }
@@ -809,23 +807,23 @@ __webpack_require__.r(__webpack_exports__);
  * A handy proxy for actions that can be executed in the parent frame bypassing CORS.
  */
 
-var wrapper = Object(_common_iframeWrapper__WEBPACK_IMPORTED_MODULE_0__["default"])(parent, "https://" + _common_config__WEBPACK_IMPORTED_MODULE_1__["WIKI_HOST"]);
+var wrapper = Object(_common_iframeWrapper__WEBPACK_IMPORTED_MODULE_0__["default"])(parent, "https://".concat(_common_config__WEBPACK_IMPORTED_MODULE_1__["WIKI_HOST"]));
 /**
  * Perform an ajax call in the parent frame and returns a promise that will get resolved or rejected with the data as seen by the parent frame.
  * Not compatible with ajax callbacks that can usually be passed in the settings parameter (complete, beforeSend, error, success), use the return value which is a promise instead.
  */
 
 function ajax(param) {
-  return wrapper.call("ajax", param);
+  return wrapper.call('ajax', param);
 }
 function localStorageSetItem(key, value) {
-  return wrapper.call("localStorageSetItem", {
+  return wrapper.call('localStorageSetItem', {
     key: key,
     value: value
   });
 }
 function localStorageGetItem(key) {
-  return wrapper.call("localStorageGetItem", key);
+  return wrapper.call('localStorageGetItem', key);
 }
 /**
  * Closes the iframe from inside the iframe.
@@ -833,37 +831,37 @@ function localStorageGetItem(key) {
  */
 
 function closeFrame() {
-  return wrapper.call("closeFrame");
+  return wrapper.call('closeFrame');
 }
 /**
  * Asks the parent window to redirect to a URL.
  */
 
 function redirect(url) {
-  return wrapper.call("redirect", url);
+  return wrapper.call('redirect', url);
 }
 /**
  * proxy for $(el).attr("content") function
  */
 
 function $metacontent(el) {
-  return wrapper.call("$metacontent", el);
+  return wrapper.call('$metacontent', el);
 }
 /**
  * proxy for $(el).text() function
  */
 
 function $text(el) {
-  return wrapper.call("$text", el);
+  return wrapper.call('$text', el);
 }
 function $arrayGetText(cssSelector) {
-  return wrapper.call("$arrayGetText", cssSelector);
+  return wrapper.call('$arrayGetText', cssSelector);
 }
 function $tableCellsGetHtml(cssSelector) {
-  return wrapper.call("$tableCellsGetHtml", cssSelector);
+  return wrapper.call('$tableCellsGetHtml', cssSelector);
 }
 function cloneAttachment(attachmentUrl, targetContainerId, title, targetId) {
-  return wrapper.call("cloneAttachment", {
+  return wrapper.call('cloneAttachment', {
     attachmentUrl: attachmentUrl,
     targetContainerId: targetContainerId,
     title: title,
@@ -1001,7 +999,7 @@ if (!String.prototype.format) {
   String.prototype.format = function () {
     var args = arguments;
     return this.replace(/{(\d+)}/g, function (match, number) {
-      return typeof args[number] != 'undefined' ? args[number] : match;
+      return typeof args[number] !== 'undefined' ? args[number] : match;
     });
   };
 }

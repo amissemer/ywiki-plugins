@@ -7,10 +7,10 @@ import log from './log';
 
 const DEFAULT_Z_INDEX = 2000;
 const TRIGGER = 'left';
-const WARNING_ICON = "fa-exclamation-triangle";
+const WARNING_ICON = 'fa-exclamation-triangle';
 const WARN = true;
 
-$(function(){
+$(() => {
     $.contextMenu({
         // define which elements trigger this menu
         selector: ".sync-table tr .link-conflict",
@@ -116,75 +116,75 @@ $(function(){
 });
 
 function getData(element) {
-    return $.view($(element)).data;
+  return $.view($(element)).data;
 }
 function getPageGroup(element) {
     let view = $.view($(element));
     if (view.data.isPageGroup) {
         return view.data;
-    } else if (view.parent.data.isPageGroup) {
+    } if (view.parent.data.isPageGroup) {
         return view.parent.data;
     } else {
         return view.parent.parent.data;
     }
 }
 function getTargetSpace(element) {
-    return $.view($(element)).root.data.targetSpace;
+  return $.view($(element)).root.data.targetSpace;
 }
 
 const MENU_ITEMS = {
-    openSourceItem : {
-        name: "Open source", 
-        callback: function() {
+  openSourceItem: {
+    name: 'Open source',
+    callback() {
             let data = getData(this);
             window.open(data.syncStatus.sourcePage._links.webui);
         }
-    },
-    openTargetItem : {
-        name: "Open target", 
-        callback: function() {
+  },
+  openTargetItem: {
+    name: 'Open target',
+    callback() {
             let data = getData(this);
             window.open(data.syncStatus.targetPage._links.webui);
         }
+  },
+  checkTargetChangesItem: {
+    name: 'Check target changes',
+    callback: function() {
+      const data = getData(this);
+      window.open(data.getTargetDiff());
     },
-    checkTargetChangesItem : {
-        name: "Check target changes", 
-        callback: function() {
-            let data = getData(this);
-            window.open(data.getTargetDiff());
-        }
-    },
-    checkSourceChangesItem : {
-        name: "Check source changes", 
-        callback: function() {
-            let data = getData(this);
-            window.open(data.getSourceDiff());
-        }
-    },
-    checkBothChangesItem : {
-        name: "Check changes", 
-        callback: function() {
+  },
+  checkSourceChangesItem: {
+    name: 'Check source changes',
+    callback() {
             let data = getData(this);
             window.open(data.getSourceDiff());
-            window.open(data.getTargetDiff());
         }
+  },
+  checkBothChangesItem: {
+    name: 'Check changes',
+    callback: function() {
+      const data = getData(this);
+      window.open(data.getSourceDiff());
+      window.open(data.getTargetDiff());
     },
-    checkSyncItem : {
-        name: "Check Synchronization Status (single page)", 
-        callback: handleErrors("checkSyncItem", async (elt) => { return singleSyncCheck(elt) } )
-    },
-    pushItem: function(name, warning) {
-        return {
-            name: name || "Push changes", 
-            icon: warning?WARNING_ICON:null,
-            callback: handleErrors("pushItem", async (elt) => {
-                let data = getData(elt);
-                await data.syncStatus.performPush();
-                return singleSyncCheck(elt);
-            })
-        }
-    },
-    pullItem: function(name, warning) {
+  },
+  checkSyncItem: {
+    name: 'Check Synchronization Status (single page)',
+    callback: handleErrors('checkSyncItem', async (elt) => { return singleSyncCheck(elt); }),
+  }),
+  pushItem: function(name, warning) {
+    return {
+      name: name || 'Push changes',
+      icon: warning ? WARNING_ICON:null,
+      callback: handleErrors('pushItem', async (elt) => {
+        let data = getData(elt);
+        await data.syncStatus.performPush();
+        return singleSyncCheck(elt);
+      }),
+    };
+  },
+  pullItem(name, warning) {
         return {
             name: name || "Pull changes", 
             icon: warning?WARNING_ICON:null,
@@ -195,29 +195,29 @@ const MENU_ITEMS = {
             })
         }
     },
-    separator : "---------"
-} 
+  separator: '---------'
+}; 
 
 async function singleSyncCheck(elt) {
-    let pageGroup = getPageGroup(elt);
-    let targetSpace = getTargetSpace(elt);
-    let pageWrapper = getData(elt);
-    await pageWrapper.computeSyncStatus(targetSpace, true);
+  let pageGroup = getPageGroup(elt);
+  const targetSpace = getTargetSpace(elt);
+  let pageWrapper = getData(elt);
+  await pageWrapper.computeSyncStatus(targetSpace, true);
 }
 
 function setMenuTitle(cssClass, title) {
-    $(cssClass).attr('data-menutitle', title);
+  $(cssClass).attr('data-menutitle', title);
 }
 function handleErrors(funcName, asyncFunc) {
-    return function() {
-        (async (elt)=>{
-            try {
-                log(`Starting ${funcName}...`);
-                await asyncFunc(elt);
-                log(`Done ${funcName}.`);
-            } catch (err) {
-                log(`Error in ${funcName}: ${JSON.stringify(err)}`);
-            }
-        })(this);
-    }
+  return function() {
+    (async (elt) => {
+      try {
+        log(`Starting ${funcName}...`);
+        await asyncFunc(elt);
+        log(`Done ${funcName}.`);
+      } catch (err) {
+        log(`Error in ${funcName}: ${JSON.stringify(err)}`);
+      }
+    })(this);
+  };
 }

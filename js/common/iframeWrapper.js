@@ -24,8 +24,8 @@ import windowEventListener from './windowEventListener';
  * From the iFrame, call iframeWrapper(parent, "https://wiki.hybris.com").
  * From the main Frame, call iframeWrapper($('iframe')[0].contentWindow, yWikiPlugins.getHost()).
  */
-export default function iframeWrapper( postToWindow, targetHostname ) {
-  var _correlationId=1;
+export default function iframeWrapper(postToWindow, targetHostname) {
+  let _correlationId = 1;
 
   /**
    * Chainable function to attach action handlers.
@@ -33,37 +33,38 @@ export default function iframeWrapper( postToWindow, targetHostname ) {
    * that will be used to send the response back to the other frame.
    */
   function attachActionHandler(actionName, handler) {
-
     function requestListener(correlationId, payload) {
-      jQuery.when( handler(payload) )
-      .done(function sendResponse(responsePayload) {
-        var responseMsg = {
-          correlationId: correlationId,
-          responsePayload: responsePayload
-        };
-        //console.log("Sending response:",responseMsg);
-        postToWindow.postMessage(responseMsg, targetHostname);
-      })
-      .fail(function sendError() {
-        var payload = arguments;
-        if (arguments && arguments.length && arguments.length>2) {// for ajax errors, the error handler gets (jqXHR, textStatus, errorThrown) but we can't pass the whole jqXHR through the postMessage API
-          payload={textStatus: arguments[1], errorThrown: arguments[2]};
-          if (arguments[0] && arguments[0].responseText) {
-            payload.responseText = arguments[0].responseText;
-            try {
+      jQuery
+        .when(handler(payload))
+        .done(responsePayload => {
+          const responseMsg = {
+            correlationId,
+            responsePayload,
+          };
+          // console.log("Sending response:",responseMsg);
+          postToWindow.postMessage(responseMsg, targetHostname);
+        })
+        .fail(function sendError() {
+          let payload = arguments;
+          if (arguments && arguments.length && arguments.length > 2) {
+            // for ajax errors, the error handler gets (jqXHR, textStatus, errorThrown) but we can't pass the whole jqXHR through the postMessage API
+            payload = { textStatus: arguments[1], errorThrown: arguments[2] };
+            if (arguments[0] && arguments[0].responseText) {
+              payload.responseText = arguments[0].responseText;
+              try {
                 payload.responseJson = JSON.parse(payload.responseText);
-            } catch(e) {
-              // ignore
+              } catch (e) {
+                // ignore
+              }
             }
           }
-        }
-        var errorMsg = {
-          correlationId: correlationId,
-          errorPayload: payload
-        };
-        //console.log("Sending error response:",errorMsg);
-        postToWindow.postMessage(errorMsg, targetHostname);
-      });
+          const errorMsg = {
+            correlationId,
+            errorPayload: payload,
+          };
+          // console.log("Sending error response:",errorMsg);
+          postToWindow.postMessage(errorMsg, targetHostname);
+        });
     }
     windowEventListener.registerRequestListener(actionName, requestListener);
     return this;
@@ -74,29 +75,30 @@ export default function iframeWrapper( postToWindow, targetHostname ) {
    * a jQuery promise that will get resolved once a response is received (also from the messaging system)
    */
   function call(action, payload) {
-    var defer = jQuery.Deferred();
-    var correlationId = _correlationId++;
-    windowEventListener.registerResponseListener(correlationId,
-      {
-        successHandler: function(successPayload) {
-          defer.resolve(successPayload);
-        },
-        errorHandler: function(errorPayload) {
-          defer.reject(errorPayload);
-        }
-      });
-    //console.log("payload",payload);
+    const defer = jQuery.Deferred();
+    const correlationId = _correlationId++;
+    windowEventListener.registerResponseListener(correlationId, {
+      successHandler(successPayload) {
+        defer.resolve(successPayload);
+      },
+      errorHandler(errorPayload) {
+        defer.reject(errorPayload);
+      },
+    });
+    // console.log("payload",payload);
     postToWindow.postMessage(
       {
-        action: action,
-        payload: payload,
-        correlationId: correlationId
-      }, targetHostname);
+        action,
+        payload,
+        correlationId,
+      },
+      targetHostname,
+    );
     return defer.promise();
   }
 
   return {
-    call: call,
-    attachActionHandler: attachActionHandler
-  }
+    call,
+    attachActionHandler,
+  };
 }

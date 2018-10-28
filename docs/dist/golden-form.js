@@ -109,15 +109,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PORTFOLIO_GROUP", function() { return PORTFOLIO_GROUP; });
 var DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 var DEFAULT_JIRA_ISSUE_COUNT = 10;
-var MAIN_JIRA_LABEL = "CI";
-var TAGS_FIELD = "customfield_10032";
+var MAIN_JIRA_LABEL = 'CI';
+var TAGS_FIELD = 'customfield_10032';
 var WIKI_HOST = 'wiki.hybris.com';
 var MAX_WIKI_PAGE_CREATION_RATE = 50; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
 
 var SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
 
-var PREFIX = "ywiki-plugins.";
-var PREFERRED_REGION_KEY = "preferred.region";
+var PREFIX = 'ywiki-plugins.';
+var PREFERRED_REGION_KEY = 'preferred.region';
 var DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
 var CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
 var DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
@@ -334,7 +334,6 @@ function Attachment(jQuery) {
   }
 }
 
-;
 /* harmony default export */ __webpack_exports__["default"] = (Attachment);
 
 /***/ }),
@@ -383,23 +382,23 @@ function _lookupAttachment() {
           case 0:
             _context.next = 2;
             return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
-              return ajax(BASE_URL + "".concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
+              return ajax("".concat(BASE_URL).concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
             });
 
           case 2:
             results = _context.sent;
 
             if (!(results && results.results && results.results.length)) {
-              _context.next = 7;
+              _context.next = 5;
               break;
             }
 
             return _context.abrupt("return", results.results[0]);
 
-          case 7:
+          case 5:
             return _context.abrupt("return", null);
 
-          case 8:
+          case 6:
           case "end":
             return _context.stop();
         }
@@ -441,7 +440,7 @@ function _deleteAttachment() {
 function cloneAttachment(_x6, _x7, _x8, _x9, _x10) {
   return _cloneAttachment.apply(this, arguments);
 }
-/** 
+/**
  * ContentId is mandatory when updating an existing attachment, and must be omitted when
  * creating a new attachment.
  */
@@ -522,7 +521,7 @@ function _storeBlob() {
             url += '/child/attachment';
 
             if (contentId) {
-              url += '/' + contentId + '/data';
+              url += "/".concat(contentId, "/data");
             }
 
             formData = new FormData();
@@ -582,7 +581,7 @@ function _postBinary() {
           case 0:
             return _context6.abrupt("return", new Promise(function (resolve, reject) {
               var xhr = new XMLHttpRequest();
-              xhr.open("POST", url, true);
+              xhr.open('POST', url, true);
               xhr.onerror = reject;
               xhr.setRequestHeader('X-Atlassian-Token', 'nocheck');
 
@@ -717,11 +716,11 @@ function iframeWrapper(postToWindow, targetHostname) {
 
   function attachActionHandler(actionName, handler) {
     function requestListener(correlationId, payload) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default.a.when(handler(payload)).done(function sendResponse(responsePayload) {
+      jquery__WEBPACK_IMPORTED_MODULE_0___default.a.when(handler(payload)).done(function (responsePayload) {
         var responseMsg = {
           correlationId: correlationId,
           responsePayload: responsePayload
-        }; //console.log("Sending response:",responseMsg);
+        }; // console.log("Sending response:",responseMsg);
 
         postToWindow.postMessage(responseMsg, targetHostname);
       }).fail(function sendError() {
@@ -747,7 +746,7 @@ function iframeWrapper(postToWindow, targetHostname) {
         var errorMsg = {
           correlationId: correlationId,
           errorPayload: payload
-        }; //console.log("Sending error response:",errorMsg);
+        }; // console.log("Sending error response:",errorMsg);
 
         postToWindow.postMessage(errorMsg, targetHostname);
       });
@@ -772,7 +771,7 @@ function iframeWrapper(postToWindow, targetHostname) {
       errorHandler: function errorHandler(errorPayload) {
         defer.reject(errorPayload);
       }
-    }); //console.log("payload",payload);
+    }); // console.log("payload",payload);
 
     postToWindow.postMessage({
       action: action,
@@ -822,17 +821,16 @@ function parseOptions(defaultOptions) {
   var params = defaultOptions || {};
 
   function decode(s) {
-    return decodeURIComponent(s.replace(/\+/g, " "));
+    return decodeURIComponent(s.replace(/\+/g, ' '));
   }
 
-  ;
   var hash = document.location.hash;
 
   while (match = re.exec(hash)) {
     var value = decode(match[2]);
 
     if (isJSON(value)) {
-      console.log("Parsing options: ", value);
+      console.log('Parsing options: ', value);
       value = JSON.parse(value);
     }
 
@@ -853,7 +851,7 @@ function encodeOptions(options) {
         value = JSON.stringify(value);
       }
 
-      res.push(key + "=" + encodeURIComponent(value));
+      res.push("".concat(key, "=").concat(encodeURIComponent(value)));
     }
   }
 
@@ -947,7 +945,6 @@ function rateLimit(func, rate) {
     return defer.promise();
   };
 }
-;
 
 /***/ }),
 
@@ -968,9 +965,9 @@ __webpack_require__.r(__webpack_exports__);
  */
 var windowEventListener = function windowEventListener() {
   // Start listening to messages (from other frames, typically)
-  var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+  var eventMethod = window.addEventListener ? 'addEventListener' : 'attachEvent';
   var eventer = window[eventMethod];
-  var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+  var messageEvent = eventMethod == 'attachEvent' ? 'onmessage' : 'message';
   var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
 
   var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
@@ -999,11 +996,11 @@ var windowEventListener = function windowEventListener() {
           responseListener.successHandler(e.data.responsePayload);
         }
       } else {
-        console.warn("No response listener for correlationId: ", e.data.correlationId);
+        console.warn('No response listener for correlationId: ', e.data.correlationId);
       }
     } else {
       // not an action message
-      console.log("Received non-request, non-response, message: ", e.data);
+      console.log('Received non-request, non-response, message: ', e.data);
     }
   }
   /**
@@ -1014,8 +1011,8 @@ var windowEventListener = function windowEventListener() {
 
 
   function registerRequestListener(action, func) {
-    if (typeof func != 'function') {
-      console.error("Cannot register request listener since not a function: ", func);
+    if (typeof func !== 'function') {
+      console.error('Cannot register request listener since not a function: ', func);
     } else {
       requestListeners[action] = func;
     }
@@ -1037,17 +1034,17 @@ var windowEventListener = function windowEventListener() {
 
   function registerResponseListener(correlationId, listener) {
     if (!listener.successHandler && !listener.errorHandler) {
-      console.error("Cannot register response listener as it is missing a successHandler function or errorHandler function", listener);
+      console.error('Cannot register response listener as it is missing a successHandler function or errorHandler function', listener);
       return;
     }
 
-    if (listener.successHandler && typeof listener.successHandler != 'function') {
-      console.error("Cannot register response listener as the successHandler is not a function", listener);
+    if (listener.successHandler && typeof listener.successHandler !== 'function') {
+      console.error('Cannot register response listener as the successHandler is not a function', listener);
       return;
     }
 
-    if (listener.errorHandler && typeof listener.errorHandler != 'function') {
-      console.error("Cannot register response listener as the errorHandler is not a function", listener);
+    if (listener.errorHandler && typeof listener.errorHandler !== 'function') {
+      console.error('Cannot register response listener as the errorHandler is not a function', listener);
       return;
     }
 
@@ -1057,11 +1054,11 @@ var windowEventListener = function windowEventListener() {
   }
 
   function defaultSuccessHandler(responsePayload) {
-    console.info("Default success handler: ", responsePayload);
+    console.info('Default success handler: ', responsePayload);
   }
 
   function defaultErrorHandler(errorPayload) {
-    console.warn("Default error handler: ", errorPayload);
+    console.warn('Default error handler: ', errorPayload);
   }
 
   return {
@@ -1108,9 +1105,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _proxyService__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./proxyService */ "./js/iframe/proxyService.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _proxyService__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./proxyService */ "./js/iframe/proxyService.js");
 /* harmony import */ var _common_rate_limit__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../common/rate-limit */ "./js/common/rate-limit.js");
 /* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
 /* harmony import */ var _common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../common/confluence/Attachment */ "./js/common/confluence/Attachment.js");
@@ -1129,7 +1126,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
-var Attachment = Object(_common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_9__["default"])(_proxyService__WEBPACK_IMPORTED_MODULE_5__);
+var Attachment = Object(_common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_9__["default"])(_proxyService__WEBPACK_IMPORTED_MODULE_6__);
 /**
  * An API for confluence that runs ajax queries through the proxy object to bypass the CORS restriction.
  */
@@ -1145,17 +1142,17 @@ function deletePageRecursive(spaceKey, pageTitle) {
   });
 }
 function getAttachment(pageId, attachmentName) {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]("/download/attachments/" + pageId + "/" + attachmentName + "?api=v2");
+  return _proxyService__WEBPACK_IMPORTED_MODULE_6__["ajax"]("/download/attachments/".concat(pageId, "/").concat(attachmentName, "?api=v2"));
 }
 function deletePageById(pageId) {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]({
-    url: '/rest/api/content/' + encodeURIComponent(pageId),
+  return _proxyService__WEBPACK_IMPORTED_MODULE_6__["ajax"]({
+    url: "/rest/api/content/".concat(encodeURIComponent(pageId)),
     type: 'DELETE'
-  }).fail(errorLogger("DELETE page failed"));
+  }).fail(errorLogger('DELETE page failed'));
 }
 function movePages(sourceSpaceKey, sourcePageTitle, targetSpaceKey, targetParentTitle) {
   if (sourceSpaceKey == targetSpaceKey) {
-    return new jquery__WEBPACK_IMPORTED_MODULE_6___default.a.Deferred().reject("You don't need a tool for that, just use the standard Move feature of Confluence").promise();
+    return new jquery__WEBPACK_IMPORTED_MODULE_5___default.a.Deferred().reject("You don't need a tool for that, just use the standard Move feature of Confluence").promise();
   }
 
   return getContent(sourceSpaceKey, sourcePageTitle).then(function (sourcePage) {
@@ -1164,14 +1161,14 @@ function movePages(sourceSpaceKey, sourcePageTitle, targetSpaceKey, targetParent
 }
 
 function getAtlToken() {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["$metacontent"]('meta[name=ajs-atl-token]');
+  return _proxyService__WEBPACK_IMPORTED_MODULE_6__["$metacontent"]('meta[name=ajs-atl-token]');
 }
 
 var atlToken;
 getAtlToken().then(function (value) {
   atlToken = value;
 }, function () {
-  console.error("Could not retrieve atl-token from Confluence");
+  console.error('Could not retrieve atl-token from Confluence');
 });
 
 function movePagesRecursiveInternal(sourcePageId, targetSpaceKey, targetParentTitle) {
@@ -1180,7 +1177,7 @@ function movePagesRecursiveInternal(sourcePageId, targetSpaceKey, targetParentTi
     return moveOne(sourcePageId, targetSpaceKey, targetParentTitle).then(function () {
       // then move the children
       var childrenPromises = [];
-      console.log("In movePagesRecursiveInternal for ", sourcePage.title);
+      console.log('In movePagesRecursiveInternal for ', sourcePage.title);
 
       if (sourcePage.children && sourcePage.children.page && sourcePage.children.page.results) {
         sourcePage.children.page.results.forEach(function (child) {
@@ -1189,22 +1186,23 @@ function movePagesRecursiveInternal(sourcePageId, targetSpaceKey, targetParentTi
       } // return when all children have been recursively moved
 
 
-      return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_6___default.a, childrenPromises);
+      return jquery__WEBPACK_IMPORTED_MODULE_5___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_5___default.a, childrenPromises);
     });
   });
 }
 
 function moveOne(sourcePageId, targetSpaceKey, targetParentTitle) {
-  var url = '/pages/movepage.action?pageId=' + encodeURIComponent(sourcePageId) + '&spaceKey=' + encodeURIComponent(targetSpaceKey) + '&targetTitle=' + encodeURIComponent(targetParentTitle) + '&position=append&atl_token=' + atlToken + '&_=' + Math.random();
-  console.log("Moving page ", sourcePageId, " under ", targetSpaceKey + ":" + targetParentTitle, url);
-  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"](url);
+  var url = '/pages/movepage.action?pageId=';
+  "".concat(encodeURIComponent(sourcePageId), "&spaceKey=").concat(encodeURIComponent(targetSpaceKey), "&targetTitle=").concat(encodeURIComponent(targetParentTitle), "&position=append&atl_token=").concat(atlToken, "&_=").concat(Math.random());
+  console.log('Moving page ', sourcePageId, ' under ', "".concat(targetSpaceKey, ":").concat(targetParentTitle), url);
+  return _proxyService__WEBPACK_IMPORTED_MODULE_6__["ajax"](url);
 }
 
 function deletePageRecursiveInternal(pageId) {
   return getContentById(pageId, 'children.page').then(function (page) {
     // first delete children
     var childrenPromises = [];
-    console.log("In deletePageRecursiveInternal for ", page.title);
+    console.log('In deletePageRecursiveInternal for ', page.title);
 
     if (page.children && page.children.page && page.children.page.results) {
       page.children.page.results.forEach(function (child) {
@@ -1213,68 +1211,69 @@ function deletePageRecursiveInternal(pageId) {
     } // when all children are deleted
 
 
-    return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_6___default.a, childrenPromises) // delete the current page
+    return jquery__WEBPACK_IMPORTED_MODULE_5___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_5___default.a, childrenPromises) // delete the current page
     .then(function () {
       return deletePageById(pageId);
     });
   });
 }
 /**
-* Get a page by spaceKey and title from Confluence and returns a deferred for that page.
-* See $.ajax().done()
-* Failures are logged and ignored.
-* The deferred is resolved with the first matching page is any, else it is rejected.
-*/
+ * Get a page by spaceKey and title from Confluence and returns a deferred for that page.
+ * See $.ajax().done()
+ * Failures are logged and ignored.
+ * The deferred is resolved with the first matching page is any, else it is rejected.
+ */
 
 
 function getContent(spaceKey, pageTitle, expand) {
-  var expandParam = "";
+  var expandParam = '';
 
   if (expand) {
-    expandParam = '&expand=' + encodeURIComponent(expand);
+    expandParam = "&expand=".concat(encodeURIComponent(expand));
   }
 
-  var url = '/rest/api/content?type=page&spaceKey=' + encodeURIComponent(spaceKey) + '&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
-  console.log("Getting page content from " + url);
-  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"](url).then(function (response) {
-    console.log("Filtering AJAX response", response);
+  var url = "/rest/api/content?type=page&spaceKey=".concat(encodeURIComponent(spaceKey), "&limit=1&title=");
+  encodeURIComponent(pageTitle) + expandParam;
+  console.log("Getting page content from ".concat(url));
+  return _proxyService__WEBPACK_IMPORTED_MODULE_6__["ajax"](url).then(function (response) {
+    console.log('Filtering AJAX response', response);
 
     if (response.results && response.results.length > 0) {
       var page = response.results[0];
-      console.log("Returning ", page);
+      console.log('Returning ', page);
       return page;
-    } else {
-      console.warn("Page Not found: '" + spaceKey + ":" + pageTitle + "'");
-      return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.Deferred().reject("Page Not found: '" + spaceKey + ":" + pageTitle + "'");
     }
-  }, errorLogger("Failed getContent promise"));
+
+    console.warn("Page Not found: '".concat(spaceKey, ":").concat(pageTitle, "'"));
+    return jquery__WEBPACK_IMPORTED_MODULE_5___default.a.Deferred().reject("Page Not found: '".concat(spaceKey, ":").concat(pageTitle, "'"));
+  }, errorLogger('Failed getContent promise'));
 }
 function getContentById(pageId, expand) {
-  var expandParam = "";
+  var expandParam = '';
 
   if (expand) {
-    expandParam = '?expand=' + encodeURIComponent(expand);
+    expandParam = "?expand=".concat(encodeURIComponent(expand));
   }
 
-  var url = '/rest/api/content/' + encodeURIComponent(pageId) + expandParam;
+  var url = "/rest/api/content/".concat(encodeURIComponent(pageId)).concat(expandParam);
   console.log(url);
-  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"](url).fail(errorLogger("GET page by pageId failed"));
+  return _proxyService__WEBPACK_IMPORTED_MODULE_6__["ajax"](url).fail(errorLogger('GET page by pageId failed'));
 }
 /** search for content with CQL
-for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
+ for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
 
 function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
   if (!limit || limit < 0) {
     limit = 15;
   }
 
-  var expandParam = expand ? "&expand=" + encodeURIComponent(expand) : "";
-  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]('/rest/api/content/search?limit=' + encodeURIComponent(limit) + '&cql=' + encodeURIComponent(cqlQuery + ' and type=page and space=\'' + spaceKey + '\'') + expandParam);
+  var expandParam = expand ? "&expand=".concat(encodeURIComponent(expand)) : '';
+  return _proxyService__WEBPACK_IMPORTED_MODULE_6__["ajax"]("/rest/api/content/search?limit=".concat(encodeURIComponent(limit), "&cql=").concat(encodeURIComponent("".concat(cqlQuery, " and type=page and space='").concat(spaceKey, "'"))).concat(expandParam));
 }
 /**
-* Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
-* and do a placeholder replacement the page title using the templateProcessor.
-*/
+ * Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
+ * and do a placeholder replacement the page title using the templateProcessor.
+ */
 
 function copyPage(_x, _x2, _x3, _x4, _x5) {
   return _copyPage.apply(this, arguments);
@@ -1317,7 +1316,7 @@ function _copyPage() {
 function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor, copiedPages) {
   var sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
   var targetPagePromise = getContent(toSpaceKey, toPageTitle, 'space');
-  return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.when(sourcePagePromise, targetPagePromise).then(function (sourcePage, targetPage) {
+  return jquery__WEBPACK_IMPORTED_MODULE_5___default.a.when(sourcePagePromise, targetPagePromise).then(function (sourcePage, targetPage) {
     return copyPageRecursiveInternal(sourcePage.id, targetPage.space.key, targetPage.id, templateProcessor, copiedPages);
   });
 }
@@ -1342,7 +1341,7 @@ function _copyPageRecursiveInternal() {
             pageToCopy = _context2.sent;
 
             if (!templateProcessor.isApplicableTemplatePage(pageToCopy)) {
-              _context2.next = 18;
+              _context2.next = 16;
               break;
             }
 
@@ -1372,15 +1371,15 @@ function _copyPageRecursiveInternal() {
           case 15:
             return _context2.abrupt("return", _context2.sent);
 
-          case 18:
-            console.log("Page is not a template, not copied, but children will be copied: ", pageToCopy.title);
-            _context2.next = 21;
+          case 16:
+            console.log('Page is not a template, not copied, but children will be copied: ', pageToCopy.title);
+            _context2.next = 19;
             return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
 
-          case 21:
+          case 19:
             return _context2.abrupt("return", _context2.sent);
 
-          case 22:
+          case 20:
           case "end":
             return _context2.stop();
         }
@@ -1484,7 +1483,7 @@ function _copyAllAttachments() {
             }
 
             _context3.next = 37;
-            return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"](attachmentResults._links.next);
+            return _proxyService__WEBPACK_IMPORTED_MODULE_6__["ajax"](attachmentResults._links.next);
 
           case 37:
             attachmentResults = _context3.sent;
@@ -1511,7 +1510,7 @@ function _copyAllAttachments() {
 function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
   // recursively copy all children
   var childrenPromises = [];
-  console.log("In copyAllChildren", pageToCopy, targetPageId);
+  console.log('In copyAllChildren', pageToCopy, targetPageId);
 
   if (pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results) {
     pageToCopy.children.page.results.forEach(function (child) {
@@ -1520,20 +1519,20 @@ function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProce
   } // return the combination of all children copy promises
 
 
-  return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_6___default.a, childrenPromises);
+  return jquery__WEBPACK_IMPORTED_MODULE_5___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_5___default.a, childrenPromises);
 } // returns a function that will log all the arguments on the console as an error, preprended with a message.
 
 
 function errorLogger(message) {
   return function () {
     console.error(message, arguments);
-    return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.Deferred().reject(arguments);
+    return jquery__WEBPACK_IMPORTED_MODULE_5___default.a.Deferred().reject(arguments);
   };
 }
 
 function createPage(page, targetSpaceKey, targetParentTitle) {
   return getContent(targetSpaceKey, targetParentTitle, 'space').then(function (targetParentPage) {
-    console.log("targetParentPage: space=", targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
+    console.log('targetParentPage: space=', targetParentPage.space.key, 'id=', targetParentPage.id, 'title=', targetParentPage.title);
     return createPageUnderPageId(page, targetParentPage.space.key, targetParentPage.id);
   });
 }
@@ -1554,27 +1553,27 @@ function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
     title: page.title,
     type: 'page'
   };
-  console.log("New Page", pageToCreate);
+  console.log('New Page', pageToCreate);
   return postPageRateLimited(pageToCreate);
 }
 var postPageRateLimited = Object(_common_rate_limit__WEBPACK_IMPORTED_MODULE_7__["default"])(postPage, _common_config__WEBPACK_IMPORTED_MODULE_8__["MAX_WIKI_PAGE_CREATION_RATE"]);
 
 function postPage(page) {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]({
+  return _proxyService__WEBPACK_IMPORTED_MODULE_6__["ajax"]({
     url: '/rest/api/content',
     type: 'POST',
     contentType: 'application/json',
     data: JSON.stringify(page)
-  }).fail(errorLogger("POST new page failed"));
+  }).fail(errorLogger('POST new page failed'));
 }
 
 function updateContent(page) {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]({
-    url: '/rest/api/content/' + encodeURIComponent(page.id),
+  return _proxyService__WEBPACK_IMPORTED_MODULE_6__["ajax"]({
+    url: "/rest/api/content/".concat(encodeURIComponent(page.id)),
     type: 'PUT',
     contentType: 'application/json',
     data: JSON.stringify(page)
-  }).fail(errorLogger("PUT page failed " + page.title));
+  }).fail(errorLogger("PUT page failed ".concat(page.title)));
 }
 /** label can be a string or an array of strings to add as labels to the confluence PageId */
 
@@ -1582,30 +1581,30 @@ function addLabel(pageId, label) {
   var labels = [];
   if (!label) return;
 
-  if (typeof label === "string") {
+  if (typeof label === 'string') {
     labels.push({
-      "prefix": "global",
-      "name": label
+      prefix: 'global',
+      name: label
     });
   } else if (label.length) {
     for (var i = 0; i < label.length; i++) {
       if (label[i]) {
         labels.push({
-          "prefix": "global",
-          "name": label[i]
+          prefix: 'global',
+          name: label[i]
         });
       }
     }
   } else {
-    throw "Unknown type of label: " + label;
+    throw "Unknown type of label: ".concat(label);
   }
 
-  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]({
-    url: '/rest/api/content/' + encodeURIComponent(pageId) + '/label',
+  return _proxyService__WEBPACK_IMPORTED_MODULE_6__["ajax"]({
+    url: "/rest/api/content/".concat(encodeURIComponent(pageId), "/label"),
     type: 'POST',
     contentType: 'application/json',
     data: JSON.stringify(labels)
-  }).fail(errorLogger("ADD label to page " + pageId + " failed"));
+  }).fail(errorLogger("ADD label to page ".concat(pageId, " failed")));
 }
 
 /***/ }),
@@ -1665,7 +1664,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function bindDOM() {
-  jquery__WEBPACK_IMPORTED_MODULE_3___default()("#form-close").click(function () {
+  jquery__WEBPACK_IMPORTED_MODULE_3___default()('#form-close').click(function () {
     _proxyService__WEBPACK_IMPORTED_MODULE_6__["closeFrame"]();
   });
   jquery__WEBPACK_IMPORTED_MODULE_3___default()(document).keyup(function (e) {
@@ -1674,7 +1673,7 @@ function bindDOM() {
       _proxyService__WEBPACK_IMPORTED_MODULE_6__["closeFrame"]();
     }
   });
-  jquery__WEBPACK_IMPORTED_MODULE_3___default()("#cancelBtn").click(function () {
+  jquery__WEBPACK_IMPORTED_MODULE_3___default()('#cancelBtn').click(function () {
     _proxyService__WEBPACK_IMPORTED_MODULE_6__["closeFrame"]();
   });
   var customerSelect = jquery__WEBPACK_IMPORTED_MODULE_3___default()('#customerSelect');
@@ -1696,56 +1695,55 @@ function bindDOM() {
       customerSelect.val(ui.item.label);
       return false;
     }
-  }).autocomplete("instance")._renderItem = function (ul, item) {
-    var regionStr = "";
+  }).autocomplete('instance')._renderItem = function (ul, item) {
+    var regionStr = '';
 
     if (item.regions && item.regions.length > 0) {
-      regionStr = " <span class='text-muted'>[" + item.regions.join(" > ") + "]</span>";
+      regionStr = " <span class='text-muted'>[".concat(item.regions.join(' > '), "]</span>");
     }
 
-    return jquery__WEBPACK_IMPORTED_MODULE_3___default()("<li>").append("<div><strong>" + item.label + "</strong>" + regionStr + "</div>").appendTo(ul);
+    return jquery__WEBPACK_IMPORTED_MODULE_3___default()('<li>').append("<div><strong>".concat(item.label, "</strong>").concat(regionStr, "</div>")).appendTo(ul);
   }; // toggle the glyphicon of the collapsible deliveryRegion panel
 
 
   jquery__WEBPACK_IMPORTED_MODULE_3___default()('#collapseDeliveryRegion.collapse').on('shown.bs.collapse', function () {
-    jquery__WEBPACK_IMPORTED_MODULE_3___default()(this).prev().find(".glyphicon").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+    jquery__WEBPACK_IMPORTED_MODULE_3___default()(this).prev().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
   });
   jquery__WEBPACK_IMPORTED_MODULE_3___default()('#collapseDeliveryRegion.collapse').on('hidden.bs.collapse', function () {
-    jquery__WEBPACK_IMPORTED_MODULE_3___default()(this).prev().find(".glyphicon").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+    jquery__WEBPACK_IMPORTED_MODULE_3___default()(this).prev().find('.glyphicon').removeClass('glyphicon-minus').addClass('glyphicon-plus');
   });
   _wizardService__WEBPACK_IMPORTED_MODULE_7__["loadRegions"]().done(setRegionNames);
   _wizardService__WEBPACK_IMPORTED_MODULE_7__["getDeliveryRegionSettings"]().then(onDeliveryRegionSettingsUpdated);
-  var submitBtn = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#wizard-submit");
+  var submitBtn = jquery__WEBPACK_IMPORTED_MODULE_3___default()('#wizard-submit');
   var submitProgress = jquery__WEBPACK_IMPORTED_MODULE_3___default()('#progress-indicator');
   submitBtn.click(function () {
     console.log(submitBtn.prop('disabled'));
 
     if (submitBtn.hasClass('disabled')) {
       return true;
-    } else {
-      if (jquery__WEBPACK_IMPORTED_MODULE_3___default()("#rememberReportingRegion").is(':checked')) {
-        _wizardService__WEBPACK_IMPORTED_MODULE_7__["savePreferredRegion"](jquery__WEBPACK_IMPORTED_MODULE_3___default()('#reportingRegion').val());
-      } else {
-        _wizardService__WEBPACK_IMPORTED_MODULE_7__["savePreferredRegion"]("");
-      }
-
-      _wizardService__WEBPACK_IMPORTED_MODULE_7__["createWorkspace"]({
-        customer: customerSelect.val(),
-        region: jquery__WEBPACK_IMPORTED_MODULE_3___default()('#regionSelect').val(),
-        reportingRegion: jquery__WEBPACK_IMPORTED_MODULE_3___default()('#reportingRegion').val(),
-        projectName: jquery__WEBPACK_IMPORTED_MODULE_3___default()('#projectName').val(),
-        targetEndDate: jquery__WEBPACK_IMPORTED_MODULE_3___default()('#targetEndDate').val(),
-        variantOptions: readSelectedOptions()
-      }).fail(onSubmitError);
-      submitBtn.prop('disabled', true);
-      submitProgress.show();
-      jquery__WEBPACK_IMPORTED_MODULE_3___default()('#error-display').hide();
     }
 
+    if (jquery__WEBPACK_IMPORTED_MODULE_3___default()('#rememberReportingRegion').is(':checked')) {
+      _wizardService__WEBPACK_IMPORTED_MODULE_7__["savePreferredRegion"](jquery__WEBPACK_IMPORTED_MODULE_3___default()('#reportingRegion').val());
+    } else {
+      _wizardService__WEBPACK_IMPORTED_MODULE_7__["savePreferredRegion"]('');
+    }
+
+    _wizardService__WEBPACK_IMPORTED_MODULE_7__["createWorkspace"]({
+      customer: customerSelect.val(),
+      region: jquery__WEBPACK_IMPORTED_MODULE_3___default()('#regionSelect').val(),
+      reportingRegion: jquery__WEBPACK_IMPORTED_MODULE_3___default()('#reportingRegion').val(),
+      projectName: jquery__WEBPACK_IMPORTED_MODULE_3___default()('#projectName').val(),
+      targetEndDate: jquery__WEBPACK_IMPORTED_MODULE_3___default()('#targetEndDate').val(),
+      variantOptions: readSelectedOptions()
+    }).fail(onSubmitError);
+    submitBtn.prop('disabled', true);
+    submitProgress.show();
+    jquery__WEBPACK_IMPORTED_MODULE_3___default()('#error-display').hide();
     return false;
   });
   _wizardService__WEBPACK_IMPORTED_MODULE_7__["withOption"]('newInstanceDisplayName').then(function (value) {
-    jquery__WEBPACK_IMPORTED_MODULE_3___default()('#mainTitle').text("New " + value);
+    jquery__WEBPACK_IMPORTED_MODULE_3___default()('#mainTitle').text("New ".concat(value));
   });
   _wizardService__WEBPACK_IMPORTED_MODULE_7__["withOption"]('variantOptions').then(function (variantOptions) {
     console.log('variantOptions: ', variantOptions);
@@ -1770,9 +1768,9 @@ function bindDOM() {
     startDate: '+0d',
     todayHighlight: true,
     autoclose: true,
-    format: "yyyy/mm/dd"
+    format: 'yyyy/mm/dd'
   });
-  var customerElements = jquery__WEBPACK_IMPORTED_MODULE_3___default()(".copyCustomerName");
+  var customerElements = jquery__WEBPACK_IMPORTED_MODULE_3___default()('.copyCustomerName');
 
   function copyCustomerName(fromElt) {
     customerElements.val(jquery__WEBPACK_IMPORTED_MODULE_3___default()(fromElt).val());
@@ -1792,10 +1790,10 @@ function readSelectedOptions() {
   optionNames.forEach(function (option) {
     selectedOptions.push({
       name: option,
-      value: jquery__WEBPACK_IMPORTED_MODULE_3___default()('input[name=' + option + ']:checked').val()
+      value: jquery__WEBPACK_IMPORTED_MODULE_3___default()("input[name=".concat(option, "]:checked")).val()
     });
   });
-  console.log("Selected options: ", selectedOptions);
+  console.log('Selected options: ', selectedOptions);
   return selectedOptions;
 }
 
@@ -1810,15 +1808,15 @@ function onSubmitError(error) {
     errorMsg = errorMsg.responseJson.message;
   }
 
-  if (typeof errorMsg != "string") {
+  if (typeof errorMsg !== 'string') {
     errorMsg = JSON.stringify(errorMsg);
   }
 
-  console.error("Submit Error", error);
+  console.error('Submit Error', error);
   jquery__WEBPACK_IMPORTED_MODULE_3___default()('#error-display .msg').text(errorMsg);
   jquery__WEBPACK_IMPORTED_MODULE_3___default()('#error-display').show();
   jquery__WEBPACK_IMPORTED_MODULE_3___default()('#progress-indicator').hide();
-  jquery__WEBPACK_IMPORTED_MODULE_3___default()("#wizard-submit").prop('disabled', false);
+  jquery__WEBPACK_IMPORTED_MODULE_3___default()('#wizard-submit').prop('disabled', false);
 }
 
 function setRegionNames(regionNames) {
@@ -1886,23 +1884,23 @@ __webpack_require__.r(__webpack_exports__);
  * A handy proxy for actions that can be executed in the parent frame bypassing CORS.
  */
 
-var wrapper = Object(_common_iframeWrapper__WEBPACK_IMPORTED_MODULE_0__["default"])(parent, "https://" + _common_config__WEBPACK_IMPORTED_MODULE_1__["WIKI_HOST"]);
+var wrapper = Object(_common_iframeWrapper__WEBPACK_IMPORTED_MODULE_0__["default"])(parent, "https://".concat(_common_config__WEBPACK_IMPORTED_MODULE_1__["WIKI_HOST"]));
 /**
  * Perform an ajax call in the parent frame and returns a promise that will get resolved or rejected with the data as seen by the parent frame.
  * Not compatible with ajax callbacks that can usually be passed in the settings parameter (complete, beforeSend, error, success), use the return value which is a promise instead.
  */
 
 function ajax(param) {
-  return wrapper.call("ajax", param);
+  return wrapper.call('ajax', param);
 }
 function localStorageSetItem(key, value) {
-  return wrapper.call("localStorageSetItem", {
+  return wrapper.call('localStorageSetItem', {
     key: key,
     value: value
   });
 }
 function localStorageGetItem(key) {
-  return wrapper.call("localStorageGetItem", key);
+  return wrapper.call('localStorageGetItem', key);
 }
 /**
  * Closes the iframe from inside the iframe.
@@ -1910,37 +1908,37 @@ function localStorageGetItem(key) {
  */
 
 function closeFrame() {
-  return wrapper.call("closeFrame");
+  return wrapper.call('closeFrame');
 }
 /**
  * Asks the parent window to redirect to a URL.
  */
 
 function redirect(url) {
-  return wrapper.call("redirect", url);
+  return wrapper.call('redirect', url);
 }
 /**
  * proxy for $(el).attr("content") function
  */
 
 function $metacontent(el) {
-  return wrapper.call("$metacontent", el);
+  return wrapper.call('$metacontent', el);
 }
 /**
  * proxy for $(el).text() function
  */
 
 function $text(el) {
-  return wrapper.call("$text", el);
+  return wrapper.call('$text', el);
 }
 function $arrayGetText(cssSelector) {
-  return wrapper.call("$arrayGetText", cssSelector);
+  return wrapper.call('$arrayGetText', cssSelector);
 }
 function $tableCellsGetHtml(cssSelector) {
-  return wrapper.call("$tableCellsGetHtml", cssSelector);
+  return wrapper.call('$tableCellsGetHtml', cssSelector);
 }
 function cloneAttachment(attachmentUrl, targetContainerId, title, targetId) {
-  return wrapper.call("cloneAttachment", {
+  return wrapper.call('cloneAttachment', {
     attachmentUrl: attachmentUrl,
     targetContainerId: targetContainerId,
     title: title,
@@ -1976,9 +1974,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
 /* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _variantOptionsTransform__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./variantOptionsTransform */ "./js/iframe/variantOptionsTransform.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _variantOptionsTransform__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./variantOptionsTransform */ "./js/iframe/variantOptionsTransform.js");
 /* harmony import */ var _wikiPageXslt__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./wikiPageXslt */ "./js/iframe/wikiPageXslt.js");
 
 
@@ -2036,7 +2034,7 @@ function TemplateProcessor(options) {
     if (!variantOptions) return true;
     var match = true;
     variantOptions.forEach(function (option) {
-      var prefix = option.name + '-';
+      var prefix = "".concat(option.name, "-");
       var expectedLabel = prefix + option.value;
       var labels = getLabelsWithPrefix(page, prefix);
       if (labels && labels.length > 0 && !(labels.indexOf(expectedLabel) >= 0)) match = false;
@@ -2055,11 +2053,11 @@ function TemplateProcessor(options) {
 
     return labels;
   }
-  /** 
+  /**
    * if placeholderReplacements is null, returns the template.
    * if placeholderReplacements is a simple string, returns that string
-   * if placeholderReplacements is a map, for each (key,value) pair in the map, replaces [key] placeholders with value. 
-   **/
+   * if placeholderReplacements is a map, for each (key,value) pair in the map, replaces [key] placeholders with value.
+   * */
 
 
   function replacePlaceholders(template, escapeHtml) {
@@ -2069,10 +2067,10 @@ function TemplateProcessor(options) {
 
     for (var key in placeholderReplacements) {
       if (placeholderReplacements.hasOwnProperty(key)) {
-        var varStr = '[' + key + ']';
+        var varStr = "[".concat(key, "]");
 
         if (result.indexOf(varStr) == -1) {
-          console.warn(varStr + " is not used in template", template);
+          console.warn("".concat(varStr, " is not used in template"), template);
         }
 
         var replacementValue = placeholderReplacements[key];
@@ -2080,7 +2078,7 @@ function TemplateProcessor(options) {
         if (typeof replacementValue !== 'string') {
           replacementValue = replacementValue.value;
         } else if (escapeHtml) {
-          replacementValue = jquery__WEBPACK_IMPORTED_MODULE_9___default()("<div>").text(replacementValue).html();
+          replacementValue = jquery__WEBPACK_IMPORTED_MODULE_8___default()('<div>').text(replacementValue).html();
         }
 
         var result = result.split(varStr).join(replacementValue);
@@ -2088,14 +2086,14 @@ function TemplateProcessor(options) {
     }
 
     if (result.indexOf('[') != -1) {
-      console.warn("title still has uninterpolated variables", result);
+      console.warn('title still has uninterpolated variables', result);
     }
 
     return result;
   }
 
   function replacePlaceholderInPage(page) {
-    console.log("Found page to Copy", page);
+    console.log('Found page to Copy', page);
 
     if (forceTitle) {
       page.title = forceTitle;
@@ -2103,7 +2101,7 @@ function TemplateProcessor(options) {
       page.title = replacePlaceholders(page.title);
     }
 
-    console.log("New Title for target page: " + page.title);
+    console.log("New Title for target page: ".concat(page.title));
 
     if (typeof placeholderReplacements !== 'string') {
       page.body.storage.value = replacePlaceholders(page.body.storage.value, true);
@@ -2147,7 +2145,7 @@ function TemplateProcessor(options) {
   }
   /**
    * Processes the content by stripping divbox out when their class attribute value is not relevant to the selected variantOptions.
-   * 
+   *
    * <ac:structured-macro ac:name="divbox"[^>]*><ac:parameter ac:name="class">${option.name}-${option.value}</ac:parameter>...</ac:structured-macro>
    */
 
@@ -2177,13 +2175,13 @@ function TemplateProcessor(options) {
   }
 
   function filterVariantInContent(content) {
-    return Object(_variantOptionsTransform__WEBPACK_IMPORTED_MODULE_8__["default"])(content, variantOptions);
+    return Object(_variantOptionsTransform__WEBPACK_IMPORTED_MODULE_9__["default"])(content, variantOptions);
   }
-  /** 
+  /**
    * Determines if a page is a template page and should be used to create the workspace, based on the variantOptions.
    * @param page a confluence page with its title and labels
    * @returns true|false
-   **/
+   * */
 
 
   this.isApplicableTemplatePage = function (page) {
@@ -2250,7 +2248,7 @@ var xsl = __webpack_require__(/*! raw-loader!./xslt/strip-variant-options-blocks
 function variantOptionsTransform(text, options) {
   console.log('variantOptionsTransform', text, options);
   if (!options || options.length == 0) return text;
-  if (options.length > 1) throw "Only one option is supported at this time";
+  if (options.length > 1) throw 'Only one option is supported at this time';
   var option = options[0];
   return Object(_wikiPageXslt__WEBPACK_IMPORTED_MODULE_1__["default"])(text, xsl.format(option.name, option.value));
 }
@@ -2303,7 +2301,7 @@ function _xslTransformWikiPageContent() {
                 source: text,
                 xsl: xslt
               }),
-              contentType: "application/json; charset=utf-8"
+              contentType: 'application/json; charset=utf-8'
             });
 
           case 3:
@@ -2349,10 +2347,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.function.name */ "./node_modules/core-js/modules/es6.function.name.js");
 /* harmony import */ var core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _confluenceService__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluenceService */ "./js/iframe/confluenceService.js");
-/* harmony import */ var _proxyService__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./proxyService */ "./js/iframe/proxyService.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _confluenceService__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./confluenceService */ "./js/iframe/confluenceService.js");
+/* harmony import */ var _proxyService__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./proxyService */ "./js/iframe/proxyService.js");
 /* harmony import */ var _common_optionsParser__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../common/optionsParser */ "./js/common/optionsParser.js");
 /* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
 /* harmony import */ var _templateProcessor__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./templateProcessor */ "./js/iframe/templateProcessor.js");
@@ -2369,36 +2367,36 @@ var options = Object(_common_optionsParser__WEBPACK_IMPORTED_MODULE_6__["parseOp
 var customerComboLimit = 10;
 var additionalLabel = 'service-workspace';
 var BASELINE_VERSION_CSS_SELECTOR = ".confluenceTd p:contains('Definition') + p";
-var EXPAND_LABELS = "metadata.labels";
+var EXPAND_LABELS = 'metadata.labels';
 
 if (!options.cssSelector || !options.newInstanceDisplayName || !options.addLabel) {
   throw "wireButton({cssSelector:'',newInstanceDisplayName:'',addLabel='',logToPage:''})";
 }
 
 options.addLabel = [options.addLabel, additionalLabel];
-var promise1 = _proxyService__WEBPACK_IMPORTED_MODULE_4__["$metacontent"]('meta[name=ajs-page-id]').then(function (val) {
+var promise1 = _proxyService__WEBPACK_IMPORTED_MODULE_5__["$metacontent"]('meta[name=ajs-page-id]').then(function (val) {
   options.sourcePageId = val;
 }, function () {
-  console.error("Could not read current pageId");
+  console.error('Could not read current pageId');
 });
-var promise2 = _proxyService__WEBPACK_IMPORTED_MODULE_4__["$metacontent"]('meta[name=ajs-remote-user-key]').then(function (val) {
+var promise2 = _proxyService__WEBPACK_IMPORTED_MODULE_5__["$metacontent"]('meta[name=ajs-remote-user-key]').then(function (val) {
   options.currentUserKey = val;
 }, function () {
-  console.error("Could not resolve current userkey");
+  console.error('Could not resolve current userkey');
 });
-var promise3 = _proxyService__WEBPACK_IMPORTED_MODULE_4__["$metacontent"]('meta[name=confluence-space-key]').then(function (val) {
+var promise3 = _proxyService__WEBPACK_IMPORTED_MODULE_5__["$metacontent"]('meta[name=confluence-space-key]').then(function (val) {
   options.currentSpaceKey = val;
 }, function () {
-  console.error("Could not resolve current spaceKey");
+  console.error('Could not resolve current spaceKey');
 });
-var promise4 = _proxyService__WEBPACK_IMPORTED_MODULE_4__["$metacontent"]('meta[name=ajs-remote-user]').then(function (val) {
+var promise4 = _proxyService__WEBPACK_IMPORTED_MODULE_5__["$metacontent"]('meta[name=ajs-remote-user]').then(function (val) {
   options.currentUser = val;
 }, function () {
-  console.error("Could not resolve current user");
+  console.error('Could not resolve current user');
 });
-var optionsPromise = jquery__WEBPACK_IMPORTED_MODULE_5___default.a.when(promise1, promise2, promise3, promise4).then(postProcessOptions);
+var optionsPromise = jquery__WEBPACK_IMPORTED_MODULE_3___default.a.when(promise1, promise2, promise3, promise4).then(postProcessOptions);
 optionsPromise.then(function (options) {
-  console.log("yWiki Options: ", options);
+  console.log('yWiki Options: ', options);
 });
 
 function postProcessOptions() {
@@ -2411,25 +2409,25 @@ function postProcessOptions() {
 }
 
 function savePreferredRegion(region) {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_4__["localStorageSetItem"](_common_config__WEBPACK_IMPORTED_MODULE_7__["PREFIX"] + _common_config__WEBPACK_IMPORTED_MODULE_7__["PREFERRED_REGION_KEY"], region);
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["localStorageSetItem"](_common_config__WEBPACK_IMPORTED_MODULE_7__["PREFIX"] + _common_config__WEBPACK_IMPORTED_MODULE_7__["PREFERRED_REGION_KEY"], region);
 }
 /** returns a promise for the region name (the region is typed as a simple String) */
 
 function getPreferredRegion() {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_4__["localStorageGetItem"](_common_config__WEBPACK_IMPORTED_MODULE_7__["PREFIX"] + _common_config__WEBPACK_IMPORTED_MODULE_7__["PREFERRED_REGION_KEY"]);
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["localStorageGetItem"](_common_config__WEBPACK_IMPORTED_MODULE_7__["PREFIX"] + _common_config__WEBPACK_IMPORTED_MODULE_7__["PREFERRED_REGION_KEY"]);
 }
 /** returns a promise for 3 params, the list of region names, the map of consultant regions in the form { email:regionName, email:regionName }, and the preferred region name */
 
 
 function getDeliveryRegionSettings() {
   var dataPage = _common_config__WEBPACK_IMPORTED_MODULE_7__["CISTATS_DATA_PAGE"];
-  return withOption("targetSpace").then(function (targetSpace) {
-    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getContent"](targetSpace, dataPage);
+  return withOption('targetSpace').then(function (targetSpace) {
+    return _confluenceService__WEBPACK_IMPORTED_MODULE_4__["getContent"](targetSpace, dataPage);
   }).then(function (page) {
-    var consultantList = _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getAttachment"](page.id, 'cached-employee-default-regions.json');
-    var regionList = _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getAttachment"](page.id, 'cached-regions.json');
+    var consultantList = _confluenceService__WEBPACK_IMPORTED_MODULE_4__["getAttachment"](page.id, 'cached-employee-default-regions.json');
+    var regionList = _confluenceService__WEBPACK_IMPORTED_MODULE_4__["getAttachment"](page.id, 'cached-regions.json');
     var preferredRegion = getPreferredRegion();
-    return jquery__WEBPACK_IMPORTED_MODULE_5___default.a.when(regionList, consultantList, preferredRegion);
+    return jquery__WEBPACK_IMPORTED_MODULE_3___default.a.when(regionList, consultantList, preferredRegion);
   });
 }
 function withOption(name) {
@@ -2439,7 +2437,7 @@ function withOption(name) {
 }
 
 function logCreation(logToPage, createdPage) {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_4__["$text"](BASELINE_VERSION_CSS_SELECTOR).catch(function () {
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["$text"](BASELINE_VERSION_CSS_SELECTOR).catch(function () {
     log.warning("Could not retrieve baseline version, make sure you have a meta-data table with a 'Current Version' row.");
     return null;
   }).then(function (version) {
@@ -2452,16 +2450,16 @@ function getCurrentUser() {
 }
 
 function logCreationWithVersion(version, logToPage, createdPage) {
-  var versionMsg = "";
+  var versionMsg = '';
 
   if (version) {
-    versionMsg = " with baseline " + version;
+    versionMsg = " with baseline ".concat(version);
   }
 
   if (logToPage) {
-    console.log("Logging creation of " + createdPage.title + " by " + options.currentUserKey + ' in ' + logToPage);
-    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getContent"](options.currentSpaceKey, logToPage, 'space,body.storage,version').then(function (logPageJson) {
-      console.log("logPageJson before edit: ", logPageJson);
+    console.log("Logging creation of ".concat(createdPage.title, " by ").concat(options.currentUserKey, " in ").concat(logToPage));
+    return _confluenceService__WEBPACK_IMPORTED_MODULE_4__["getContent"](options.currentSpaceKey, logToPage, 'space,body.storage,version').then(function (logPageJson) {
+      console.log('logPageJson before edit: ', logPageJson);
 
       if (logPageJson.body.storage) {
         var bodyContent = logPageJson.body.storage.value;
@@ -2470,17 +2468,19 @@ function logCreationWithVersion(version, logToPage, createdPage) {
           bodyContent = '<ul></ul>';
         }
 
-        var logLine = '<li><ac:link><ri:user ri:userkey="[userkey]" /></ac:link> created&nbsp;<ac:link><ri:page ri:space-key="[spaceKey]" ri:content-title="[pagetitle]" /></ac:link> on&nbsp;<time datetime="[date]" />&nbsp;' + versionMsg + '</li>';
-        logLine = logLine.replace('[userkey]', options.currentUserKey).replace('[pagetitle]', jquery__WEBPACK_IMPORTED_MODULE_5___default()("<div>").text(createdPage.title).html()).replace('[date]', formattedDate).replace('[spaceKey]', createdPage.space.key);
-        logPageJson.body.storage.value = bodyContent.replace('</ul>', logLine + '</ul>');
+        var logLine = '<li><ac:link><ri:user ri:userkey="[userkey]" /></ac:link> created&nbsp;<ac:link><ri:page ri:space-key="[spaceKey]" ri:content-title="[pagetitle]" /></ac:link> on&nbsp;<time datetime="[date]" />&nbsp;';
+        versionMsg;
+        '</li>';
+        logLine = logLine.replace('[userkey]', options.currentUserKey).replace('[pagetitle]', jquery__WEBPACK_IMPORTED_MODULE_3___default()('<div>').text(createdPage.title).html()).replace('[date]', formattedDate).replace('[spaceKey]', createdPage.space.key);
+        logPageJson.body.storage.value = bodyContent.replace('</ul>', "".concat(logLine, "</ul>"));
         logPageJson.version.minorEdit = false;
         logPageJson.version.number += 1;
-        return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["updateContent"](logPageJson);
+        return _confluenceService__WEBPACK_IMPORTED_MODULE_4__["updateContent"](logPageJson);
       }
     });
-  } else {
-    console.log("Not logging because logToPage option is not set");
   }
+
+  console.log('Not logging because logToPage option is not set');
 }
 
 function loadRegions() {
@@ -2496,32 +2496,32 @@ function filterTitlesFromResults(pageResults) {
 }
 
 function endCopyProcess(copiedPages) {
-  var workspaceURL = '/pages/viewpage.action?pageId=' + copiedPages[0].id;
+  var workspaceURL = "/pages/viewpage.action?pageId=".concat(copiedPages[0].id);
   var delay = 0;
   if (copiedPages.length == 1) delay = _common_config__WEBPACK_IMPORTED_MODULE_7__["SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY"]; // add a delay when only a single page was copied, for ESPLM-846
 
   setTimeout(function () {
-    _proxyService__WEBPACK_IMPORTED_MODULE_4__["redirect"](workspaceURL);
+    _proxyService__WEBPACK_IMPORTED_MODULE_5__["redirect"](workspaceURL);
   }, delay);
 }
 
 function createWorkspace(workspaceOpts) {
   return optionsPromise.then(function (options) {
-    console.log("New Service Engagement...", workspaceOpts);
+    console.log('New Service Engagement...', workspaceOpts);
 
     if (workspaceOpts.region) {
-      console.log("First creating Customer Page " + workspaceOpts.customer + " in region" + workspaceOpts.region);
+      console.log("First creating Customer Page ".concat(workspaceOpts.customer, " in region").concat(workspaceOpts.region));
       return createCustomerPage(workspaceOpts.region, workspaceOpts.customer).then(function () {
         return createJustWorkspace(workspaceOpts);
       });
-    } else {
-      return createJustWorkspace(workspaceOpts);
     }
+
+    return createJustWorkspace(workspaceOpts);
   });
 }
 
 function createCustomerPage(region, customer) {
-  return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["copyPage"](options.targetSpace, options.customerPageTemplate, options.targetSpace, region, new _templateProcessor__WEBPACK_IMPORTED_MODULE_8__["TemplateProcessor"]({
+  return _confluenceService__WEBPACK_IMPORTED_MODULE_4__["copyPage"](options.targetSpace, options.customerPageTemplate, options.targetSpace, region, new _templateProcessor__WEBPACK_IMPORTED_MODULE_8__["TemplateProcessor"]({
     placeholderReplacements: customer
   }));
 }
@@ -2530,37 +2530,37 @@ function createJustWorkspace(workspaceOpts) {
   var copiedPages = [];
   var templateProcessor = new _templateProcessor__WEBPACK_IMPORTED_MODULE_8__["TemplateProcessor"]({
     placeholderReplacements: {
-      "Region": workspaceOpts.reportingRegion,
-      "Customer": workspaceOpts.customer,
-      "ProjectName": workspaceOpts.projectName,
-      "TargetEndDate": workspaceOpts.targetEndDate
+      Region: workspaceOpts.reportingRegion,
+      Customer: workspaceOpts.customer,
+      ProjectName: workspaceOpts.projectName,
+      TargetEndDate: workspaceOpts.targetEndDate
     },
     variantOptions: workspaceOpts.variantOptions,
     copyAttachments: true
   });
-  return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getContentById"](options.sourcePageId, 'space').then(function (sourcePage) {
-    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["copyPageRecursive"](sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, templateProcessor, copiedPages);
+  return _confluenceService__WEBPACK_IMPORTED_MODULE_4__["getContentById"](options.sourcePageId, 'space').then(function (sourcePage) {
+    return _confluenceService__WEBPACK_IMPORTED_MODULE_4__["copyPageRecursive"](sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, templateProcessor, copiedPages);
   }).then(function () {
     if (copiedPages.length == 0) {
-      return jquery__WEBPACK_IMPORTED_MODULE_5___default.a.Deferred().reject("No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern " + template_pattern);
+      return jquery__WEBPACK_IMPORTED_MODULE_3___default.a.Deferred().reject("No page was copied, check if one of the subpages of the service page definition has a title that matches the pattern ".concat(template_pattern));
     }
 
-    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["addLabel"](copiedPages[0].id, options.addLabel);
+    return _confluenceService__WEBPACK_IMPORTED_MODULE_4__["addLabel"](copiedPages[0].id, options.addLabel);
   }).then(function () {
     return logCreation(options.logToPage, copiedPages[0]).then(function () {
-      console.log("Copy Successful, " + copiedPages.length + " page(s)", copiedPages); // Now open new tab or redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
+      console.log("Copy Successful, ".concat(copiedPages.length, " page(s)"), copiedPages); // Now open new tab or redirect to 'https://wiki.hybris.com/pages/viewpage.action?pageId='+copiedPages[0].id
 
       endCopyProcess(copiedPages);
     }, function (e) {
-      console.error("Copy failed", arguments);
-      return jquery__WEBPACK_IMPORTED_MODULE_5___default.a.Deferred().reject(e);
+      console.error('Copy failed', arguments);
+      return jquery__WEBPACK_IMPORTED_MODULE_3___default.a.Deferred().reject(e);
     });
   });
 }
 
 function findRegionsInAncestors(ancestors, regionNames) {
   if (!ancestors) return [];
-  console.log("findRegionsInAncestors", ancestors, regionNames);
+  console.log('findRegionsInAncestors', ancestors, regionNames);
   var regions = [];
 
   for (var a = 0; a < ancestors.length; a++) {
@@ -2571,7 +2571,6 @@ function findRegionsInAncestors(ancestors, regionNames) {
     }
   }
 
-  ;
   return regions;
 }
 
@@ -2584,19 +2583,19 @@ function findCustomer(term) {
 function formattedDate() {
   var today = new Date();
   var dd = today.getDate();
-  var mm = today.getMonth() + 1; //January is 0!
+  var mm = today.getMonth() + 1; // January is 0!
 
   var yyyy = today.getFullYear();
 
   if (dd < 10) {
-    dd = '0' + dd;
+    dd = "0".concat(dd);
   }
 
   if (mm < 10) {
-    mm = '0' + mm;
+    mm = "0".concat(mm);
   }
 
-  return yyyy + '-' + mm + '-' + dd;
+  return "".concat(yyyy, "-").concat(mm, "-").concat(dd);
 }
 
 var cachedProjectDocumentationRootPageResult = null;
@@ -2613,37 +2612,37 @@ function extractPageIds(searchAPIResponse) {
 function parentQuery(pageIds) {
   var restriction = [];
   pageIds.forEach(function (pageId) {
-    restriction.push("parent=" + pageId);
+    restriction.push("parent=".concat(pageId));
   });
-  return '(' + restriction.join(' OR ') + ')';
+  return "(".concat(restriction.join(' OR '), ")");
 }
 
 function getRegions(spaceKey, projectDocumentationRootPage) {
   var promise;
 
   if (cachedProjectDocumentationRootPageResult) {
-    promise = jquery__WEBPACK_IMPORTED_MODULE_5___default.a.Deferred().resolve(cachedProjectDocumentationRootPageResult).promise();
+    promise = jquery__WEBPACK_IMPORTED_MODULE_3___default.a.Deferred().resolve(cachedProjectDocumentationRootPageResult).promise();
   } else {
     // get the id of the root Product Documentation page
-    promise = _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getContent"](spaceKey, projectDocumentationRootPage);
+    promise = _confluenceService__WEBPACK_IMPORTED_MODULE_4__["getContent"](spaceKey, projectDocumentationRootPage);
   }
 
   return promise.then(function (rootPage) {
     cachedProjectDocumentationRootPageResult = rootPage;
     if (cachedRegionResults) return cachedRegionResults; // get all the direct children of the root (the region pages) (there are around 10 of them but we use a limit of 50 to make sure we have them all)
 
-    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["searchPagesWithCQL"](spaceKey, "label!='project-documentation-pages' AND parent=" + cachedProjectDocumentationRootPageResult.id, 50, EXPAND_LABELS).then(function (level1Results) {
+    return _confluenceService__WEBPACK_IMPORTED_MODULE_4__["searchPagesWithCQL"](spaceKey, "label!='project-documentation-pages' AND parent=".concat(cachedProjectDocumentationRootPageResult.id), 50, EXPAND_LABELS).then(function (level1Results) {
       var regionsWithSubRegions = [cachedProjectDocumentationRootPageResult.id];
       level1Results.results.forEach(function (page) {
         if (page.metadata && page.metadata.labels && page.metadata.labels.results) {
           page.metadata.labels.results.forEach(function (label) {
-            if (label.name == "ci-has-subregions") {
+            if (label.name == 'ci-has-subregions') {
               regionsWithSubRegions.push(page.id);
             }
           });
         }
       });
-      return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["searchPagesWithCQL"](spaceKey, "label='ci-region' AND label!='project-documentation-pages' AND " + parentQuery(regionsWithSubRegions), 50);
+      return _confluenceService__WEBPACK_IMPORTED_MODULE_4__["searchPagesWithCQL"](spaceKey, "label='ci-region' AND label!='project-documentation-pages' AND ".concat(parentQuery(regionsWithSubRegions)), 50);
     });
   }).then(function (regionResults) {
     cachedRegionResults = regionResults;
@@ -2655,8 +2654,8 @@ function getRegions(spaceKey, projectDocumentationRootPage) {
 
 function getCustomersMatching(spaceKey, projectDocumentationRootPage, partialTitle, limit) {
   return getRegions(spaceKey, projectDocumentationRootPage).then(function (regionResults) {
-    var titleRestriction = partialTitle ? ' and (title~"' + stripQuote(partialTitle) + '" OR title~"' + stripQuote(partialTitle) + '*")' : "";
-    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["searchPagesWithCQL"](spaceKey, "label!='ci-region' AND " + parentQuery(extractPageIds(cachedRegionResults)) + titleRestriction, limit, "ancestors");
+    var titleRestriction = partialTitle ? " and (title~\"".concat(stripQuote(partialTitle), "\" OR title~\"").concat(stripQuote(partialTitle), "*\")") : '';
+    return _confluenceService__WEBPACK_IMPORTED_MODULE_4__["searchPagesWithCQL"](spaceKey, "label!='ci-region' AND ".concat(parentQuery(extractPageIds(cachedRegionResults))).concat(titleRestriction), limit, 'ancestors');
   }).then(function (searchResponse) {
     var regionTitles = filterTitlesFromResults(cachedRegionResults);
     var customers = [];
@@ -2677,7 +2676,7 @@ function buildCustomerAutoCompleteData(page, regionTitles) {
 }
 
 function stripQuote(str) {
-  return str.replace(/"/g, "");
+  return str.replace(/"/g, '');
 }
 
 /***/ }),
@@ -2810,7 +2809,7 @@ if (!String.prototype.format) {
   String.prototype.format = function () {
     var args = arguments;
     return this.replace(/{(\d+)}/g, function (match, number) {
-      return typeof args[number] != 'undefined' ? args[number] : match;
+      return typeof args[number] !== 'undefined' ? args[number] : match;
     });
   };
 }

@@ -3,9 +3,9 @@ import * as plugin from './pluginCommon';
 // Loads a stylesheet at url. Url can be relative to the configured host.
 export function loadStyleSheet(host, url) {
   if (!url.startsWith('http')) {
-    url = host+'/'+url;
+    url = `${host}/${url}`;
   }
-  var link = document.createElement('link');
+  const link = document.createElement('link');
   link.setAttribute('rel', 'stylesheet');
   link.setAttribute('type', 'text/css');
   link.setAttribute('href', url);
@@ -14,5 +14,5 @@ export function loadStyleSheet(host, url) {
 }
 
 export function loadPluginStyleSheet(filename) {
-  return loadStyleSheet(plugin.host, 'dist/'+filename+plugin.cacheBuster);
+  return loadStyleSheet(plugin.host, `dist/${filename}${plugin.cacheBuster}`);
 }
