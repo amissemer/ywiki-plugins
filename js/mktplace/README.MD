@@ -1,16 +1,13 @@
 # Marketplace  - Capturing downloads information - Use guide
 
-### Define csv database attachment (one-time configuration)
+### One-time configuration
 
-In the wiki, add the file mktplace-addon-download-data.csv under docs/attachments as a page attachment. This file will act as your database table.
+The page where the marketplace db will be stored needs to be created first:
 
-### Modify link references and attachment values on javascript code (one-time configuration)
-Some configuration is required in the javascript files to point to the right csv file and the css assets hosted on github
-* CSS reference: Modify CSS_REFERENCE value on mktplace-download-form-plugin.js; replace it with the proper absolute URL.
-* Modify the constant PAGE_ID on download-addon-service.js with the proper Wiki Page ID holding the csv attachment.
-* Compile your javascript with npm run build and commit your changes.
+* Create a page named after the DB_SPACE and DB_PAGE_TITLE constants from the mktplace-config.js file
 
-### Modify your add-on solution wiki pages.
+### Modify your add-on solution wiki pages
+
 For each wiki page with a link to a solution-addon repo:
 * Add an HTML macro to the top of your page with the following content:
 ```
@@ -19,7 +16,7 @@ For each wiki page with a link to a solution-addon repo:
 * Add a button or link macro pointing to your repository URL and set the ID value to **mktplace-addon-download**
 * Add another HTML macro at the bottom of your page with:
 ```
-<script src="http://localhost/ywiki-plugins/dist/mktplace-download-form.js"></script>
+<script src="https://localhost/ywiki-plugins/dist/mktplace-download-form.js"></script>
 <button class="btn btn-primary btn-lg btn-marketplace-download" data-toggle="modal" data-target="#myModal" style="display:none;">Launch Download form</button>
 ```
 * Save your changes.

@@ -71,14 +71,376 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./css/mktplace-download-form.css":
-/*!****************************************!*\
-  !*** ./css/mktplace-download-form.css ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "./js/common/confluence/Attachment.js":
+/*!********************************************!*\
+  !*** ./js/common/confluence/Attachment.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// extracted by mini-css-extract-plugin
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
+
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+function Attachment(jQuery) {
+  if (!jQuery) jQuery = $;
+  return {
+    from: from,
+    getOrCreateAttachment: getOrCreateAttachment
+  };
+
+  function from(_x) {
+    return _from.apply(this, arguments);
+  }
+  /** 
+   * Get attachment metadata information.
+   *
+   * @param {string} pageId id of the page the attachment is attached to
+   * @param {string} attachmentTitle
+   * @param {Object} [internalAttachment] confluence attachment, optional, to avoid a lookup
+   * @returns {Promise<{_internal: *, id: id, containerId: containerId, toString: toString, title: title, exists: exists, downloadUrl: downloadUrl, version: version, spaceKey: spaceKey}>}
+   */
+
+
+  function _from() {
+    _from = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee(internalAttachment) {
+      var containerId;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              containerId = internalAttachment.container ? internalAttachment.container.id : internalAttachment._expandable.container.replace(/.*\//g, '');
+              return _context.abrupt("return", getOrCreateAttachment(containerId, internalAttachment.title, internalAttachment));
+
+            case 2:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    }));
+    return _from.apply(this, arguments);
+  }
+
+  function getOrCreateAttachment(_x2, _x3, _x4) {
+    return _getOrCreateAttachment.apply(this, arguments);
+  }
+
+  function _getOrCreateAttachment() {
+    _getOrCreateAttachment = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee6(pageId, attachmentTitle,
+    /* optional */
+    internalAttachment) {
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              if (internalAttachment) {
+                _context6.next = 4;
+                break;
+              }
+
+              _context6.next = 3;
+              return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["lookupAttachment"])(jQuery.ajax, pageId, attachmentTitle);
+
+            case 3:
+              internalAttachment = _context6.sent;
+
+            case 4:
+              return _context6.abrupt("return", {
+                _internal: internalAttachment,
+                id: function id() {
+                  return this._internal ? this._internal.id : null;
+                },
+                containerId: function containerId() {
+                  return pageId;
+                },
+                toString: function toString() {
+                  return "".concat(this.id(), ":").concat(pageId, ":").concat(this.title(), ":").concat(this.version());
+                },
+                title: function title() {
+                  return attachmentTitle;
+                },
+                exists: function exists() {
+                  return this._internal != null;
+                },
+                downloadUrl: function downloadUrl() {
+                  return this._internal ? this._internal._links.download : null;
+                },
+                version: function version() {
+                  return this._internal ? this._internal.version.number : null;
+                },
+                spaceKey: function spaceKey() {
+                  return this._internal ? this._internal.space.key : null;
+                },
+                cloneFrom: function () {
+                  var _cloneFrom = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee2(url) {
+                    var otherAttachment;
+                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            if (typeof url !== 'string') {
+                              // assume it is another Attachment or confluence attachment
+                              otherAttachment = url;
+                              url = null;
+
+                              if (typeof otherAttachment.downloadUrl === 'function') {
+                                url = otherAttachment.downloadUrl();
+                              } else if (otherAttachment._links && typeof otherAttachment._links.download === 'string') {
+                                url = otherAttachment._links.download;
+                              }
+                            }
+
+                            if (url) {
+                              _context2.next = 3;
+                              break;
+                            }
+
+                            throw 'invalid url to clone from';
+
+                          case 3:
+                            if (!(typeof jQuery.cloneAttachment === 'function')) {
+                              _context2.next = 9;
+                              break;
+                            }
+
+                            _context2.next = 6;
+                            return jQuery.cloneAttachment(url, pageId, attachmentTitle, this.id());
+
+                          case 6:
+                            this._internal = _context2.sent;
+                            _context2.next = 12;
+                            break;
+
+                          case 9:
+                            _context2.next = 11;
+                            return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["cloneAttachment"])(url, pageId, attachmentTitle, this.id());
+
+                          case 11:
+                            this._internal = _context2.sent;
+
+                          case 12:
+                          case "end":
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2, this);
+                  }));
+
+                  return function cloneFrom(_x5) {
+                    return _cloneFrom.apply(this, arguments);
+                  };
+                }(),
+                delete: function () {
+                  var _delete2 = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee3() {
+                    var id;
+                    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                      while (1) {
+                        switch (_context3.prev = _context3.next) {
+                          case 0:
+                            id = this.id();
+
+                            if (!id) {
+                              _context3.next = 4;
+                              break;
+                            }
+
+                            _context3.next = 4;
+                            return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["deleteAttachment"])(jQuery.ajax, id);
+
+                          case 4:
+                            this._internal = null;
+
+                          case 5:
+                          case "end":
+                            return _context3.stop();
+                        }
+                      }
+                    }, _callee3, this);
+                  }));
+
+                  return function _delete() {
+                    return _delete2.apply(this, arguments);
+                  };
+                }(),
+                loadText: function () {
+                  var _loadText = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee4() {
+                    var url;
+                    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                      while (1) {
+                        switch (_context4.prev = _context4.next) {
+                          case 0:
+                            url = this.downloadUrl();
+                            return _context4.abrupt("return", url ? Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["loadResource"])(url) : null);
+
+                          case 2:
+                          case "end":
+                            return _context4.stop();
+                        }
+                      }
+                    }, _callee4, this);
+                  }));
+
+                  return function loadText() {
+                    return _loadText.apply(this, arguments);
+                  };
+                }(),
+                saveText: function () {
+                  var _saveText = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee5(text, contentType) {
+                    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                      while (1) {
+                        switch (_context5.prev = _context5.next) {
+                          case 0:
+                            return _context5.abrupt("return", Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["storeAttachmentContent"])(pageId, text, attachmentTitle, this.id(), contentType));
+
+                          case 1:
+                          case "end":
+                            return _context5.stop();
+                        }
+                      }
+                    }, _callee5, this);
+                  }));
+
+                  return function saveText(_x6, _x7) {
+                    return _saveText.apply(this, arguments);
+                  };
+                }()
+              });
+
+            case 5:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6, this);
+    }));
+    return _getOrCreateAttachment.apply(this, arguments);
+  }
+}
+
+;
+/* harmony default export */ __webpack_exports__["default"] = (Attachment);
+
+/***/ }),
+
+/***/ "./js/common/confluence/Page.js":
+/*!**************************************!*\
+  !*** ./js/common/confluence/Page.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function Page(title, body, spaceKey, parentId) {
+  this.setTitle(title);
+  this.setBody(body);
+  this.setSpaceKey(spaceKey);
+  this.setParentId(parentId);
+  this.type = "page";
+}
+
+;
+
+Page.prototype.toString = function () {
+  return JSON.stringify(this);
+};
+
+Page.prototype._setId = function (id) {
+  this.id = id;
+  return this;
+};
+
+Page.prototype.setParentId = function (parentId) {
+  this.ancestors = [{
+    id: parentId
+  }];
+  return this;
+};
+
+Page.prototype.setSpaceKey = function (spaceKey) {
+  this.space = {
+    key: spaceKey
+  };
+  return this;
+};
+
+Page.prototype.setBody = function (body) {
+  this.body = {
+    storage: {
+      representation: "storage",
+      value: body
+    }
+  };
+  return this;
+};
+
+Page.prototype.setBodyFromPage = function (page) {
+  return this.setBody(page.body && page.body.storage ? page.body.storage.value : null);
+};
+
+Page.prototype.setTitle = function (title) {
+  this.title = title;
+  return this;
+};
+
+Page.prototype.setVersion = function (versionNumber, message, isMajorEdit) {
+  this.version = {
+    number: versionNumber,
+    minorEdit: true
+  };
+
+  if (message) {
+    this.version.message = message;
+  }
+
+  if (isMajorEdit) {
+    this.version.minorEdit = false;
+  }
+
+  return this;
+}; // static builder
+
+
+Page.copyFrom = function (page) {
+  var spaceKey = page.space ? page.space.key : '';
+  var parentId = page.ancestors && page.ancestors.length ? page.ancestors[0].id : 0;
+  var body = page.body && page.body.storage ? page.body.storage.value : null;
+  return new Page(page.title, body, spaceKey, parentId);
+};
+
+Page.newVersionOf = function (page, message, isMajorEdit) {
+  return Page.copyFrom(page)._setId(page.id).setVersion(page.version.number + 1, message, isMajorEdit);
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Page);
 
 /***/ }),
 
@@ -86,7 +448,7 @@
 /*!*************************************************************!*\
   !*** ./js/common/confluence/confluence-attachment-async.js ***!
   \*************************************************************/
-/*! exports provided: lookupAttachment, deleteAttachment, cloneAttachment, storeBlob, storeAttachmentContent, loadBlob, loadResource */
+/*! exports provided: lookupAttachment, deleteAttachment, cloneAttachment, storeAttachmentContent, loadResource */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -94,9 +456,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lookupAttachment", function() { return lookupAttachment; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteAttachment", function() { return deleteAttachment; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cloneAttachment", function() { return cloneAttachment; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "storeBlob", function() { return storeBlob; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "storeAttachmentContent", function() { return storeAttachmentContent; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadBlob", function() { return loadBlob; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadResource", function() { return loadResource; });
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0__);
@@ -115,14 +475,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var BASE_URL = '/rest/api/content/';
-function lookupAttachment(_x, _x2) {
+/**
+ * Retrieves an existing attachment, by its container (page) and title
+ * @param {function} ajax either jQuery.ajax function or proxy.ajax function (see proxyService.js)
+ * @param {string} containerId id of the containing page
+ * @param {string} attachmentTitle title of the attachment
+ * @returns {Promise<{id,version,space,_links}>} the attachment object or null if the attachment doesn't exist
+ */
+
+function lookupAttachment(_x, _x2, _x3) {
   return _lookupAttachment.apply(this, arguments);
 }
+/**
+ * Deletes an attachment by its ID
+ * @param {function} ajax either jQuery.ajax function or proxy.ajax function (see proxyService.js)
+ * @param {string} attachmentId the attachment ID
+ */
 
 function _lookupAttachment() {
   _lookupAttachment = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee(containerId, attachmentTitle) {
+  regeneratorRuntime.mark(function _callee(ajax, containerId, attachmentTitle) {
     var results;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
@@ -130,7 +503,7 @@ function _lookupAttachment() {
           case 0:
             _context.next = 2;
             return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
-              return $.get(BASE_URL + "".concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
+              return ajax(BASE_URL + "".concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
             });
 
           case 2:
@@ -156,20 +529,27 @@ function _lookupAttachment() {
   return _lookupAttachment.apply(this, arguments);
 }
 
-function deleteAttachment(_x3) {
+function deleteAttachment(_x4, _x5) {
   return _deleteAttachment.apply(this, arguments);
 }
+/**
+ * Loads an attachment content from an URL and copies it as a new attachment version under a different page.
+ * @param {string} attachmentUrl the source URL
+ * @param {string} targetContainerId the target page ID
+ * @param {string} title the title to create/update the target attachment
+ * @param {string} [targetId] the id of the existing attachment, if exists
+ */
 
 function _deleteAttachment() {
   _deleteAttachment = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee2(attachmentId) {
+  regeneratorRuntime.mark(function _callee2(ajax, attachmentId) {
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             return _context2.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])(function () {
-              return $.ajax({
+              return ajax({
                 url: BASE_URL + encodeURIComponent(attachmentId),
                 type: 'DELETE'
               });
@@ -185,12 +565,17 @@ function _deleteAttachment() {
   return _deleteAttachment.apply(this, arguments);
 }
 
-function cloneAttachment(_x4, _x5, _x6, _x7) {
+function cloneAttachment(_x6, _x7, _x8, _x9) {
   return _cloneAttachment.apply(this, arguments);
 }
 /** 
- * ContentId is mandatory when updating an existing attachment, and must be omitted when
+ * Creates or updates an attachment by uploading data as a page attachment.
+ * @param {string} containerId id of the page that contains the attachment
+ * @param {Object} data is either a Blob, or any data to be uploaded as the attachment
+ * @param {string} title the name of the attachment on the page
+ * @param {string} [contentId] is mandatory when updating an existing attachment, and must be omitted when
  * creating a new attachment.
+ * @param {string} [contentType] is required when data is not a Blob
  */
 
 function _cloneAttachment() {
@@ -205,13 +590,13 @@ function _cloneAttachment() {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return loadBlob(attachmentUrl);
+            return loadResource(attachmentUrl, 'blob');
 
           case 2:
             blobData = _context3.sent;
             _context3.t0 = JSON;
             _context3.next = 6;
-            return storeBlob(targetContainerId, blobData, title, targetId);
+            return storeAttachmentContent(targetContainerId, blobData, title, targetId);
 
           case 6:
             _context3.t1 = _context3.sent;
@@ -241,17 +626,20 @@ function _cloneAttachment() {
   return _cloneAttachment.apply(this, arguments);
 }
 
-function storeBlob(_x8, _x9, _x10, _x11) {
-  return _storeBlob.apply(this, arguments);
+function storeAttachmentContent(_x10, _x11, _x12, _x13, _x14) {
+  return _storeAttachmentContent.apply(this, arguments);
 }
+/**
+ * Load a url resource.
+ * @param {string} url
+ * @param {string} [responseType='']  see also https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType
+ */
 
-function _storeBlob() {
-  _storeBlob = _asyncToGenerator(
+function _storeAttachmentContent() {
+  _storeAttachmentContent = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee4(containerId, blobData, title,
-  /* optional */
-  contentId) {
-    var url, formData;
+  regeneratorRuntime.mark(function _callee4(containerId, data, title, contentId, contentType) {
+    var url, formData, blob;
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -265,128 +653,65 @@ function _storeBlob() {
             }
 
             formData = new FormData();
+            blob = data instanceof Blob ? data : new Blob([data], {
+              type: contentType
+            });
             formData.append('file', blob, title);
             formData.append('minorEdit', 'true');
             return _context4.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])(function () {
               return postBinary(url, formData);
             }));
 
-          case 8:
+          case 9:
           case "end":
             return _context4.stop();
         }
       }
     }, _callee4, this);
   }));
-  return _storeBlob.apply(this, arguments);
-}
-
-function storeAttachmentContent(_x12, _x13, _x14, _x15, _x16) {
   return _storeAttachmentContent.apply(this, arguments);
 }
 
-function _storeAttachmentContent() {
-  _storeAttachmentContent = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee5(containerId, blobData, title, contentId, contentType) {
-    var url, formData, blob;
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            url = BASE_URL;
-            url += containerId;
-            url += '/child/attachment';
-
-            if (contentId) {
-              url += '/' + contentId + '/data';
-            }
-
-            formData = new FormData();
-            blob = new Blob([blobData], {
-              type: contentType
-            });
-            formData.append('file', blob, title);
-            formData.append('minorEdit', 'true');
-            return _context5.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])(function () {
-              return postBinary(url, formData);
-            }));
-
-          case 9:
-          case "end":
-            return _context5.stop();
-        }
-      }
-    }, _callee5, this);
-  }));
-  return _storeAttachmentContent.apply(this, arguments);
-}
-
-function loadBlob(_x17) {
-  return _loadBlob.apply(this, arguments);
-}
-
-function _loadBlob() {
-  _loadBlob = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee6(url) {
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            return _context6.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
-              return loadBinary(url);
-            }));
-
-          case 1:
-          case "end":
-            return _context6.stop();
-        }
-      }
-    }, _callee6, this);
-  }));
-  return _loadBlob.apply(this, arguments);
-}
-
-function loadResource(_x18, _x19) {
+function loadResource(_x15, _x16) {
   return _loadResource.apply(this, arguments);
 }
 
 function _loadResource() {
   _loadResource = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee7(url, responseType) {
-    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+  regeneratorRuntime.mark(function _callee5(url, responseType) {
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
-            return _context7.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
+            responseType = responseType || '';
+            return _context5.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
               return loadUrlResource(url, responseType);
             }));
 
-          case 1:
+          case 2:
           case "end":
-            return _context7.stop();
+            return _context5.stop();
         }
       }
-    }, _callee7, this);
+    }, _callee5, this);
   }));
   return _loadResource.apply(this, arguments);
 }
 
-function postBinary(_x20, _x21) {
+function postBinary(_x17, _x18) {
   return _postBinary.apply(this, arguments);
 }
 
 function _postBinary() {
   _postBinary = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee8(url, formData) {
-    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+  regeneratorRuntime.mark(function _callee6(url, formData) {
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
       while (1) {
-        switch (_context8.prev = _context8.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
-            return _context8.abrupt("return", new Promise(function (resolve, reject) {
+            return _context6.abrupt("return", new Promise(function (resolve, reject) {
               var xhr = new XMLHttpRequest();
               xhr.open("POST", url, true);
               xhr.onerror = reject;
@@ -405,55 +730,27 @@ function _postBinary() {
 
           case 1:
           case "end":
-            return _context8.stop();
+            return _context6.stop();
         }
       }
-    }, _callee8, this);
+    }, _callee6, this);
   }));
   return _postBinary.apply(this, arguments);
 }
 
-function loadBinary(_x22) {
-  return _loadBinary.apply(this, arguments);
-}
-
-function _loadBinary() {
-  _loadBinary = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee9(url) {
-    return regeneratorRuntime.wrap(function _callee9$(_context9) {
-      while (1) {
-        switch (_context9.prev = _context9.next) {
-          case 0:
-            _context9.next = 2;
-            return loadUrlResource(url, 'blob');
-
-          case 2:
-            return _context9.abrupt("return", _context9.sent);
-
-          case 3:
-          case "end":
-            return _context9.stop();
-        }
-      }
-    }, _callee9, this);
-  }));
-  return _loadBinary.apply(this, arguments);
-}
-
-function loadUrlResource(_x23, _x24) {
+function loadUrlResource(_x19, _x20) {
   return _loadUrlResource.apply(this, arguments);
 }
 
 function _loadUrlResource() {
   _loadUrlResource = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee10(url, responseType) {
-    return regeneratorRuntime.wrap(function _callee10$(_context10) {
+  regeneratorRuntime.mark(function _callee7(url, responseType) {
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
       while (1) {
-        switch (_context10.prev = _context10.next) {
+        switch (_context7.prev = _context7.next) {
           case 0:
-            return _context10.abrupt("return", new Promise(function (resolve, reject) {
+            return _context7.abrupt("return", new Promise(function (resolve, reject) {
               var xhr = new XMLHttpRequest();
               xhr.open('GET', url, true);
               xhr.responseType = responseType;
@@ -474,12 +771,850 @@ function _loadUrlResource() {
 
           case 1:
           case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7, this);
+  }));
+  return _loadUrlResource.apply(this, arguments);
+}
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-page-async.js":
+/*!*******************************************************!*\
+  !*** ./js/common/confluence/confluence-page-async.js ***!
+  \*******************************************************/
+/*! exports provided: movePages, movePagesById, getContent, getContentById, searchPagesWithCQL, copyPage, copyPageToSpace, createPageFromTemplate, copyPageRecursive, copyPageRecursiveInternal, copyAllChildren, createPageUnderPageId, postPage, updateContent, getPageTree */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "movePages", function() { return movePages; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "movePagesById", function() { return movePagesById; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getContent", function() { return getContent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getContentById", function() { return getContentById; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "searchPagesWithCQL", function() { return searchPagesWithCQL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPage", function() { return copyPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageToSpace", function() { return copyPageToSpace; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPageFromTemplate", function() { return createPageFromTemplate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageRecursive", function() { return copyPageRecursive; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageRecursiveInternal", function() { return copyPageRecursiveInternal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyAllChildren", function() { return copyAllChildren; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPageUnderPageId", function() { return createPageUnderPageId; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postPage", function() { return postPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateContent", function() { return updateContent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPageTree", function() { return getPageTree; });
+/* harmony import */ var core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.function.name */ "./node_modules/core-js/modules/es6.function.name.js");
+/* harmony import */ var core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.string.iterator */ "./node_modules/core-js/modules/es6.string.iterator.js");
+/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.number.is-integer */ "./node_modules/core-js/modules/es6.number.is-integer.js");
+/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
+/* harmony import */ var _Page__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Page */ "./js/common/confluence/Page.js");
+
+
+
+
+
+
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+function movePages(_x, _x2, _x3, _x4) {
+  return _movePages.apply(this, arguments);
+}
+
+function _movePages() {
+  _movePages = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee(sourceSpaceKey, sourcePageTitle, targetSpaceKey, targetParentTitle) {
+    var sourcePage;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.next = 2;
+            return getContent(sourceSpaceKey, sourcePageTitle);
+
+          case 2:
+            sourcePage = _context.sent;
+            _context.next = 5;
+            return movePagesById(sourcePage.id, targetSpaceKey, targetParentTitle);
+
+          case 5:
+            return _context.abrupt("return", _context.sent);
+
+          case 6:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, this);
+  }));
+  return _movePages.apply(this, arguments);
+}
+
+function getAtlToken() {
+  return $('meta[name=ajs-atl-token]').attr("content");
+}
+
+function movePagesById(_x5, _x6, _x7) {
+  return _movePagesById.apply(this, arguments);
+}
+/**
+* Get a page by spaceKey and title from Confluence and returns a deferred for that page.
+* See $.ajax().done()
+* Failures are logged and ignored.
+* The deferred is resolved with the first matching page is any, else it is rejected.
+*/
+
+function _movePagesById() {
+  _movePagesById = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee3(sourcePageId, targetSpaceKey, target) {
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleWrite"])(
+            /*#__PURE__*/
+            _asyncToGenerator(
+            /*#__PURE__*/
+            regeneratorRuntime.mark(function _callee2() {
+              var targetParentTitle, targetParent, url, resp;
+              return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                while (1) {
+                  switch (_context2.prev = _context2.next) {
+                    case 0:
+                      if (!Number.isInteger(Number(target))) {
+                        _context2.next = 7;
+                        break;
+                      }
+
+                      _context2.next = 3;
+                      return getContentById(Number(target));
+
+                    case 3:
+                      targetParent = _context2.sent;
+                      targetParentTitle = targetParent.title;
+                      _context2.next = 8;
+                      break;
+
+                    case 7:
+                      targetParentTitle = target;
+
+                    case 8:
+                      if (targetParentTitle) {
+                        _context2.next = 10;
+                        break;
+                      }
+
+                      throw 'targetParentTitle is mandatory (for source ' + sourcePageId + ' and target ' + target + ')';
+
+                    case 10:
+                      url = '/pages/movepage.action?pageId=' + encodeURIComponent(sourcePageId) + '&spaceKey=' + encodeURIComponent(targetSpaceKey) + '&targetTitle=' + encodeURIComponent(targetParentTitle) + '&position=append&atl_token=' + getAtlToken() + '&_=' + Math.random();
+                      console.log("Moving page ", sourcePageId, " under ", targetSpaceKey + ":" + targetParentTitle, url);
+                      _context2.next = 14;
+                      return $.ajax(url);
+
+                    case 14:
+                      resp = _context2.sent;
+
+                      if (!(typeof resp === 'string' && resp.indexOf('Not Permitted' >= 0))) {
+                        _context2.next = 19;
+                        break;
+                      }
+
+                      throw 'Not Permitted';
+
+                    case 19:
+                      if (!(typeof resp === 'string')) {
+                        _context2.next = 23;
+                        break;
+                      }
+
+                      throw 'Generic move error';
+
+                    case 23:
+                      if (!resp.actionErrors) {
+                        _context2.next = 25;
+                        break;
+                      }
+
+                      throw resp.actionErrors.join();
+
+                    case 25:
+                    case "end":
+                      return _context2.stop();
+                  }
+                }
+              }, _callee2, this);
+            })));
+
+          case 2:
+            return _context3.abrupt("return", _context3.sent);
+
+          case 3:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, this);
+  }));
+  return _movePagesById.apply(this, arguments);
+}
+
+function getContent(_x8, _x9, _x10) {
+  return _getContent.apply(this, arguments);
+}
+
+function _getContent() {
+  _getContent = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee4(spaceKey, pageTitle, expand) {
+    var expandParam, url, response, page;
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            expandParam = "";
+
+            if (expand) {
+              expandParam = '&expand=' + encodeURIComponent(expand);
+            }
+
+            url = '/rest/api/content?type=page&spaceKey=' + encodeURIComponent(spaceKey) + '&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
+            console.log("Getting page content from " + url);
+            _context4.next = 6;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleRead"])(function () {
+              return $.ajax(url);
+            });
+
+          case 6:
+            response = _context4.sent;
+            console.log("Filtering AJAX response", response);
+
+            if (!(response.results && response.results.length > 0)) {
+              _context4.next = 14;
+              break;
+            }
+
+            page = response.results[0];
+            console.log("Returning ", page);
+            return _context4.abrupt("return", page);
+
+          case 14:
+            throw "Page Not found: '" + spaceKey + ":" + pageTitle + "'";
+
+          case 15:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4, this);
+  }));
+  return _getContent.apply(this, arguments);
+}
+
+function getContentById(_x11, _x12) {
+  return _getContentById.apply(this, arguments);
+}
+/** search for content with CQL
+for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
+
+function _getContentById() {
+  _getContentById = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee5(pageId, expand) {
+    var expandParam, url;
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            expandParam = "";
+
+            if (expand) {
+              expandParam = '?expand=' + encodeURIComponent(expand);
+            }
+
+            url = '/rest/api/content/' + encodeURIComponent(pageId) + expandParam;
+            console.log(url);
+            _context5.next = 6;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleRead"])(function () {
+              return $.ajax(url);
+            });
+
+          case 6:
+            return _context5.abrupt("return", _context5.sent);
+
+          case 7:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, this);
+  }));
+  return _getContentById.apply(this, arguments);
+}
+
+function searchPagesWithCQL(_x13, _x14, _x15, _x16) {
+  return _searchPagesWithCQL.apply(this, arguments);
+}
+/**
+* Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
+* and do a placeholder replacement the page title using the templateProcessor.
+*/
+
+function _searchPagesWithCQL() {
+  _searchPagesWithCQL = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee6(spaceKey, cqlQuery, limit, expand) {
+    var expandParam;
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            if (!limit || limit < 0) {
+              limit = 15;
+            }
+
+            expandParam = expand ? "&expand=" + encodeURIComponent(expand) : "";
+            _context6.next = 4;
+            return $.ajax('/rest/api/content/search?limit=' + encodeURIComponent(limit) + '&cql=' + encodeURIComponent(cqlQuery + ' and type=page and space=\'' + spaceKey + '\'') + expandParam);
+
+          case 4:
+            return _context6.abrupt("return", _context6.sent);
+
+          case 5:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6, this);
+  }));
+  return _searchPagesWithCQL.apply(this, arguments);
+}
+
+function copyPage(_x17, _x18, _x19, _x20, _x21) {
+  return _copyPage.apply(this, arguments);
+}
+
+function _copyPage() {
+  _copyPage = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee7(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor) {
+    var pageToCopy, newPage, targetParentPage;
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.next = 2;
+            return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage,metadata.labels');
+
+          case 2:
+            pageToCopy = _context7.sent;
+            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy);
+            _context7.next = 6;
+            return templateProcessor.transformPage(newPage);
+
+          case 6:
+            _context7.next = 8;
+            return getContent(toSpaceKey, toPageTitle, 'space');
+
+          case 8:
+            targetParentPage = _context7.sent;
+            console.log("targetParentPage: space=", targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
+            newPage.setSpaceKey(toSpaceKey).setParentId(targetParentPage.id);
+            _context7.next = 13;
+            return createPageUnderPageId(newPage);
+
+          case 13:
+            return _context7.abrupt("return", _context7.sent);
+
+          case 14:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7, this);
+  }));
+  return _copyPage.apply(this, arguments);
+}
+
+function copyPageToSpace(_x22, _x23, _x24) {
+  return _copyPageToSpace.apply(this, arguments);
+}
+
+function _copyPageToSpace() {
+  _copyPageToSpace = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee8(sourcePageId, targetSpaceKey, targetParentId) {
+    var pageToCopy, newPage;
+    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            _context8.next = 2;
+            return getContentById(sourcePageId, 'space,body.storage,metadata.labels');
+
+          case 2:
+            pageToCopy = _context8.sent;
+            _context8.prev = 3;
+            _context8.next = 6;
+            return getContent(targetSpaceKey, pageToCopy.title);
+
+          case 6:
+            return _context8.abrupt("return", _context8.sent);
+
+          case 9:
+            _context8.prev = 9;
+            _context8.t0 = _context8["catch"](3);
+            // Create the new page 
+            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy).setSpaceKey(targetSpaceKey).setParentId(targetParentId);
+            _context8.next = 14;
+            return createPageUnderPageId(newPage);
+
+          case 14:
+            return _context8.abrupt("return", _context8.sent);
+
+          case 15:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8, this, [[3, 9]]);
+  }));
+  return _copyPageToSpace.apply(this, arguments);
+}
+
+function createPageFromTemplate(_x25, _x26, _x27, _x28, _x29) {
+  return _createPageFromTemplate.apply(this, arguments);
+}
+
+function _createPageFromTemplate() {
+  _createPageFromTemplate = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee9(templateSpace, templateTitle, targetSpaceKey, targetPageId, templateProcessor) {
+    var pageToCopy, newPage;
+    return regeneratorRuntime.wrap(function _callee9$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            _context9.next = 2;
+            return getContent(templateSpace, templateTitle, 'space,body.storage,metadata.labels');
+
+          case 2:
+            pageToCopy = _context9.sent;
+            //var parentPage = await getContentById(targetPageId, 'space');
+            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy).setSpaceKey(targetSpaceKey).setParentId(targetPageId);
+            _context9.next = 6;
+            return templateProcessor.transformPage(newPage);
+
+          case 6:
+            _context9.next = 8;
+            return createPageUnderPageId(newPage);
+
+          case 8:
+            return _context9.abrupt("return", _context9.sent);
+
+          case 9:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, _callee9, this);
+  }));
+  return _createPageFromTemplate.apply(this, arguments);
+}
+
+function copyPageRecursive(_x30, _x31, _x32, _x33, _x34, _x35) {
+  return _copyPageRecursive.apply(this, arguments);
+}
+
+function _copyPageRecursive() {
+  _copyPageRecursive = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee10(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor, copiedPages) {
+    var sourcePagePromise, targetPagePromise, pages;
+    return regeneratorRuntime.wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
+            targetPagePromise = getContent(toSpaceKey, toPageTitle, 'space');
+            _context10.next = 4;
+            return Promise.all(sourcePagePromise, targetPagePromise);
+
+          case 4:
+            pages = _context10.sent;
+            _context10.next = 7;
+            return copyPageRecursiveInternal(pages[0].id, pages[1].space.key, pages[1].id, templateProcessor, copiedPages);
+
+          case 7:
+            return _context10.abrupt("return", _context10.sent);
+
+          case 8:
+          case "end":
             return _context10.stop();
         }
       }
     }, _callee10, this);
   }));
-  return _loadUrlResource.apply(this, arguments);
+  return _copyPageRecursive.apply(this, arguments);
+}
+
+function copyPageRecursiveInternal(_x36, _x37, _x38, _x39, _x40) {
+  return _copyPageRecursiveInternal.apply(this, arguments);
+}
+
+function _copyPageRecursiveInternal() {
+  _copyPageRecursiveInternal = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee11(sourcePageId, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
+    var pageToCopy, newPage, copiedPage;
+    return regeneratorRuntime.wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.next = 2;
+            return getContentById(sourcePageId, 'space,body.storage,children.page,metadata.labels');
+
+          case 2:
+            pageToCopy = _context11.sent;
+            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy);
+
+            if (!templateProcessor.isApplicableTemplatePage(newPage)) {
+              _context11.next = 17;
+              break;
+            }
+
+            _context11.next = 7;
+            return templateProcessor.transformPage(newPage);
+
+          case 7:
+            newPage.setSpaceKey(targetSpaceKey).setParentId(targetPageId); // Create the new page under targetSpaceKey:targetPageId
+
+            _context11.next = 10;
+            return createPageUnderPageId(newPage);
+
+          case 10:
+            copiedPage = _context11.sent;
+            copiedPages.push(copiedPage);
+            _context11.next = 14;
+            return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
+
+          case 14:
+            return _context11.abrupt("return", _context11.sent);
+
+          case 17:
+            console.log("Page is not a template, not copied, but children will be copied: ", pageToCopy.title);
+            _context11.next = 20;
+            return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
+
+          case 20:
+            return _context11.abrupt("return", _context11.sent);
+
+          case 21:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, this);
+  }));
+  return _copyPageRecursiveInternal.apply(this, arguments);
+}
+
+function copyAllChildren(_x41, _x42, _x43, _x44, _x45) {
+  return _copyAllChildren.apply(this, arguments);
+}
+/** 
+ * Creates a new page in Confluence. Typically create the newPage with
+ * import Page from './Page';
+ * let newPage = new Page('title','body','spaceKey',parentId);
+ * createPageUnderPageId(newPage);
+ * 
+ * or 
+ * 
+ * let newPage = Page.copyFrom(otherPage).setParentId(newParent).setSpaceKey('otherSpace');
+ * createPageUnderPageId(newPage);
+ */
+
+function _copyAllChildren() {
+  _copyAllChildren = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee13(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
+    var copiedChildren;
+    return regeneratorRuntime.wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            // recursively copy all children
+            copiedChildren = [];
+            console.log("In copyAllChildren", pageToCopy, targetPageId);
+
+            if (!(pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results)) {
+              _context13.next = 5;
+              break;
+            }
+
+            _context13.next = 5;
+            return pageToCopy.children.page.results.forEachSerial(
+            /*#__PURE__*/
+            function () {
+              var _ref2 = _asyncToGenerator(
+              /*#__PURE__*/
+              regeneratorRuntime.mark(function _callee12(child) {
+                var childrenP;
+                return regeneratorRuntime.wrap(function _callee12$(_context12) {
+                  while (1) {
+                    switch (_context12.prev = _context12.next) {
+                      case 0:
+                        _context12.next = 2;
+                        return copyPageRecursiveInternal(child.id, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
+
+                      case 2:
+                        childrenP = _context12.sent;
+                        copiedChildren.push(childrenP);
+
+                      case 4:
+                      case "end":
+                        return _context12.stop();
+                    }
+                  }
+                }, _callee12, this);
+              }));
+
+              return function (_x53) {
+                return _ref2.apply(this, arguments);
+              };
+            }());
+
+          case 5:
+            return _context13.abrupt("return", copiedChildren);
+
+          case 6:
+          case "end":
+            return _context13.stop();
+        }
+      }
+    }, _callee13, this);
+  }));
+  return _copyAllChildren.apply(this, arguments);
+}
+
+function createPageUnderPageId(_x46) {
+  return _createPageUnderPageId.apply(this, arguments);
+}
+
+function _createPageUnderPageId() {
+  _createPageUnderPageId = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee14(
+  /* type Page */
+  newPage) {
+    return regeneratorRuntime.wrap(function _callee14$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
+            console.log("Posting new page", newPage);
+            _context14.next = 3;
+            return postPage(newPage);
+
+          case 3:
+            return _context14.abrupt("return", _context14.sent);
+
+          case 4:
+          case "end":
+            return _context14.stop();
+        }
+      }
+    }, _callee14, this);
+  }));
+  return _createPageUnderPageId.apply(this, arguments);
+}
+
+function postPage(_x47) {
+  return _postPage.apply(this, arguments);
+}
+/* Typically you create the page with Page.newVersionOf(page, "optional message", isMajorEdit);
+then set the body and title you want to update with setBody and setTitle. */
+
+function _postPage() {
+  _postPage = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee15(page) {
+    return regeneratorRuntime.wrap(function _callee15$(_context15) {
+      while (1) {
+        switch (_context15.prev = _context15.next) {
+          case 0:
+            _context15.next = 2;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleWrite"])(function () {
+              return $.ajax({
+                url: '/rest/api/content',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(page)
+              });
+            });
+
+          case 2:
+            return _context15.abrupt("return", _context15.sent);
+
+          case 3:
+          case "end":
+            return _context15.stop();
+        }
+      }
+    }, _callee15, this);
+  }));
+  return _postPage.apply(this, arguments);
+}
+
+function updateContent(_x48) {
+  return _updateContent.apply(this, arguments);
+}
+
+function _updateContent() {
+  _updateContent = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee16(page) {
+    return regeneratorRuntime.wrap(function _callee16$(_context16) {
+      while (1) {
+        switch (_context16.prev = _context16.next) {
+          case 0:
+            _context16.next = 2;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleWrite"])(function () {
+              return $.ajax({
+                url: '/rest/api/content/' + encodeURIComponent(page.id),
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(page)
+              });
+            });
+
+          case 2:
+            return _context16.abrupt("return", _context16.sent);
+
+          case 3:
+          case "end":
+            return _context16.stop();
+        }
+      }
+    }, _callee16, this);
+  }));
+  return _updateContent.apply(this, arguments);
+}
+
+function getPageTree(_x49, _x50, _x51, _x52) {
+  return _getPageTree.apply(this, arguments);
+}
+
+function _getPageTree() {
+  _getPageTree = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee17(pageId, parentId, parentTitle, counter) {
+    var pageAndChildren, childrenP, childrenPages;
+    return regeneratorRuntime.wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            console.log("Queueing getContentById for ".concat(pageId));
+            _context17.next = 3;
+            return getContentById(pageId, 'history.lastUpdated,children.page,metadata.labels');
+
+          case 3:
+            pageAndChildren = _context17.sent;
+            counter.pages++;
+            if (counter.pages % 100 == 0) console.log("Found ".concat(counter.pages, " pages so far..."));
+            childrenP = [];
+            childrenPages = pageAndChildren.children.page;
+
+          case 8:
+            if (!(childrenPages && childrenPages.size > 0)) {
+              _context17.next = 20;
+              break;
+            }
+
+            childrenPages.results.forEach(function (child) {
+              return childrenP.push(getPageTree(child.id, pageId, pageAndChildren.title, counter));
+            }); // get next page if any
+
+            if (!childrenPages._links.next) {
+              _context17.next = 17;
+              break;
+            }
+
+            console.log("Queueing GET next page of children for ".concat(pageAndChildren.title, ": ").concat(childrenPages._links.next));
+            _context17.next = 14;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleRead"])(function () {
+              return $.ajax(childrenPages._links.next);
+            });
+
+          case 14:
+            childrenPages = _context17.sent;
+            _context17.next = 18;
+            break;
+
+          case 17:
+            childrenPages = false;
+
+          case 18:
+            _context17.next = 8;
+            break;
+
+          case 20:
+            _context17.t0 = pageAndChildren.title;
+            _context17.t1 = pageId;
+            _context17.t2 = new Date(pageAndChildren.history.lastUpdated.when);
+            _context17.t3 = new Date(pageAndChildren.history.createdDate);
+            _context17.t4 = parentId;
+            _context17.t5 = parentTitle;
+            _context17.next = 28;
+            return Promise.all(childrenP);
+
+          case 28:
+            _context17.t6 = _context17.sent;
+            _context17.t7 = Array.prototype.map.call(pageAndChildren.metadata.labels.results, function (l) {
+              return l.name;
+            });
+            return _context17.abrupt("return", {
+              title: _context17.t0,
+              id: _context17.t1,
+              lastUpdated: _context17.t2,
+              createdDate: _context17.t3,
+              parentId: _context17.t4,
+              parentTitle: _context17.t5,
+              children: _context17.t6,
+              labels: _context17.t7
+            });
+
+          case 31:
+          case "end":
+            return _context17.stop();
+        }
+      }
+    }, _callee17, this);
+  }));
+  return _getPageTree.apply(this, arguments);
 }
 
 /***/ }),
@@ -502,6 +1637,95 @@ var throttleWrite = __webpack_require__(/*! throat */ "./node_modules/throat/ind
 
 /***/ }),
 
+/***/ "./js/mainframe/pluginCommon.js":
+/*!**************************************!*\
+  !*** ./js/mainframe/pluginCommon.js ***!
+  \**************************************/
+/*! exports provided: host, cacheBuster */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "host", function() { return host; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cacheBuster", function() { return cacheBuster; });
+/* harmony import */ var core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.regexp.search */ "./node_modules/core-js/modules/es6.regexp.search.js");
+/* harmony import */ var core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_0__);
+
+var WHITELISTED_ORIGIN = ['https://localhost', 'https://amissemer.github.io', 'https://amissemer.github.io:443', 'https://es-global-ci.github.io', 'https://es-global-ci.github.io:443'];
+
+function getOriginLocation() {
+  var scripts = document.getElementsByTagName('script');
+  var candidates = [];
+
+  for (var i = 0; i < scripts.length; i++) {
+    var s = scripts[i];
+    var url = s.getAttribute("src");
+    if (url && url.indexOf('http') == 0) candidates.push(url);
+  }
+
+  console.log('Looking for script origin within', candidates);
+
+  for (var idx = candidates.length - 1; idx >= 0; idx--) {
+    var l = document.createElement("a");
+    l.href = candidates[idx];
+    if (!l.origin) l.origin = l.protocol + "//" + l.host;
+
+    if (whitelistedOrigin(l.origin)) {
+      console.log("Found own origin: ", l.origin, 'cache busting', l.search);
+      return l;
+    }
+  }
+
+  throw 'Could not find a whitelisted origin';
+}
+
+function whitelistedOrigin(origin) {
+  return WHITELISTED_ORIGIN.indexOf(origin) >= 0;
+}
+
+var originlocation = getOriginLocation();
+var host = originlocation.origin + '/ywiki-plugins';
+var cacheBuster = originlocation.search;
+console.log("plugin Host=" + host + ", cacheBuster=" + cacheBuster);
+
+
+/***/ }),
+
+/***/ "./js/mainframe/stylesheetPlugin.js":
+/*!******************************************!*\
+  !*** ./js/mainframe/stylesheetPlugin.js ***!
+  \******************************************/
+/*! exports provided: loadStyleSheet, loadPluginStyleSheet */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadStyleSheet", function() { return loadStyleSheet; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadPluginStyleSheet", function() { return loadPluginStyleSheet; });
+/* harmony import */ var core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.string.starts-with */ "./node_modules/core-js/modules/es6.string.starts-with.js");
+/* harmony import */ var core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
+
+ // Loads a stylesheet at url. Url can be relative to the configured host.
+
+function loadStyleSheet(host, url) {
+  if (!url.startsWith('http')) {
+    url = host + '/' + url;
+  }
+
+  var link = document.createElement('link');
+  link.setAttribute('rel', 'stylesheet');
+  link.setAttribute('type', 'text/css');
+  link.setAttribute('href', url);
+  document.getElementsByTagName('head')[0].appendChild(link);
+  console.log('style loaded');
+}
+function loadPluginStyleSheet(filename) {
+  return loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_1__["host"], 'dist/' + filename + _pluginCommon__WEBPACK_IMPORTED_MODULE_1__["cacheBuster"]);
+}
+
+/***/ }),
+
 /***/ "./js/mktplace/controller/download-controller.js":
 /*!*******************************************************!*\
   !*** ./js/mktplace/controller/download-controller.js ***!
@@ -517,19 +1741,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _css_mktplace_download_form_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../css/mktplace-download-form.css */ "./css/mktplace-download-form.css");
-/* harmony import */ var _css_mktplace_download_form_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_css_mktplace_download_form_css__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.min.css */ "./node_modules/bootstrap/dist/css/bootstrap.min.css");
-/* harmony import */ var bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var bootstrap_dist_css_bootstrap_theme_min_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap-theme.min.css */ "./node_modules/bootstrap/dist/css/bootstrap-theme.min.css");
-/* harmony import */ var bootstrap_dist_css_bootstrap_theme_min_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_css_bootstrap_theme_min_css__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var bootstrap_select_dist_css_bootstrap_select_min_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! bootstrap-select/dist/css/bootstrap-select.min.css */ "./node_modules/bootstrap-select/dist/css/bootstrap-select.min.css");
-/* harmony import */ var bootstrap_select_dist_css_bootstrap_select_min_css__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(bootstrap_select_dist_css_bootstrap_select_min_css__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/npm.js");
-/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(bootstrap__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _services_download_addon_service_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../services/download-addon-service.js */ "./js/mktplace/services/download-addon-service.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _services_download_addon_service_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/download-addon-service.js */ "./js/mktplace/services/download-addon-service.js");
 
 
 
@@ -540,20 +1754,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
-
-
-
-
-
 /**
  * Loads Form into div placeholder and bind submission buttons to the services updating the CSV data.
  */
 
 function loadDivContent() {
-  jquery__WEBPACK_IMPORTED_MODULE_8___default()("#mktplace-div-download-form").load("http://localhost/ywiki-plugins/mktplace-download-form.html #mktplace-wrapper-div", function () {
-    var repositoryUrl = jquery__WEBPACK_IMPORTED_MODULE_8___default()("#mktplace-addon-download").attr("href");
-    jquery__WEBPACK_IMPORTED_MODULE_8___default()("#mktplace-download-form").attr('action', repositoryUrl);
-    jquery__WEBPACK_IMPORTED_MODULE_8___default()("#download-submit").click(
+  var repoLinks = jquery__WEBPACK_IMPORTED_MODULE_3___default()("a[href^='https://github.wdf.sap.corp/hybris-coep']");
+  jquery__WEBPACK_IMPORTED_MODULE_3___default()("#mktplace-div-download-form").load("https://localhost/ywiki-plugins/mktplace-download-form.html #mktplace-wrapper-div", function () {
+    var repositoryUrl = repoLinks.first().attr("href");
+    jquery__WEBPACK_IMPORTED_MODULE_3___default()("#mktplace-download-form").attr('action', repositoryUrl);
+    jquery__WEBPACK_IMPORTED_MODULE_3___default()("#download-submit").click(
     /*#__PURE__*/
     function () {
       var _ref = _asyncToGenerator(
@@ -564,22 +1774,23 @@ function loadDivContent() {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                formData = new Array();
-                formData[0] = jquery__WEBPACK_IMPORTED_MODULE_8___default()("#user-menu-link").data('username');
-                formData[1] = repositoryUrl;
-                formData[2] = jquery__WEBPACK_IMPORTED_MODULE_8___default()("#project-name").val().replace(/,/g, ";");
-                formData[3] = jquery__WEBPACK_IMPORTED_MODULE_8___default()("#customer").val().replace(/,/g, ";");
-                formData[4] = jquery__WEBPACK_IMPORTED_MODULE_8___default()("#commerce-version").val().replace(/,/g, ";"); //replace new lines with spaces.
-
-                formData[5] = jquery__WEBPACK_IMPORTED_MODULE_8___default()("#comments").val().replace(/\r?\n|\r/g, " ");
-                _context.next = 9;
-                return _services_download_addon_service_js__WEBPACK_IMPORTED_MODULE_9__["default"].upsertMktplaceAddonDownloadsDB(formData);
-
-              case 9:
-                jquery__WEBPACK_IMPORTED_MODULE_8___default()("#myModal").modal('hide');
                 e.preventDefault();
+                formData = new Array();
+                formData[0] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#user-menu-link").data('username');
+                formData[1] = repositoryUrl;
+                formData[2] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#project-name").val().replace(/,/g, ";");
+                formData[3] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#customer").val().replace(/,/g, ";");
+                formData[4] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#commerce-version").val().replace(/,/g, ";"); //replace new lines with spaces.
 
-              case 11:
+                formData[5] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#comments").val().replace(/\r?\n|\r/g, " ");
+                _context.next = 10;
+                return _services_download_addon_service_js__WEBPACK_IMPORTED_MODULE_4__["default"].upsertMktplaceAddonDownloadsDB(formData);
+
+              case 10:
+                jquery__WEBPACK_IMPORTED_MODULE_3___default()("#myModal").modal('hide');
+                window.location.href = repositoryUrl;
+
+              case 12:
               case "end":
                 return _context.stop();
             }
@@ -593,11 +1804,10 @@ function loadDivContent() {
     }());
   }); //Triggers hidden button that shows up the modal.
 
-  jquery__WEBPACK_IMPORTED_MODULE_8___default()("#mktplace-addon-download").click(function (e) {
-    jquery__WEBPACK_IMPORTED_MODULE_8___default()(".btn-marketplace-download").trigger("click");
+  repoLinks.first().click(function (e) {
     e.preventDefault();
-  });
-  jquery__WEBPACK_IMPORTED_MODULE_8___default()().click();
+    jquery__WEBPACK_IMPORTED_MODULE_3___default()(".btn-marketplace-download").trigger("click");
+  }); //$().click()
 }
 
 var MktplaceController = {
@@ -607,163 +1817,32 @@ var MktplaceController = {
 
 /***/ }),
 
-/***/ "./js/mktplace/model/mktplace-downloads.js":
-/*!*************************************************!*\
-  !*** ./js/mktplace/model/mktplace-downloads.js ***!
-  \*************************************************/
-/*! exports provided: default */
+/***/ "./js/mktplace/css/mktplace-download-form.css":
+/*!****************************************************!*\
+  !*** ./js/mktplace/css/mktplace-download-form.css ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "./js/mktplace/mktplace-config.js":
+/*!****************************************!*\
+  !*** ./js/mktplace/mktplace-config.js ***!
+  \****************************************/
+/*! exports provided: DB_SPACE, DB_PAGE_TITLE, ATTACHMENT_NAME */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _common_confluence_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/confluence/confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
-
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
-/**
- * Gets CSV Data form attachment
- *
- * @param url
- * @returns {Promise<*>}
- */
-
-function getData(_x) {
-  return _getData.apply(this, arguments);
-}
-/**
- * Updates CSV Data
- * @param pageId   wiki page id
- * @param fileName  file name
- * @param data data to be stored
- * @param contentId attachment id
- * @param contentType content type of data stored.
- * @returns {Promise<void>}
- */
-
-
-function _getData() {
-  _getData = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee(url) {
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            return _context.abrupt("return", Object(_common_confluence_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_2__["loadResource"])(url, ''));
-
-          case 1:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee, this);
-  }));
-  return _getData.apply(this, arguments);
-}
-
-function updateData(_x2, _x3, _x4, _x5, _x6) {
-  return _updateData.apply(this, arguments);
-}
-/**
- * Get attachment metadata information.
- *
- * @param pageId
- * @param attachmentName
- * @returns {Promise<{_internal: *, id: id, containerId: containerId, toString: toString, title: title, exists: exists, downloadUrl: downloadUrl, version: version, spaceKey: spaceKey}>}
- */
-
-
-function _updateData() {
-  _updateData = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee2(pageId, fileName, data, contentId, contentType) {
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            Object(_common_confluence_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_2__["storeAttachmentContent"])(pageId, data, fileName, contentId, contentType);
-
-          case 1:
-          case "end":
-            return _context2.stop();
-        }
-      }
-    }, _callee2, this);
-  }));
-  return _updateData.apply(this, arguments);
-}
-
-function getMetadata(_x7, _x8) {
-  return _getMetadata.apply(this, arguments);
-}
-
-function _getMetadata() {
-  _getMetadata = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee3(pageId, attachmentName) {
-    var internalAttachment;
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.next = 2;
-            return Object(_common_confluence_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_2__["lookupAttachment"])(pageId, attachmentName);
-
-          case 2:
-            internalAttachment = _context3.sent;
-            return _context3.abrupt("return", {
-              _internal: internalAttachment,
-              id: function id() {
-                return this._internal ? this._internal.id : null;
-              },
-              containerId: function containerId() {
-                return pageId;
-              },
-              toString: function toString() {
-                return "".concat(this.id(), ":").concat(pageId, ":").concat(this.title(), ":").concat(this.version());
-              },
-              title: function title() {
-                return attachmentName;
-              },
-              exists: function exists() {
-                return this._internal != null;
-              },
-              downloadUrl: function downloadUrl() {
-                return this._internal ? this._internal._links.download : null;
-              },
-              version: function version() {
-                return this._internal ? this._internal.version.number : null;
-              },
-              spaceKey: function spaceKey() {
-                return this._internal ? this._internal.space.key : null;
-              }
-            });
-
-          case 4:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3, this);
-  }));
-  return _getMetadata.apply(this, arguments);
-}
-
-var MktplaceDownloads = {
-  getMetadata: getMetadata,
-  getData: getData,
-  updateData: updateData
-};
-/* harmony default export */ __webpack_exports__["default"] = (MktplaceDownloads);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_SPACE", function() { return DB_SPACE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_PAGE_TITLE", function() { return DB_PAGE_TITLE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ATTACHMENT_NAME", function() { return ATTACHMENT_NAME; });
+var DB_SPACE = '~adrien.missemer@hybris.com';
+var DB_PAGE_TITLE = 'MarketPlace DB';
+var ATTACHMENT_NAME = "mktplace-addon-download-data.csv";
 
 /***/ }),
 
@@ -776,7 +1855,7 @@ var MktplaceDownloads = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _css_mktplace_download_form_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../css/mktplace-download-form.css */ "./css/mktplace-download-form.css");
+/* harmony import */ var _css_mktplace_download_form_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../css/mktplace-download-form.css */ "./js/mktplace/css/mktplace-download-form.css");
 /* harmony import */ var _css_mktplace_download_form_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_css_mktplace_download_form_css__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.min.css */ "./node_modules/bootstrap/dist/css/bootstrap.min.css");
 /* harmony import */ var bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_1__);
@@ -789,6 +1868,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _controller_download_controller_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../controller/download-controller.js */ "./js/mktplace/controller/download-controller.js");
+/* harmony import */ var _mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../mainframe/stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
 
 
 
@@ -796,20 +1876,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
- //Loads required css files from the static pages
-//TODO change hard link reference
 
-var link = document.createElement("link");
-link.href = "http://localhost/ywiki-plugins/dist/mktplace-download-form.css";
-link.type = "text/css";
-link.rel = "stylesheet";
-document.getElementsByTagName("head")[0].appendChild(link); //Loads plugin
 
-function loadPlugin() {
+Object(_mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_7__["loadPluginStyleSheet"])('mktplace-download-form.css'); //Loads plugin
+
+jquery__WEBPACK_IMPORTED_MODULE_5___default()(function () {
   _controller_download_controller_js__WEBPACK_IMPORTED_MODULE_6__["default"].loadDivContent();
-}
-
-jquery__WEBPACK_IMPORTED_MODULE_5___default()(document).ready(loadPlugin());
+});
 
 /***/ }),
 
@@ -826,7 +1899,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
 /* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _model_mktplace_downloads_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../model/mktplace-downloads.js */ "./js/mktplace/model/mktplace-downloads.js");
+/* harmony import */ var _common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/confluence/Attachment */ "./js/common/confluence/Attachment.js");
+/* harmony import */ var _mktplace_config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mktplace-config */ "./js/mktplace/mktplace-config.js");
+/* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
 
 
 
@@ -835,9 +1910,10 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
-var PAGE_ID = 429430817;
-var ATTACHMENT_NAME = "mktplace-addon-download-data.csv";
-var CONTENT_TYPE = "text/csv";
+var Attachment = Object(_common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_2__["default"])();
+
+
+var CONTENT_TYPE = 'text/csv';
 /**
  * Main entry method to update the downloads table.
  * @param formData
@@ -852,98 +1928,55 @@ function _upsertMktplaceAddonDownloadsDB() {
   _upsertMktplaceAddonDownloadsDB = _asyncToGenerator(
   /*#__PURE__*/
   regeneratorRuntime.mark(function _callee(formData) {
-    var metadata, csvData, newRecord;
+    var dbPageId, metadata, csvData, newRecord;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.next = 2;
-            return getAttachmentMetadata();
+            _context.prev = 0;
+            _context.next = 3;
+            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__["getContent"])(_mktplace_config__WEBPACK_IMPORTED_MODULE_3__["DB_SPACE"], _mktplace_config__WEBPACK_IMPORTED_MODULE_3__["DB_PAGE_TITLE"]);
 
-          case 2:
-            metadata = _context.sent;
-
-            if (!(metadata != null)) {
-              _context.next = 9;
-              break;
-            }
-
-            _context.next = 6;
-            return loadWikiAttachmentContent(metadata.downloadUrl());
+          case 3:
+            dbPageId = _context.sent.id;
+            _context.next = 9;
+            break;
 
           case 6:
-            csvData = _context.sent;
-            //Replace , with ;
-            newRecord = csvData.concat("\n" + formData[0] + "," + formData[1] + "," + formData[2] + "," + formData[3] + "," + formData[4] + "," + formData[5]);
-            postWikiAttachmentContent(newRecord, metadata.id());
+            _context.prev = 6;
+            _context.t0 = _context["catch"](0);
+            throw new Error("Cannot find the marketplace page, please contact an admin (".concat(_mktplace_config__WEBPACK_IMPORTED_MODULE_3__["DB_SPACE"], ":").concat(_mktplace_config__WEBPACK_IMPORTED_MODULE_3__["DB_PAGE_TITLE"], ")"));
 
           case 9:
+            _context.next = 11;
+            return Attachment.getOrCreateAttachment(dbPageId, _mktplace_config__WEBPACK_IMPORTED_MODULE_3__["ATTACHMENT_NAME"]);
+
+          case 11:
+            metadata = _context.sent;
+            _context.next = 14;
+            return metadata.loadText();
+
+          case 14:
+            csvData = _context.sent;
+
+            if (!csvData) {
+              // initialize the file
+              csvData = 'userId,addonUrl,projectName,customerName,sapCommerceVersion,comments';
+            } //Replace , with ;
+
+
+            newRecord = csvData.concat("\n" + formData[0] + "," + formData[1] + "," + formData[2] + "," + formData[3] + "," + formData[4] + "," + formData[5]);
+            _context.next = 19;
+            return metadata.saveText(newRecord, CONTENT_TYPE);
+
+          case 19:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, this);
+    }, _callee, this, [[0, 6]]);
   }));
   return _upsertMktplaceAddonDownloadsDB.apply(this, arguments);
-}
-
-function getAttachmentMetadata() {
-  return _getAttachmentMetadata.apply(this, arguments);
-}
-
-function _getAttachmentMetadata() {
-  _getAttachmentMetadata = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee2() {
-    var attachment;
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            attachment = _model_mktplace_downloads_js__WEBPACK_IMPORTED_MODULE_2__["default"].getMetadata(PAGE_ID, ATTACHMENT_NAME);
-
-            if (attachment.id == null) {//TODO Add initial attachment if it does not exist. attachmnet = WikiAttachment.getAttachment(PAGE_ID,ATTACHMENT_NAME)
-            }
-
-            return _context2.abrupt("return", attachment);
-
-          case 3:
-          case "end":
-            return _context2.stop();
-        }
-      }
-    }, _callee2, this);
-  }));
-  return _getAttachmentMetadata.apply(this, arguments);
-}
-
-function loadWikiAttachmentContent(_x2) {
-  return _loadWikiAttachmentContent.apply(this, arguments);
-}
-
-function _loadWikiAttachmentContent() {
-  _loadWikiAttachmentContent = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee3(url) {
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            return _context3.abrupt("return", _model_mktplace_downloads_js__WEBPACK_IMPORTED_MODULE_2__["default"].getData(url));
-
-          case 1:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    }, _callee3, this);
-  }));
-  return _loadWikiAttachmentContent.apply(this, arguments);
-}
-
-function postWikiAttachmentContent(csvData, attachmentId) {
-  //TODO Do something is this fails.
-  _model_mktplace_downloads_js__WEBPACK_IMPORTED_MODULE_2__["default"].updateData(PAGE_ID, ATTACHMENT_NAME, csvData, attachmentId, CONTENT_TYPE);
 }
 
 var DownloadAddonService = {
@@ -3582,6 +4615,24 @@ module.exports = function (it) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_add-to-unscopables.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/core-js/modules/_add-to-unscopables.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 22.1.3.31 Array.prototype[@@unscopables]
+var UNSCOPABLES = __webpack_require__(/*! ./_wks */ "./node_modules/core-js/modules/_wks.js")('unscopables');
+var ArrayProto = Array.prototype;
+if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(/*! ./_hide */ "./node_modules/core-js/modules/_hide.js")(ArrayProto, UNSCOPABLES, {});
+module.exports = function (key) {
+  ArrayProto[UNSCOPABLES][key] = true;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_an-instance.js":
 /*!******************************************************!*\
   !*** ./node_modules/core-js/modules/_an-instance.js ***!
@@ -3609,6 +4660,40 @@ var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/m
 module.exports = function (it) {
   if (!isObject(it)) throw TypeError(it + ' is not an object!');
   return it;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_array-includes.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/modules/_array-includes.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// false -> Array#indexOf
+// true  -> Array#includes
+var toIObject = __webpack_require__(/*! ./_to-iobject */ "./node_modules/core-js/modules/_to-iobject.js");
+var toLength = __webpack_require__(/*! ./_to-length */ "./node_modules/core-js/modules/_to-length.js");
+var toAbsoluteIndex = __webpack_require__(/*! ./_to-absolute-index */ "./node_modules/core-js/modules/_to-absolute-index.js");
+module.exports = function (IS_INCLUDES) {
+  return function ($this, el, fromIndex) {
+    var O = toIObject($this);
+    var length = toLength(O.length);
+    var index = toAbsoluteIndex(fromIndex, length);
+    var value;
+    // Array#includes uses SameValueZero equality algorithm
+    // eslint-disable-next-line no-self-compare
+    if (IS_INCLUDES && el != el) while (length > index) {
+      value = O[index++];
+      // eslint-disable-next-line no-self-compare
+      if (value != value) return true;
+    // Array#indexOf ignores holes, Array#includes - not
+    } else for (;length > index; index++) if (IS_INCLUDES || index in O) {
+      if (O[index] === el) return IS_INCLUDES || index || 0;
+    } return !IS_INCLUDES && -1;
+  };
 };
 
 
@@ -3757,6 +4842,21 @@ module.exports = function (it) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_enum-bug-keys.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/_enum-bug-keys.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// IE 8- don't enum bug keys
+module.exports = (
+  'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
+).split(',');
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_export.js":
 /*!*************************************************!*\
   !*** ./node_modules/core-js/modules/_export.js ***!
@@ -3807,6 +4907,29 @@ $export.W = 32;  // wrap
 $export.U = 64;  // safe
 $export.R = 128; // real proto method for `library`
 module.exports = $export;
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_fails-is-regexp.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/core-js/modules/_fails-is-regexp.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var MATCH = __webpack_require__(/*! ./_wks */ "./node_modules/core-js/modules/_wks.js")('match');
+module.exports = function (KEY) {
+  var re = /./;
+  try {
+    '/./'[KEY](re);
+  } catch (e) {
+    try {
+      re[MATCH] = false;
+      return !'/./'[KEY](re);
+    } catch (f) { /* empty */ }
+  } return true;
+};
 
 
 /***/ }),
@@ -3983,6 +5106,26 @@ module.exports = !__webpack_require__(/*! ./_descriptors */ "./node_modules/core
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_inherit-if-required.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/core-js/modules/_inherit-if-required.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
+var setPrototypeOf = __webpack_require__(/*! ./_set-proto */ "./node_modules/core-js/modules/_set-proto.js").set;
+module.exports = function (that, target, C) {
+  var S = target.constructor;
+  var P;
+  if (S !== C && typeof S == 'function' && (P = S.prototype) !== C.prototype && isObject(P) && setPrototypeOf) {
+    setPrototypeOf(that, P);
+  } return that;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_invoke.js":
 /*!*************************************************!*\
   !*** ./node_modules/core-js/modules/_invoke.js ***!
@@ -4010,6 +5153,23 @@ module.exports = function (fn, args, that) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_iobject.js":
+/*!**************************************************!*\
+  !*** ./node_modules/core-js/modules/_iobject.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+var cof = __webpack_require__(/*! ./_cof */ "./node_modules/core-js/modules/_cof.js");
+// eslint-disable-next-line no-prototype-builtins
+module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
+  return cof(it) == 'String' ? it.split('') : Object(it);
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_is-array-iter.js":
 /*!********************************************************!*\
   !*** ./node_modules/core-js/modules/_is-array-iter.js ***!
@@ -4029,6 +5189,23 @@ module.exports = function (it) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_is-integer.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/core-js/modules/_is-integer.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 20.1.2.3 Number.isInteger(number)
+var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
+var floor = Math.floor;
+module.exports = function isInteger(it) {
+  return !isObject(it) && isFinite(it) && floor(it) === it;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_is-object.js":
 /*!****************************************************!*\
   !*** ./node_modules/core-js/modules/_is-object.js ***!
@@ -4038,6 +5215,25 @@ module.exports = function (it) {
 
 module.exports = function (it) {
   return typeof it === 'object' ? it !== null : typeof it === 'function';
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_is-regexp.js":
+/*!****************************************************!*\
+  !*** ./node_modules/core-js/modules/_is-regexp.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.2.8 IsRegExp(argument)
+var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
+var cof = __webpack_require__(/*! ./_cof */ "./node_modules/core-js/modules/_cof.js");
+var MATCH = __webpack_require__(/*! ./_wks */ "./node_modules/core-js/modules/_wks.js")('match');
+module.exports = function (it) {
+  var isRegExp;
+  return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : cof(it) == 'RegExp');
 };
 
 
@@ -4061,6 +5257,112 @@ module.exports = function (iterator, fn, value, entries) {
     if (ret !== undefined) anObject(ret.call(iterator));
     throw e;
   }
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_iter-create.js":
+/*!******************************************************!*\
+  !*** ./node_modules/core-js/modules/_iter-create.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var create = __webpack_require__(/*! ./_object-create */ "./node_modules/core-js/modules/_object-create.js");
+var descriptor = __webpack_require__(/*! ./_property-desc */ "./node_modules/core-js/modules/_property-desc.js");
+var setToStringTag = __webpack_require__(/*! ./_set-to-string-tag */ "./node_modules/core-js/modules/_set-to-string-tag.js");
+var IteratorPrototype = {};
+
+// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
+__webpack_require__(/*! ./_hide */ "./node_modules/core-js/modules/_hide.js")(IteratorPrototype, __webpack_require__(/*! ./_wks */ "./node_modules/core-js/modules/_wks.js")('iterator'), function () { return this; });
+
+module.exports = function (Constructor, NAME, next) {
+  Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
+  setToStringTag(Constructor, NAME + ' Iterator');
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_iter-define.js":
+/*!******************************************************!*\
+  !*** ./node_modules/core-js/modules/_iter-define.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var LIBRARY = __webpack_require__(/*! ./_library */ "./node_modules/core-js/modules/_library.js");
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var redefine = __webpack_require__(/*! ./_redefine */ "./node_modules/core-js/modules/_redefine.js");
+var hide = __webpack_require__(/*! ./_hide */ "./node_modules/core-js/modules/_hide.js");
+var Iterators = __webpack_require__(/*! ./_iterators */ "./node_modules/core-js/modules/_iterators.js");
+var $iterCreate = __webpack_require__(/*! ./_iter-create */ "./node_modules/core-js/modules/_iter-create.js");
+var setToStringTag = __webpack_require__(/*! ./_set-to-string-tag */ "./node_modules/core-js/modules/_set-to-string-tag.js");
+var getPrototypeOf = __webpack_require__(/*! ./_object-gpo */ "./node_modules/core-js/modules/_object-gpo.js");
+var ITERATOR = __webpack_require__(/*! ./_wks */ "./node_modules/core-js/modules/_wks.js")('iterator');
+var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
+var FF_ITERATOR = '@@iterator';
+var KEYS = 'keys';
+var VALUES = 'values';
+
+var returnThis = function () { return this; };
+
+module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED) {
+  $iterCreate(Constructor, NAME, next);
+  var getMethod = function (kind) {
+    if (!BUGGY && kind in proto) return proto[kind];
+    switch (kind) {
+      case KEYS: return function keys() { return new Constructor(this, kind); };
+      case VALUES: return function values() { return new Constructor(this, kind); };
+    } return function entries() { return new Constructor(this, kind); };
+  };
+  var TAG = NAME + ' Iterator';
+  var DEF_VALUES = DEFAULT == VALUES;
+  var VALUES_BUG = false;
+  var proto = Base.prototype;
+  var $native = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT];
+  var $default = $native || getMethod(DEFAULT);
+  var $entries = DEFAULT ? !DEF_VALUES ? $default : getMethod('entries') : undefined;
+  var $anyNative = NAME == 'Array' ? proto.entries || $native : $native;
+  var methods, key, IteratorPrototype;
+  // Fix native
+  if ($anyNative) {
+    IteratorPrototype = getPrototypeOf($anyNative.call(new Base()));
+    if (IteratorPrototype !== Object.prototype && IteratorPrototype.next) {
+      // Set @@toStringTag to native iterators
+      setToStringTag(IteratorPrototype, TAG, true);
+      // fix for some old engines
+      if (!LIBRARY && typeof IteratorPrototype[ITERATOR] != 'function') hide(IteratorPrototype, ITERATOR, returnThis);
+    }
+  }
+  // fix Array#{values, @@iterator}.name in V8 / FF
+  if (DEF_VALUES && $native && $native.name !== VALUES) {
+    VALUES_BUG = true;
+    $default = function values() { return $native.call(this); };
+  }
+  // Define iterator
+  if ((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])) {
+    hide(proto, ITERATOR, $default);
+  }
+  // Plug for library
+  Iterators[NAME] = $default;
+  Iterators[TAG] = returnThis;
+  if (DEFAULT) {
+    methods = {
+      values: DEF_VALUES ? $default : getMethod(VALUES),
+      keys: IS_SET ? $default : getMethod(KEYS),
+      entries: $entries
+    };
+    if (FORCED) for (key in methods) {
+      if (!(key in proto)) redefine(proto, key, methods[key]);
+    } else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
+  }
+  return methods;
 };
 
 
@@ -4094,6 +5396,20 @@ module.exports = function (exec, skipClosing) {
     exec(arr);
   } catch (e) { /* empty */ }
   return safe;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_iter-step.js":
+/*!****************************************************!*\
+  !*** ./node_modules/core-js/modules/_iter-step.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function (done, value) {
+  return { value: value, done: !!done };
 };
 
 
@@ -4233,6 +5549,58 @@ module.exports.f = function (C) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_object-create.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/_object-create.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var dPs = __webpack_require__(/*! ./_object-dps */ "./node_modules/core-js/modules/_object-dps.js");
+var enumBugKeys = __webpack_require__(/*! ./_enum-bug-keys */ "./node_modules/core-js/modules/_enum-bug-keys.js");
+var IE_PROTO = __webpack_require__(/*! ./_shared-key */ "./node_modules/core-js/modules/_shared-key.js")('IE_PROTO');
+var Empty = function () { /* empty */ };
+var PROTOTYPE = 'prototype';
+
+// Create object with fake `null` prototype: use iframe Object with cleared prototype
+var createDict = function () {
+  // Thrash, waste and sodomy: IE GC bug
+  var iframe = __webpack_require__(/*! ./_dom-create */ "./node_modules/core-js/modules/_dom-create.js")('iframe');
+  var i = enumBugKeys.length;
+  var lt = '<';
+  var gt = '>';
+  var iframeDocument;
+  iframe.style.display = 'none';
+  __webpack_require__(/*! ./_html */ "./node_modules/core-js/modules/_html.js").appendChild(iframe);
+  iframe.src = 'javascript:'; // eslint-disable-line no-script-url
+  // createDict = iframe.contentWindow.Object;
+  // html.removeChild(iframe);
+  iframeDocument = iframe.contentWindow.document;
+  iframeDocument.open();
+  iframeDocument.write(lt + 'script' + gt + 'document.F=Object' + lt + '/script' + gt);
+  iframeDocument.close();
+  createDict = iframeDocument.F;
+  while (i--) delete createDict[PROTOTYPE][enumBugKeys[i]];
+  return createDict();
+};
+
+module.exports = Object.create || function create(O, Properties) {
+  var result;
+  if (O !== null) {
+    Empty[PROTOTYPE] = anObject(O);
+    result = new Empty();
+    Empty[PROTOTYPE] = null;
+    // add "__proto__" for Object.getPrototypeOf polyfill
+    result[IE_PROTO] = O;
+  } else result = createDict();
+  return Properties === undefined ? result : dPs(result, Properties);
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_object-dp.js":
 /*!****************************************************!*\
   !*** ./node_modules/core-js/modules/_object-dp.js ***!
@@ -4256,6 +5624,157 @@ exports.f = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/mo
   if ('value' in Attributes) O[P] = Attributes.value;
   return O;
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_object-dps.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/core-js/modules/_object-dps.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var getKeys = __webpack_require__(/*! ./_object-keys */ "./node_modules/core-js/modules/_object-keys.js");
+
+module.exports = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") ? Object.defineProperties : function defineProperties(O, Properties) {
+  anObject(O);
+  var keys = getKeys(Properties);
+  var length = keys.length;
+  var i = 0;
+  var P;
+  while (length > i) dP.f(O, P = keys[i++], Properties[P]);
+  return O;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_object-gopd.js":
+/*!******************************************************!*\
+  !*** ./node_modules/core-js/modules/_object-gopd.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var pIE = __webpack_require__(/*! ./_object-pie */ "./node_modules/core-js/modules/_object-pie.js");
+var createDesc = __webpack_require__(/*! ./_property-desc */ "./node_modules/core-js/modules/_property-desc.js");
+var toIObject = __webpack_require__(/*! ./_to-iobject */ "./node_modules/core-js/modules/_to-iobject.js");
+var toPrimitive = __webpack_require__(/*! ./_to-primitive */ "./node_modules/core-js/modules/_to-primitive.js");
+var has = __webpack_require__(/*! ./_has */ "./node_modules/core-js/modules/_has.js");
+var IE8_DOM_DEFINE = __webpack_require__(/*! ./_ie8-dom-define */ "./node_modules/core-js/modules/_ie8-dom-define.js");
+var gOPD = Object.getOwnPropertyDescriptor;
+
+exports.f = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") ? gOPD : function getOwnPropertyDescriptor(O, P) {
+  O = toIObject(O);
+  P = toPrimitive(P, true);
+  if (IE8_DOM_DEFINE) try {
+    return gOPD(O, P);
+  } catch (e) { /* empty */ }
+  if (has(O, P)) return createDesc(!pIE.f.call(O, P), O[P]);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_object-gopn.js":
+/*!******************************************************!*\
+  !*** ./node_modules/core-js/modules/_object-gopn.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
+var $keys = __webpack_require__(/*! ./_object-keys-internal */ "./node_modules/core-js/modules/_object-keys-internal.js");
+var hiddenKeys = __webpack_require__(/*! ./_enum-bug-keys */ "./node_modules/core-js/modules/_enum-bug-keys.js").concat('length', 'prototype');
+
+exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
+  return $keys(O, hiddenKeys);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_object-gpo.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/core-js/modules/_object-gpo.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
+var has = __webpack_require__(/*! ./_has */ "./node_modules/core-js/modules/_has.js");
+var toObject = __webpack_require__(/*! ./_to-object */ "./node_modules/core-js/modules/_to-object.js");
+var IE_PROTO = __webpack_require__(/*! ./_shared-key */ "./node_modules/core-js/modules/_shared-key.js")('IE_PROTO');
+var ObjectProto = Object.prototype;
+
+module.exports = Object.getPrototypeOf || function (O) {
+  O = toObject(O);
+  if (has(O, IE_PROTO)) return O[IE_PROTO];
+  if (typeof O.constructor == 'function' && O instanceof O.constructor) {
+    return O.constructor.prototype;
+  } return O instanceof Object ? ObjectProto : null;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_object-keys-internal.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/core-js/modules/_object-keys-internal.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var has = __webpack_require__(/*! ./_has */ "./node_modules/core-js/modules/_has.js");
+var toIObject = __webpack_require__(/*! ./_to-iobject */ "./node_modules/core-js/modules/_to-iobject.js");
+var arrayIndexOf = __webpack_require__(/*! ./_array-includes */ "./node_modules/core-js/modules/_array-includes.js")(false);
+var IE_PROTO = __webpack_require__(/*! ./_shared-key */ "./node_modules/core-js/modules/_shared-key.js")('IE_PROTO');
+
+module.exports = function (object, names) {
+  var O = toIObject(object);
+  var i = 0;
+  var result = [];
+  var key;
+  for (key in O) if (key != IE_PROTO) has(O, key) && result.push(key);
+  // Don't enum bug & hidden keys
+  while (names.length > i) if (has(O, key = names[i++])) {
+    ~arrayIndexOf(result, key) || result.push(key);
+  }
+  return result;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_object-keys.js":
+/*!******************************************************!*\
+  !*** ./node_modules/core-js/modules/_object-keys.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 / 15.2.3.14 Object.keys(O)
+var $keys = __webpack_require__(/*! ./_object-keys-internal */ "./node_modules/core-js/modules/_object-keys-internal.js");
+var enumBugKeys = __webpack_require__(/*! ./_enum-bug-keys */ "./node_modules/core-js/modules/_enum-bug-keys.js");
+
+module.exports = Object.keys || function keys(O) {
+  return $keys(O, enumBugKeys);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_object-pie.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/core-js/modules/_object-pie.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+exports.f = {}.propertyIsEnumerable;
 
 
 /***/ }),
@@ -4378,6 +5897,42 @@ __webpack_require__(/*! ./_core */ "./node_modules/core-js/modules/_core.js").in
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_set-proto.js":
+/*!****************************************************!*\
+  !*** ./node_modules/core-js/modules/_set-proto.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Works with __proto__ only. Old v8 can't work with null proto objects.
+/* eslint-disable no-proto */
+var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var check = function (O, proto) {
+  anObject(O);
+  if (!isObject(proto) && proto !== null) throw TypeError(proto + ": can't set as prototype!");
+};
+module.exports = {
+  set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
+    function (test, buggy, set) {
+      try {
+        set = __webpack_require__(/*! ./_ctx */ "./node_modules/core-js/modules/_ctx.js")(Function.call, __webpack_require__(/*! ./_object-gopd */ "./node_modules/core-js/modules/_object-gopd.js").f(Object.prototype, '__proto__').set, 2);
+        set(test, []);
+        buggy = !(test instanceof Array);
+      } catch (e) { buggy = true; }
+      return function setPrototypeOf(O, proto) {
+        check(O, proto);
+        if (buggy) O.__proto__ = proto;
+        else set(O, proto);
+        return O;
+      };
+    }({}, false) : undefined),
+  check: check
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_set-species.js":
 /*!******************************************************!*\
   !*** ./node_modules/core-js/modules/_set-species.js ***!
@@ -4416,6 +5971,22 @@ var TAG = __webpack_require__(/*! ./_wks */ "./node_modules/core-js/modules/_wks
 
 module.exports = function (it, tag, stat) {
   if (it && !has(it = stat ? it : it.prototype, TAG)) def(it, TAG, { configurable: true, value: tag });
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_shared-key.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/core-js/modules/_shared-key.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var shared = __webpack_require__(/*! ./_shared */ "./node_modules/core-js/modules/_shared.js")('keys');
+var uid = __webpack_require__(/*! ./_uid */ "./node_modules/core-js/modules/_uid.js");
+module.exports = function (key) {
+  return shared[key] || (shared[key] = uid(key));
 };
 
 
@@ -4460,6 +6031,107 @@ module.exports = function (O, D) {
   var S;
   return C === undefined || (S = anObject(C)[SPECIES]) == undefined ? D : aFunction(S);
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_string-at.js":
+/*!****************************************************!*\
+  !*** ./node_modules/core-js/modules/_string-at.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var toInteger = __webpack_require__(/*! ./_to-integer */ "./node_modules/core-js/modules/_to-integer.js");
+var defined = __webpack_require__(/*! ./_defined */ "./node_modules/core-js/modules/_defined.js");
+// true  -> String#at
+// false -> String#codePointAt
+module.exports = function (TO_STRING) {
+  return function (that, pos) {
+    var s = String(defined(that));
+    var i = toInteger(pos);
+    var l = s.length;
+    var a, b;
+    if (i < 0 || i >= l) return TO_STRING ? '' : undefined;
+    a = s.charCodeAt(i);
+    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
+      ? TO_STRING ? s.charAt(i) : a
+      : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
+  };
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_string-context.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/modules/_string-context.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// helper for String#{startsWith, endsWith, includes}
+var isRegExp = __webpack_require__(/*! ./_is-regexp */ "./node_modules/core-js/modules/_is-regexp.js");
+var defined = __webpack_require__(/*! ./_defined */ "./node_modules/core-js/modules/_defined.js");
+
+module.exports = function (that, searchString, NAME) {
+  if (isRegExp(searchString)) throw TypeError('String#' + NAME + " doesn't accept regex!");
+  return String(defined(that));
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_string-trim.js":
+/*!******************************************************!*\
+  !*** ./node_modules/core-js/modules/_string-trim.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var defined = __webpack_require__(/*! ./_defined */ "./node_modules/core-js/modules/_defined.js");
+var fails = __webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js");
+var spaces = __webpack_require__(/*! ./_string-ws */ "./node_modules/core-js/modules/_string-ws.js");
+var space = '[' + spaces + ']';
+var non = '\u200b\u0085';
+var ltrim = RegExp('^' + space + space + '*');
+var rtrim = RegExp(space + space + '*$');
+
+var exporter = function (KEY, exec, ALIAS) {
+  var exp = {};
+  var FORCE = fails(function () {
+    return !!spaces[KEY]() || non[KEY]() != non;
+  });
+  var fn = exp[KEY] = FORCE ? exec(trim) : spaces[KEY];
+  if (ALIAS) exp[ALIAS] = fn;
+  $export($export.P + $export.F * FORCE, 'String', exp);
+};
+
+// 1 -> String#trimLeft
+// 2 -> String#trimRight
+// 3 -> String#trim
+var trim = exporter.trim = function (string, TYPE) {
+  string = String(defined(string));
+  if (TYPE & 1) string = string.replace(ltrim, '');
+  if (TYPE & 2) string = string.replace(rtrim, '');
+  return string;
+};
+
+module.exports = exporter;
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_string-ws.js":
+/*!****************************************************!*\
+  !*** ./node_modules/core-js/modules/_string-ws.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003' +
+  '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
 
 
 /***/ }),
@@ -4559,6 +6231,24 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_to-absolute-index.js":
+/*!************************************************************!*\
+  !*** ./node_modules/core-js/modules/_to-absolute-index.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var toInteger = __webpack_require__(/*! ./_to-integer */ "./node_modules/core-js/modules/_to-integer.js");
+var max = Math.max;
+var min = Math.min;
+module.exports = function (index, length) {
+  index = toInteger(index);
+  return index < 0 ? max(index + length, 0) : min(index, length);
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_to-integer.js":
 /*!*****************************************************!*\
   !*** ./node_modules/core-js/modules/_to-integer.js ***!
@@ -4576,6 +6266,23 @@ module.exports = function (it) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_to-iobject.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/core-js/modules/_to-iobject.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// to indexed object, toObject with fallback for non-array-like ES3 strings
+var IObject = __webpack_require__(/*! ./_iobject */ "./node_modules/core-js/modules/_iobject.js");
+var defined = __webpack_require__(/*! ./_defined */ "./node_modules/core-js/modules/_defined.js");
+module.exports = function (it) {
+  return IObject(defined(it));
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_to-length.js":
 /*!****************************************************!*\
   !*** ./node_modules/core-js/modules/_to-length.js ***!
@@ -4588,6 +6295,22 @@ var toInteger = __webpack_require__(/*! ./_to-integer */ "./node_modules/core-js
 var min = Math.min;
 module.exports = function (it) {
   return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_to-object.js":
+/*!****************************************************!*\
+  !*** ./node_modules/core-js/modules/_to-object.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.13 ToObject(argument)
+var defined = __webpack_require__(/*! ./_defined */ "./node_modules/core-js/modules/_defined.js");
+module.exports = function (it) {
+  return Object(defined(it));
 };
 
 
@@ -4684,6 +6407,175 @@ module.exports = __webpack_require__(/*! ./_core */ "./node_modules/core-js/modu
     || it['@@iterator']
     || Iterators[classof(it)];
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es6.array.iterator.js":
+/*!************************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.array.iterator.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var addToUnscopables = __webpack_require__(/*! ./_add-to-unscopables */ "./node_modules/core-js/modules/_add-to-unscopables.js");
+var step = __webpack_require__(/*! ./_iter-step */ "./node_modules/core-js/modules/_iter-step.js");
+var Iterators = __webpack_require__(/*! ./_iterators */ "./node_modules/core-js/modules/_iterators.js");
+var toIObject = __webpack_require__(/*! ./_to-iobject */ "./node_modules/core-js/modules/_to-iobject.js");
+
+// 22.1.3.4 Array.prototype.entries()
+// 22.1.3.13 Array.prototype.keys()
+// 22.1.3.29 Array.prototype.values()
+// 22.1.3.30 Array.prototype[@@iterator]()
+module.exports = __webpack_require__(/*! ./_iter-define */ "./node_modules/core-js/modules/_iter-define.js")(Array, 'Array', function (iterated, kind) {
+  this._t = toIObject(iterated); // target
+  this._i = 0;                   // next index
+  this._k = kind;                // kind
+// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
+}, function () {
+  var O = this._t;
+  var kind = this._k;
+  var index = this._i++;
+  if (!O || index >= O.length) {
+    this._t = undefined;
+    return step(1);
+  }
+  if (kind == 'keys') return step(0, index);
+  if (kind == 'values') return step(0, O[index]);
+  return step(0, [index, O[index]]);
+}, 'values');
+
+// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
+Iterators.Arguments = Iterators.Array;
+
+addToUnscopables('keys');
+addToUnscopables('values');
+addToUnscopables('entries');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es6.function.name.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.function.name.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js").f;
+var FProto = Function.prototype;
+var nameRE = /^\s*function ([^ (]*)/;
+var NAME = 'name';
+
+// 19.2.4.2 name
+NAME in FProto || __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") && dP(FProto, NAME, {
+  configurable: true,
+  get: function () {
+    try {
+      return ('' + this).match(nameRE)[1];
+    } catch (e) {
+      return '';
+    }
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es6.number.constructor.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.number.constructor.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var global = __webpack_require__(/*! ./_global */ "./node_modules/core-js/modules/_global.js");
+var has = __webpack_require__(/*! ./_has */ "./node_modules/core-js/modules/_has.js");
+var cof = __webpack_require__(/*! ./_cof */ "./node_modules/core-js/modules/_cof.js");
+var inheritIfRequired = __webpack_require__(/*! ./_inherit-if-required */ "./node_modules/core-js/modules/_inherit-if-required.js");
+var toPrimitive = __webpack_require__(/*! ./_to-primitive */ "./node_modules/core-js/modules/_to-primitive.js");
+var fails = __webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js");
+var gOPN = __webpack_require__(/*! ./_object-gopn */ "./node_modules/core-js/modules/_object-gopn.js").f;
+var gOPD = __webpack_require__(/*! ./_object-gopd */ "./node_modules/core-js/modules/_object-gopd.js").f;
+var dP = __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js").f;
+var $trim = __webpack_require__(/*! ./_string-trim */ "./node_modules/core-js/modules/_string-trim.js").trim;
+var NUMBER = 'Number';
+var $Number = global[NUMBER];
+var Base = $Number;
+var proto = $Number.prototype;
+// Opera ~12 has broken Object#toString
+var BROKEN_COF = cof(__webpack_require__(/*! ./_object-create */ "./node_modules/core-js/modules/_object-create.js")(proto)) == NUMBER;
+var TRIM = 'trim' in String.prototype;
+
+// 7.1.3 ToNumber(argument)
+var toNumber = function (argument) {
+  var it = toPrimitive(argument, false);
+  if (typeof it == 'string' && it.length > 2) {
+    it = TRIM ? it.trim() : $trim(it, 3);
+    var first = it.charCodeAt(0);
+    var third, radix, maxCode;
+    if (first === 43 || first === 45) {
+      third = it.charCodeAt(2);
+      if (third === 88 || third === 120) return NaN; // Number('+0x1') should be NaN, old V8 fix
+    } else if (first === 48) {
+      switch (it.charCodeAt(1)) {
+        case 66: case 98: radix = 2; maxCode = 49; break; // fast equal /^0b[01]+$/i
+        case 79: case 111: radix = 8; maxCode = 55; break; // fast equal /^0o[0-7]+$/i
+        default: return +it;
+      }
+      for (var digits = it.slice(2), i = 0, l = digits.length, code; i < l; i++) {
+        code = digits.charCodeAt(i);
+        // parseInt parses a string to a first unavailable symbol
+        // but ToNumber should return NaN if a string contains unavailable symbols
+        if (code < 48 || code > maxCode) return NaN;
+      } return parseInt(digits, radix);
+    }
+  } return +it;
+};
+
+if (!$Number(' 0o1') || !$Number('0b1') || $Number('+0x1')) {
+  $Number = function Number(value) {
+    var it = arguments.length < 1 ? 0 : value;
+    var that = this;
+    return that instanceof $Number
+      // check on 1..constructor(foo) case
+      && (BROKEN_COF ? fails(function () { proto.valueOf.call(that); }) : cof(that) != NUMBER)
+        ? inheritIfRequired(new Base(toNumber(it)), that, $Number) : toNumber(it);
+  };
+  for (var keys = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") ? gOPN(Base) : (
+    // ES3:
+    'MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY,' +
+    // ES6 (in case, if modules with ES6 Number statics required before):
+    'EPSILON,isFinite,isInteger,isNaN,isSafeInteger,MAX_SAFE_INTEGER,' +
+    'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger'
+  ).split(','), j = 0, key; keys.length > j; j++) {
+    if (has(Base, key = keys[j]) && !has($Number, key)) {
+      dP($Number, key, gOPD(Base, key));
+    }
+  }
+  $Number.prototype = proto;
+  proto.constructor = $Number;
+  __webpack_require__(/*! ./_redefine */ "./node_modules/core-js/modules/_redefine.js")(global, NUMBER, $Number);
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es6.number.is-integer.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.number.is-integer.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 20.1.2.3 Number.isInteger(number)
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'Number', { isInteger: __webpack_require__(/*! ./_is-integer */ "./node_modules/core-js/modules/_is-integer.js") });
 
 
 /***/ }),
@@ -5005,6 +6897,155 @@ __webpack_require__(/*! ./_fix-re-wks */ "./node_modules/core-js/modules/_fix-re
       : $replace.call(String(O), searchValue, replaceValue);
   }, $replace];
 });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es6.regexp.search.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.regexp.search.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// @@search logic
+__webpack_require__(/*! ./_fix-re-wks */ "./node_modules/core-js/modules/_fix-re-wks.js")('search', 1, function (defined, SEARCH, $search) {
+  // 21.1.3.15 String.prototype.search(regexp)
+  return [function search(regexp) {
+    'use strict';
+    var O = defined(this);
+    var fn = regexp == undefined ? undefined : regexp[SEARCH];
+    return fn !== undefined ? fn.call(regexp, O) : new RegExp(regexp)[SEARCH](String(O));
+  }, $search];
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es6.string.iterator.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.string.iterator.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $at = __webpack_require__(/*! ./_string-at */ "./node_modules/core-js/modules/_string-at.js")(true);
+
+// 21.1.3.27 String.prototype[@@iterator]()
+__webpack_require__(/*! ./_iter-define */ "./node_modules/core-js/modules/_iter-define.js")(String, 'String', function (iterated) {
+  this._t = String(iterated); // target
+  this._i = 0;                // next index
+// 21.1.5.2.1 %StringIteratorPrototype%.next()
+}, function () {
+  var O = this._t;
+  var index = this._i;
+  var point;
+  if (index >= O.length) return { value: undefined, done: true };
+  point = $at(O, index);
+  this._i += point.length;
+  return { value: point, done: false };
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es6.string.starts-with.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.string.starts-with.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// 21.1.3.18 String.prototype.startsWith(searchString [, position ])
+
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var toLength = __webpack_require__(/*! ./_to-length */ "./node_modules/core-js/modules/_to-length.js");
+var context = __webpack_require__(/*! ./_string-context */ "./node_modules/core-js/modules/_string-context.js");
+var STARTS_WITH = 'startsWith';
+var $startsWith = ''[STARTS_WITH];
+
+$export($export.P + $export.F * __webpack_require__(/*! ./_fails-is-regexp */ "./node_modules/core-js/modules/_fails-is-regexp.js")(STARTS_WITH), 'String', {
+  startsWith: function startsWith(searchString /* , position = 0 */) {
+    var that = context(this, searchString, STARTS_WITH);
+    var index = toLength(Math.min(arguments.length > 1 ? arguments[1] : undefined, that.length));
+    var search = String(searchString);
+    return $startsWith
+      ? $startsWith.call(that, search, index)
+      : that.slice(index, index + search.length) === search;
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/web.dom.iterable.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/core-js/modules/web.dom.iterable.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var $iterators = __webpack_require__(/*! ./es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+var getKeys = __webpack_require__(/*! ./_object-keys */ "./node_modules/core-js/modules/_object-keys.js");
+var redefine = __webpack_require__(/*! ./_redefine */ "./node_modules/core-js/modules/_redefine.js");
+var global = __webpack_require__(/*! ./_global */ "./node_modules/core-js/modules/_global.js");
+var hide = __webpack_require__(/*! ./_hide */ "./node_modules/core-js/modules/_hide.js");
+var Iterators = __webpack_require__(/*! ./_iterators */ "./node_modules/core-js/modules/_iterators.js");
+var wks = __webpack_require__(/*! ./_wks */ "./node_modules/core-js/modules/_wks.js");
+var ITERATOR = wks('iterator');
+var TO_STRING_TAG = wks('toStringTag');
+var ArrayValues = Iterators.Array;
+
+var DOMIterables = {
+  CSSRuleList: true, // TODO: Not spec compliant, should be false.
+  CSSStyleDeclaration: false,
+  CSSValueList: false,
+  ClientRectList: false,
+  DOMRectList: false,
+  DOMStringList: false,
+  DOMTokenList: true,
+  DataTransferItemList: false,
+  FileList: false,
+  HTMLAllCollection: false,
+  HTMLCollection: false,
+  HTMLFormElement: false,
+  HTMLSelectElement: false,
+  MediaList: true, // TODO: Not spec compliant, should be false.
+  MimeTypeArray: false,
+  NamedNodeMap: false,
+  NodeList: true,
+  PaintRequestList: false,
+  Plugin: false,
+  PluginArray: false,
+  SVGLengthList: false,
+  SVGNumberList: false,
+  SVGPathSegList: false,
+  SVGPointList: false,
+  SVGStringList: false,
+  SVGTransformList: false,
+  SourceBufferList: false,
+  StyleSheetList: true, // TODO: Not spec compliant, should be false.
+  TextTrackCueList: false,
+  TextTrackList: false,
+  TouchList: false
+};
+
+for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++) {
+  var NAME = collections[i];
+  var explicit = DOMIterables[NAME];
+  var Collection = global[NAME];
+  var proto = Collection && Collection.prototype;
+  var key;
+  if (proto) {
+    if (!proto[ITERATOR]) hide(proto, ITERATOR, ArrayValues);
+    if (!proto[TO_STRING_TAG]) hide(proto, TO_STRING_TAG, NAME);
+    Iterators[NAME] = ArrayValues;
+    if (explicit) for (key in $iterators) if (!proto[key]) redefine(proto, key, $iterators[key], true);
+  }
+}
 
 
 /***/ }),

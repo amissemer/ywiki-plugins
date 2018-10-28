@@ -1,8 +1,3 @@
-import "../../../css/mktplace-download-form.css"
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/css/bootstrap-theme.min.css';
-import 'bootstrap-select/dist/css/bootstrap-select.min.css';
-import 'bootstrap'
 import $ from 'jquery';
 import DownloadAddonService from "../services/download-addon-service.js";
 
@@ -11,12 +6,14 @@ import DownloadAddonService from "../services/download-addon-service.js";
  */
 function loadDivContent() {
 
-    $("#mktplace-div-download-form").load("http://localhost/ywiki-plugins/mktplace-download-form.html #mktplace-wrapper-div", function () {
-        let repositoryUrl = $("#mktplace-addon-download").attr("href");
+    const repoLinks = $("a[href^='https://github.wdf.sap.corp/hybris-coep']");
+
+    $("#mktplace-div-download-form").load("https://localhost/ywiki-plugins/mktplace-download-form.html #mktplace-wrapper-div", function () {
+        let repositoryUrl = repoLinks.first().attr("href");
         $("#mktplace-download-form").attr('action', repositoryUrl);
 
         $("#download-submit").click(async function (e) {
-
+            e.preventDefault();
             let formData = new Array();
             formData[0] = $("#user-menu-link").data('username');
             formData[1] = repositoryUrl;
@@ -28,22 +25,20 @@ function loadDivContent() {
 
             await DownloadAddonService.upsertMktplaceAddonDownloadsDB(formData);
             $("#myModal").modal('hide');
-            e.preventDefault();
-
+            window.location.href = repositoryUrl;
          });
 
     });
 
 
     //Triggers hidden button that shows up the modal.
-    $("#mktplace-addon-download").click(function (e) {
-        $(".btn-marketplace-download").trigger("click");
+    repoLinks.first().click(function (e) {
         e.preventDefault();
+        $(".btn-marketplace-download").trigger("click");
     });
 
-    $().click()
+    //$().click()
 }
-
 
 const MktplaceController = {
     loadDivContent: loadDivContent,

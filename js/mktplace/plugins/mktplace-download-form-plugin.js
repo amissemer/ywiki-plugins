@@ -1,4 +1,4 @@
-import "../../../css/mktplace-download-form.css"
+import "../css/mktplace-download-form.css"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/css/bootstrap-theme.min.css';
@@ -8,20 +8,10 @@ import $ from 'jquery';
 
 import MktplaceController from '../controller/download-controller.js'
 
-//Loads required css files from the static pages
-//TODO change hard link reference
-const CSS_REFERENCE = "http://localhost/ywiki-plugins/dist/mktplace-download-form.css";
-
-var link = document.createElement("link");
-link.href = CSS_REFERENCE
-link.type = "text/css";
-link.rel = "stylesheet";
-document.getElementsByTagName("head")[0].appendChild(link);
+import {loadPluginStyleSheet} from '../../mainframe/stylesheetPlugin';
+loadPluginStyleSheet('mktplace-download-form.css');
 
 //Loads plugin
-function loadPlugin() {
+$(function() {
     MktplaceController.loadDivContent()
-}
-
-
-$(document).ready(loadPlugin())
+});

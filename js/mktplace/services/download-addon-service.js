@@ -1,8 +1,9 @@
-import MktplaceDownloads from '../model/mktplace-downloads.js';
+import AttachmentFactory from '../../common/confluence/Attachment';
+const Attachment = AttachmentFactory();
+import {DB_SPACE, DB_PAGE_TITLE, ATTACHMENT_NAME} from '../mktplace-config';
+import {getContent} from '../../common/confluence/confluence-page-async';
 
-const PAGE_ID=429430817
-const ATTACHMENT_NAME="mktplace-addon-download-data.csv"
-const CONTENT_TYPE="text/csv"
+const CONTENT_TYPE='text/csv';
 
 /**
  * Main entry method to update the downloads table.
@@ -10,29 +11,20 @@ const CONTENT_TYPE="text/csv"
  * @returns {Promise<void>}
  */
 async function upsertMktplaceAddonDownloadsDB(formData){
-    let metadata = await getAttachmentMetadata()
-    if(metadata != null){
-        let csvData = await loadWikiAttachmentContent(metadata.downloadUrl())
-        //Replace , with ;
-        let newRecord = csvData.concat("\n" + formData[0] + "," + formData[1] + "," + formData[2] + "," + formData[3] + ","+ formData[4] + ","+ formData[5] )
-        postWikiAttachmentContent(newRecord, metadata.id())
+    let dbPageId;
+    try {
+        dbPageId = (await getContent(DB_SPACE, DB_PAGE_TITLE)).id;
+    } catch (err) {
+        throw new Error(`Cannot find the marketplace page, please contact an admin (${DB_SPACE}:${DB_PAGE_TITLE})`);
     }
-}
-
-async function getAttachmentMetadata(){
-    let attachment =  MktplaceDownloads.getMetadata(PAGE_ID,ATTACHMENT_NAME)
-    if (attachment.id == null){
-         //TODO Add initial attachment if it does not exist. attachmnet = WikiAttachment.getAttachment(PAGE_ID,ATTACHMENT_NAME)
+    let metadata = await Attachment.getOrCreateAttachment(dbPageId, ATTACHMENT_NAME);
+    let csvData = await metadata.loadText();
+    if (!csvData) { // initialize the file
+        csvData = 'userId,addonUrl,projectName,customerName,sapCommerceVersion,comments';
     }
-    return attachment;
-}
-async function loadWikiAttachmentContent(url){
-      return  MktplaceDownloads.getData(url);
-}
-
-function postWikiAttachmentContent(csvData, attachmentId){
-    //TODO Do something is this fails.
-    MktplaceDownloads.updateData(PAGE_ID, ATTACHMENT_NAME, csvData, attachmentId, CONTENT_TYPE)
+    //Replace , with ;
+    let newRecord = csvData.concat("\n" + formData[0] + "," + formData[1] + "," + formData[2] + "," + formData[3] + ","+ formData[4] + ","+ formData[5] );
+    await metadata.saveText(newRecord, CONTENT_TYPE);
 }
 
 const DownloadAddonService = {

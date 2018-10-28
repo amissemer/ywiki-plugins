@@ -1,4 +1,4 @@
-import {lookupAttachment,cloneAttachment,deleteAttachment} from './confluence-attachment-async';
+import {lookupAttachment,cloneAttachment,deleteAttachment,loadResource,storeAttachmentContent} from './confluence-attachment-async';
 
 function Attachment(jQuery) {
     if (!jQuery) jQuery = $;
@@ -12,6 +12,14 @@ function Attachment(jQuery) {
         return getOrCreateAttachment(containerId, internalAttachment.title, internalAttachment);
     }
     
+    /** 
+     * Get attachment metadata information.
+     *
+     * @param {string} pageId id of the page the attachment is attached to
+     * @param {string} attachmentTitle
+     * @param {Object} [internalAttachment] confluence attachment, optional, to avoid a lookup
+     * @returns {Promise<{_internal: *, id: id, containerId: containerId, toString: toString, title: title, exists: exists, downloadUrl: downloadUrl, version: version, spaceKey: spaceKey}>}
+     */
     async function getOrCreateAttachment(pageId, attachmentTitle, /* optional */ internalAttachment) {
         if (!internalAttachment) {
             internalAttachment = await lookupAttachment(jQuery.ajax, pageId, attachmentTitle);
@@ -56,7 +64,11 @@ function Attachment(jQuery) {
                 if (!url) {
                     throw 'invalid url to clone from';
                 }
-                this._internal = await cloneAttachment(url, pageId, attachmentTitle, this.id(), jQuery.cloneAttachment);
+                if (typeof jQuery.cloneAttachment === 'function') {
+                    this._internal  = await jQuery.cloneAttachment(url, pageId, attachmentTitle, this.id());
+                } else {
+                    this._internal = await cloneAttachment(url, pageId, attachmentTitle, this.id());
+                }
             },
             delete: async function() {
                 let id = this.id();
@@ -64,6 +76,13 @@ function Attachment(jQuery) {
                     await deleteAttachment(jQuery.ajax, id);
                 }
                 this._internal = null;
+            },
+            loadText: async function() {
+                let url = this.downloadUrl();
+                return url ? loadResource(url) : null;
+            },
+            saveText: async function(text, contentType) {
+                return storeAttachmentContent(pageId, text, attachmentTitle, this.id(), contentType);
             }
         };
     }

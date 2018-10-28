@@ -155,7 +155,7 @@ var PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
 /*!*************************************************************!*\
   !*** ./js/common/confluence/confluence-attachment-async.js ***!
   \*************************************************************/
-/*! exports provided: lookupAttachment, deleteAttachment, cloneAttachment */
+/*! exports provided: lookupAttachment, deleteAttachment, cloneAttachment, storeAttachmentContent, loadResource */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -163,6 +163,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lookupAttachment", function() { return lookupAttachment; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteAttachment", function() { return deleteAttachment; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cloneAttachment", function() { return cloneAttachment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "storeAttachmentContent", function() { return storeAttachmentContent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadResource", function() { return loadResource; });
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
 /* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
@@ -180,9 +182,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var BASE_URL = '/rest/api/content/';
+/**
+ * Retrieves an existing attachment, by its container (page) and title
+ * @param {function} ajax either jQuery.ajax function or proxy.ajax function (see proxyService.js)
+ * @param {string} containerId id of the containing page
+ * @param {string} attachmentTitle title of the attachment
+ * @returns {Promise<{id,version,space,_links}>} the attachment object or null if the attachment doesn't exist
+ */
+
 function lookupAttachment(_x, _x2, _x3) {
   return _lookupAttachment.apply(this, arguments);
 }
+/**
+ * Deletes an attachment by its ID
+ * @param {function} ajax either jQuery.ajax function or proxy.ajax function (see proxyService.js)
+ * @param {string} attachmentId the attachment ID
+ */
 
 function _lookupAttachment() {
   _lookupAttachment = _asyncToGenerator(
@@ -224,6 +239,13 @@ function _lookupAttachment() {
 function deleteAttachment(_x4, _x5) {
   return _deleteAttachment.apply(this, arguments);
 }
+/**
+ * Loads an attachment content from an URL and copies it as a new attachment version under a different page.
+ * @param {string} attachmentUrl the source URL
+ * @param {string} targetContainerId the target page ID
+ * @param {string} title the title to create/update the target attachment
+ * @param {string} [targetId] the id of the existing attachment, if exists
+ */
 
 function _deleteAttachment() {
   _deleteAttachment = _asyncToGenerator(
@@ -250,12 +272,17 @@ function _deleteAttachment() {
   return _deleteAttachment.apply(this, arguments);
 }
 
-function cloneAttachment(_x6, _x7, _x8, _x9, _x10) {
+function cloneAttachment(_x6, _x7, _x8, _x9) {
   return _cloneAttachment.apply(this, arguments);
 }
 /** 
- * ContentId is mandatory when updating an existing attachment, and must be omitted when
+ * Creates or updates an attachment by uploading data as a page attachment.
+ * @param {string} containerId id of the page that contains the attachment
+ * @param {Object} data is either a Blob, or any data to be uploaded as the attachment
+ * @param {string} title the name of the attachment on the page
+ * @param {string} [contentId] is mandatory when updating an existing attachment, and must be omitted when
  * creating a new attachment.
+ * @param {string} [contentType] is required when data is not a Blob
  */
 
 function _cloneAttachment() {
@@ -263,30 +290,22 @@ function _cloneAttachment() {
   /*#__PURE__*/
   regeneratorRuntime.mark(function _callee3(attachmentUrl, targetContainerId, title,
   /* optional */
-  targetId, delegate) {
+  targetId) {
     var blobData, attachment;
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            if (!(typeof delegate === 'function')) {
-              _context3.next = 2;
-              break;
-            }
-
-            return _context3.abrupt("return", delegate(attachmentUrl, targetContainerId, title, targetId));
+            _context3.next = 2;
+            return loadResource(attachmentUrl, 'blob');
 
           case 2:
-            _context3.next = 4;
-            return loadBlob(attachmentUrl);
-
-          case 4:
             blobData = _context3.sent;
             _context3.t0 = JSON;
-            _context3.next = 8;
-            return storeBlob(targetContainerId, blobData, title, targetId);
+            _context3.next = 6;
+            return storeAttachmentContent(targetContainerId, blobData, title, targetId);
 
-          case 8:
+          case 6:
             _context3.t1 = _context3.sent;
             attachment = _context3.t0.parse.call(_context3.t0, _context3.t1);
 
@@ -304,7 +323,7 @@ function _cloneAttachment() {
 
             return _context3.abrupt("return", attachment);
 
-          case 13:
+          case 11:
           case "end":
             return _context3.stop();
         }
@@ -314,17 +333,20 @@ function _cloneAttachment() {
   return _cloneAttachment.apply(this, arguments);
 }
 
-function storeBlob(_x11, _x12, _x13, _x14) {
-  return _storeBlob.apply(this, arguments);
+function storeAttachmentContent(_x10, _x11, _x12, _x13, _x14) {
+  return _storeAttachmentContent.apply(this, arguments);
 }
+/**
+ * Load a url resource.
+ * @param {string} url
+ * @param {string} [responseType='']  see also https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType
+ */
 
-function _storeBlob() {
-  _storeBlob = _asyncToGenerator(
+function _storeAttachmentContent() {
+  _storeAttachmentContent = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee4(containerId, blobData, title,
-  /* optional */
-  contentId) {
-    var url, formData;
+  regeneratorRuntime.mark(function _callee4(containerId, data, title, contentId, contentType) {
+    var url, formData, blob;
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -338,49 +360,53 @@ function _storeBlob() {
             }
 
             formData = new FormData();
-            formData.append('file', blobData, title);
+            blob = data instanceof Blob ? data : new Blob([data], {
+              type: contentType
+            });
+            formData.append('file', blob, title);
             formData.append('minorEdit', 'true');
             return _context4.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])(function () {
               return postBinary(url, formData);
             }));
 
-          case 8:
+          case 9:
           case "end":
             return _context4.stop();
         }
       }
     }, _callee4, this);
   }));
-  return _storeBlob.apply(this, arguments);
+  return _storeAttachmentContent.apply(this, arguments);
 }
 
-function loadBlob(_x15) {
-  return _loadBlob.apply(this, arguments);
+function loadResource(_x15, _x16) {
+  return _loadResource.apply(this, arguments);
 }
 
-function _loadBlob() {
-  _loadBlob = _asyncToGenerator(
+function _loadResource() {
+  _loadResource = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee5(url) {
+  regeneratorRuntime.mark(function _callee5(url, responseType) {
     return regeneratorRuntime.wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
+            responseType = responseType || '';
             return _context5.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
-              return loadBinary(url);
+              return loadUrlResource(url, responseType);
             }));
 
-          case 1:
+          case 2:
           case "end":
             return _context5.stop();
         }
       }
     }, _callee5, this);
   }));
-  return _loadBlob.apply(this, arguments);
+  return _loadResource.apply(this, arguments);
 }
 
-function postBinary(_x16, _x17) {
+function postBinary(_x17, _x18) {
   return _postBinary.apply(this, arguments);
 }
 
@@ -419,14 +445,14 @@ function _postBinary() {
   return _postBinary.apply(this, arguments);
 }
 
-function loadBinary(_x18) {
-  return _loadBinary.apply(this, arguments);
+function loadUrlResource(_x19, _x20) {
+  return _loadUrlResource.apply(this, arguments);
 }
 
-function _loadBinary() {
-  _loadBinary = _asyncToGenerator(
+function _loadUrlResource() {
+  _loadUrlResource = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee7(url) {
+  regeneratorRuntime.mark(function _callee7(url, responseType) {
     return regeneratorRuntime.wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
@@ -434,14 +460,14 @@ function _loadBinary() {
             return _context7.abrupt("return", new Promise(function (resolve, reject) {
               var xhr = new XMLHttpRequest();
               xhr.open('GET', url, true);
-              xhr.responseType = 'blob';
+              xhr.responseType = responseType;
               xhr.onerror = reject;
 
               xhr.onload = function (e) {
                 if (this.status == 200) {
                   // get binary data as a response
-                  var blob = this.response;
-                  resolve(blob);
+                  var resource = this.response;
+                  resolve(resource);
                 } else {
                   reject(e);
                 }
@@ -457,7 +483,7 @@ function _loadBinary() {
       }
     }, _callee7, this);
   }));
-  return _loadBinary.apply(this, arguments);
+  return _loadUrlResource.apply(this, arguments);
 }
 
 /***/ }),
