@@ -1744,6 +1744,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _services_download_addon_service_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/download-addon-service.js */ "./js/mktplace/services/download-addon-service.js");
+/* harmony import */ var _mainframe_pluginCommon__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../mainframe/pluginCommon */ "./js/mainframe/pluginCommon.js");
+/* harmony import */ var _mktplace_config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mktplace-config */ "./js/mktplace/mktplace-config.js");
 
 
 
@@ -1754,43 +1756,68 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
+
 /**
  * Loads Form into div placeholder and bind submission buttons to the services updating the CSV data.
  */
 
 function loadDivContent() {
-  var repoLinks = jquery__WEBPACK_IMPORTED_MODULE_3___default()("a[href^='https://github.wdf.sap.corp/hybris-coep']");
-  jquery__WEBPACK_IMPORTED_MODULE_3___default()("#mktplace-div-download-form").load("https://localhost/ywiki-plugins/mktplace-download-form.html #mktplace-wrapper-div", function () {
-    var repositoryUrl = repoLinks.first().attr("href");
-    jquery__WEBPACK_IMPORTED_MODULE_3___default()("#mktplace-download-form").attr('action', repositoryUrl);
-    jquery__WEBPACK_IMPORTED_MODULE_3___default()("#download-submit").click(
+  var repoLinks = jquery__WEBPACK_IMPORTED_MODULE_3___default()(linksWithPrefixes(_mktplace_config__WEBPACK_IMPORTED_MODULE_6__["MARKETPLACE_REPOSITORIES"]));
+
+  if (repoLinks.length) {
+    repoLinks.first().after(jquery__WEBPACK_IMPORTED_MODULE_3___default()('<div>', {
+      id: 'mktplace-div-download-form'
+    }));
+  }
+
+  repoLinks.each(function () {
+    var repoLink = jquery__WEBPACK_IMPORTED_MODULE_3___default()(this);
+    var repoButton = jquery__WEBPACK_IMPORTED_MODULE_3___default()('<button>', {
+      'class': 'btn btn-primary btn-lg btn-marketplace-download',
+      'data-toggle': 'modal',
+      'data-target': '#myModal',
+      'data-repo': repoLink.attr('href'),
+      'text': 'Launch Download form'
+    });
+    repoLink.after(repoButton);
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_3___default()('#mktplace-div-download-form').load(_mainframe_pluginCommon__WEBPACK_IMPORTED_MODULE_5__["host"] + '/fragments/mktplace/mktplace-download-form.html #mktplace-wrapper-div', function () {
+    var downloadSubmit = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#download-submit"); // pass the data-repo URL from the download button to the form submit button
+
+    jquery__WEBPACK_IMPORTED_MODULE_3___default()('.btn-marketplace-download').click(function (e) {
+      var repoUrl = jquery__WEBPACK_IMPORTED_MODULE_3___default()(this).data('repo');
+      downloadSubmit.data('repo', repoUrl);
+    });
+    downloadSubmit.click(
     /*#__PURE__*/
     function () {
       var _ref = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee(e) {
-        var formData;
+        var repoUrl, formData;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 e.preventDefault();
+                repoUrl = jquery__WEBPACK_IMPORTED_MODULE_3___default()(this).data('repo');
                 formData = new Array();
                 formData[0] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#user-menu-link").data('username');
-                formData[1] = repositoryUrl;
+                formData[1] = repoUrl;
                 formData[2] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#project-name").val().replace(/,/g, ";");
                 formData[3] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#customer").val().replace(/,/g, ";");
                 formData[4] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#commerce-version").val().replace(/,/g, ";"); //replace new lines with spaces.
 
                 formData[5] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#comments").val().replace(/\r?\n|\r/g, " ");
-                _context.next = 10;
+                _context.next = 11;
                 return _services_download_addon_service_js__WEBPACK_IMPORTED_MODULE_4__["default"].upsertMktplaceAddonDownloadsDB(formData);
 
-              case 10:
+              case 11:
                 jquery__WEBPACK_IMPORTED_MODULE_3___default()("#myModal").modal('hide');
-                window.location.href = repositoryUrl;
+                window.location.href = repoUrl;
 
-              case 12:
+              case 13:
               case "end":
                 return _context.stop();
             }
@@ -1804,10 +1831,17 @@ function loadDivContent() {
     }());
   }); //Triggers hidden button that shows up the modal.
 
-  repoLinks.first().click(function (e) {
+  repoLinks.click(function (e) {
     e.preventDefault();
     jquery__WEBPACK_IMPORTED_MODULE_3___default()(".btn-marketplace-download").trigger("click");
-  }); //$().click()
+  });
+  repoLinks.remove(); //$().click()
+}
+
+function linksWithPrefixes(arr) {
+  return arr.map(function (prefix) {
+    return "a[href^='".concat(prefix, "']");
+  }).join(',');
 }
 
 var MktplaceController = {
@@ -1832,7 +1866,7 @@ var MktplaceController = {
 /*!****************************************!*\
   !*** ./js/mktplace/mktplace-config.js ***!
   \****************************************/
-/*! exports provided: DB_SPACE, DB_PAGE_TITLE, ATTACHMENT_NAME */
+/*! exports provided: DB_SPACE, DB_PAGE_TITLE, ATTACHMENT_NAME, MARKETPLACE_REPOSITORIES */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1840,9 +1874,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_SPACE", function() { return DB_SPACE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_PAGE_TITLE", function() { return DB_PAGE_TITLE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ATTACHMENT_NAME", function() { return ATTACHMENT_NAME; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MARKETPLACE_REPOSITORIES", function() { return MARKETPLACE_REPOSITORIES; });
 var DB_SPACE = '~adrien.missemer@hybris.com';
 var DB_PAGE_TITLE = 'MarketPlace DB';
 var ATTACHMENT_NAME = "mktplace-addon-download-data.csv";
+var MARKETPLACE_REPOSITORIES = ['https://github.wdf.sap.corp/hybris-coep', 'https://github.wdf.sap.corp/cx-solution-addons'];
 
 /***/ }),
 
@@ -1880,9 +1916,7 @@ __webpack_require__.r(__webpack_exports__);
 
 Object(_mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_7__["loadPluginStyleSheet"])('mktplace-download-form.css'); //Loads plugin
 
-jquery__WEBPACK_IMPORTED_MODULE_5___default()(function () {
-  _controller_download_controller_js__WEBPACK_IMPORTED_MODULE_6__["default"].loadDivContent();
-});
+_controller_download_controller_js__WEBPACK_IMPORTED_MODULE_6__["default"].loadDivContent();
 
 /***/ }),
 

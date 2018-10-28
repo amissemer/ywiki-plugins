@@ -12,6 +12,4 @@ import {loadPluginStyleSheet} from '../../mainframe/stylesheetPlugin';
 loadPluginStyleSheet('mktplace-download-form.css');
 
 //Loads plugin
-$(function() {
-    MktplaceController.loadDivContent()
-});
+MktplaceController.loadDivContent();
