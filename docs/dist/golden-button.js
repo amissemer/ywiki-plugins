@@ -1198,6 +1198,7 @@ function bootstrap(host, cacheBuster) {
       newInstanceDisplayName: jEl.data('new-instance-display-name'),
       addLabel: jEl.data('add-label'),
       logToPage: jEl.data('log-to-page'),
+      logToSpace: jEl.data('log-to-space') || jEl.data('target-space'),
       variantOptions: readOptions(jEl)
     });
   });
