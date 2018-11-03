@@ -2460,7 +2460,7 @@ function logCreationWithVersion(version, logToPage, createdPage) {
 
   if (logToPage) {
     console.log("Logging creation of " + createdPage.title + " by " + options.currentUserKey + ' in ' + logToPage);
-    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getContent"](options.currentSpaceKey, logToPage, 'space,body.storage,version').then(function (logPageJson) {
+    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getContent"](options.logToSpace, logToPage, 'space,body.storage,version').then(function (logPageJson) {
       console.log("logPageJson before edit: ", logPageJson);
 
       if (logPageJson.body.storage) {
