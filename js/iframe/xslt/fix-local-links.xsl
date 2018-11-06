@@ -7,7 +7,7 @@
     <xsl:output method="xml" cdata-section-elements="ac:plain-text-link-body ac:plain-text-body" />
 
     <!-- Add the space-key attribute to ri:page (links) when it is missing -->
-    <xsl:template match="ri:page[@ri:content-title][not(@ri:space-key)]">
+    <xsl:template match="ri:page[@ri:content-title][not(@ri:space-key) and not(contains(@ri:content-title,'[Customer]')) and not(contains(@ri:content-title,'[ProjectName]'))]">
         <xsl:copy>
             <xsl:attribute name="ri:space-key">{0}</xsl:attribute>
             <xsl:apply-templates select="@*|node()"/>
