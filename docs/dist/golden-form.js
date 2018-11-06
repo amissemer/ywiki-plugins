@@ -2205,13 +2205,15 @@ function TemplateProcessor(options) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              replacePlaceholderInPage(page);
-              _context.next = 3;
+              _context.next = 2;
               return filterVariant(page);
 
-            case 3:
-              _context.next = 5;
+            case 2:
+              _context.next = 4;
               return fixLocalLinks(page);
+
+            case 4:
+              replacePlaceholderInPage(page);
 
             case 5:
             case "end":
@@ -40592,7 +40594,7 @@ return jQuery;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<xsl:stylesheet version=\"1.0\" \n    xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \n    xmlns:ac=\"http://atlassian.com/content\"\n    xmlns:ri=\"http://atlassian.com/resource/identifier\">\n\n    <!-- Output the ac:plain-text-link-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->\n    <xsl:output method=\"xml\" cdata-section-elements=\"ac:plain-text-link-body ac:plain-text-body\" />\n\n    <!-- Add the space-key attribute to ri:page (links) when it is missing -->\n    <xsl:template match=\"ri:page[@ri:content-title][not(@ri:space-key)]\">\n        <xsl:copy>\n            <xsl:attribute name=\"ri:space-key\">{0}</xsl:attribute>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n\n    <!-- Remove the <ac:parameter ac:name=\"revision\">*</ac:parameter> tag in the <ac:structured-macro ac:name=\"drawio\"> tags,\n    to avoid binding draw.io macros to wrong version of diagram -->\n    <xsl:template match=\"ac:structured-macro[@ac:name='drawio']/ac:parameter[@ac:name='revision']\" />\n    \n    <!-- Copy everything else as is -->   \n    <xsl:template match=\"@*|node()\">\n        <xsl:copy>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n</xsl:stylesheet>"
+module.exports = "<xsl:stylesheet version=\"1.0\" \n    xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \n    xmlns:ac=\"http://atlassian.com/content\"\n    xmlns:ri=\"http://atlassian.com/resource/identifier\">\n\n    <!-- Output the ac:plain-text-link-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->\n    <xsl:output method=\"xml\" cdata-section-elements=\"ac:plain-text-link-body ac:plain-text-body\" />\n\n    <!-- Add the space-key attribute to ri:page (links) when it is missing -->\n    <xsl:template match=\"ri:page[@ri:content-title][not(@ri:space-key) and not(contains(@ri:content-title,'[Customer]')) and not(contains(@ri:content-title,'[ProjectName]'))]\">\n        <xsl:copy>\n            <xsl:attribute name=\"ri:space-key\">{0}</xsl:attribute>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n\n    <!-- Remove the <ac:parameter ac:name=\"revision\">*</ac:parameter> tag in the <ac:structured-macro ac:name=\"drawio\"> tags,\n    to avoid binding draw.io macros to wrong version of diagram -->\n    <xsl:template match=\"ac:structured-macro[@ac:name='drawio']/ac:parameter[@ac:name='revision']\" />\n    \n    <!-- Copy everything else as is -->   \n    <xsl:template match=\"@*|node()\">\n        <xsl:copy>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n</xsl:stylesheet>"
 
 /***/ }),
 
