@@ -5,7 +5,8 @@ import AttachmentSyncStatus from './AttachmentSyncStatus';
 import {loadPageForSync} from './spaceScanner';
 import $ from 'jquery';
 import SyncTimeStamp from './SyncTimeStamp';
-import Attachment from '../../common/confluence/Attachment';
+import AttachmentFactory from '../../common/confluence/Attachment';
+const Attachment = AttachmentFactory();
 import Labels from '../../common/confluence/Labels';
 
 const TARGET_EXPANDS = 'version,metadata.labels,space,children.attachment.version,children.attachment.space';

@@ -5,6 +5,7 @@ import iframeWrapper from '../common/iframeWrapper';
 import * as plugin from './pluginCommon';
 import {encodeOptions} from '../common/optionsParser';
 import {DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, WIKI_HOST} from '../common/config';
+import {cloneAttachment} from '../common/confluence/confluence-attachment-async';
 
 function closeIFrame(iframeElt) {
   iframeElt.unbind('load').fadeOut( function() {
@@ -68,6 +69,9 @@ function attachHandlersToIFrameWindow(host, myIFrame) {
     })
     .attachActionHandler("$text", function (e) {
       return jQuery(e).text();
+    })
+    .attachActionHandler("cloneAttachment", function (e) {
+      return cloneAttachment(e.attachmentUrl, e.targetContainerId, e.title, e.targetId);
     });
 }
 
@@ -201,6 +205,7 @@ function bootstrap(host, cacheBuster) {
       newInstanceDisplayName: jEl.data('new-instance-display-name'),
       addLabel: jEl.data('add-label'),
       logToPage: jEl.data('log-to-page'),
+      logToSpace: jEl.data('log-to-space') || jEl.data('target-space'),
       variantOptions: readOptions(jEl),
     });
   });

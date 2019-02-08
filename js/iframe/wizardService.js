@@ -92,7 +92,7 @@ function logCreationWithVersion(version, logToPage, createdPage) {
 	}
 	if (logToPage) {
 		console.log("Logging creation of "+createdPage.title+" by "+options.currentUserKey+' in '+logToPage);
-		return confluence.getContent(options.currentSpaceKey, logToPage, 'space,body.storage,version')
+		return confluence.getContent(options.logToSpace, logToPage, 'space,body.storage,version')
 		.then( function(logPageJson) {
 			console.log("logPageJson before edit: ",logPageJson);
 			if (logPageJson.body.storage) {
@@ -151,17 +151,21 @@ export function createWorkspace(workspaceOpts) {
 }
 
 function createCustomerPage(region,customer) {
- return confluence.copyPage(options.targetSpace, options.customerPageTemplate, options.targetSpace, region, TemplateProcessor(customer));
+ return confluence.copyPage(options.targetSpace, options.customerPageTemplate, options.targetSpace, region, new TemplateProcessor({ placeholderReplacements: customer }));
 }
 
 function createJustWorkspace(workspaceOpts) {
   var copiedPages=[];
-  var templateProcessor = TemplateProcessor({
-    "Region": workspaceOpts.reportingRegion,
-    "Customer": workspaceOpts.customer,
-    "ProjectName": workspaceOpts.projectName,
-    "TargetEndDate": workspaceOpts.targetEndDate
-  }, workspaceOpts.variantOptions );
+  var templateProcessor = new TemplateProcessor({ 
+    placeholderReplacements: {
+      "Region": workspaceOpts.reportingRegion,
+      "Customer": workspaceOpts.customer,
+      "ProjectName": workspaceOpts.projectName,
+      "TargetEndDate": workspaceOpts.targetEndDate
+    }, 
+    variantOptions: workspaceOpts.variantOptions,
+    copyAttachments: true
+  });
 
   return confluence.getContentById(options.sourcePageId,'space')
   .then(function(sourcePage) {

@@ -167,12 +167,12 @@ var PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
 
 
@@ -184,181 +184,186 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
-function from(_x) {
-  return _from.apply(this, arguments);
-}
+function Attachment(jQuery) {
+  if (!jQuery) jQuery = $;
+  return {
+    from: from,
+    getOrCreateAttachment: getOrCreateAttachment
+  };
 
-function _from() {
-  _from = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee(internalAttachment) {
-    var containerId;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            containerId = internalAttachment.container ? internalAttachment.container.id : internalAttachment._expandable.container.replace(/.*\//g, '');
-            return _context.abrupt("return", getOrCreateAttachment(containerId, internalAttachment.title, internalAttachment));
+  function from(_x) {
+    return _from.apply(this, arguments);
+  }
 
-          case 2:
-          case "end":
-            return _context.stop();
+  function _from() {
+    _from = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee(internalAttachment) {
+      var containerId;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              containerId = internalAttachment.container ? internalAttachment.container.id : internalAttachment._expandable.container.replace(/.*\//g, '');
+              return _context.abrupt("return", getOrCreateAttachment(containerId, internalAttachment.title, internalAttachment));
+
+            case 2:
+            case "end":
+              return _context.stop();
+          }
         }
-      }
-    }, _callee, this);
-  }));
-  return _from.apply(this, arguments);
-}
+      }, _callee, this);
+    }));
+    return _from.apply(this, arguments);
+  }
 
-function getOrCreateAttachment(_x2, _x3, _x4) {
-  return _getOrCreateAttachment.apply(this, arguments);
-}
+  function getOrCreateAttachment(_x2, _x3, _x4) {
+    return _getOrCreateAttachment.apply(this, arguments);
+  }
 
-function _getOrCreateAttachment() {
-  _getOrCreateAttachment = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee4(pageId, attachmentTitle,
-  /* optional */
-  internalAttachment) {
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            if (internalAttachment) {
-              _context4.next = 4;
-              break;
-            }
+  function _getOrCreateAttachment() {
+    _getOrCreateAttachment = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee4(pageId, attachmentTitle,
+    /* optional */
+    internalAttachment) {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              if (internalAttachment) {
+                _context4.next = 4;
+                break;
+              }
 
-            _context4.next = 3;
-            return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["lookupAttachment"])(pageId, attachmentTitle);
+              _context4.next = 3;
+              return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["lookupAttachment"])(jQuery.ajax, pageId, attachmentTitle);
 
-          case 3:
-            internalAttachment = _context4.sent;
+            case 3:
+              internalAttachment = _context4.sent;
 
-          case 4:
-            return _context4.abrupt("return", {
-              _internal: internalAttachment,
-              id: function id() {
-                return this._internal ? this._internal.id : null;
-              },
-              containerId: function containerId() {
-                return pageId;
-              },
-              toString: function toString() {
-                return "".concat(this.id(), ":").concat(pageId, ":").concat(this.title(), ":").concat(this.version());
-              },
-              title: function title() {
-                return attachmentTitle;
-              },
-              exists: function exists() {
-                return this._internal != null;
-              },
-              downloadUrl: function downloadUrl() {
-                return this._internal ? this._internal._links.download : null;
-              },
-              version: function version() {
-                return this._internal ? this._internal.version.number : null;
-              },
-              spaceKey: function spaceKey() {
-                return this._internal ? this._internal.space.key : null;
-              },
-              cloneFrom: function () {
-                var _cloneFrom = _asyncToGenerator(
-                /*#__PURE__*/
-                regeneratorRuntime.mark(function _callee2(url) {
-                  var otherAttachment;
-                  return regeneratorRuntime.wrap(function _callee2$(_context2) {
-                    while (1) {
-                      switch (_context2.prev = _context2.next) {
-                        case 0:
-                          if (typeof url !== 'string') {
-                            // assume it is another Attachment or confluence attachment
-                            otherAttachment = url;
-                            url = null;
+            case 4:
+              return _context4.abrupt("return", {
+                _internal: internalAttachment,
+                id: function id() {
+                  return this._internal ? this._internal.id : null;
+                },
+                containerId: function containerId() {
+                  return pageId;
+                },
+                toString: function toString() {
+                  return "".concat(this.id(), ":").concat(pageId, ":").concat(this.title(), ":").concat(this.version());
+                },
+                title: function title() {
+                  return attachmentTitle;
+                },
+                exists: function exists() {
+                  return this._internal != null;
+                },
+                downloadUrl: function downloadUrl() {
+                  return this._internal ? this._internal._links.download : null;
+                },
+                version: function version() {
+                  return this._internal ? this._internal.version.number : null;
+                },
+                spaceKey: function spaceKey() {
+                  return this._internal ? this._internal.space.key : null;
+                },
+                cloneFrom: function () {
+                  var _cloneFrom = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee2(url) {
+                    var otherAttachment;
+                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            if (typeof url !== 'string') {
+                              // assume it is another Attachment or confluence attachment
+                              otherAttachment = url;
+                              url = null;
 
-                            if (typeof otherAttachment.downloadUrl === 'function') {
-                              url = otherAttachment.downloadUrl();
-                            } else if (otherAttachment._links && typeof otherAttachment._links.download === 'string') {
-                              url = otherAttachment._links.download;
+                              if (typeof otherAttachment.downloadUrl === 'function') {
+                                url = otherAttachment.downloadUrl();
+                              } else if (otherAttachment._links && typeof otherAttachment._links.download === 'string') {
+                                url = otherAttachment._links.download;
+                              }
                             }
-                          }
 
-                          if (url) {
-                            _context2.next = 3;
-                            break;
-                          }
+                            if (url) {
+                              _context2.next = 3;
+                              break;
+                            }
 
-                          throw 'invalid url to clone from';
+                            throw 'invalid url to clone from';
 
-                        case 3:
-                          _context2.next = 5;
-                          return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["cloneAttachment"])(url, pageId, attachmentTitle, this.id());
+                          case 3:
+                            _context2.next = 5;
+                            return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["cloneAttachment"])(url, pageId, attachmentTitle, this.id(), jQuery.cloneAttachment);
 
-                        case 5:
-                          this._internal = _context2.sent;
+                          case 5:
+                            this._internal = _context2.sent;
 
-                        case 6:
-                        case "end":
-                          return _context2.stop();
+                          case 6:
+                          case "end":
+                            return _context2.stop();
+                        }
                       }
-                    }
-                  }, _callee2, this);
-                }));
+                    }, _callee2, this);
+                  }));
 
-                return function cloneFrom(_x5) {
-                  return _cloneFrom.apply(this, arguments);
-                };
-              }(),
-              delete: function () {
-                var _delete2 = _asyncToGenerator(
-                /*#__PURE__*/
-                regeneratorRuntime.mark(function _callee3() {
-                  var id;
-                  return regeneratorRuntime.wrap(function _callee3$(_context3) {
-                    while (1) {
-                      switch (_context3.prev = _context3.next) {
-                        case 0:
-                          id = this.id();
+                  return function cloneFrom(_x5) {
+                    return _cloneFrom.apply(this, arguments);
+                  };
+                }(),
+                delete: function () {
+                  var _delete2 = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee3() {
+                    var id;
+                    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                      while (1) {
+                        switch (_context3.prev = _context3.next) {
+                          case 0:
+                            id = this.id();
 
-                          if (!id) {
+                            if (!id) {
+                              _context3.next = 4;
+                              break;
+                            }
+
                             _context3.next = 4;
-                            break;
-                          }
+                            return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["deleteAttachment"])(jQuery.ajax, id);
 
-                          _context3.next = 4;
-                          return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["deleteAttachment"])(id);
+                          case 4:
+                            this._internal = null;
 
-                        case 4:
-                          this._internal = null;
-
-                        case 5:
-                        case "end":
-                          return _context3.stop();
+                          case 5:
+                          case "end":
+                            return _context3.stop();
+                        }
                       }
-                    }
-                  }, _callee3, this);
-                }));
+                    }, _callee3, this);
+                  }));
 
-                return function _delete() {
-                  return _delete2.apply(this, arguments);
-                };
-              }()
-            });
+                  return function _delete() {
+                    return _delete2.apply(this, arguments);
+                  };
+                }()
+              });
 
-          case 5:
-          case "end":
-            return _context4.stop();
+            case 5:
+            case "end":
+              return _context4.stop();
+          }
         }
-      }
-    }, _callee4, this);
-  }));
-  return _getOrCreateAttachment.apply(this, arguments);
+      }, _callee4, this);
+    }));
+    return _getOrCreateAttachment.apply(this, arguments);
+  }
 }
 
-var Attachment = {
-  from: from,
-  getOrCreateAttachment: getOrCreateAttachment
-};
+;
 /* harmony default export */ __webpack_exports__["default"] = (Attachment);
 
 /***/ }),
@@ -387,6 +392,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
+var Attachment = Object(_Attachment__WEBPACK_IMPORTED_MODULE_2__["default"])();
 
 var pageToCopyAttachmentsTo = '377578548';
 var attachmentExample = '/download/attachments/257608297/Sprint%20Execution_test.png?api=v2';
@@ -403,7 +409,7 @@ describe('Attachment', function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return _Attachment__WEBPACK_IMPORTED_MODULE_2__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
+            return Attachment.getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
 
           case 2:
             att = _context.sent;
@@ -412,7 +418,7 @@ describe('Attachment', function () {
 
           case 5:
             _context.next = 7;
-            return _Attachment__WEBPACK_IMPORTED_MODULE_2__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
+            return Attachment.getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
 
           case 7:
             att = _context.sent;
@@ -423,7 +429,7 @@ describe('Attachment', function () {
           case 11:
             chai__WEBPACK_IMPORTED_MODULE_3__["assert"].isNotNull(att.id());
             _context.next = 14;
-            return _Attachment__WEBPACK_IMPORTED_MODULE_2__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
+            return Attachment.getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
 
           case 14:
             att = _context.sent;
@@ -448,12 +454,12 @@ describe('Attachment', function () {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return _Attachment__WEBPACK_IMPORTED_MODULE_2__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
+            return Attachment.getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
 
           case 2:
             from = _context2.sent;
             _context2.next = 5;
-            return _Attachment__WEBPACK_IMPORTED_MODULE_2__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle + '_2');
+            return Attachment.getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle + '_2');
 
           case 5:
             to = _context2.sent;
@@ -486,7 +492,7 @@ describe('Attachment', function () {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return _Attachment__WEBPACK_IMPORTED_MODULE_2__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
+            return Attachment.getOrCreateAttachment(pageToCopyAttachmentsTo, attachmentTitle);
 
           case 2:
             att = _context3.sent;
@@ -513,7 +519,7 @@ describe('Attachment', function () {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.next = 2;
-            return _Attachment__WEBPACK_IMPORTED_MODULE_2__["default"].getOrCreateAttachment(pageToCopyAttachmentsTo, 'notAttitle');
+            return Attachment.getOrCreateAttachment(pageToCopyAttachmentsTo, 'notAttitle');
 
           case 2:
             att = _context4.sent;
@@ -1365,14 +1371,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var BASE_URL = '/rest/api/content/';
-function lookupAttachment(_x, _x2) {
+function lookupAttachment(_x, _x2, _x3) {
   return _lookupAttachment.apply(this, arguments);
 }
 
 function _lookupAttachment() {
   _lookupAttachment = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee(containerId, attachmentTitle) {
+  regeneratorRuntime.mark(function _callee(ajax, containerId, attachmentTitle) {
     var results;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
@@ -1380,7 +1386,7 @@ function _lookupAttachment() {
           case 0:
             _context.next = 2;
             return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
-              return $.get(BASE_URL + "".concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
+              return ajax(BASE_URL + "".concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
             });
 
           case 2:
@@ -1406,20 +1412,20 @@ function _lookupAttachment() {
   return _lookupAttachment.apply(this, arguments);
 }
 
-function deleteAttachment(_x3) {
+function deleteAttachment(_x4, _x5) {
   return _deleteAttachment.apply(this, arguments);
 }
 
 function _deleteAttachment() {
   _deleteAttachment = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee2(attachmentId) {
+  regeneratorRuntime.mark(function _callee2(ajax, attachmentId) {
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             return _context2.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])(function () {
-              return $.ajax({
+              return ajax({
                 url: BASE_URL + encodeURIComponent(attachmentId),
                 type: 'DELETE'
               });
@@ -1435,7 +1441,7 @@ function _deleteAttachment() {
   return _deleteAttachment.apply(this, arguments);
 }
 
-function cloneAttachment(_x4, _x5, _x6, _x7) {
+function cloneAttachment(_x6, _x7, _x8, _x9, _x10) {
   return _cloneAttachment.apply(this, arguments);
 }
 /** 
@@ -1448,22 +1454,30 @@ function _cloneAttachment() {
   /*#__PURE__*/
   regeneratorRuntime.mark(function _callee3(attachmentUrl, targetContainerId, title,
   /* optional */
-  targetId) {
+  targetId, delegate) {
     var blobData, attachment;
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            _context3.next = 2;
-            return loadBlob(attachmentUrl);
+            if (!(typeof delegate === 'function')) {
+              _context3.next = 2;
+              break;
+            }
+
+            return _context3.abrupt("return", delegate(attachmentUrl, targetContainerId, title, targetId));
 
           case 2:
+            _context3.next = 4;
+            return loadBlob(attachmentUrl);
+
+          case 4:
             blobData = _context3.sent;
             _context3.t0 = JSON;
-            _context3.next = 6;
+            _context3.next = 8;
             return storeBlob(targetContainerId, blobData, title, targetId);
 
-          case 6:
+          case 8:
             _context3.t1 = _context3.sent;
             attachment = _context3.t0.parse.call(_context3.t0, _context3.t1);
 
@@ -1481,7 +1495,7 @@ function _cloneAttachment() {
 
             return _context3.abrupt("return", attachment);
 
-          case 11:
+          case 13:
           case "end":
             return _context3.stop();
         }
@@ -1491,7 +1505,7 @@ function _cloneAttachment() {
   return _cloneAttachment.apply(this, arguments);
 }
 
-function storeBlob(_x8, _x9, _x10, _x11) {
+function storeBlob(_x11, _x12, _x13, _x14) {
   return _storeBlob.apply(this, arguments);
 }
 
@@ -1531,7 +1545,7 @@ function _storeBlob() {
   return _storeBlob.apply(this, arguments);
 }
 
-function loadBlob(_x12) {
+function loadBlob(_x15) {
   return _loadBlob.apply(this, arguments);
 }
 
@@ -1557,7 +1571,7 @@ function _loadBlob() {
   return _loadBlob.apply(this, arguments);
 }
 
-function postBinary(_x13, _x14) {
+function postBinary(_x16, _x17) {
   return _postBinary.apply(this, arguments);
 }
 
@@ -1596,7 +1610,7 @@ function _postBinary() {
   return _postBinary.apply(this, arguments);
 }
 
-function loadBinary(_x15) {
+function loadBinary(_x18) {
   return _loadBinary.apply(this, arguments);
 }
 

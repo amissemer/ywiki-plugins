@@ -129,6 +129,545 @@ var PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
 
 /***/ }),
 
+/***/ "./js/common/confluence/Attachment.js":
+/*!********************************************!*\
+  !*** ./js/common/confluence/Attachment.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
+
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+function Attachment(jQuery) {
+  if (!jQuery) jQuery = $;
+  return {
+    from: from,
+    getOrCreateAttachment: getOrCreateAttachment
+  };
+
+  function from(_x) {
+    return _from.apply(this, arguments);
+  }
+
+  function _from() {
+    _from = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee(internalAttachment) {
+      var containerId;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              containerId = internalAttachment.container ? internalAttachment.container.id : internalAttachment._expandable.container.replace(/.*\//g, '');
+              return _context.abrupt("return", getOrCreateAttachment(containerId, internalAttachment.title, internalAttachment));
+
+            case 2:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    }));
+    return _from.apply(this, arguments);
+  }
+
+  function getOrCreateAttachment(_x2, _x3, _x4) {
+    return _getOrCreateAttachment.apply(this, arguments);
+  }
+
+  function _getOrCreateAttachment() {
+    _getOrCreateAttachment = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee4(pageId, attachmentTitle,
+    /* optional */
+    internalAttachment) {
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              if (internalAttachment) {
+                _context4.next = 4;
+                break;
+              }
+
+              _context4.next = 3;
+              return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["lookupAttachment"])(jQuery.ajax, pageId, attachmentTitle);
+
+            case 3:
+              internalAttachment = _context4.sent;
+
+            case 4:
+              return _context4.abrupt("return", {
+                _internal: internalAttachment,
+                id: function id() {
+                  return this._internal ? this._internal.id : null;
+                },
+                containerId: function containerId() {
+                  return pageId;
+                },
+                toString: function toString() {
+                  return "".concat(this.id(), ":").concat(pageId, ":").concat(this.title(), ":").concat(this.version());
+                },
+                title: function title() {
+                  return attachmentTitle;
+                },
+                exists: function exists() {
+                  return this._internal != null;
+                },
+                downloadUrl: function downloadUrl() {
+                  return this._internal ? this._internal._links.download : null;
+                },
+                version: function version() {
+                  return this._internal ? this._internal.version.number : null;
+                },
+                spaceKey: function spaceKey() {
+                  return this._internal ? this._internal.space.key : null;
+                },
+                cloneFrom: function () {
+                  var _cloneFrom = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee2(url) {
+                    var otherAttachment;
+                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            if (typeof url !== 'string') {
+                              // assume it is another Attachment or confluence attachment
+                              otherAttachment = url;
+                              url = null;
+
+                              if (typeof otherAttachment.downloadUrl === 'function') {
+                                url = otherAttachment.downloadUrl();
+                              } else if (otherAttachment._links && typeof otherAttachment._links.download === 'string') {
+                                url = otherAttachment._links.download;
+                              }
+                            }
+
+                            if (url) {
+                              _context2.next = 3;
+                              break;
+                            }
+
+                            throw 'invalid url to clone from';
+
+                          case 3:
+                            _context2.next = 5;
+                            return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["cloneAttachment"])(url, pageId, attachmentTitle, this.id(), jQuery.cloneAttachment);
+
+                          case 5:
+                            this._internal = _context2.sent;
+
+                          case 6:
+                          case "end":
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2, this);
+                  }));
+
+                  return function cloneFrom(_x5) {
+                    return _cloneFrom.apply(this, arguments);
+                  };
+                }(),
+                delete: function () {
+                  var _delete2 = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee3() {
+                    var id;
+                    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                      while (1) {
+                        switch (_context3.prev = _context3.next) {
+                          case 0:
+                            id = this.id();
+
+                            if (!id) {
+                              _context3.next = 4;
+                              break;
+                            }
+
+                            _context3.next = 4;
+                            return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["deleteAttachment"])(jQuery.ajax, id);
+
+                          case 4:
+                            this._internal = null;
+
+                          case 5:
+                          case "end":
+                            return _context3.stop();
+                        }
+                      }
+                    }, _callee3, this);
+                  }));
+
+                  return function _delete() {
+                    return _delete2.apply(this, arguments);
+                  };
+                }()
+              });
+
+            case 5:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, this);
+    }));
+    return _getOrCreateAttachment.apply(this, arguments);
+  }
+}
+
+;
+/* harmony default export */ __webpack_exports__["default"] = (Attachment);
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-attachment-async.js":
+/*!*************************************************************!*\
+  !*** ./js/common/confluence/confluence-attachment-async.js ***!
+  \*************************************************************/
+/*! exports provided: lookupAttachment, deleteAttachment, cloneAttachment */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lookupAttachment", function() { return lookupAttachment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteAttachment", function() { return deleteAttachment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cloneAttachment", function() { return cloneAttachment; });
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
+
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+var BASE_URL = '/rest/api/content/';
+function lookupAttachment(_x, _x2, _x3) {
+  return _lookupAttachment.apply(this, arguments);
+}
+
+function _lookupAttachment() {
+  _lookupAttachment = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee(ajax, containerId, attachmentTitle) {
+    var results;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.next = 2;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
+              return ajax(BASE_URL + "".concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
+            });
+
+          case 2:
+            results = _context.sent;
+
+            if (!(results && results.results && results.results.length)) {
+              _context.next = 7;
+              break;
+            }
+
+            return _context.abrupt("return", results.results[0]);
+
+          case 7:
+            return _context.abrupt("return", null);
+
+          case 8:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, this);
+  }));
+  return _lookupAttachment.apply(this, arguments);
+}
+
+function deleteAttachment(_x4, _x5) {
+  return _deleteAttachment.apply(this, arguments);
+}
+
+function _deleteAttachment() {
+  _deleteAttachment = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee2(ajax, attachmentId) {
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            return _context2.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])(function () {
+              return ajax({
+                url: BASE_URL + encodeURIComponent(attachmentId),
+                type: 'DELETE'
+              });
+            }));
+
+          case 1:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, this);
+  }));
+  return _deleteAttachment.apply(this, arguments);
+}
+
+function cloneAttachment(_x6, _x7, _x8, _x9, _x10) {
+  return _cloneAttachment.apply(this, arguments);
+}
+/** 
+ * ContentId is mandatory when updating an existing attachment, and must be omitted when
+ * creating a new attachment.
+ */
+
+function _cloneAttachment() {
+  _cloneAttachment = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee3(attachmentUrl, targetContainerId, title,
+  /* optional */
+  targetId, delegate) {
+    var blobData, attachment;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            if (!(typeof delegate === 'function')) {
+              _context3.next = 2;
+              break;
+            }
+
+            return _context3.abrupt("return", delegate(attachmentUrl, targetContainerId, title, targetId));
+
+          case 2:
+            _context3.next = 4;
+            return loadBlob(attachmentUrl);
+
+          case 4:
+            blobData = _context3.sent;
+            _context3.t0 = JSON;
+            _context3.next = 8;
+            return storeBlob(targetContainerId, blobData, title, targetId);
+
+          case 8:
+            _context3.t1 = _context3.sent;
+            attachment = _context3.t0.parse.call(_context3.t0, _context3.t1);
+
+            if (attachment.results && attachment.results instanceof Array) {
+              // the attachment API returns an array
+              attachment = attachment.results[0];
+            } // populate the space.key to save a GET, since we need it to store the sync timestamp
+
+
+            if (!attachment.space) {
+              attachment.space = {
+                key: attachment._expandable.space.replace(/.*\//, '')
+              };
+            }
+
+            return _context3.abrupt("return", attachment);
+
+          case 13:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, this);
+  }));
+  return _cloneAttachment.apply(this, arguments);
+}
+
+function storeBlob(_x11, _x12, _x13, _x14) {
+  return _storeBlob.apply(this, arguments);
+}
+
+function _storeBlob() {
+  _storeBlob = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee4(containerId, blobData, title,
+  /* optional */
+  contentId) {
+    var url, formData;
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            url = BASE_URL;
+            url += containerId;
+            url += '/child/attachment';
+
+            if (contentId) {
+              url += '/' + contentId + '/data';
+            }
+
+            formData = new FormData();
+            formData.append('file', blobData, title);
+            formData.append('minorEdit', 'true');
+            return _context4.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])(function () {
+              return postBinary(url, formData);
+            }));
+
+          case 8:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4, this);
+  }));
+  return _storeBlob.apply(this, arguments);
+}
+
+function loadBlob(_x15) {
+  return _loadBlob.apply(this, arguments);
+}
+
+function _loadBlob() {
+  _loadBlob = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee5(url) {
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            return _context5.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
+              return loadBinary(url);
+            }));
+
+          case 1:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, this);
+  }));
+  return _loadBlob.apply(this, arguments);
+}
+
+function postBinary(_x16, _x17) {
+  return _postBinary.apply(this, arguments);
+}
+
+function _postBinary() {
+  _postBinary = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee6(url, formData) {
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            return _context6.abrupt("return", new Promise(function (resolve, reject) {
+              var xhr = new XMLHttpRequest();
+              xhr.open("POST", url, true);
+              xhr.onerror = reject;
+              xhr.setRequestHeader('X-Atlassian-Token', 'nocheck');
+
+              xhr.onload = function () {
+                if (this.status == 200) {
+                  resolve(this.response);
+                } else {
+                  reject(this);
+                }
+              };
+
+              xhr.send(formData);
+            }));
+
+          case 1:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6, this);
+  }));
+  return _postBinary.apply(this, arguments);
+}
+
+function loadBinary(_x18) {
+  return _loadBinary.apply(this, arguments);
+}
+
+function _loadBinary() {
+  _loadBinary = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee7(url) {
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            return _context7.abrupt("return", new Promise(function (resolve, reject) {
+              var xhr = new XMLHttpRequest();
+              xhr.open('GET', url, true);
+              xhr.responseType = 'blob';
+              xhr.onerror = reject;
+
+              xhr.onload = function (e) {
+                if (this.status == 200) {
+                  // get binary data as a response
+                  var blob = this.response;
+                  resolve(blob);
+                } else {
+                  reject(e);
+                }
+              };
+
+              xhr.send();
+            }));
+
+          case 1:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7, this);
+  }));
+  return _loadBinary.apply(this, arguments);
+}
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-throttle.js":
+/*!*****************************************************!*\
+  !*** ./js/common/confluence/confluence-throttle.js ***!
+  \*****************************************************/
+/*! exports provided: throttleRead, throttleWrite */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "throttleRead", function() { return throttleRead; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "throttleWrite", function() { return throttleWrite; });
+var MAX_PARALLEL_READ = 4;
+var MAX_PARALLEL_WRITE = 1;
+var throttleRead = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_READ);
+var throttleWrite = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_WRITE);
+
+/***/ }),
+
 /***/ "./js/common/iframeWrapper.js":
 /*!************************************!*\
   !*** ./js/common/iframeWrapper.js ***!
@@ -559,17 +1098,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPageUnderPageId", function() { return createPageUnderPageId; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateContent", function() { return updateContent; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addLabel", function() { return addLabel; });
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _proxyService__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./proxyService */ "./js/iframe/proxyService.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _common_rate_limit__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../common/rate-limit */ "./js/common/rate-limit.js");
-/* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es7.symbol.async-iterator */ "./node_modules/core-js/modules/es7.symbol.async-iterator.js");
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.symbol */ "./node_modules/core-js/modules/es6.symbol.js");
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _proxyService__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./proxyService */ "./js/iframe/proxyService.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _common_rate_limit__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../common/rate-limit */ "./js/common/rate-limit.js");
+/* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
+/* harmony import */ var _common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../common/confluence/Attachment */ "./js/common/confluence/Attachment.js");
+
+
 
 
 
@@ -582,6 +1128,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
+var Attachment = Object(_common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_9__["default"])(_proxyService__WEBPACK_IMPORTED_MODULE_5__);
 /**
  * An API for confluence that runs ajax queries through the proxy object to bypass the CORS restriction.
  */
@@ -597,17 +1145,17 @@ function deletePageRecursive(spaceKey, pageTitle) {
   });
 }
 function getAttachment(pageId, attachmentName) {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"]("/download/attachments/" + pageId + "/" + attachmentName + "?api=v2");
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]("/download/attachments/" + pageId + "/" + attachmentName + "?api=v2");
 }
 function deletePageById(pageId) {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"]({
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]({
     url: '/rest/api/content/' + encodeURIComponent(pageId),
     type: 'DELETE'
   }).fail(errorLogger("DELETE page failed"));
 }
 function movePages(sourceSpaceKey, sourcePageTitle, targetSpaceKey, targetParentTitle) {
   if (sourceSpaceKey == targetSpaceKey) {
-    return new jquery__WEBPACK_IMPORTED_MODULE_4___default.a.Deferred().reject("You don't need a tool for that, just use the standard Move feature of Confluence").promise();
+    return new jquery__WEBPACK_IMPORTED_MODULE_6___default.a.Deferred().reject("You don't need a tool for that, just use the standard Move feature of Confluence").promise();
   }
 
   return getContent(sourceSpaceKey, sourcePageTitle).then(function (sourcePage) {
@@ -616,7 +1164,7 @@ function movePages(sourceSpaceKey, sourcePageTitle, targetSpaceKey, targetParent
 }
 
 function getAtlToken() {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["$metacontent"]('meta[name=ajs-atl-token]');
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["$metacontent"]('meta[name=ajs-atl-token]');
 }
 
 var atlToken;
@@ -641,7 +1189,7 @@ function movePagesRecursiveInternal(sourcePageId, targetSpaceKey, targetParentTi
       } // return when all children have been recursively moved
 
 
-      return jquery__WEBPACK_IMPORTED_MODULE_4___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_4___default.a, childrenPromises);
+      return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_6___default.a, childrenPromises);
     });
   });
 }
@@ -649,7 +1197,7 @@ function movePagesRecursiveInternal(sourcePageId, targetSpaceKey, targetParentTi
 function moveOne(sourcePageId, targetSpaceKey, targetParentTitle) {
   var url = '/pages/movepage.action?pageId=' + encodeURIComponent(sourcePageId) + '&spaceKey=' + encodeURIComponent(targetSpaceKey) + '&targetTitle=' + encodeURIComponent(targetParentTitle) + '&position=append&atl_token=' + atlToken + '&_=' + Math.random();
   console.log("Moving page ", sourcePageId, " under ", targetSpaceKey + ":" + targetParentTitle, url);
-  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"](url);
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"](url);
 }
 
 function deletePageRecursiveInternal(pageId) {
@@ -665,7 +1213,7 @@ function deletePageRecursiveInternal(pageId) {
     } // when all children are deleted
 
 
-    return jquery__WEBPACK_IMPORTED_MODULE_4___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_4___default.a, childrenPromises) // delete the current page
+    return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_6___default.a, childrenPromises) // delete the current page
     .then(function () {
       return deletePageById(pageId);
     });
@@ -688,7 +1236,7 @@ function getContent(spaceKey, pageTitle, expand) {
 
   var url = '/rest/api/content?type=page&spaceKey=' + encodeURIComponent(spaceKey) + '&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
   console.log("Getting page content from " + url);
-  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"](url).then(function (response) {
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"](url).then(function (response) {
     console.log("Filtering AJAX response", response);
 
     if (response.results && response.results.length > 0) {
@@ -697,7 +1245,7 @@ function getContent(spaceKey, pageTitle, expand) {
       return page;
     } else {
       console.warn("Page Not found: '" + spaceKey + ":" + pageTitle + "'");
-      return jquery__WEBPACK_IMPORTED_MODULE_4___default.a.Deferred().reject("Page Not found: '" + spaceKey + ":" + pageTitle + "'");
+      return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.Deferred().reject("Page Not found: '" + spaceKey + ":" + pageTitle + "'");
     }
   }, errorLogger("Failed getContent promise"));
 }
@@ -710,7 +1258,7 @@ function getContentById(pageId, expand) {
 
   var url = '/rest/api/content/' + encodeURIComponent(pageId) + expandParam;
   console.log(url);
-  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"](url).fail(errorLogger("GET page by pageId failed"));
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"](url).fail(errorLogger("GET page by pageId failed"));
 }
 /** search for content with CQL
 for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
@@ -721,7 +1269,7 @@ function searchPagesWithCQL(spaceKey, cqlQuery, limit, expand) {
   }
 
   var expandParam = expand ? "&expand=" + encodeURIComponent(expand) : "";
-  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"]('/rest/api/content/search?limit=' + encodeURIComponent(limit) + '&cql=' + encodeURIComponent(cqlQuery + ' and type=page and space=\'' + spaceKey + '\'') + expandParam);
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]('/rest/api/content/search?limit=' + encodeURIComponent(limit) + '&cql=' + encodeURIComponent(cqlQuery + ' and type=page and space=\'' + spaceKey + '\'') + expandParam);
 }
 /**
 * Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
@@ -769,7 +1317,7 @@ function _copyPage() {
 function copyPageRecursive(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor, copiedPages) {
   var sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
   var targetPagePromise = getContent(toSpaceKey, toPageTitle, 'space');
-  return jquery__WEBPACK_IMPORTED_MODULE_4___default.a.when(sourcePagePromise, targetPagePromise).then(function (sourcePage, targetPage) {
+  return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.when(sourcePagePromise, targetPagePromise).then(function (sourcePage, targetPage) {
     return copyPageRecursiveInternal(sourcePage.id, targetPage.space.key, targetPage.id, templateProcessor, copiedPages);
   });
 }
@@ -788,13 +1336,13 @@ function _copyPageRecursiveInternal() {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return getContentById(sourcePageId, 'space,body.storage,children.page,metadata.labels');
+            return getContentById(sourcePageId, 'space,body.storage,children.page,children.attachment,metadata.labels');
 
           case 2:
             pageToCopy = _context2.sent;
 
             if (!templateProcessor.isApplicableTemplatePage(pageToCopy)) {
-              _context2.next = 15;
+              _context2.next = 18;
               break;
             }
 
@@ -807,22 +1355,32 @@ function _copyPageRecursiveInternal() {
 
           case 8:
             copiedPage = _context2.sent;
-            copiedPages.push(copiedPage);
+
+            if (!templateProcessor.copyAttachments) {
+              _context2.next = 12;
+              break;
+            }
+
             _context2.next = 12;
-            return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
+            return copyAllAttachments(pageToCopy, copiedPage.id);
 
           case 12:
-            return _context2.abrupt("return", _context2.sent);
+            copiedPages.push(copiedPage);
+            _context2.next = 15;
+            return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
 
           case 15:
-            console.log("Page is not a template, not copied, but children will be copied: ", pageToCopy.title);
-            _context2.next = 18;
-            return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
-
-          case 18:
             return _context2.abrupt("return", _context2.sent);
 
-          case 19:
+          case 18:
+            console.log("Page is not a template, not copied, but children will be copied: ", pageToCopy.title);
+            _context2.next = 21;
+            return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
+
+          case 21:
+            return _context2.abrupt("return", _context2.sent);
+
+          case 22:
           case "end":
             return _context2.stop();
         }
@@ -830,6 +1388,124 @@ function _copyPageRecursiveInternal() {
     }, _callee2, this);
   }));
   return _copyPageRecursiveInternal.apply(this, arguments);
+}
+
+function copyAllAttachments(_x11, _x12) {
+  return _copyAllAttachments.apply(this, arguments);
+}
+
+function _copyAllAttachments() {
+  _copyAllAttachments = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee3(pageToCopy, targetContainerId) {
+    var attachmentResults, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, attachmentInternal, sourceAttachment, targetAttachment;
+
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            attachmentResults = pageToCopy.children.attachment;
+
+          case 1:
+            if (!(attachmentResults && attachmentResults.results.length)) {
+              _context3.next = 43;
+              break;
+            }
+
+            _iteratorNormalCompletion = true;
+            _didIteratorError = false;
+            _iteratorError = undefined;
+            _context3.prev = 5;
+            _iterator = attachmentResults.results[Symbol.iterator]();
+
+          case 7:
+            if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
+              _context3.next = 20;
+              break;
+            }
+
+            attachmentInternal = _step.value;
+            _context3.next = 11;
+            return Attachment.from(attachmentInternal);
+
+          case 11:
+            sourceAttachment = _context3.sent;
+            _context3.next = 14;
+            return Attachment.getOrCreateAttachment(targetContainerId, sourceAttachment.title());
+
+          case 14:
+            targetAttachment = _context3.sent;
+            _context3.next = 17;
+            return targetAttachment.cloneFrom(sourceAttachment);
+
+          case 17:
+            _iteratorNormalCompletion = true;
+            _context3.next = 7;
+            break;
+
+          case 20:
+            _context3.next = 26;
+            break;
+
+          case 22:
+            _context3.prev = 22;
+            _context3.t0 = _context3["catch"](5);
+            _didIteratorError = true;
+            _iteratorError = _context3.t0;
+
+          case 26:
+            _context3.prev = 26;
+            _context3.prev = 27;
+
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
+            }
+
+          case 29:
+            _context3.prev = 29;
+
+            if (!_didIteratorError) {
+              _context3.next = 32;
+              break;
+            }
+
+            throw _iteratorError;
+
+          case 32:
+            return _context3.finish(29);
+
+          case 33:
+            return _context3.finish(26);
+
+          case 34:
+            if (!attachmentResults._links.next) {
+              _context3.next = 40;
+              break;
+            }
+
+            _context3.next = 37;
+            return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"](attachmentResults._links.next);
+
+          case 37:
+            attachmentResults = _context3.sent;
+            _context3.next = 41;
+            break;
+
+          case 40:
+            attachmentResults = false;
+
+          case 41:
+            _context3.next = 1;
+            break;
+
+          case 43:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, this, [[5, 22, 26, 34], [27,, 29, 33]]);
+  }));
+  return _copyAllAttachments.apply(this, arguments);
 }
 
 function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
@@ -844,14 +1520,14 @@ function copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProce
   } // return the combination of all children copy promises
 
 
-  return jquery__WEBPACK_IMPORTED_MODULE_4___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_4___default.a, childrenPromises);
+  return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.when.apply(jquery__WEBPACK_IMPORTED_MODULE_6___default.a, childrenPromises);
 } // returns a function that will log all the arguments on the console as an error, preprended with a message.
 
 
 function errorLogger(message) {
   return function () {
     console.error(message, arguments);
-    return jquery__WEBPACK_IMPORTED_MODULE_4___default.a.Deferred().reject(arguments);
+    return jquery__WEBPACK_IMPORTED_MODULE_6___default.a.Deferred().reject(arguments);
   };
 }
 
@@ -862,19 +1538,29 @@ function createPage(page, targetSpaceKey, targetParentTitle) {
   });
 }
 function createPageUnderPageId(page, targetSpaceKey, targetPageId) {
-  page.ancestors = [{
-    id: targetPageId
-  }];
-  console.log("New Page", page);
-  page.space = {
-    key: targetSpaceKey
+  var pageToCreate = {
+    ancestors: [{
+      id: targetPageId
+    }],
+    space: {
+      key: targetSpaceKey
+    },
+    body: {
+      storage: {
+        representation: 'storage',
+        value: page.body.storage.value
+      }
+    },
+    title: page.title,
+    type: 'page'
   };
-  return postPageRateLimited(page);
+  console.log("New Page", pageToCreate);
+  return postPageRateLimited(pageToCreate);
 }
-var postPageRateLimited = Object(_common_rate_limit__WEBPACK_IMPORTED_MODULE_5__["default"])(postPage, _common_config__WEBPACK_IMPORTED_MODULE_6__["MAX_WIKI_PAGE_CREATION_RATE"]);
+var postPageRateLimited = Object(_common_rate_limit__WEBPACK_IMPORTED_MODULE_7__["default"])(postPage, _common_config__WEBPACK_IMPORTED_MODULE_8__["MAX_WIKI_PAGE_CREATION_RATE"]);
 
 function postPage(page) {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"]({
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]({
     url: '/rest/api/content',
     type: 'POST',
     contentType: 'application/json',
@@ -883,7 +1569,7 @@ function postPage(page) {
 }
 
 function updateContent(page) {
-  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"]({
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]({
     url: '/rest/api/content/' + encodeURIComponent(page.id),
     type: 'PUT',
     contentType: 'application/json',
@@ -914,7 +1600,7 @@ function addLabel(pageId, label) {
     throw "Unknown type of label: " + label;
   }
 
-  return _proxyService__WEBPACK_IMPORTED_MODULE_3__["ajax"]({
+  return _proxyService__WEBPACK_IMPORTED_MODULE_5__["ajax"]({
     url: '/rest/api/content/' + encodeURIComponent(pageId) + '/label',
     type: 'POST',
     contentType: 'application/json',
@@ -1177,7 +1863,7 @@ jquery__WEBPACK_IMPORTED_MODULE_3___default()(document).ready(bindDOM);
 /*!***********************************!*\
   !*** ./js/iframe/proxyService.js ***!
   \***********************************/
-/*! exports provided: ajax, localStorageSetItem, localStorageGetItem, closeFrame, redirect, $metacontent, $text, $arrayGetText, $tableCellsGetHtml */
+/*! exports provided: ajax, localStorageSetItem, localStorageGetItem, closeFrame, redirect, $metacontent, $text, $arrayGetText, $tableCellsGetHtml, cloneAttachment */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1191,6 +1877,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "$text", function() { return $text; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "$arrayGetText", function() { return $arrayGetText; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "$tableCellsGetHtml", function() { return $tableCellsGetHtml; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cloneAttachment", function() { return cloneAttachment; });
 /* harmony import */ var _common_iframeWrapper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/iframeWrapper */ "./js/common/iframeWrapper.js");
 /* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
 
@@ -1252,6 +1939,14 @@ function $arrayGetText(cssSelector) {
 function $tableCellsGetHtml(cssSelector) {
   return wrapper.call("$tableCellsGetHtml", cssSelector);
 }
+function cloneAttachment(attachmentUrl, targetContainerId, title, targetId) {
+  return wrapper.call("cloneAttachment", {
+    attachmentUrl: attachmentUrl,
+    targetContainerId: targetContainerId,
+    title: title,
+    targetId: targetId
+  });
+}
 
 /***/ }),
 
@@ -1307,10 +2002,25 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 var fixLocalLinksXsl = __webpack_require__(/*! raw-loader!./xslt/fix-local-links.xsl */ "./node_modules/raw-loader/index.js!./js/iframe/xslt/fix-local-links.xsl");
 
 var template_pattern = /\[Customer\]|\[ProjectName\]/;
-function TemplateProcessor(placeholderReplacements, variantOptions, forceTitle) {
-  var placeholderReplacements = placeholderReplacements;
-  var variantOptions = variantOptions; // [ { name : "hosting", value : "ccv2" | "other" } ]
+/**
+ * Construct TemplateProcessor.
+ *
+ * @constructor
+ * @this {TemplateProcessor}
+ * @param {Object} options
+ * @param {Object} options.placeholderReplacements
+ * @param {Object} options.variantOptions
+ * @param {boolean} options.forceTitle
+ * @param {boolean} options.copyAttachments
+ */
 
+function TemplateProcessor(options) {
+  if (!(this instanceof TemplateProcessor)) return new TemplateProcessor(options);
+  var placeholderReplacements = options.placeholderReplacements;
+  var variantOptions = options.variantOptions; // [ { name : "hosting", value : "ccv2" | "other" } ]
+
+  var forceTitle = options.forceTitle;
+  this.copyAttachments = options.copyAttachments;
   /** Filters only pages that contain [placeholders] */
 
   function isTemplatePage(page) {
@@ -1469,52 +2179,55 @@ function TemplateProcessor(placeholderReplacements, variantOptions, forceTitle) 
   function filterVariantInContent(content) {
     return Object(_variantOptionsTransform__WEBPACK_IMPORTED_MODULE_8__["default"])(content, variantOptions);
   }
+  /** 
+   * Determines if a page is a template page and should be used to create the workspace, based on the variantOptions.
+   * @param page a confluence page with its title and labels
+   * @returns true|false
+   **/
 
-  return {
-    /** 
-     * Determines if a page is a template page and should be used to create the workspace, based on the variantOptions.
-     * @param page a confluence page with its title and labels
-     * @returns true|false
-     **/
-    isApplicableTemplatePage: function isApplicableTemplatePage(page) {
-      return isTemplatePage(page) && isApplicableToVariantOptions(page);
-    },
 
-    /**
-     * Transforms a page a per placeholderReplacements and selected variantOptions
-     * /!\ Working through side-effect, directly on the input page.
-     */
-    transformPage: function () {
-      var _transformPage = _asyncToGenerator(
-      /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee(page) {
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                replacePlaceholderInPage(page);
-                _context.next = 3;
-                return filterVariant(page);
-
-              case 3:
-                _context.next = 5;
-                return fixLocalLinks(page);
-
-              case 5:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      return function transformPage(_x3) {
-        return _transformPage.apply(this, arguments);
-      };
-    }()
+  this.isApplicableTemplatePage = function (page) {
+    return isTemplatePage(page) && isApplicableToVariantOptions(page);
   };
+  /**
+   * Transforms a page a per placeholderReplacements and selected variantOptions
+   * /!\ Working through side-effect, directly on the input page.
+   */
+
+
+  this.transformPage =
+  /*#__PURE__*/
+  function () {
+    var _ref = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee(page) {
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return filterVariant(page);
+
+            case 2:
+              _context.next = 4;
+              return fixLocalLinks(page);
+
+            case 4:
+              replacePlaceholderInPage(page);
+
+            case 5:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    }));
+
+    return function (_x3) {
+      return _ref.apply(this, arguments);
+    };
+  }();
 }
-;
 
 /***/ }),
 
@@ -1749,7 +2462,7 @@ function logCreationWithVersion(version, logToPage, createdPage) {
 
   if (logToPage) {
     console.log("Logging creation of " + createdPage.title + " by " + options.currentUserKey + ' in ' + logToPage);
-    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getContent"](options.currentSpaceKey, logToPage, 'space,body.storage,version').then(function (logPageJson) {
+    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getContent"](options.logToSpace, logToPage, 'space,body.storage,version').then(function (logPageJson) {
       console.log("logPageJson before edit: ", logPageJson);
 
       if (logPageJson.body.storage) {
@@ -1810,17 +2523,23 @@ function createWorkspace(workspaceOpts) {
 }
 
 function createCustomerPage(region, customer) {
-  return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["copyPage"](options.targetSpace, options.customerPageTemplate, options.targetSpace, region, Object(_templateProcessor__WEBPACK_IMPORTED_MODULE_8__["TemplateProcessor"])(customer));
+  return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["copyPage"](options.targetSpace, options.customerPageTemplate, options.targetSpace, region, new _templateProcessor__WEBPACK_IMPORTED_MODULE_8__["TemplateProcessor"]({
+    placeholderReplacements: customer
+  }));
 }
 
 function createJustWorkspace(workspaceOpts) {
   var copiedPages = [];
-  var templateProcessor = Object(_templateProcessor__WEBPACK_IMPORTED_MODULE_8__["TemplateProcessor"])({
-    "Region": workspaceOpts.reportingRegion,
-    "Customer": workspaceOpts.customer,
-    "ProjectName": workspaceOpts.projectName,
-    "TargetEndDate": workspaceOpts.targetEndDate
-  }, workspaceOpts.variantOptions);
+  var templateProcessor = new _templateProcessor__WEBPACK_IMPORTED_MODULE_8__["TemplateProcessor"]({
+    placeholderReplacements: {
+      "Region": workspaceOpts.reportingRegion,
+      "Customer": workspaceOpts.customer,
+      "ProjectName": workspaceOpts.projectName,
+      "TargetEndDate": workspaceOpts.targetEndDate
+    },
+    variantOptions: workspaceOpts.variantOptions,
+    copyAttachments: true
+  });
   return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getContentById"](options.sourcePageId, 'space').then(function (sourcePage) {
     return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["copyPageRecursive"](sourcePage.space.key, sourcePage.title, options.targetSpace, workspaceOpts.customer, templateProcessor, copiedPages);
   }).then(function () {
@@ -39875,7 +40594,7 @@ return jQuery;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<xsl:stylesheet version=\"1.0\" \n    xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \n    xmlns:ac=\"http://atlassian.com/content\"\n    xmlns:ri=\"http://atlassian.com/resource/identifier\">\n\n    <!-- Output the ac:plain-text-link-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->\n    <xsl:output method=\"xml\" cdata-section-elements=\"ac:plain-text-link-body ac:plain-text-body\" />\n\n    <!-- Add the space-key attribute to ri:page (links) when it is missing -->\n    <xsl:template match=\"ri:page[@ri:content-title][not(@ri:space-key)]\">\n        <xsl:copy>\n            <xsl:attribute name=\"ri:space-key\">{0}</xsl:attribute>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n    \n    <!-- Copy everything else as is -->   \n    <xsl:template match=\"@*|node()\">\n        <xsl:copy>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n</xsl:stylesheet>"
+module.exports = "<xsl:stylesheet version=\"1.0\" \n    xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \n    xmlns:ac=\"http://atlassian.com/content\"\n    xmlns:ri=\"http://atlassian.com/resource/identifier\">\n\n    <!-- Output the ac:plain-text-link-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->\n    <xsl:output method=\"xml\" cdata-section-elements=\"ac:plain-text-link-body ac:plain-text-body\" />\n\n    <!-- Add the space-key attribute to ri:page (links) when it is missing -->\n    <xsl:template match=\"ri:page[@ri:content-title][not(@ri:space-key) and not(contains(@ri:content-title,'[Customer]')) and not(contains(@ri:content-title,'[ProjectName]'))]\">\n        <xsl:copy>\n            <xsl:attribute name=\"ri:space-key\">{0}</xsl:attribute>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n\n    <!-- Remove the <ac:parameter ac:name=\"revision\">*</ac:parameter> tag in the <ac:structured-macro ac:name=\"drawio\"> tags,\n    to avoid binding draw.io macros to wrong version of diagram -->\n    <xsl:template match=\"ac:structured-macro[@ac:name='drawio']/ac:parameter[@ac:name='revision']\" />\n    \n    <!-- Copy everything else as is -->   \n    <xsl:template match=\"@*|node()\">\n        <xsl:copy>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n</xsl:stylesheet>"
 
 /***/ }),
 
@@ -40624,6 +41343,134 @@ module.exports = "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/
   // of indirect eval which violates Content Security Policy.
   (function() { return this })() || Function("return this")()
 );
+
+
+/***/ }),
+
+/***/ "./node_modules/throat/index.js":
+/*!**************************************!*\
+  !*** ./node_modules/throat/index.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (PromiseArgument) {
+  var Promise;
+  function throat(size, fn) {
+    var queue = new Queue();
+    function run(fn, self, args) {
+      if (size) {
+        size--;
+        var result = new Promise(function (resolve) {
+          resolve(fn.apply(self, args));
+        });
+        result.then(release, release);
+        return result;
+      } else {
+        return new Promise(function (resolve) {
+          queue.push(new Delayed(resolve, fn, self, args));
+        });
+      }
+    }
+    function release() {
+      size++;
+      if (!queue.isEmpty()) {
+        var next = queue.shift();
+        next.resolve(run(next.fn, next.self, next.args));
+      }
+    }
+    if (typeof size === 'function') {
+      var temp = fn;
+      fn = size;
+      size = temp;
+    }
+    if (typeof size !== 'number') {
+      throw new TypeError(
+        'Expected throat size to be a number but got ' + typeof size
+      );
+    }
+    if (fn !== undefined && typeof fn !== 'function') {
+      throw new TypeError(
+        'Expected throat fn to be a function but got ' + typeof fn
+      );
+    }
+    if (typeof fn === 'function') {
+      return function () {
+        var args = [];
+        for (var i = 0; i < arguments.length; i++) {
+          args.push(arguments[i]);
+        }
+        return run(fn, this, args);
+      };
+    } else {
+      return function (fn) {
+        if (typeof fn !== 'function') {
+          throw new TypeError(
+            'Expected throat fn to be a function but got ' + typeof fn
+          );
+        }
+        var args = [];
+        for (var i = 1; i < arguments.length; i++) {
+          args.push(arguments[i]);
+        }
+        return run(fn, this, args);
+      };
+    }
+  }
+  if (arguments.length === 1 && typeof PromiseArgument === 'function') {
+    Promise = PromiseArgument;
+    return throat;
+  } else {
+    Promise = module.exports.Promise;
+    if (typeof Promise !== 'function') {
+      throw new Error(
+        'You must provide a Promise polyfill for this library to work in older environments'
+      );
+    }
+    return throat(arguments[0], arguments[1]);
+  }
+};
+
+/* istanbul ignore next */
+if (typeof Promise === 'function') {
+  module.exports.Promise = Promise;
+}
+
+function Delayed(resolve, fn, self, args) {
+  this.resolve = resolve;
+  this.fn = fn;
+  this.self = self || null;
+  this.args = args;
+}
+
+function Queue() {
+  this._s1 = [];
+  this._s2 = [];
+}
+
+Queue.prototype.push = function (value) {
+  this._s1.push(value);
+};
+
+Queue.prototype.shift = function () {
+  var s2 = this._s2;
+  if (s2.length === 0) {
+    var s1 = this._s1;
+    if (s1.length === 0) {
+      return;
+    }
+    this._s1 = s2;
+    s2 = this._s2 = s1.reverse();
+  }
+  return s2.pop();
+};
+
+Queue.prototype.isEmpty = function () {
+  return !this._s1.length && !this._s2.length;
+};
 
 
 /***/ }),

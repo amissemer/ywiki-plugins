@@ -2,8 +2,8 @@ import {throttleRead, throttleWrite} from './confluence-throttle';
 
 const BASE_URL = '/rest/api/content/';
 
-export async function lookupAttachment(containerId, attachmentTitle) {
-    let results = await throttleRead( () => $.get(BASE_URL+`${containerId}/child/attachment?filename=${encodeURIComponent(attachmentTitle)}&expand=space,version,container`) );
+export async function lookupAttachment(ajax, containerId, attachmentTitle) {
+    let results = await throttleRead( () => ajax(BASE_URL+`${containerId}/child/attachment?filename=${encodeURIComponent(attachmentTitle)}&expand=space,version,container`) );
     if (results && results.results && results.results.length) {
         return results.results[0];
     } else {
@@ -11,14 +11,17 @@ export async function lookupAttachment(containerId, attachmentTitle) {
     }
 }
 
-export async function deleteAttachment(attachmentId) {
-    return throttleWrite( () => $.ajax({
+export async function deleteAttachment(ajax, attachmentId) {
+    return throttleWrite( () => ajax({
         url: BASE_URL + encodeURIComponent(attachmentId),
         type: 'DELETE'
     }) );
 }
 
-export async function cloneAttachment(attachmentUrl, targetContainerId, title, /* optional */ targetId) {
+export async function cloneAttachment(attachmentUrl, targetContainerId, title, /* optional */ targetId, delegate) {
+    if (typeof delegate === 'function') {
+        return delegate(attachmentUrl, targetContainerId, title, targetId);
+    }
     let blobData = await loadBlob(attachmentUrl);
     let attachment = JSON.parse(await storeBlob(targetContainerId, blobData, title, targetId));
     if (attachment.results && attachment.results instanceof Array ) {

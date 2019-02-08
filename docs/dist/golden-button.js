@@ -151,6 +151,335 @@ var PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
 
 /***/ }),
 
+/***/ "./js/common/confluence/confluence-attachment-async.js":
+/*!*************************************************************!*\
+  !*** ./js/common/confluence/confluence-attachment-async.js ***!
+  \*************************************************************/
+/*! exports provided: lookupAttachment, deleteAttachment, cloneAttachment */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lookupAttachment", function() { return lookupAttachment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteAttachment", function() { return deleteAttachment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cloneAttachment", function() { return cloneAttachment; });
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
+
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+var BASE_URL = '/rest/api/content/';
+function lookupAttachment(_x, _x2, _x3) {
+  return _lookupAttachment.apply(this, arguments);
+}
+
+function _lookupAttachment() {
+  _lookupAttachment = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee(ajax, containerId, attachmentTitle) {
+    var results;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.next = 2;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
+              return ajax(BASE_URL + "".concat(containerId, "/child/attachment?filename=").concat(encodeURIComponent(attachmentTitle), "&expand=space,version,container"));
+            });
+
+          case 2:
+            results = _context.sent;
+
+            if (!(results && results.results && results.results.length)) {
+              _context.next = 7;
+              break;
+            }
+
+            return _context.abrupt("return", results.results[0]);
+
+          case 7:
+            return _context.abrupt("return", null);
+
+          case 8:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, this);
+  }));
+  return _lookupAttachment.apply(this, arguments);
+}
+
+function deleteAttachment(_x4, _x5) {
+  return _deleteAttachment.apply(this, arguments);
+}
+
+function _deleteAttachment() {
+  _deleteAttachment = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee2(ajax, attachmentId) {
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            return _context2.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])(function () {
+              return ajax({
+                url: BASE_URL + encodeURIComponent(attachmentId),
+                type: 'DELETE'
+              });
+            }));
+
+          case 1:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, this);
+  }));
+  return _deleteAttachment.apply(this, arguments);
+}
+
+function cloneAttachment(_x6, _x7, _x8, _x9, _x10) {
+  return _cloneAttachment.apply(this, arguments);
+}
+/** 
+ * ContentId is mandatory when updating an existing attachment, and must be omitted when
+ * creating a new attachment.
+ */
+
+function _cloneAttachment() {
+  _cloneAttachment = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee3(attachmentUrl, targetContainerId, title,
+  /* optional */
+  targetId, delegate) {
+    var blobData, attachment;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            if (!(typeof delegate === 'function')) {
+              _context3.next = 2;
+              break;
+            }
+
+            return _context3.abrupt("return", delegate(attachmentUrl, targetContainerId, title, targetId));
+
+          case 2:
+            _context3.next = 4;
+            return loadBlob(attachmentUrl);
+
+          case 4:
+            blobData = _context3.sent;
+            _context3.t0 = JSON;
+            _context3.next = 8;
+            return storeBlob(targetContainerId, blobData, title, targetId);
+
+          case 8:
+            _context3.t1 = _context3.sent;
+            attachment = _context3.t0.parse.call(_context3.t0, _context3.t1);
+
+            if (attachment.results && attachment.results instanceof Array) {
+              // the attachment API returns an array
+              attachment = attachment.results[0];
+            } // populate the space.key to save a GET, since we need it to store the sync timestamp
+
+
+            if (!attachment.space) {
+              attachment.space = {
+                key: attachment._expandable.space.replace(/.*\//, '')
+              };
+            }
+
+            return _context3.abrupt("return", attachment);
+
+          case 13:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, this);
+  }));
+  return _cloneAttachment.apply(this, arguments);
+}
+
+function storeBlob(_x11, _x12, _x13, _x14) {
+  return _storeBlob.apply(this, arguments);
+}
+
+function _storeBlob() {
+  _storeBlob = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee4(containerId, blobData, title,
+  /* optional */
+  contentId) {
+    var url, formData;
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            url = BASE_URL;
+            url += containerId;
+            url += '/child/attachment';
+
+            if (contentId) {
+              url += '/' + contentId + '/data';
+            }
+
+            formData = new FormData();
+            formData.append('file', blobData, title);
+            formData.append('minorEdit', 'true');
+            return _context4.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleWrite"])(function () {
+              return postBinary(url, formData);
+            }));
+
+          case 8:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4, this);
+  }));
+  return _storeBlob.apply(this, arguments);
+}
+
+function loadBlob(_x15) {
+  return _loadBlob.apply(this, arguments);
+}
+
+function _loadBlob() {
+  _loadBlob = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee5(url) {
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            return _context5.abrupt("return", Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_3__["throttleRead"])(function () {
+              return loadBinary(url);
+            }));
+
+          case 1:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, this);
+  }));
+  return _loadBlob.apply(this, arguments);
+}
+
+function postBinary(_x16, _x17) {
+  return _postBinary.apply(this, arguments);
+}
+
+function _postBinary() {
+  _postBinary = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee6(url, formData) {
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            return _context6.abrupt("return", new Promise(function (resolve, reject) {
+              var xhr = new XMLHttpRequest();
+              xhr.open("POST", url, true);
+              xhr.onerror = reject;
+              xhr.setRequestHeader('X-Atlassian-Token', 'nocheck');
+
+              xhr.onload = function () {
+                if (this.status == 200) {
+                  resolve(this.response);
+                } else {
+                  reject(this);
+                }
+              };
+
+              xhr.send(formData);
+            }));
+
+          case 1:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6, this);
+  }));
+  return _postBinary.apply(this, arguments);
+}
+
+function loadBinary(_x18) {
+  return _loadBinary.apply(this, arguments);
+}
+
+function _loadBinary() {
+  _loadBinary = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee7(url) {
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            return _context7.abrupt("return", new Promise(function (resolve, reject) {
+              var xhr = new XMLHttpRequest();
+              xhr.open('GET', url, true);
+              xhr.responseType = 'blob';
+              xhr.onerror = reject;
+
+              xhr.onload = function (e) {
+                if (this.status == 200) {
+                  // get binary data as a response
+                  var blob = this.response;
+                  resolve(blob);
+                } else {
+                  reject(e);
+                }
+              };
+
+              xhr.send();
+            }));
+
+          case 1:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7, this);
+  }));
+  return _loadBinary.apply(this, arguments);
+}
+
+/***/ }),
+
+/***/ "./js/common/confluence/confluence-throttle.js":
+/*!*****************************************************!*\
+  !*** ./js/common/confluence/confluence-throttle.js ***!
+  \*****************************************************/
+/*! exports provided: throttleRead, throttleWrite */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "throttleRead", function() { return throttleRead; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "throttleWrite", function() { return throttleWrite; });
+var MAX_PARALLEL_READ = 4;
+var MAX_PARALLEL_WRITE = 1;
+var throttleRead = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_READ);
+var throttleWrite = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_WRITE);
+
+/***/ }),
+
 /***/ "./js/common/iframeWrapper.js":
 /*!************************************!*\
   !*** ./js/common/iframeWrapper.js ***!
@@ -653,6 +982,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
 /* harmony import */ var _common_optionsParser__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../common/optionsParser */ "./js/common/optionsParser.js");
 /* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
+/* harmony import */ var _common_confluence_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../common/confluence/confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
+
 
 
 
@@ -717,6 +1048,8 @@ function attachHandlersToIFrameWindow(host, myIFrame) {
     return window.localStorage.getItem(e);
   }).attachActionHandler("$text", function (e) {
     return jQuery(e).text();
+  }).attachActionHandler("cloneAttachment", function (e) {
+    return Object(_common_confluence_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_8__["cloneAttachment"])(e.attachmentUrl, e.targetContainerId, e.title, e.targetId);
   });
 }
 
@@ -865,6 +1198,7 @@ function bootstrap(host, cacheBuster) {
       newInstanceDisplayName: jEl.data('new-instance-display-name'),
       addLabel: jEl.data('add-label'),
       logToPage: jEl.data('log-to-page'),
+      logToSpace: jEl.data('log-to-space') || jEl.data('target-space'),
       variantOptions: readOptions(jEl)
     });
   });
@@ -14622,6 +14956,134 @@ return jQuery;
   // of indirect eval which violates Content Security Policy.
   (function() { return this })() || Function("return this")()
 );
+
+
+/***/ }),
+
+/***/ "./node_modules/throat/index.js":
+/*!**************************************!*\
+  !*** ./node_modules/throat/index.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (PromiseArgument) {
+  var Promise;
+  function throat(size, fn) {
+    var queue = new Queue();
+    function run(fn, self, args) {
+      if (size) {
+        size--;
+        var result = new Promise(function (resolve) {
+          resolve(fn.apply(self, args));
+        });
+        result.then(release, release);
+        return result;
+      } else {
+        return new Promise(function (resolve) {
+          queue.push(new Delayed(resolve, fn, self, args));
+        });
+      }
+    }
+    function release() {
+      size++;
+      if (!queue.isEmpty()) {
+        var next = queue.shift();
+        next.resolve(run(next.fn, next.self, next.args));
+      }
+    }
+    if (typeof size === 'function') {
+      var temp = fn;
+      fn = size;
+      size = temp;
+    }
+    if (typeof size !== 'number') {
+      throw new TypeError(
+        'Expected throat size to be a number but got ' + typeof size
+      );
+    }
+    if (fn !== undefined && typeof fn !== 'function') {
+      throw new TypeError(
+        'Expected throat fn to be a function but got ' + typeof fn
+      );
+    }
+    if (typeof fn === 'function') {
+      return function () {
+        var args = [];
+        for (var i = 0; i < arguments.length; i++) {
+          args.push(arguments[i]);
+        }
+        return run(fn, this, args);
+      };
+    } else {
+      return function (fn) {
+        if (typeof fn !== 'function') {
+          throw new TypeError(
+            'Expected throat fn to be a function but got ' + typeof fn
+          );
+        }
+        var args = [];
+        for (var i = 1; i < arguments.length; i++) {
+          args.push(arguments[i]);
+        }
+        return run(fn, this, args);
+      };
+    }
+  }
+  if (arguments.length === 1 && typeof PromiseArgument === 'function') {
+    Promise = PromiseArgument;
+    return throat;
+  } else {
+    Promise = module.exports.Promise;
+    if (typeof Promise !== 'function') {
+      throw new Error(
+        'You must provide a Promise polyfill for this library to work in older environments'
+      );
+    }
+    return throat(arguments[0], arguments[1]);
+  }
+};
+
+/* istanbul ignore next */
+if (typeof Promise === 'function') {
+  module.exports.Promise = Promise;
+}
+
+function Delayed(resolve, fn, self, args) {
+  this.resolve = resolve;
+  this.fn = fn;
+  this.self = self || null;
+  this.args = args;
+}
+
+function Queue() {
+  this._s1 = [];
+  this._s2 = [];
+}
+
+Queue.prototype.push = function (value) {
+  this._s1.push(value);
+};
+
+Queue.prototype.shift = function () {
+  var s2 = this._s2;
+  if (s2.length === 0) {
+    var s1 = this._s1;
+    if (s1.length === 0) {
+      return;
+    }
+    this._s1 = s2;
+    s2 = this._s2 = s1.reverse();
+  }
+  return s2.pop();
+};
+
+Queue.prototype.isEmpty = function () {
+  return !this._s1.length && !this._s2.length;
+};
 
 
 /***/ })
