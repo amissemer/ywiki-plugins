@@ -20017,7 +20017,7 @@ return jQuery;
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/*! JsRender v1.0.1: http://jsviews.com/#jsrender */
+/*! JsRender v0.9.91 (Beta): http://jsviews.com/#jsrender */
 /*! **VERSION FOR WEB** (For NODE.JS see http://jsviews.com/download/jsrender-node.js) */
 /*
  * Best-of-breed templating in browser or on Node.js.
@@ -20057,19 +20057,25 @@ var setGlobals = $ === false; // Only set globals if script block in browser (no
 
 $ = $ && $.fn ? $ : global.jQuery; // $ is jQuery passed in by CommonJS loader (Browserify), or global jQuery.
 
-var versionNumber = "v1.0.1",
+var versionNumber = "v0.9.91",
 	jsvStoreName, rTag, rTmplString, topView, $views, $expando,
 	_ocp = "_ocp", // Observable contextual parameter
 
 //TODO	tmplFnsCache = {},
-	$isFunction, $isArray, $templates, $converters, $helpers, $tags, $sub, $subSettings, $subSettingsAdvanced, $viewsSettings,
-	delimOpenChar0, delimOpenChar1, delimCloseChar0, delimCloseChar1, linkChar, setting, baseOnError,
+	$isFunction, $isArray, $templates, $converters, $helpers, $tags, $sub, $subSettings, $subSettingsAdvanced, $viewsSettings, delimOpenChar0, delimOpenChar1, delimCloseChar0, delimCloseChar1, linkChar, setting, baseOnError,
+
+	rPath = /^(!*?)(?:null|true|false|\d[\d.]*|([\w$]+|\.|~([\w$]+)|#(view|([\w$]+))?)([\w$.^]*?)(?:[.[^]([\w$]+)\]?)?)$/g,
+	//        not                               object     helper    view  viewProperty pathTokens      leafToken
+
+	rParams = /(\()(?=\s*\()|(?:([([])\s*)?(?:(\^?)(~?[\w$.^]+)?\s*((\+\+|--)|\+|-|~(?![\w$_])|&&|\|\||===|!==|==|!=|<=|>=|[<>%*:?\/]|(=))\s*|(!*?(@)?[#~]?[\w$.^]+)([([])?)|(,\s*)|(\(?)\\?(?:(')|("))|(?:\s*(([)\]])(?=[.^]|\s*$|[^([])|[)\]])([([]?))|(\s+)/g,
+	//         lftPrn0          lftPrn        bound path             operator err                                         eq      path2 late            prn      comma  lftPrn2   apos quot        rtPrn  rtPrnDot                  prn2     space
+	// (left paren? followed by (path? followed by operator) or (path followed by left paren?)) or comma or apos or quot or right paren or space
 
 	isRenderCall,
 	rNewLine = /[ \t]*(\r\n|\n|\r)/g,
 	rUnescapeQuotes = /\\(['"])/g,
 	rEscapeQuotes = /['"\\]/g, // Escape quotes and \ character
-	rBuildHash = /(?:\x08|^)(onerror:)?(?:(~?)(([\w$.]+):)?([^\x08]+))\x08(,)?([^\x08]+)/gi,
+	rBuildHash = /(?:\x08|^)(onerror:)?(?:(~?)(([\w$_\.]+):)?([^\x08]+))\x08(,)?([^\x08]+)/gi,
 	rTestElseIf = /^if\s/,
 	rFirstElem = /<(\w+)[>\s]/,
 	rAttrEncode = /[\x00`><"'&=]/g, // Includes > encoding since rConvertMarkers in JsViews does not skip > characters in attribute strings
@@ -20125,12 +20131,6 @@ var versionNumber = "v1.0.1",
 		jsviews: versionNumber,
 		sub: {
 			// subscription, e.g. JsViews integration
-			rPath: /^(!*?)(?:null|true|false|\d[\d.]*|([\w$]+|\.|~([\w$]+)|#(view|([\w$]+))?)([\w$.^]*?)(?:[.[^]([\w$]+)\]?)?)$/g,
-			//        not                               object     helper    view  viewProperty pathTokens      leafToken
-
-			rPrm: /(\()(?=\s*\()|(?:([([])\s*)?(?:(\^?)(~?[\w$.^]+)?\s*((\+\+|--)|\+|-|~(?![\w$])|&&|\|\||===|!==|==|!=|<=|>=|[<>%*:?\/]|(=))\s*|(!*?(@)?[#~]?[\w$.^]+)([([])?)|(,\s*)|(\(?)\\?(?:(')|("))|(?:\s*(([)\]])(?=[.^]|\s*$|[^([])|[)\]])([([]?))|(\s+)/g,
-			//   lftPrn0           lftPrn         bound     path               operator     err                                          eq      path2 late            prn      comma  lftPrn2   apos quot        rtPrn  rtPrnDot                  prn2     space
-
 			View: View,
 			Err: JsViewsError,
 			tmplFn: tmplFn,
@@ -20142,7 +20142,7 @@ var versionNumber = "v1.0.1",
 				template: function(name, item) {
 					if (item === null) {
 						delete $render[name];
-					} else if (name) {
+					} else {
 						$render[name] = item;
 					}
 				}
@@ -20266,40 +20266,22 @@ function $extend(target, source) {
 // views.delimiters
 //===================
 
-	/**
-	* Set the tag opening and closing delimiters and 'link' character. Default is "{{", "}}" and "^"
-	* openChars, closeChars: opening and closing strings, each with two characters
-	* $.views.settings.delimiters(...)
-	*
-	* @param {string}   openChars
-	* @param {string}   [closeChars]
-	* @param {string}   [link]
-	* @returns {Settings}
-	*
-	* Get delimiters
-	* delimsArray = $.views.settings.delimiters()
-	*
-	* @returns {string[]}
-	*/
 function $viewsDelimiters(openChars, closeChars, link) {
+	// Set the tag opening and closing delimiters and 'link' character. Default is "{{", "}}" and "^"
+	// openChars, closeChars: opening and closing strings, each with two characters
 	if (!openChars) {
 		return $subSettings.delimiters;
 	}
 	if ($isArray(openChars)) {
 		return $viewsDelimiters.apply($views, openChars);
 	}
-	linkChar = link ? link[0] : linkChar;
-	if (!/^(\W|_){5}$/.test(openChars + closeChars + linkChar)) {
-		error("Invalid delimiters"); // Must be non-word characters, and openChars and closeChars must each be length 2
-	}
-	delimOpenChar0 = openChars[0];
-	delimOpenChar1 = openChars[1];
-	delimCloseChar0 = closeChars[0];
-	delimCloseChar1 = closeChars[1];
 
-	$subSettings.delimiters = [delimOpenChar0 + delimOpenChar1, delimCloseChar0 + delimCloseChar1, linkChar];
+	$subSettings.delimiters = [openChars, closeChars, linkChar = link ? link.charAt(0) : linkChar];
 
-	// Escape the characters - since they could be regex special characters
+	delimOpenChar0 = openChars.charAt(0); // Escape the characters - since they could be regex special characters
+	delimOpenChar1 = openChars.charAt(1);
+	delimCloseChar0 = closeChars.charAt(0);
+	delimCloseChar1 = closeChars.charAt(1);
 	openChars = "\\" + delimOpenChar0 + "(\\" + linkChar + ")?\\" + delimOpenChar1; // Default is "{^{"
 	closeChars = "\\" + delimCloseChar0 + "\\" + delimCloseChar1;                   // Default is "}}"
 	// Build regex with new delimiters
@@ -20334,8 +20316,8 @@ function getView(inner, type) { //view.get(inner, type)
 
 	var views, i, l, found,
 		view = this,
-		root = type === "root";
-		// view.get("root") returns view.root, view.get() returns view.parent, view.get(true) returns view.views[0].
+		root = !type || type === "root";
+		// If type is undefined, returns root view (view under top view).
 
 	if (inner) {
 		// Go through views - this one, and all nested ones, depth-first - and return first one with given type.
@@ -20358,16 +20340,14 @@ function getView(inner, type) { //view.get(inner, type)
 	} else if (root) {
 		// Find root view. (view whose parent is top view)
 		found = view.root;
-	} else if (type) {
+	} else {
 		while (view && !found) {
 			// Go through views - this one, and all parent ones - and return first one with given type.
 			found = view.type === type ? view : undefined;
 			view = view.parent;
 		}
-	} else {
-		found = view.parent;
 	}
-	return found || undefined;
+	return found;
 }
 
 function getNestedIndex() {
@@ -20385,13 +20365,11 @@ function getIndex() {
 
 getIndex.depends = "index";
 
-//==================
-// View.ctxPrm, etc.
-//==================
+//==========
+// View.hlp
+//==========
 
-/* Internal private: view._getOb() */
-function getPathObject(ob, path, ltOb, fn) {
-	// Iterate through path to late paths: @a.b.c paths
+function getPathObject(ob, path, ltOb, fn) { // Iterate through path to late paths: @a.b.c paths
 	// Return "" (or noop if leaf is a function @a.b.c(...) ) if intermediate object not yet available
 	var prevOb, tokens, l,
 		i = 0;
@@ -20425,6 +20403,7 @@ function contextParameter(key, value, get) {
 		storeView = this,
 		isUpdate = !isRenderCall && arguments.length > 1,
 		store = storeView.ctx;
+
 	if (key) {
 		if (!storeView._) { // tagCtx.ctxPrm() call
 			tagElse = storeView.index;
@@ -20439,7 +20418,7 @@ function contextParameter(key, value, get) {
 		} else {
 			store = undefined;
 		}
-		if (!isRenderCall && storeView.tagCtx || storeView.linked) { // Data-linked view, or tag instance
+		if (storeView.tagCtx || storeView.linked) { // Data-linked view, or tag instance
 			if (!res || !res._cxp) {
 				// Not a contextual parameter
 				// Set storeView to tag (if this is a tag.ctxPrm() call) or to root view ("data" view of linked template)
@@ -20485,7 +20464,7 @@ function contextParameter(key, value, get) {
 				tagElse = obsCtxPrm.tagElse;
 				newRes = res[1] // linkFn for compiled expression
 					? obsCtxPrm.tag && obsCtxPrm.tag.cvtArgs
-						? obsCtxPrm.tag.cvtArgs(tagElse, 1)[obsCtxPrm.ind] // = tag.bndArgs() - for tag contextual parameter
+						? obsCtxPrm.tag.cvtArgs(1, tagElse)[obsCtxPrm.ind] // = tag.bndArgs() - for tag contextual parameter
 						: res[1](res[0].data, res[0], $sub)    // = fn(data, view, $sub) for compiled binding expression
 					: res[0]._ocp; // Observable contextual parameter (uninitialized, or initialized as static expression, so no path dependencies)
 				if (isUpdate) {
@@ -20512,7 +20491,6 @@ function contextParameter(key, value, get) {
 	}
 }
 
-/* Internal private: view._getTmpl() */
 function getTemplate(tmpl) {
 	return tmpl && (tmpl.fn
 		? tmpl
@@ -20529,7 +20507,7 @@ function convertVal(converter, view, tagCtx, onError) {
 	var tag, value, argsLen, bindTo,
 		// If tagCtx is an integer, then it is the key for the compiled function to return the boundTag tagCtx
 		boundTag = typeof tagCtx === "number" && view.tmpl.bnds[tagCtx-1],
-		linkCtx = view._lc; // For data-link="{cvt:...}"...
+		linkCtx = view.linkCtx; // For data-link="{cvt:...}"...
 
 	if (onError === undefined && boundTag && boundTag._lr) { // lateRender
 		onError = "";
@@ -20588,16 +20566,13 @@ function convertVal(converter, view, tagCtx, onError) {
 	return value != undefined ? value : "";
 }
 
-function convertArgs(tagElse, bound) { // tag.cvtArgs() or tag.cvtArgs(tagElse?, true?)
+function convertArgs(bound, tagElse) { // tag.cvtArgs() or tag.cvtArgs(trueOrFalse, tagElse)
 	var l, key, boundArgs, args, bindFrom, tag, converter,
 		tagCtx = this;
 
 	if (tagCtx.tagName) {
 		tag = tagCtx;
-		tagCtx = (tag.tagCtxs || [tagCtx])[tagElse||0];
-		if (!tagCtx) {
-			return;
-		}
+		tagCtx = tag.tagCtxs ? tag.tagCtxs[tagElse || 0] : tag.tagCtx;
 	} else {
 		tag = tagCtx.tag;
 	}
@@ -20657,14 +20632,13 @@ function argOrProp(context, key) {
 }
 
 function convertBoundArgs(tagElse) { // tag.bndArgs()
-	return this.cvtArgs(tagElse, 1);
+	return this.cvtArgs(1, tagElse);
 }
 
 //=============
-// views.tag
+// views._tag
 //=============
 
-/* view.getRsc() */
 function getResource(resourceType, itemName) {
 	var res, store,
 		view = this;
@@ -20701,7 +20675,7 @@ function renderTag(tagName, parentView, tmpl, tagCtxs, isUpdate, onError) {
 		content, callInit, mapDef, thisMap, args, bdArgs, props, tagDataMap, contentCtx, key, bindFromLength, bindToLength, linkedElement, defaultCtx,
 		i = 0,
 		ret = "",
-		linkCtx = parentView._lc || false,
+		linkCtx = parentView.linkCtx || 0,
 		ctx = parentView.ctx,
 		parentTmpl = tmpl || parentView.tmpl,
 		// If tagCtxs is an integer, then it is the key for the compiled function to return the boundTag tagCtxs
@@ -20746,7 +20720,7 @@ function renderTag(tagName, parentView, tmpl, tagCtxs, isUpdate, onError) {
 		}
 		if (tmpl = tagCtx.props.tmpl) {
 			// If the tmpl property is overridden, set the value (when initializing, or, in case of binding: ^tmpl=..., when updating)
-			tagCtx.tmpl = parentView._getTmpl(tmpl);
+			tagCtx.tmpl = parentView.getTmpl(tmpl);
 			tagCtx.content = tagCtx.content || tagCtx.tmpl;
 		}
 
@@ -20764,8 +20738,8 @@ function renderTag(tagName, parentView, tmpl, tagCtxs, isUpdate, onError) {
 			if (linkCtx) {
 				tag.inline = false;
 				linkCtx.tag = tag;
+				tag.linkCtx = linkCtx;
 			}
-			tag.linkCtx = linkCtx;
 			if (tag._.bnd = boundTag || linkCtx.fn) {
 				// Bound if {^{tag...}} or data-link="{tag...}"
 				tag._.ths = tagCtx.params.props.this; // Tag has a this=expr binding, to get javascript reference to tag instance
@@ -20871,9 +20845,9 @@ function renderTag(tagName, parentView, tmpl, tagCtxs, isUpdate, onError) {
 				attr = tag.attr;
 				tag._.noVws = attr && attr !== HTML;
 			}
-			args = tag.cvtArgs(i);
+			args = tag.cvtArgs(undefined, i);
 			if (tag.linkedCtxParam) {
-				bdArgs = tag.cvtArgs(i, 1);
+				bdArgs = tag.cvtArgs(1, i);
 				m = bindFromLength;
 				defaultCtx = tag.constructor.prototype.ctx;
 				while (m--) {
@@ -20929,11 +20903,8 @@ function renderTag(tagName, parentView, tmpl, tagCtxs, isUpdate, onError) {
 				}
 				itemRet = tagCtx.render(contentCtx, true) || (isUpdate ? undefined : "");
 			}
-			ret = ret
-				? ret + (itemRet || "")
-				: itemRet !== undefined
-					? "" + itemRet
-					: undefined; // If no return value from render, and no template/content tagCtx.render(...), return undefined
+			// No return value from render, and no template/content tagCtx.render(...), so return undefined
+			ret = ret ? ret + (itemRet || "") : itemRet; // If no rendered content, this will be undefined
 		}
 		tag.rendering = tag.rendering.rndr; // Remove tag.rendering object (if this is outermost render call. (In case of nested calls)
 	}
@@ -21007,10 +20978,10 @@ function View(context, type, parentView, data, template, key, onRender, contentT
 View.prototype = {
 	get: getView,
 	getIndex: getIndex,
-	ctxPrm: contextParameter,
 	getRsc: getResource,
-	_getTmpl: getTemplate,
-	_getOb: getPathObject,
+	getTmpl: getTemplate,
+	ctxPrm: contextParameter,
+	getOb: getPathObject,
 	_is: "view"
 };
 
@@ -21309,7 +21280,7 @@ function compileViewModel(name, type) {
 				arr.push(ob);
 			});
 
-			ob = this.apply(this, arr); // Instantiate this View Model, passing getters args array to constructor
+			ob = this.apply(this, arr); // Insantiate this View Model, passing getters args array to constructor
 			for (prop in data) { // Copy over any other properties. that are not get/set properties
 				if (prop !== $expando && !getterNames[prop]) {
 					ob[prop] = data[prop];
@@ -21482,27 +21453,14 @@ function tmplObject(markup, options) {
 // registerStore
 //==============
 
-/**
-* Internal. Register a store type (used for template, tags, helpers, converters)
-*/
 function registerStore(storeName, storeSettings) {
 
-/**
-* Generic store() function to register item, named item, or hash of items
-* Also used as hash to store the registered items
-* Used as implementation of $.templates(), $.views.templates(), $.views.tags(), $.views.helpers() and $.views.converters()
-*
-* @param {string|hash} name         name - or selector, in case of $.templates(). Or hash of items
-* @param {any}         [item]       (e.g. markup for named template)
-* @param {template}    [parentTmpl] For item being registered as private resource of template
-* @returns {any|$.views} item, e.g. compiled template - or $.views in case of registering hash of items
-*/
 	function theStore(name, item, parentTmpl) {
 		// The store is also the function used to add items to the store. e.g. $.templates, or $.views.tags
 
 		// For store of name 'thing', Call as:
 		//    $.views.things(items[, parentTmpl]),
-		// or $.views.things(name[, item, parentTmpl])
+		// or $.views.things(name, item[, parentTmpl])
 
 		var compile, itemName, thisStore, cnt,
 			onStore = $sub.onStore[storeName];
@@ -21559,15 +21517,6 @@ function registerStore(storeName, storeSettings) {
 	$views[storeNames] = theStore;
 }
 
-/**
-* Add settings such as:
-* $.views.settings.allowCode(true)
-* @param {boolean}  value
-* @returns {Settings}
-*
-* allowCode = $.views.settings.allowCode()
-* @returns {boolean}
-*/
 function addSetting(st) {
 	$viewsSettings[st] = function(value) {
 		return arguments.length
@@ -21607,17 +21556,6 @@ function dataMap(mapDef) {
 // renderContent
 //==============
 
-/** Render the template as a string, using the specified data and helpers/context
-* $("#tmpl").render(), tmpl.render(), tagCtx.render(), $.render.namedTmpl()
-*
-* @param {any}        data
-* @param {hash}       [context]           helpers or context
-* @param {boolean}    [noIteration]
-* @param {View}       [parentView]        internal
-* @param {string}     [key]               internal
-* @param {function}   [onRender]          internal
-* @returns {string}   rendered template   internal
-*/
 function renderContent(data, context, noIteration, parentView, key, onRender) {
 	var i, l, tag, tmpl, tagCtx, isTopRenderCall, prevData, prevIndex,
 		view = parentView,
@@ -21634,7 +21572,7 @@ function renderContent(data, context, noIteration, parentView, key, onRender) {
 		// This is a call from renderTag or tagCtx.render(...)
 		tagCtx = this;
 		view = view || tagCtx.view;
-		tmpl = view._getTmpl(tag.template || tagCtx.tmpl);
+		tmpl = view.getTmpl(tag.template || tagCtx.tmpl);
 		if (!arguments.length) {
 			data = tag.contentCtx && $isFunction(tag.contentCtx)
 				? data = tag.contentCtx(data)
@@ -21737,7 +21675,7 @@ function renderWithViews(tmpl, data, context, noIteration, view, key, onRender, 
 			context.link = false;
 		}
 		if (itemVar = tagCtx.props.itemVar) {
-			if (itemVar[0] !== "~") {
+			if (itemVar.charAt(0) !== "~") {
 				syntaxError("Use itemVar='~myItem'");
 			}
 			itemVar = itemVar.slice(1);
@@ -21838,7 +21776,7 @@ function onRenderError(e, view, fallback) {
 		message = fallback; // There is a settings.debugMode(handler) onError override. Call it, and use return value (if any) to replace message
 	}
 
-	return view && !view._lc ? $converters.html(message) : message;
+	return view && !view.linkCtx ? $converters.html(message) : message;
 }
 
 function error(message) {
@@ -21960,7 +21898,7 @@ function tmplFn(markup, tmpl, isLinkExpr, convertBack, hasElse) {
 							keyValue = "undefined"; // this=some.path is always a to parameter (one-way), so don't need to compile/evaluate some.path initialization
 						}
 						if (param) {
-							isLateOb = isLateOb || param[0] === "@";
+							isLateOb = isLateOb || param.charAt(0) === "@";
 						}
 						key = "'" + keyToken + "':";
 						if (arg) {
@@ -22105,13 +22043,12 @@ function paramStructure(parts, type) {
 function parseParams(params, pathBindings, tmpl, isLinkExpr) {
 
 	function parseTokens(all, lftPrn0, lftPrn, bound, path, operator, err, eq, path2, late, prn, comma, lftPrn2, apos, quot, rtPrn, rtPrnDot, prn2, space, index, full) {
-	// /(\()(?=\s*\()|(?:([([])\s*)?(?:(\^?)(~?[\w$.^]+)?\s*((\+\+|--)|\+|-|~(?![\w$])|&&|\|\||===|!==|==|!=|<=|>=|[<>%*:?\/]|(=))\s*|(!*?(@)?[#~]?[\w$.^]+)([([])?)|(,\s*)|(\(?)\\?(?:(')|("))|(?:\s*(([)\]])(?=[.^]|\s*$|[^([])|[)\]])([([]?))|(\s+)/g,
-	//lftPrn0           lftPrn         bound     path               operator     err                                          eq      path2 late            prn      comma  lftPrn2   apos quot        rtPrn  rtPrnDot                  prn2     space
-	// (left paren? followed by (path? followed by operator) or (path followed by paren?)) or comma or apos or quot or right paren or space
-
+	// /(\()(?=\s*\()|(?:([([])\s*)?(?:(\^?)(~?[\w$.^]+)?\s*((\+\+|--)|\+|-|&&|\|\||===|!==|==|!=|<=|>=|[<>%*:?\/]|(=))\s*|(!*?(@)?[#~]?[\w$.^]+)([([])?)|(,\s*)|(\(?)\\?(?:(')|("))|(?:\s*(([)\]])(?=[.^]|\s*$|[^([])|[)\]])([([]?))|(\s+)/g,
+	//  lftPrn0          lftPrn        bound path             operator err                                         eq      path2 late            prn      comma  lftPrn2   apos quot        rtPrn  rtPrnDot                  prn2     space
+		// (left paren? followed by (path? followed by operator) or (path followed by paren?)) or comma or apos or quot or right paren or space
 		function parsePath(allPath, not, object, helper, view, viewProperty, pathTokens, leafToken) {
-			// /^(!*?)(?:null|true|false|\d[\d.]*|([\w$]+|\.|~([\w$]+)|#(view|([\w$]+))?)([\w$.^]*?)(?:[.[^]([\w$]+)\]?)?)$/g,
-			//    not                               object     helper    view  viewProperty pathTokens      leafToken
+			//rPath = /^(!*?)(?:null|true|false|\d[\d.]*|([\w$]+|\.|~([\w$]+)|#(view|([\w$]+))?)([\w$.^]*?)(?:[.[^]([\w$]+)\]?)?)$/g,
+			//          not                               object     helper    view  viewProperty pathTokens      leafToken
 			var subPath = object === ".";
 			if (object) {
 				path = path.slice(not.length);
@@ -22119,7 +22056,7 @@ function parseParams(params, pathBindings, tmpl, isLinkExpr) {
 					syntaxError(allPath);
 				}
 				if (!subPath) {
-					allPath = (late // late path @a.b.c: not throw on 'property of undefined' if a undefined, and will use _getOb() after linking to resolve late.
+					allPath = (late // late path @a.b.c: not throw on 'property of undefined' if a undefined, and will use getOb() after linking to resolve late.
 							? (isLinkExpr ? '' : '(ltOb.lt=ltOb.lt||') + '(ob='
 							: ""
 						)
@@ -22129,7 +22066,7 @@ function parseParams(params, pathBindings, tmpl, isLinkExpr) {
 								? "view"
 								: "data")
 						+ (late
-							? ')===undefined' + (isLinkExpr ? '' : ')') + '?"":view._getOb(ob,"'
+							? ')===undefined' + (isLinkExpr ? '' : ')') + '?"":view.getOb(ob,"'
 							: ""
 						)
 						+ (leafToken
@@ -22161,7 +22098,7 @@ function parseParams(params, pathBindings, tmpl, isLinkExpr) {
 								path = "^" + path.slice(1);
 							}
 							theOb.sb = path;
-							theOb.bnd = theOb.bnd || path[0] === "^";
+							theOb.bnd = theOb.bnd || path.charAt(0) === "^";
 						}
 					} else {
 						binds.push(path);
@@ -22180,7 +22117,7 @@ function parseParams(params, pathBindings, tmpl, isLinkExpr) {
 		lftPrn = lftPrn || lftPrn0 || lftPrn2;
 		path = path || path2;
 
-		if (late && (late = !/\)|]/.test(full[index-1]))) {
+		if (late && (late = !/\)|]/.test(full.charAt(index-1)))) {
 			path = path.slice(1).split(".").join("^"); // Late path @z.b.c. Use "^" rather than "." to ensure that deep binding will be used
 		}
 		// Could do this - but not worth perf cost?? :-
@@ -22260,7 +22197,7 @@ function parseParams(params, pathBindings, tmpl, isLinkExpr) {
 									bindings && ((bindings = bndCtx.bd = pathBindings[named] = []), bindings.skp = !bound), path + ':')
 							: path
 				// path
-								? (path.split("^").join(".").replace($sub.rPath, parsePath)
+								? (path.split("^").join(".").replace(rPath, parsePath)
 									+ (prn
 				// some.fncall(
 										? (bndCtx = bndStack[++parenDepth] = {bd: []}, fnCall[parenDepth] = rtSq, prn)
@@ -22301,10 +22238,10 @@ function parseParams(params, pathBindings, tmpl, isLinkExpr) {
 		pathStart = {}, // tracks the start of the current path such as c^d() in the above example
 		result;
 
-	if (params[0] === "@") {
+	if (params.charAt(0) === "@") {
 		params = params.replace(rBracketQuote, ".");
 	}
-	result = (params + (tmpl ? " " : "")).replace($sub.rPrm, parseTokens);
+	result = (params + (tmpl ? " " : "")).replace(rParams, parseTokens);
 
 	return !parenDepth && result || syntaxError(params); // Syntax error if unbalanced parens in params expression
 }
@@ -22438,8 +22375,8 @@ function buildCode(ast, tmpl, isLinkExpr) {
 							: (getsVal = true, "((v=" + params[0] + ')!=null?v:' + (isLinkExpr ? 'null)' : '"")'))
 							// Non strict equality so data-link="title{:expr}" with expr=null/undefined removes title attribute
 					)
-					: (hasTag = true, "\n{view:view,content:false,tmpl:" // Add this tagCtx to the compiled code for the tagCtxs to be passed to renderTag()
-						+ (content ? nestedTmpls.length : "false") + "," // For block tags, pass in the key (nestedTmpls.length) to the nested content template
+					: (hasTag = true, "\n{view:view,tmpl:" // Add this tagCtx to the compiled code for the tagCtxs to be passed to renderTag()
+						+ (content ? nestedTmpls.length : "0") + "," // For block tags, pass in the key (nestedTmpls.length) to the nested content template
 						+ tagCtx + "},"));
 
 				if (tagAndElses && !nextIsElse) {
@@ -22620,14 +22557,6 @@ function getTargetSorted(value, tagCtx) {
 	return value;
 }
 
-/** Render the template as a string, using the specified data and helpers/context
-* $("#tmpl").render()
-*
-* @param {any}        data
-* @param {hash}       [helpersOrContext]
-* @param {boolean}    [noIteration]
-* @returns {string}   rendered template
-*/
 function $fnRender(data, context, noIteration) {
 	var tmplElem = this.jquery && (this[0] || error('Unknown template')), // Targeted element not found for jQuery template selector such as "#myTmpl"
 		tmpl = tmplElem.getAttribute(tmplAttr);
@@ -22750,14 +22679,6 @@ if (!(jsr || $ && $.render)) {
 		addSetting(setting);
 	}
 
-	/**
-	* $.views.settings.debugMode(true)
-	* @param {boolean}  debugMode
-	* @returns {Settings}
-	*
-	* debugMode = $.views.settings.debugMode()
-	* @returns {boolean}
-	*/
 	($viewsSettings.debugMode = function(debugMode) {
 		return debugMode === undefined
 			? $subSettings.debugMode
