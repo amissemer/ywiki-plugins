@@ -56,13 +56,6 @@
 .action-box:not(.normal-links) a:hover, .cibutton:hover{
     text-decoration:underline !important;
 }
-#sharp_design_banner {
-    background: #0661a7;
-    box-shadow: 0 0 0;
-    -moz-box-shadow: 0 0 0;
-    -webkit-box-shadow: 0 0 0;
-	height: 145px;
-}
 
 #iframecontainer {
 	top: 0;

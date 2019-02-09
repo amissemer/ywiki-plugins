@@ -92,7 +92,7 @@ function logCreationWithVersion(version, logToPage, createdPage) {
 	}
 	if (logToPage) {
 		console.log("Logging creation of "+createdPage.title+" by "+options.currentUserKey+' in '+logToPage);
-		return confluence.getContent(options.currentSpaceKey, logToPage, 'space,body.storage,version')
+		return confluence.getContent(options.logToSpace, logToPage, 'space,body.storage,version')
 		.then( function(logPageJson) {
 			console.log("logPageJson before edit: ",logPageJson);
 			if (logPageJson.body.storage) {

@@ -124,9 +124,9 @@ export function TemplateProcessor(options) {
    * /!\ Working through side-effect, directly on the input page.
    */
   this.transformPage = async function(page) {
-    replacePlaceholderInPage(page);
     await filterVariant(page);
     await fixLocalLinks(page);
+    replacePlaceholderInPage(page);
   }
 
 }

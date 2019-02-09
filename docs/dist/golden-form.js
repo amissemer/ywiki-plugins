@@ -86,7 +86,7 @@
 /*!*****************************!*\
   !*** ./js/common/config.js ***!
   \*****************************/
-/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL, PROP_KEY, DEFAULT_RESTRICTION_GROUP, PORTFOLIO_GROUP */
+/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL, PROP_KEY, DEFAULT_RESTRICTION_GROUP, PORTFOLIO_GROUP, DEFAULT_FEEDBACK_TYPES */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -107,6 +107,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PROP_KEY", function() { return PROP_KEY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_RESTRICTION_GROUP", function() { return DEFAULT_RESTRICTION_GROUP; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PORTFOLIO_GROUP", function() { return PORTFOLIO_GROUP; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_FEEDBACK_TYPES", function() { return DEFAULT_FEEDBACK_TYPES; });
 var DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
 var DEFAULT_JIRA_ISSUE_COUNT = 10;
 var MAIN_JIRA_LABEL = "CI";
@@ -126,6 +127,25 @@ var XSLT_ENDPOINT_URL = 'https://bzycrip1eh.execute-api.eu-central-1.amazonaws.c
 var PROP_KEY = 'ysync';
 var DEFAULT_RESTRICTION_GROUP = 'dl sap customer experience all employees (external)';
 var PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
+var DEFAULT_FEEDBACK_TYPES = [{
+  value: 'feedback_service_definition',
+  name: 'Service Definition'
+}, {
+  value: 'feedback_alf',
+  name: 'Methodology and Recommended Practices'
+}, {
+  value: 'feedback_product',
+  name: 'Product Feedback'
+}, {
+  value: 'feedback_hcs',
+  name: 'hCS Feedback'
+}, {
+  value: 'feedback_architecture',
+  name: 'Architecture'
+}, {
+  value: 'feedback_other',
+  name: 'Other'
+}];
 
 /***/ }),
 
@@ -896,18 +916,24 @@ function iframeWrapper(postToWindow, targetHostname) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseOptions", function() { return parseOptions; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "encodeOptions", function() { return encodeOptions; });
-/* harmony import */ var core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.string.ends-with */ "./node_modules/core-js/modules/es6.string.ends-with.js");
-/* harmony import */ var core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.string.starts-with */ "./node_modules/core-js/modules/es6.string.starts-with.js");
-/* harmony import */ var core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.regexp.to-string */ "./node_modules/core-js/modules/es6.regexp.to-string.js");
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../lib/polyfills */ "./js/lib/polyfills.js");
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es7.symbol.async-iterator */ "./node_modules/core-js/modules/es7.symbol.async-iterator.js");
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.symbol */ "./node_modules/core-js/modules/es6.symbol.js");
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.string.ends-with */ "./node_modules/core-js/modules/es6.string.ends-with.js");
+/* harmony import */ var core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.string.starts-with */ "./node_modules/core-js/modules/es6.string.starts-with.js");
+/* harmony import */ var core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../lib/polyfills */ "./js/lib/polyfills.js");
 
 
 
+
+
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 
 
@@ -941,10 +967,10 @@ function encodeOptions(options) {
   var res = [];
 
   for (var key in options) {
-    if (options.hasOwnProperty(key) && options[key] !== undefined) {
+    if (options.hasOwnProperty(key) && options[key] !== undefined && options[key] !== null && key !== 'cssSelector') {
       var value = options[key];
 
-      if (value.toString() === '[object Object]') {
+      if (_typeof(value) === 'object') {
         value = JSON.stringify(value);
       }
 
@@ -2300,13 +2326,15 @@ function TemplateProcessor(options) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              replacePlaceholderInPage(page);
-              _context.next = 3;
+              _context.next = 2;
               return filterVariant(page);
 
-            case 3:
-              _context.next = 5;
+            case 2:
+              _context.next = 4;
               return fixLocalLinks(page);
+
+            case 4:
+              replacePlaceholderInPage(page);
 
             case 5:
             case "end":
@@ -2555,7 +2583,7 @@ function logCreationWithVersion(version, logToPage, createdPage) {
 
   if (logToPage) {
     console.log("Logging creation of " + createdPage.title + " by " + options.currentUserKey + ' in ' + logToPage);
-    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getContent"](options.currentSpaceKey, logToPage, 'space,body.storage,version').then(function (logPageJson) {
+    return _confluenceService__WEBPACK_IMPORTED_MODULE_3__["getContent"](options.logToSpace, logToPage, 'space,body.storage,version').then(function (logPageJson) {
       console.log("logPageJson before edit: ", logPageJson);
 
       if (logPageJson.body.storage) {
@@ -40687,7 +40715,7 @@ return jQuery;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<xsl:stylesheet version=\"1.0\" \n    xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \n    xmlns:ac=\"http://atlassian.com/content\"\n    xmlns:ri=\"http://atlassian.com/resource/identifier\">\n\n    <!-- Output the ac:plain-text-link-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->\n    <xsl:output method=\"xml\" cdata-section-elements=\"ac:plain-text-link-body ac:plain-text-body\" />\n\n    <!-- Add the space-key attribute to ri:page (links) when it is missing -->\n    <xsl:template match=\"ri:page[@ri:content-title][not(@ri:space-key)]\">\n        <xsl:copy>\n            <xsl:attribute name=\"ri:space-key\">{0}</xsl:attribute>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n\n    <!-- Remove the <ac:parameter ac:name=\"revision\">*</ac:parameter> tag in the <ac:structured-macro ac:name=\"drawio\"> tags,\n    to avoid binding draw.io macros to wrong version of diagram -->\n    <xsl:template match=\"ac:structured-macro[@ac:name='drawio']/ac:parameter[@ac:name='revision']\" />\n    \n    <!-- Copy everything else as is -->   \n    <xsl:template match=\"@*|node()\">\n        <xsl:copy>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n</xsl:stylesheet>"
+module.exports = "<xsl:stylesheet version=\"1.0\" \n    xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \n    xmlns:ac=\"http://atlassian.com/content\"\n    xmlns:ri=\"http://atlassian.com/resource/identifier\">\n\n    <!-- Output the ac:plain-text-link-body with a CDATA block instead of escaping, like it is the case in Confluence storage -->\n    <xsl:output method=\"xml\" cdata-section-elements=\"ac:plain-text-link-body ac:plain-text-body\" />\n\n    <!-- Add the space-key attribute to ri:page (links) when it is missing -->\n    <xsl:template match=\"ri:page[@ri:content-title][not(@ri:space-key) and not(contains(@ri:content-title,'[Customer]')) and not(contains(@ri:content-title,'[ProjectName]'))]\">\n        <xsl:copy>\n            <xsl:attribute name=\"ri:space-key\">{0}</xsl:attribute>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n\n    <!-- Remove the <ac:parameter ac:name=\"revision\">*</ac:parameter> tag in the <ac:structured-macro ac:name=\"drawio\"> tags,\n    to avoid binding draw.io macros to wrong version of diagram -->\n    <xsl:template match=\"ac:structured-macro[@ac:name='drawio']/ac:parameter[@ac:name='revision']\" />\n    \n    <!-- Copy everything else as is -->   \n    <xsl:template match=\"@*|node()\">\n        <xsl:copy>\n            <xsl:apply-templates select=\"@*|node()\"/>\n        </xsl:copy>\n    </xsl:template>\n</xsl:stylesheet>"
 
 /***/ }),
 

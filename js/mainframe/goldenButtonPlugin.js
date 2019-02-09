@@ -4,7 +4,7 @@ import '../../css/jira-issue-summary.css';
 import iframeWrapper from '../common/iframeWrapper';
 import * as plugin from './pluginCommon';
 import {encodeOptions} from '../common/optionsParser';
-import {DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, WIKI_HOST} from '../common/config';
+import {DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, DEFAULT_FEEDBACK_TYPES} from '../common/config';
 import {cloneAttachment} from '../common/confluence/confluence-attachment-async';
 
 function closeIFrame(iframeElt) {
@@ -205,6 +205,7 @@ function bootstrap(host, cacheBuster) {
       newInstanceDisplayName: jEl.data('new-instance-display-name'),
       addLabel: jEl.data('add-label'),
       logToPage: jEl.data('log-to-page'),
+      logToSpace: jEl.data('log-to-space') || jEl.data('target-space'),
       variantOptions: readOptions(jEl),
     });
   });
@@ -219,6 +220,9 @@ function bootstrap(host, cacheBuster) {
       issueType: jEl.data('issue-type') || "Improvement",
       issueComponent: jEl.data('issue-component'),
       issueLabel: jEl.data('issue-label') || jEl.data('jira-label'),
+      //issueTypeSelect: jEl.data('issue-type-select'),
+      issueComponentSelector: jEl.data('issue-component-selector'),
+      feedbackTypeSelector: (jEl.data('feedback-type-selector') === false || jEl.data('feedback-type-selector') === 'false') ? null : DEFAULT_FEEDBACK_TYPES,
     });
   });
   $('[data-activate="issue-summary"]').each( function() {

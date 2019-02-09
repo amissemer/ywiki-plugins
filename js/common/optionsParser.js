@@ -23,9 +23,9 @@ function parseOptions(defaultOptions) {
 function encodeOptions(options) {
   var res = [];
   for (var key in options) {
-    if (options.hasOwnProperty(key) && options[key]!==undefined) {
+    if (options.hasOwnProperty(key) && options[key]!==undefined && options[key]!==null && key!=='cssSelector') {
         var value = options[key];
-        if (value.toString() === '[object Object]') {
+        if (typeof value === 'object') {
           value = JSON.stringify(value);
         }
         res.push(key+"="+encodeURIComponent(value));
