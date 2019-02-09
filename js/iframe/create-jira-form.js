@@ -1,5 +1,7 @@
 import '../lib/Array.ext';
 import $ from 'jquery';
+import jsrender from 'jsrender';
+jsrender($);
 import * as proxy from './proxyService';
 import 'bootstrap';
 import 'bootstrap-validator';
@@ -36,6 +38,12 @@ function bindDOM() {
 		$("#authenticateWarning").fadeOut();
 	});
 	$(".service-display-name").text(options.serviceDisplayName);
+	if (options.issueComponentSelector) {
+		$('#componentsWrapper').html($.templates('#componentsTmpl').render({components: options.issueComponentSelector.split(',').map(c=>({name: c}))}));
+	}
+	if (options.feedbackTypeSelector) {
+		$('#feedbackTypeWrapper').html($.templates('#feedbackTypeTmpl').render({feedbackTypes: options.feedbackTypeSelector}, false));
+	}
 	var submitBtn=$("#wizard-submit");
 	var submitProgress=$('#progress-indicator');
 	submitBtn.click( function() {
@@ -51,7 +59,9 @@ function bindDOM() {
 			if (cust) {
 				labels.push(cust.replace(/[\W_]+/g,"-"));
 			}
-			jira.createIssue(options.jiraProjectKey,options.issueType, options.issueComponent,$("#summary").val(),$("#description").val(),$("#priority").val(),$("#feedback-type").val(),labels)
+			let selectedComponent = $('#component').val() || options.issueComponent;
+			let feedbackType = $("#feedback-type").val();
+			jira.createIssue(options.jiraProjectKey,options.issueType, selectedComponent,$("#summary").val(),$("#description").val(),$("#priority").val(),feedbackType,labels)
 				.then(
 					function(issueKey) {
 						// RESET FORM

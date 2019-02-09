@@ -15,3 +15,12 @@ export const XSLT_ENDPOINT_URL = 'https://bzycrip1eh.execute-api.eu-central-1.am
 export const PROP_KEY = 'ysync';
 export const DEFAULT_RESTRICTION_GROUP = 'dl sap customer experience all employees (external)';
 export const PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
+
+export const DEFAULT_FEEDBACK_TYPES = [
+    {value: 'feedback_service_definition', name: 'Service Definition'},
+    {value: 'feedback_alf', name: 'Methodology and Recommended Practices'},
+    {value: 'feedback_product', name: 'Product Feedback'},
+    {value: 'feedback_hcs', name: 'hCS Feedback'},
+    {value: 'feedback_architecture', name: 'Architecture'},
+    {value: 'feedback_other', name: 'Other'},
+  ];
