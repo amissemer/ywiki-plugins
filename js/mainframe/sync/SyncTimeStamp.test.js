@@ -3,7 +3,7 @@ import {getContentById} from '../../common/confluence/confluence-page-async';
 import {assert} from 'chai';
 
 let page1Id = '257597020'; // in ~adrien.missemer@sap.com
-let page2Id = '404455459'; // in ps
+let page2Id = '377578548'; // in ps
 
 describe("SyncTimeStamp", function() {
     it('should handle load and save', async function() {

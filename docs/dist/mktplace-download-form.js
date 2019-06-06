@@ -66,108 +66,381 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./js/mainframe/main.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./js/mktplace/plugins/mktplace-download-form-plugin.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./css/golden-button.css":
-/*!*******************************!*\
-  !*** ./css/golden-button.css ***!
-  \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
-/***/ "./css/jira-issue-summary.css":
-/*!************************************!*\
-  !*** ./css/jira-issue-summary.css ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
-/***/ "./css/professors.css":
-/*!****************************!*\
-  !*** ./css/professors.css ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
-/***/ "./js/common/config.js":
-/*!*****************************!*\
-  !*** ./js/common/config.js ***!
-  \*****************************/
-/*! exports provided: DEFAULT_JIRA_COLUMNS, DEFAULT_JIRA_ISSUE_COUNT, MAIN_JIRA_LABEL, TAGS_FIELD, WIKI_HOST, MAX_WIKI_PAGE_CREATION_RATE, SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY, PREFIX, PREFERRED_REGION_KEY, DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE, CISTATS_DATA_PAGE, DEFAULT_CUSTOMER_PAGE_TEMPLATE, XSLT_ENDPOINT_URL, PROP_KEY, DEFAULT_RESTRICTION_GROUP, PORTFOLIO_GROUP, DEFAULT_FEEDBACK_TYPES */
+/***/ "./js/common/confluence/Attachment.js":
+/*!********************************************!*\
+  !*** ./js/common/confluence/Attachment.js ***!
+  \********************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_JIRA_COLUMNS", function() { return DEFAULT_JIRA_COLUMNS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_JIRA_ISSUE_COUNT", function() { return DEFAULT_JIRA_ISSUE_COUNT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAIN_JIRA_LABEL", function() { return MAIN_JIRA_LABEL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TAGS_FIELD", function() { return TAGS_FIELD; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WIKI_HOST", function() { return WIKI_HOST; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAX_WIKI_PAGE_CREATION_RATE", function() { return MAX_WIKI_PAGE_CREATION_RATE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY", function() { return SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PREFIX", function() { return PREFIX; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PREFERRED_REGION_KEY", function() { return PREFERRED_REGION_KEY; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE", function() { return DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CISTATS_DATA_PAGE", function() { return CISTATS_DATA_PAGE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_CUSTOMER_PAGE_TEMPLATE", function() { return DEFAULT_CUSTOMER_PAGE_TEMPLATE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "XSLT_ENDPOINT_URL", function() { return XSLT_ENDPOINT_URL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PROP_KEY", function() { return PROP_KEY; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_RESTRICTION_GROUP", function() { return DEFAULT_RESTRICTION_GROUP; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PORTFOLIO_GROUP", function() { return PORTFOLIO_GROUP; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DEFAULT_FEEDBACK_TYPES", function() { return DEFAULT_FEEDBACK_TYPES; });
-var DEFAULT_JIRA_COLUMNS = 'key,summary,created,priority,status';
-var DEFAULT_JIRA_ISSUE_COUNT = 10;
-var MAIN_JIRA_LABEL = "CI";
-var TAGS_FIELD = "customfield_10032";
-var WIKI_HOST = 'wiki.hybris.com';
-var MAX_WIKI_PAGE_CREATION_RATE = 50; // (in millis) The wiki seems to have trouble handling too fast page creations, when there are more than 10 of them or so, so we are limiting the rate
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
 
-var SINGLE_WORKSPACE_PAGE_REDIRECT_DELAY = 500; // (in millis) for ESPLM-846
 
-var PREFIX = "ywiki-plugins.";
-var PREFERRED_REGION_KEY = "preferred.region";
-var DEFAULT_PROJECT_DOCUMENTATION_ROOT_PAGE = 'Project Documentation';
-var CISTATS_DATA_PAGE = 'Continuous Improvement - The Golden Button';
-var DEFAULT_CUSTOMER_PAGE_TEMPLATE = '.CI New Project Documentation Template';
-var XSLT_ENDPOINT_URL = 'https://bzycrip1eh.execute-api.eu-central-1.amazonaws.com/dev/page/transform'; // export const WIKI_HOST = 'performancewiki2.hybris.com';
 
-var PROP_KEY = 'ysync';
-var DEFAULT_RESTRICTION_GROUP = 'dl sap customer experience all employees (external)';
-var PORTFOLIO_GROUP = 'DL SAP CX Services Portfolio';
-var DEFAULT_FEEDBACK_TYPES = [{
-  value: 'feedback_service_definition',
-  name: 'Service Definition'
-}, {
-  value: 'feedback_alf',
-  name: 'Methodology and Recommended Practices'
-}, {
-  value: 'feedback_product',
-  name: 'Product Feedback'
-}, {
-  value: 'feedback_hcs',
-  name: 'hCS Feedback'
-}, {
-  value: 'feedback_architecture',
-  name: 'Architecture'
-}, {
-  value: 'feedback_other',
-  name: 'Other'
-}];
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+function Attachment(jQuery) {
+  if (!jQuery) jQuery = $;
+  return {
+    from: from,
+    getOrCreateAttachment: getOrCreateAttachment
+  };
+
+  function from(_x) {
+    return _from.apply(this, arguments);
+  }
+  /** 
+   * Get attachment metadata information.
+   *
+   * @param {string} pageId id of the page the attachment is attached to
+   * @param {string} attachmentTitle
+   * @param {Object} [internalAttachment] confluence attachment, optional, to avoid a lookup
+   * @returns {Promise<{_internal: *, id: id, containerId: containerId, toString: toString, title: title, exists: exists, downloadUrl: downloadUrl, version: version, spaceKey: spaceKey}>}
+   */
+
+
+  function _from() {
+    _from = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee(internalAttachment) {
+      var containerId;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              containerId = internalAttachment.container ? internalAttachment.container.id : internalAttachment._expandable.container.replace(/.*\//g, '');
+              return _context.abrupt("return", getOrCreateAttachment(containerId, internalAttachment.title, internalAttachment));
+
+            case 2:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    }));
+    return _from.apply(this, arguments);
+  }
+
+  function getOrCreateAttachment(_x2, _x3, _x4) {
+    return _getOrCreateAttachment.apply(this, arguments);
+  }
+
+  function _getOrCreateAttachment() {
+    _getOrCreateAttachment = _asyncToGenerator(
+    /*#__PURE__*/
+    regeneratorRuntime.mark(function _callee6(pageId, attachmentTitle,
+    /* optional */
+    internalAttachment) {
+      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              if (internalAttachment) {
+                _context6.next = 4;
+                break;
+              }
+
+              _context6.next = 3;
+              return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["lookupAttachment"])(jQuery.ajax, pageId, attachmentTitle);
+
+            case 3:
+              internalAttachment = _context6.sent;
+
+            case 4:
+              return _context6.abrupt("return", {
+                _internal: internalAttachment,
+                id: function id() {
+                  return this._internal ? this._internal.id : null;
+                },
+                containerId: function containerId() {
+                  return pageId;
+                },
+                toString: function toString() {
+                  return "".concat(this.id(), ":").concat(pageId, ":").concat(this.title(), ":").concat(this.version());
+                },
+                title: function title() {
+                  return attachmentTitle;
+                },
+                exists: function exists() {
+                  return this._internal != null;
+                },
+                downloadUrl: function downloadUrl() {
+                  return this._internal ? this._internal._links.download : null;
+                },
+                version: function version() {
+                  return this._internal ? this._internal.version.number : null;
+                },
+                spaceKey: function spaceKey() {
+                  return this._internal ? this._internal.space.key : null;
+                },
+                cloneFrom: function () {
+                  var _cloneFrom = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee2(url) {
+                    var otherAttachment;
+                    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            if (typeof url !== 'string') {
+                              // assume it is another Attachment or confluence attachment
+                              otherAttachment = url;
+                              url = null;
+
+                              if (typeof otherAttachment.downloadUrl === 'function') {
+                                url = otherAttachment.downloadUrl();
+                              } else if (otherAttachment._links && typeof otherAttachment._links.download === 'string') {
+                                url = otherAttachment._links.download;
+                              }
+                            }
+
+                            if (url) {
+                              _context2.next = 3;
+                              break;
+                            }
+
+                            throw 'invalid url to clone from';
+
+                          case 3:
+                            if (!(typeof jQuery.cloneAttachment === 'function')) {
+                              _context2.next = 9;
+                              break;
+                            }
+
+                            _context2.next = 6;
+                            return jQuery.cloneAttachment(url, pageId, attachmentTitle, this.id());
+
+                          case 6:
+                            this._internal = _context2.sent;
+                            _context2.next = 12;
+                            break;
+
+                          case 9:
+                            _context2.next = 11;
+                            return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["cloneAttachment"])(url, pageId, attachmentTitle, this.id());
+
+                          case 11:
+                            this._internal = _context2.sent;
+
+                          case 12:
+                          case "end":
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2, this);
+                  }));
+
+                  return function cloneFrom(_x5) {
+                    return _cloneFrom.apply(this, arguments);
+                  };
+                }(),
+                delete: function () {
+                  var _delete2 = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee3() {
+                    var id;
+                    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+                      while (1) {
+                        switch (_context3.prev = _context3.next) {
+                          case 0:
+                            id = this.id();
+
+                            if (!id) {
+                              _context3.next = 4;
+                              break;
+                            }
+
+                            _context3.next = 4;
+                            return Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["deleteAttachment"])(jQuery.ajax, id);
+
+                          case 4:
+                            this._internal = null;
+
+                          case 5:
+                          case "end":
+                            return _context3.stop();
+                        }
+                      }
+                    }, _callee3, this);
+                  }));
+
+                  return function _delete() {
+                    return _delete2.apply(this, arguments);
+                  };
+                }(),
+                loadText: function () {
+                  var _loadText = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee4() {
+                    var url;
+                    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+                      while (1) {
+                        switch (_context4.prev = _context4.next) {
+                          case 0:
+                            url = this.downloadUrl();
+                            return _context4.abrupt("return", url ? Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["loadResource"])(url) : null);
+
+                          case 2:
+                          case "end":
+                            return _context4.stop();
+                        }
+                      }
+                    }, _callee4, this);
+                  }));
+
+                  return function loadText() {
+                    return _loadText.apply(this, arguments);
+                  };
+                }(),
+                saveText: function () {
+                  var _saveText = _asyncToGenerator(
+                  /*#__PURE__*/
+                  regeneratorRuntime.mark(function _callee5(text, contentType) {
+                    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+                      while (1) {
+                        switch (_context5.prev = _context5.next) {
+                          case 0:
+                            return _context5.abrupt("return", Object(_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_3__["storeAttachmentContent"])(pageId, text, attachmentTitle, this.id(), contentType));
+
+                          case 1:
+                          case "end":
+                            return _context5.stop();
+                        }
+                      }
+                    }, _callee5, this);
+                  }));
+
+                  return function saveText(_x6, _x7) {
+                    return _saveText.apply(this, arguments);
+                  };
+                }()
+              });
+
+            case 5:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6, this);
+    }));
+    return _getOrCreateAttachment.apply(this, arguments);
+  }
+}
+
+;
+/* harmony default export */ __webpack_exports__["default"] = (Attachment);
+
+/***/ }),
+
+/***/ "./js/common/confluence/Page.js":
+/*!**************************************!*\
+  !*** ./js/common/confluence/Page.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function Page(title, body, spaceKey, parentId) {
+  this.setTitle(title);
+  this.setBody(body);
+  this.setSpaceKey(spaceKey);
+  this.setParentId(parentId);
+  this.type = "page";
+}
+
+;
+
+Page.prototype.toString = function () {
+  return JSON.stringify(this);
+};
+
+Page.prototype._setId = function (id) {
+  this.id = id;
+  return this;
+};
+
+Page.prototype.setParentId = function (parentId) {
+  this.ancestors = [{
+    id: parentId
+  }];
+  return this;
+};
+
+Page.prototype.setSpaceKey = function (spaceKey) {
+  this.space = {
+    key: spaceKey
+  };
+  return this;
+};
+
+Page.prototype.setBody = function (body) {
+  this.body = {
+    storage: {
+      representation: "storage",
+      value: body
+    }
+  };
+  return this;
+};
+
+Page.prototype.setBodyFromPage = function (page) {
+  return this.setBody(page.body && page.body.storage ? page.body.storage.value : null);
+};
+
+Page.prototype.setTitle = function (title) {
+  this.title = title;
+  return this;
+};
+
+Page.prototype.setVersion = function (versionNumber, message, isMajorEdit) {
+  this.version = {
+    number: versionNumber,
+    minorEdit: true
+  };
+
+  if (message) {
+    this.version.message = message;
+  }
+
+  if (isMajorEdit) {
+    this.version.minorEdit = false;
+  }
+
+  return this;
+}; // static builder
+
+
+Page.copyFrom = function (page) {
+  var spaceKey = page.space ? page.space.key : '';
+  var parentId = page.ancestors && page.ancestors.length ? page.ancestors[0].id : 0;
+  var body = page.body && page.body.storage ? page.body.storage.value : null;
+  return new Page(page.title, body, spaceKey, parentId);
+};
+
+Page.newVersionOf = function (page, message, isMajorEdit) {
+  return Page.copyFrom(page)._setId(page.id).setVersion(page.version.number + 1, message, isMajorEdit);
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Page);
 
 /***/ }),
 
@@ -508,6 +781,844 @@ function _loadUrlResource() {
 
 /***/ }),
 
+/***/ "./js/common/confluence/confluence-page-async.js":
+/*!*******************************************************!*\
+  !*** ./js/common/confluence/confluence-page-async.js ***!
+  \*******************************************************/
+/*! exports provided: movePages, movePagesById, getContent, getContentById, searchPagesWithCQL, copyPage, copyPageToSpace, createPageFromTemplate, copyPageRecursive, copyPageRecursiveInternal, copyAllChildren, createPageUnderPageId, postPage, updateContent, getPageTree */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "movePages", function() { return movePages; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "movePagesById", function() { return movePagesById; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getContent", function() { return getContent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getContentById", function() { return getContentById; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "searchPagesWithCQL", function() { return searchPagesWithCQL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPage", function() { return copyPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageToSpace", function() { return copyPageToSpace; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPageFromTemplate", function() { return createPageFromTemplate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageRecursive", function() { return copyPageRecursive; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyPageRecursiveInternal", function() { return copyPageRecursiveInternal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "copyAllChildren", function() { return copyAllChildren; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createPageUnderPageId", function() { return createPageUnderPageId; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "postPage", function() { return postPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateContent", function() { return updateContent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPageTree", function() { return getPageTree; });
+/* harmony import */ var core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.function.name */ "./node_modules/core-js/modules/es6.function.name.js");
+/* harmony import */ var core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_function_name__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.string.iterator */ "./node_modules/core-js/modules/es6.string.iterator.js");
+/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.number.is-integer */ "./node_modules/core-js/modules/es6.number.is-integer.js");
+/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _confluence_throttle__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./confluence-throttle */ "./js/common/confluence/confluence-throttle.js");
+/* harmony import */ var _Page__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Page */ "./js/common/confluence/Page.js");
+
+
+
+
+
+
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+function movePages(_x, _x2, _x3, _x4) {
+  return _movePages.apply(this, arguments);
+}
+
+function _movePages() {
+  _movePages = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee(sourceSpaceKey, sourcePageTitle, targetSpaceKey, targetParentTitle) {
+    var sourcePage;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.next = 2;
+            return getContent(sourceSpaceKey, sourcePageTitle);
+
+          case 2:
+            sourcePage = _context.sent;
+            _context.next = 5;
+            return movePagesById(sourcePage.id, targetSpaceKey, targetParentTitle);
+
+          case 5:
+            return _context.abrupt("return", _context.sent);
+
+          case 6:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, this);
+  }));
+  return _movePages.apply(this, arguments);
+}
+
+function getAtlToken() {
+  return $('meta[name=ajs-atl-token]').attr("content");
+}
+
+function movePagesById(_x5, _x6, _x7) {
+  return _movePagesById.apply(this, arguments);
+}
+/**
+* Get a page by spaceKey and title from Confluence and returns a deferred for that page.
+* See $.ajax().done()
+* Failures are logged and ignored.
+* The deferred is resolved with the first matching page is any, else it is rejected.
+*/
+
+function _movePagesById() {
+  _movePagesById = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee3(sourcePageId, targetSpaceKey, target) {
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.next = 2;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleWrite"])(
+            /*#__PURE__*/
+            _asyncToGenerator(
+            /*#__PURE__*/
+            regeneratorRuntime.mark(function _callee2() {
+              var targetParentTitle, targetParent, url, resp;
+              return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                while (1) {
+                  switch (_context2.prev = _context2.next) {
+                    case 0:
+                      if (!Number.isInteger(Number(target))) {
+                        _context2.next = 7;
+                        break;
+                      }
+
+                      _context2.next = 3;
+                      return getContentById(Number(target));
+
+                    case 3:
+                      targetParent = _context2.sent;
+                      targetParentTitle = targetParent.title;
+                      _context2.next = 8;
+                      break;
+
+                    case 7:
+                      targetParentTitle = target;
+
+                    case 8:
+                      if (targetParentTitle) {
+                        _context2.next = 10;
+                        break;
+                      }
+
+                      throw 'targetParentTitle is mandatory (for source ' + sourcePageId + ' and target ' + target + ')';
+
+                    case 10:
+                      url = '/pages/movepage.action?pageId=' + encodeURIComponent(sourcePageId) + '&spaceKey=' + encodeURIComponent(targetSpaceKey) + '&targetTitle=' + encodeURIComponent(targetParentTitle) + '&position=append&atl_token=' + getAtlToken() + '&_=' + Math.random();
+                      console.log("Moving page ", sourcePageId, " under ", targetSpaceKey + ":" + targetParentTitle, url);
+                      _context2.next = 14;
+                      return $.ajax(url);
+
+                    case 14:
+                      resp = _context2.sent;
+
+                      if (!(typeof resp === 'string' && resp.indexOf('Not Permitted' >= 0))) {
+                        _context2.next = 19;
+                        break;
+                      }
+
+                      throw 'Not Permitted';
+
+                    case 19:
+                      if (!(typeof resp === 'string')) {
+                        _context2.next = 23;
+                        break;
+                      }
+
+                      throw 'Generic move error';
+
+                    case 23:
+                      if (!resp.actionErrors) {
+                        _context2.next = 25;
+                        break;
+                      }
+
+                      throw resp.actionErrors.join();
+
+                    case 25:
+                    case "end":
+                      return _context2.stop();
+                  }
+                }
+              }, _callee2, this);
+            })));
+
+          case 2:
+            return _context3.abrupt("return", _context3.sent);
+
+          case 3:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, this);
+  }));
+  return _movePagesById.apply(this, arguments);
+}
+
+function getContent(_x8, _x9, _x10) {
+  return _getContent.apply(this, arguments);
+}
+
+function _getContent() {
+  _getContent = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee4(spaceKey, pageTitle, expand) {
+    var expandParam, url, response, page;
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            expandParam = "";
+
+            if (expand) {
+              expandParam = '&expand=' + encodeURIComponent(expand);
+            }
+
+            url = '/rest/api/content?type=page&spaceKey=' + encodeURIComponent(spaceKey) + '&limit=1&title=' + encodeURIComponent(pageTitle) + expandParam;
+            console.log("Getting page content from " + url);
+            _context4.next = 6;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleRead"])(function () {
+              return $.ajax(url);
+            });
+
+          case 6:
+            response = _context4.sent;
+            console.log("Filtering AJAX response", response);
+
+            if (!(response.results && response.results.length > 0)) {
+              _context4.next = 14;
+              break;
+            }
+
+            page = response.results[0];
+            console.log("Returning ", page);
+            return _context4.abrupt("return", page);
+
+          case 14:
+            throw "Page Not found: '" + spaceKey + ":" + pageTitle + "'";
+
+          case 15:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4, this);
+  }));
+  return _getContent.apply(this, arguments);
+}
+
+function getContentById(_x11, _x12) {
+  return _getContentById.apply(this, arguments);
+}
+/** search for content with CQL
+for example https://wiki.hybris.com/rest/api/content/search?cql=label=customer%20and%20type=%22page%22%20and%20space=%22ps%22 */
+
+function _getContentById() {
+  _getContentById = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee5(pageId, expand) {
+    var expandParam, url;
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            expandParam = "";
+
+            if (expand) {
+              expandParam = '?expand=' + encodeURIComponent(expand);
+            }
+
+            url = '/rest/api/content/' + encodeURIComponent(pageId) + expandParam;
+            console.log(url);
+            _context5.next = 6;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleRead"])(function () {
+              return $.ajax(url);
+            });
+
+          case 6:
+            return _context5.abrupt("return", _context5.sent);
+
+          case 7:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, this);
+  }));
+  return _getContentById.apply(this, arguments);
+}
+
+function searchPagesWithCQL(_x13, _x14, _x15, _x16) {
+  return _searchPagesWithCQL.apply(this, arguments);
+}
+/**
+* Copy the page "fromPageTitle" (without its descendants) under the page "toPageTitle",
+* and do a placeholder replacement the page title using the templateProcessor.
+*/
+
+function _searchPagesWithCQL() {
+  _searchPagesWithCQL = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee6(spaceKey, cqlQuery, limit, expand) {
+    var expandParam;
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            if (!limit || limit < 0) {
+              limit = 15;
+            }
+
+            expandParam = expand ? "&expand=" + encodeURIComponent(expand) : "";
+            _context6.next = 4;
+            return $.ajax('/rest/api/content/search?limit=' + encodeURIComponent(limit) + '&cql=' + encodeURIComponent(cqlQuery + ' and type=page and space=\'' + spaceKey + '\'') + expandParam);
+
+          case 4:
+            return _context6.abrupt("return", _context6.sent);
+
+          case 5:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6, this);
+  }));
+  return _searchPagesWithCQL.apply(this, arguments);
+}
+
+function copyPage(_x17, _x18, _x19, _x20, _x21) {
+  return _copyPage.apply(this, arguments);
+}
+
+function _copyPage() {
+  _copyPage = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee7(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor) {
+    var pageToCopy, newPage, targetParentPage;
+    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            _context7.next = 2;
+            return getContent(fromSpaceKey, fromPageTitle, 'space,body.storage,metadata.labels');
+
+          case 2:
+            pageToCopy = _context7.sent;
+            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy);
+            _context7.next = 6;
+            return templateProcessor.transformPage(newPage);
+
+          case 6:
+            _context7.next = 8;
+            return getContent(toSpaceKey, toPageTitle, 'space');
+
+          case 8:
+            targetParentPage = _context7.sent;
+            console.log("targetParentPage: space=", targetParentPage.space.key, "id=", targetParentPage.id, "title=", targetParentPage.title);
+            newPage.setSpaceKey(toSpaceKey).setParentId(targetParentPage.id);
+            _context7.next = 13;
+            return createPageUnderPageId(newPage);
+
+          case 13:
+            return _context7.abrupt("return", _context7.sent);
+
+          case 14:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7, this);
+  }));
+  return _copyPage.apply(this, arguments);
+}
+
+function copyPageToSpace(_x22, _x23, _x24) {
+  return _copyPageToSpace.apply(this, arguments);
+}
+
+function _copyPageToSpace() {
+  _copyPageToSpace = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee8(sourcePageId, targetSpaceKey, targetParentId) {
+    var pageToCopy, newPage;
+    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            _context8.next = 2;
+            return getContentById(sourcePageId, 'space,body.storage,metadata.labels');
+
+          case 2:
+            pageToCopy = _context8.sent;
+            _context8.prev = 3;
+            _context8.next = 6;
+            return getContent(targetSpaceKey, pageToCopy.title);
+
+          case 6:
+            return _context8.abrupt("return", _context8.sent);
+
+          case 9:
+            _context8.prev = 9;
+            _context8.t0 = _context8["catch"](3);
+            // Create the new page 
+            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy).setSpaceKey(targetSpaceKey).setParentId(targetParentId);
+            _context8.next = 14;
+            return createPageUnderPageId(newPage);
+
+          case 14:
+            return _context8.abrupt("return", _context8.sent);
+
+          case 15:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8, this, [[3, 9]]);
+  }));
+  return _copyPageToSpace.apply(this, arguments);
+}
+
+function createPageFromTemplate(_x25, _x26, _x27, _x28, _x29) {
+  return _createPageFromTemplate.apply(this, arguments);
+}
+
+function _createPageFromTemplate() {
+  _createPageFromTemplate = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee9(templateSpace, templateTitle, targetSpaceKey, targetPageId, templateProcessor) {
+    var pageToCopy, newPage;
+    return regeneratorRuntime.wrap(function _callee9$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            _context9.next = 2;
+            return getContent(templateSpace, templateTitle, 'space,body.storage,metadata.labels');
+
+          case 2:
+            pageToCopy = _context9.sent;
+            //var parentPage = await getContentById(targetPageId, 'space');
+            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy).setSpaceKey(targetSpaceKey).setParentId(targetPageId);
+            _context9.next = 6;
+            return templateProcessor.transformPage(newPage);
+
+          case 6:
+            _context9.next = 8;
+            return createPageUnderPageId(newPage);
+
+          case 8:
+            return _context9.abrupt("return", _context9.sent);
+
+          case 9:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, _callee9, this);
+  }));
+  return _createPageFromTemplate.apply(this, arguments);
+}
+
+function copyPageRecursive(_x30, _x31, _x32, _x33, _x34, _x35) {
+  return _copyPageRecursive.apply(this, arguments);
+}
+
+function _copyPageRecursive() {
+  _copyPageRecursive = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee10(fromSpaceKey, fromPageTitle, toSpaceKey, toPageTitle, templateProcessor, copiedPages) {
+    var sourcePagePromise, targetPagePromise, pages;
+    return regeneratorRuntime.wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            sourcePagePromise = getContent(fromSpaceKey, fromPageTitle);
+            targetPagePromise = getContent(toSpaceKey, toPageTitle, 'space');
+            _context10.next = 4;
+            return Promise.all(sourcePagePromise, targetPagePromise);
+
+          case 4:
+            pages = _context10.sent;
+            _context10.next = 7;
+            return copyPageRecursiveInternal(pages[0].id, pages[1].space.key, pages[1].id, templateProcessor, copiedPages);
+
+          case 7:
+            return _context10.abrupt("return", _context10.sent);
+
+          case 8:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10, this);
+  }));
+  return _copyPageRecursive.apply(this, arguments);
+}
+
+function copyPageRecursiveInternal(_x36, _x37, _x38, _x39, _x40) {
+  return _copyPageRecursiveInternal.apply(this, arguments);
+}
+
+function _copyPageRecursiveInternal() {
+  _copyPageRecursiveInternal = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee11(sourcePageId, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
+    var pageToCopy, newPage, copiedPage;
+    return regeneratorRuntime.wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _context11.next = 2;
+            return getContentById(sourcePageId, 'space,body.storage,children.page,metadata.labels');
+
+          case 2:
+            pageToCopy = _context11.sent;
+            newPage = _Page__WEBPACK_IMPORTED_MODULE_9__["default"].copyFrom(pageToCopy);
+
+            if (!templateProcessor.isApplicableTemplatePage(newPage)) {
+              _context11.next = 17;
+              break;
+            }
+
+            _context11.next = 7;
+            return templateProcessor.transformPage(newPage);
+
+          case 7:
+            newPage.setSpaceKey(targetSpaceKey).setParentId(targetPageId); // Create the new page under targetSpaceKey:targetPageId
+
+            _context11.next = 10;
+            return createPageUnderPageId(newPage);
+
+          case 10:
+            copiedPage = _context11.sent;
+            copiedPages.push(copiedPage);
+            _context11.next = 14;
+            return copyAllChildren(pageToCopy, targetSpaceKey, copiedPage.id, templateProcessor, copiedPages);
+
+          case 14:
+            return _context11.abrupt("return", _context11.sent);
+
+          case 17:
+            console.log("Page is not a template, not copied, but children will be copied: ", pageToCopy.title);
+            _context11.next = 20;
+            return copyAllChildren(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
+
+          case 20:
+            return _context11.abrupt("return", _context11.sent);
+
+          case 21:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11, this);
+  }));
+  return _copyPageRecursiveInternal.apply(this, arguments);
+}
+
+function copyAllChildren(_x41, _x42, _x43, _x44, _x45) {
+  return _copyAllChildren.apply(this, arguments);
+}
+/** 
+ * Creates a new page in Confluence. Typically create the newPage with
+ * import Page from './Page';
+ * let newPage = new Page('title','body','spaceKey',parentId);
+ * createPageUnderPageId(newPage);
+ * 
+ * or 
+ * 
+ * let newPage = Page.copyFrom(otherPage).setParentId(newParent).setSpaceKey('otherSpace');
+ * createPageUnderPageId(newPage);
+ */
+
+function _copyAllChildren() {
+  _copyAllChildren = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee13(pageToCopy, targetSpaceKey, targetPageId, templateProcessor, copiedPages) {
+    var copiedChildren;
+    return regeneratorRuntime.wrap(function _callee13$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            // recursively copy all children
+            copiedChildren = [];
+            console.log("In copyAllChildren", pageToCopy, targetPageId);
+
+            if (!(pageToCopy.children && pageToCopy.children.page && pageToCopy.children.page.results)) {
+              _context13.next = 5;
+              break;
+            }
+
+            _context13.next = 5;
+            return pageToCopy.children.page.results.forEachSerial(
+            /*#__PURE__*/
+            function () {
+              var _ref2 = _asyncToGenerator(
+              /*#__PURE__*/
+              regeneratorRuntime.mark(function _callee12(child) {
+                var childrenP;
+                return regeneratorRuntime.wrap(function _callee12$(_context12) {
+                  while (1) {
+                    switch (_context12.prev = _context12.next) {
+                      case 0:
+                        _context12.next = 2;
+                        return copyPageRecursiveInternal(child.id, targetSpaceKey, targetPageId, templateProcessor, copiedPages);
+
+                      case 2:
+                        childrenP = _context12.sent;
+                        copiedChildren.push(childrenP);
+
+                      case 4:
+                      case "end":
+                        return _context12.stop();
+                    }
+                  }
+                }, _callee12, this);
+              }));
+
+              return function (_x53) {
+                return _ref2.apply(this, arguments);
+              };
+            }());
+
+          case 5:
+            return _context13.abrupt("return", copiedChildren);
+
+          case 6:
+          case "end":
+            return _context13.stop();
+        }
+      }
+    }, _callee13, this);
+  }));
+  return _copyAllChildren.apply(this, arguments);
+}
+
+function createPageUnderPageId(_x46) {
+  return _createPageUnderPageId.apply(this, arguments);
+}
+
+function _createPageUnderPageId() {
+  _createPageUnderPageId = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee14(
+  /* type Page */
+  newPage) {
+    return regeneratorRuntime.wrap(function _callee14$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
+            console.log("Posting new page", newPage);
+            _context14.next = 3;
+            return postPage(newPage);
+
+          case 3:
+            return _context14.abrupt("return", _context14.sent);
+
+          case 4:
+          case "end":
+            return _context14.stop();
+        }
+      }
+    }, _callee14, this);
+  }));
+  return _createPageUnderPageId.apply(this, arguments);
+}
+
+function postPage(_x47) {
+  return _postPage.apply(this, arguments);
+}
+/* Typically you create the page with Page.newVersionOf(page, "optional message", isMajorEdit);
+then set the body and title you want to update with setBody and setTitle. */
+
+function _postPage() {
+  _postPage = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee15(page) {
+    return regeneratorRuntime.wrap(function _callee15$(_context15) {
+      while (1) {
+        switch (_context15.prev = _context15.next) {
+          case 0:
+            _context15.next = 2;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleWrite"])(function () {
+              return $.ajax({
+                url: '/rest/api/content',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(page)
+              });
+            });
+
+          case 2:
+            return _context15.abrupt("return", _context15.sent);
+
+          case 3:
+          case "end":
+            return _context15.stop();
+        }
+      }
+    }, _callee15, this);
+  }));
+  return _postPage.apply(this, arguments);
+}
+
+function updateContent(_x48) {
+  return _updateContent.apply(this, arguments);
+}
+
+function _updateContent() {
+  _updateContent = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee16(page) {
+    return regeneratorRuntime.wrap(function _callee16$(_context16) {
+      while (1) {
+        switch (_context16.prev = _context16.next) {
+          case 0:
+            _context16.next = 2;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleWrite"])(function () {
+              return $.ajax({
+                url: '/rest/api/content/' + encodeURIComponent(page.id),
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(page)
+              });
+            });
+
+          case 2:
+            return _context16.abrupt("return", _context16.sent);
+
+          case 3:
+          case "end":
+            return _context16.stop();
+        }
+      }
+    }, _callee16, this);
+  }));
+  return _updateContent.apply(this, arguments);
+}
+
+function getPageTree(_x49, _x50, _x51, _x52) {
+  return _getPageTree.apply(this, arguments);
+}
+
+function _getPageTree() {
+  _getPageTree = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee17(pageId, parentId, parentTitle, counter) {
+    var pageAndChildren, childrenP, childrenPages;
+    return regeneratorRuntime.wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            console.log("Queueing getContentById for ".concat(pageId));
+            _context17.next = 3;
+            return getContentById(pageId, 'history.lastUpdated,children.page,metadata.labels');
+
+          case 3:
+            pageAndChildren = _context17.sent;
+            counter.pages++;
+            if (counter.pages % 100 == 0) console.log("Found ".concat(counter.pages, " pages so far..."));
+            childrenP = [];
+            childrenPages = pageAndChildren.children.page;
+
+          case 8:
+            if (!(childrenPages && childrenPages.size > 0)) {
+              _context17.next = 20;
+              break;
+            }
+
+            childrenPages.results.forEach(function (child) {
+              return childrenP.push(getPageTree(child.id, pageId, pageAndChildren.title, counter));
+            }); // get next page if any
+
+            if (!childrenPages._links.next) {
+              _context17.next = 17;
+              break;
+            }
+
+            console.log("Queueing GET next page of children for ".concat(pageAndChildren.title, ": ").concat(childrenPages._links.next));
+            _context17.next = 14;
+            return Object(_confluence_throttle__WEBPACK_IMPORTED_MODULE_8__["throttleRead"])(function () {
+              return $.ajax(childrenPages._links.next);
+            });
+
+          case 14:
+            childrenPages = _context17.sent;
+            _context17.next = 18;
+            break;
+
+          case 17:
+            childrenPages = false;
+
+          case 18:
+            _context17.next = 8;
+            break;
+
+          case 20:
+            _context17.t0 = pageAndChildren.title;
+            _context17.t1 = pageId;
+            _context17.t2 = new Date(pageAndChildren.history.lastUpdated.when);
+            _context17.t3 = new Date(pageAndChildren.history.createdDate);
+            _context17.t4 = parentId;
+            _context17.t5 = parentTitle;
+            _context17.next = 28;
+            return Promise.all(childrenP);
+
+          case 28:
+            _context17.t6 = _context17.sent;
+            _context17.t7 = Array.prototype.map.call(pageAndChildren.metadata.labels.results, function (l) {
+              return l.name;
+            });
+            return _context17.abrupt("return", {
+              title: _context17.t0,
+              id: _context17.t1,
+              lastUpdated: _context17.t2,
+              createdDate: _context17.t3,
+              parentId: _context17.t4,
+              parentTitle: _context17.t5,
+              children: _context17.t6,
+              labels: _context17.t7
+            });
+
+          case 31:
+          case "end":
+            return _context17.stop();
+        }
+      }
+    }, _callee17, this);
+  }));
+  return _getPageTree.apply(this, arguments);
+}
+
+/***/ }),
+
 /***/ "./js/common/confluence/confluence-throttle.js":
 /*!*****************************************************!*\
   !*** ./js/common/confluence/confluence-throttle.js ***!
@@ -523,787 +1634,6 @@ var MAX_PARALLEL_READ = 4;
 var MAX_PARALLEL_WRITE = 1;
 var throttleRead = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_READ);
 var throttleWrite = __webpack_require__(/*! throat */ "./node_modules/throat/index.js")(MAX_PARALLEL_WRITE);
-
-/***/ }),
-
-/***/ "./js/common/iframeWrapper.js":
-/*!************************************!*\
-  !*** ./js/common/iframeWrapper.js ***!
-  \************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return iframeWrapper; });
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _windowEventListener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./windowEventListener */ "./js/common/windowEventListener.js");
-
-
-/**
- * A generic iframeWrapper.
- *
- * The main goal is to bypass the CORS restriction: we want the iframe to be able to execute ajax requests on the domain of the main window, and since they are on different domains, this is not possible with some hack.
- * The hack here consists in using the window.postMessage function and a message listener to execute code from the iframe into the main frame.
- *
- * iframeWrappers provide a call("action", payload) function that can call named actions in another frame and return a promise for the asynchronous response.
- * The receiving frame must hook the named actions to actual actionHandlers, that must be attached to the iframeWrapper.
- *
- * Note: The iframeWrapperFactory requires jQuery and windowEventListener.
- * It must be loaded in the 2 frames (main window and iframe) to be able to use it to run Cross-Origin actions.
- * The factory parameters are different when loading the iframeWrapper from the iframe (in which case the target window is the parent and the target hostname is the wiki),
- * and when loading from the main frame (in which case the target window is the iframe window, and the targetHostname is the yWikiPlugins host).
- *
- * Example:
- * 1. Frame A attaches an actionHandler for a given action, like "ajax", and the action handler simply returns jQuery.ajax(params).
- * 2. Then the other frame B can call("ajax", params) to remotely execute the ajax request in Frame A and get the result back.
- *
- * This is all asynchronous and based on jQuery promises.
- *
- * From the iFrame, call iframeWrapper(parent, "https://wiki.hybris.com").
- * From the main Frame, call iframeWrapper($('iframe')[0].contentWindow, yWikiPlugins.getHost()).
- */
-
-function iframeWrapper(postToWindow, targetHostname) {
-  var _correlationId = 1;
-  /**
-   * Chainable function to attach action handlers.
-   * Handlers take a single argument and may return a promise or a result (or nothing)
-   * that will be used to send the response back to the other frame.
-   */
-
-  function attachActionHandler(actionName, handler) {
-    function requestListener(correlationId, payload) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default.a.when(handler(payload)).done(function sendResponse(responsePayload) {
-        var responseMsg = {
-          correlationId: correlationId,
-          responsePayload: responsePayload
-        }; //console.log("Sending response:",responseMsg);
-
-        postToWindow.postMessage(responseMsg, targetHostname);
-      }).fail(function sendError() {
-        var payload = arguments;
-
-        if (arguments && arguments.length && arguments.length > 2) {
-          // for ajax errors, the error handler gets (jqXHR, textStatus, errorThrown) but we can't pass the whole jqXHR through the postMessage API
-          payload = {
-            textStatus: arguments[1],
-            errorThrown: arguments[2]
-          };
-
-          if (arguments[0] && arguments[0].responseText) {
-            payload.responseText = arguments[0].responseText;
-
-            try {
-              payload.responseJson = JSON.parse(payload.responseText);
-            } catch (e) {// ignore
-            }
-          }
-        }
-
-        var errorMsg = {
-          correlationId: correlationId,
-          errorPayload: payload
-        }; //console.log("Sending error response:",errorMsg);
-
-        postToWindow.postMessage(errorMsg, targetHostname);
-      });
-    }
-
-    _windowEventListener__WEBPACK_IMPORTED_MODULE_1__["default"].registerRequestListener(actionName, requestListener);
-    return this;
-  }
-  /**
-   * Calls an an action through the messaging system of frames and returns
-   * a jQuery promise that will get resolved once a response is received (also from the messaging system)
-   */
-
-
-  function call(action, payload) {
-    var defer = jquery__WEBPACK_IMPORTED_MODULE_0___default.a.Deferred();
-    var correlationId = _correlationId++;
-    _windowEventListener__WEBPACK_IMPORTED_MODULE_1__["default"].registerResponseListener(correlationId, {
-      successHandler: function successHandler(successPayload) {
-        defer.resolve(successPayload);
-      },
-      errorHandler: function errorHandler(errorPayload) {
-        defer.reject(errorPayload);
-      }
-    }); //console.log("payload",payload);
-
-    postToWindow.postMessage({
-      action: action,
-      payload: payload,
-      correlationId: correlationId
-    }, targetHostname);
-    return defer.promise();
-  }
-
-  return {
-    call: call,
-    attachActionHandler: attachActionHandler
-  };
-}
-
-/***/ }),
-
-/***/ "./js/common/optionsParser.js":
-/*!************************************!*\
-  !*** ./js/common/optionsParser.js ***!
-  \************************************/
-/*! exports provided: parseOptions, encodeOptions */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseOptions", function() { return parseOptions; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "encodeOptions", function() { return encodeOptions; });
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es7.symbol.async-iterator */ "./node_modules/core-js/modules/es7.symbol.async-iterator.js");
-/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.symbol */ "./node_modules/core-js/modules/es6.symbol.js");
-/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.string.ends-with */ "./node_modules/core-js/modules/es6.string.ends-with.js");
-/* harmony import */ var core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.string.starts-with */ "./node_modules/core-js/modules/es6.string.starts-with.js");
-/* harmony import */ var core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _lib_polyfills__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../lib/polyfills */ "./js/lib/polyfills.js");
-
-
-
-
-
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-
-
-function parseOptions(defaultOptions) {
-  var re = /(?:#|&)([^=&#]+)(?:=?([^&#]*))/g;
-  var match;
-  var params = defaultOptions || {};
-
-  function decode(s) {
-    return decodeURIComponent(s.replace(/\+/g, " "));
-  }
-
-  ;
-  var hash = document.location.hash;
-
-  while (match = re.exec(hash)) {
-    var value = decode(match[2]);
-
-    if (isJSON(value)) {
-      console.log("Parsing options: ", value);
-      value = JSON.parse(value);
-    }
-
-    params[decode(match[1])] = value;
-  }
-
-  return params;
-}
-
-function encodeOptions(options) {
-  var res = [];
-
-  for (var key in options) {
-    if (options.hasOwnProperty(key) && options[key] !== undefined && options[key] !== null && key !== 'cssSelector') {
-      var value = options[key];
-
-      if (_typeof(value) === 'object') {
-        value = JSON.stringify(value);
-      }
-
-      res.push(key + "=" + encodeURIComponent(value));
-    }
-  }
-
-  return res.join('&');
-}
-
-function isJSON(value) {
-  // simplistic heuristic to detect serialized JSON
-  return (value.startsWith('{') && value.endsWith('}') || value.startsWith('[') && value.endsWith(']')) && !value.startsWith('[object');
-}
-
-
-
-/***/ }),
-
-/***/ "./js/common/windowEventListener.js":
-/*!******************************************!*\
-  !*** ./js/common/windowEventListener.js ***!
-  \******************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/**
- * Sets up a listener of all events received by the window, that dispatches:
- *   - those that have an action to the corresponding requestListeners
- *   - those that have a correlationId but no action, to the corresponding responseListeners
- * Exposes functions to (un)register listeners.
- */
-var windowEventListener = function windowEventListener() {
-  // Start listening to messages (from other frames, typically)
-  var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-  var eventer = window[eventMethod];
-  var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-  var requestListeners = {}; // map of key=action, value=function(correlationId, payload)
-
-  var responseListeners = {}; // map of key=correlationId, value={ successHandler: function(responsePayload), errorHandler: function(errorPayload)  }
-
-  eventer(messageEvent, eventCallback, false);
-
-  function eventCallback(e) {
-    if (e.data.action) {
-      // action data is in the form { action: "actionName", payload: object }
-      if (requestListeners[e.data.action]) {
-        requestListeners[e.data.action](e.data.correlationId, e.data.payload);
-      } else {
-        // no registered requestListener for this action
-        console.warn('No requestListeners for action: ', e.data.action);
-      }
-    } else if (e.data.correlationId) {
-      // response data is in the form { correlationId: theRequestCorrelationId, responsePayload: object, errorPayload: object }
-      if (responseListeners[e.data.correlationId]) {
-        // deregister (should be used only once for each correlationId)
-        var responseListener = responseListeners[e.data.correlationId];
-        responseListeners[e.data.correlationId] = null; // delegate to the registered responseListener
-
-        if (e.data.errorPayload) {
-          responseListener.errorHandler(e.data.errorPayload);
-        } else {
-          responseListener.successHandler(e.data.responsePayload);
-        }
-      } else {
-        console.warn("No response listener for correlationId: ", e.data.correlationId);
-      }
-    } else {
-      // not an action message
-      console.log("Received non-request, non-response, message: ", e.data);
-    }
-  }
-  /**
-   * Func should be a function(correlationId, payload). The return value will be ignored.
-   * Consider this private and used solely by the iframeWrapper.
-   * Use iframeWrapper.attachActionHandler(action, handler) instead
-   */
-
-
-  function registerRequestListener(action, func) {
-    if (typeof func != 'function') {
-      console.error("Cannot register request listener since not a function: ", func);
-    } else {
-      requestListeners[action] = func;
-    }
-  }
-
-  function unregisterRequestListener(action) {
-    requestListeners[action] = null;
-  }
-  /**
-   *  The response listener must be an object in the form { successHandler: function(argument) {}, errorHandler: function(argument) {}}
-   *  where at least 1 of successHandler or errorHandler is defined.
-   *  successHandler and errorHandler, if defined, must be functions that take a single argument. Their returned value is ignored.
-   *  If one of the property is missing, a default handler is added that will simply log the result/error.
-   *
-   *  Note: There is no unregisterResponseListener because the unregistration is automatically done the first (and only) time the responseListener is used.
-   *  This is because for a given correlationId, only one response or one error will be returned.
-   */
-
-
-  function registerResponseListener(correlationId, listener) {
-    if (!listener.successHandler && !listener.errorHandler) {
-      console.error("Cannot register response listener as it is missing a successHandler function or errorHandler function", listener);
-      return;
-    }
-
-    if (listener.successHandler && typeof listener.successHandler != 'function') {
-      console.error("Cannot register response listener as the successHandler is not a function", listener);
-      return;
-    }
-
-    if (listener.errorHandler && typeof listener.errorHandler != 'function') {
-      console.error("Cannot register response listener as the errorHandler is not a function", listener);
-      return;
-    }
-
-    listener.successHandler = listener.successHandler ? listener.successHandler : defaultSuccessHandler;
-    listener.errorHandler = listener.errorHandler ? listener.errorHandler : defaultErrorHandler;
-    responseListeners[correlationId] = listener;
-  }
-
-  function defaultSuccessHandler(responsePayload) {
-    console.info("Default success handler: ", responsePayload);
-  }
-
-  function defaultErrorHandler(errorPayload) {
-    console.warn("Default error handler: ", errorPayload);
-  }
-
-  return {
-    registerRequestListener: registerRequestListener,
-    unregisterRequestListener: unregisterRequestListener,
-    registerResponseListener: registerResponseListener
-  };
-}();
-
-/* harmony default export */ __webpack_exports__["default"] = (windowEventListener);
-
-/***/ }),
-
-/***/ "./js/lib/Array.ext.js":
-/*!*****************************!*\
-  !*** ./js/lib/Array.ext.js ***!
-  \*****************************/
-/*! exports provided: serial, parallel */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "serial", function() { return serial; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parallel", function() { return parallel; });
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
-/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.string.iterator */ "./node_modules/core-js/modules/es6.string.iterator.js");
-/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
-/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_4__);
-
-
-
-
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function serial(tasks, fn) {
-  return tasks.reduce(function (promise, task) {
-    return promise.then(function (previous) {
-      return fn(task, previous);
-    });
-  }, Promise.resolve(null));
-}
-function parallel(tasks, fn) {
-  return Promise.all(tasks.map(function (task) {
-    return fn(task);
-  }));
-}
-
-Array.prototype.forEachSerial =
-/*#__PURE__*/
-function () {
-  var _ref = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee(fn) {
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            return _context.abrupt("return", serial(this, fn));
-
-          case 1:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee, this);
-  }));
-
-  return function (_x) {
-    return _ref.apply(this, arguments);
-  };
-}();
-
-Array.prototype.forEachParallel =
-/*#__PURE__*/
-function () {
-  var _ref2 = _asyncToGenerator(
-  /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee2(fn) {
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            return _context2.abrupt("return", parallel(this, fn));
-
-          case 1:
-          case "end":
-            return _context2.stop();
-        }
-      }
-    }, _callee2, this);
-  }));
-
-  return function (_x2) {
-    return _ref2.apply(this, arguments);
-  };
-}();
-
-/***/ }),
-
-/***/ "./js/lib/polyfills.js":
-/*!*****************************!*\
-  !*** ./js/lib/polyfills.js ***!
-  \*****************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.string.ends-with */ "./node_modules/core-js/modules/es6.string.ends-with.js");
-/* harmony import */ var core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_ends_with__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.string.starts-with */ "./node_modules/core-js/modules/es6.string.starts-with.js");
-/* harmony import */ var core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_starts_with__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
-/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.to-string */ "./node_modules/core-js/modules/es6.regexp.to-string.js");
-/* harmony import */ var core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_to_string__WEBPACK_IMPORTED_MODULE_3__);
-
-
-
-
-
-if (!Array.isArray) {
-  Array.isArray = function (arg) {
-    return Object.prototype.toString.call(arg) === '[object Array]';
-  };
-}
-
-if (!String.prototype.format) {
-  String.prototype.format = function () {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function (match, number) {
-      return typeof args[number] != 'undefined' ? args[number] : match;
-    });
-  };
-}
-
-if (!String.prototype.startsWith) {
-  String.prototype.startsWith = function (searchString, position) {
-    position = position || 0;
-    return this.indexOf(searchString, position) === position;
-  };
-}
-
-if (!String.prototype.endsWith) {
-  String.prototype.endsWith = function (searchString, position) {
-    var subjectString = this.toString();
-
-    if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
-      position = subjectString.length;
-    }
-
-    position -= searchString.length;
-    var lastIndex = subjectString.lastIndexOf(searchString, position);
-    return lastIndex !== -1 && lastIndex === position;
-  };
-}
-
-/***/ }),
-
-/***/ "./js/mainframe/goldenButtonPlugin.js":
-/*!********************************************!*\
-  !*** ./js/mainframe/goldenButtonPlugin.js ***!
-  \********************************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _css_professors_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../css/professors.css */ "./css/professors.css");
-/* harmony import */ var _css_professors_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_css_professors_css__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _css_golden_button_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../css/golden-button.css */ "./css/golden-button.css");
-/* harmony import */ var _css_golden_button_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_css_golden_button_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _css_jira_issue_summary_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../css/jira-issue-summary.css */ "./css/jira-issue-summary.css");
-/* harmony import */ var _css_jira_issue_summary_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_css_jira_issue_summary_css__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _common_iframeWrapper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../common/iframeWrapper */ "./js/common/iframeWrapper.js");
-/* harmony import */ var _pluginCommon__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./pluginCommon */ "./js/mainframe/pluginCommon.js");
-/* harmony import */ var _common_optionsParser__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../common/optionsParser */ "./js/common/optionsParser.js");
-/* harmony import */ var _common_config__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../common/config */ "./js/common/config.js");
-/* harmony import */ var _common_confluence_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../common/confluence/confluence-attachment-async */ "./js/common/confluence/confluence-attachment-async.js");
-
-
-
-
-
-
-
-
-
-
-function closeIFrame(iframeElt) {
-  iframeElt.unbind('load').fadeOut(function () {
-    iframeElt.attr('src', '');
-    $('#block').fadeOut();
-    $('#iframecontainer').fadeOut();
-  });
-}
-/** Opens the iframe in a "lightbox" fashion, loading it from frameSrc, and passing all provided options in the hash part of the url */
-
-
-function openIFrame(iframeElt, frameSrc, options) {
-  var block = $('#block');
-  block.fadeIn();
-  $('#iframecontainer').fadeIn();
-  iframeElt.bind('load', function () {
-    console.log("iframe loaded");
-    $('#loader').fadeOut(function () {
-      iframeElt.fadeIn();
-    });
-  });
-  iframeElt.attr('src', frameSrc + '#' + Object(_common_optionsParser__WEBPACK_IMPORTED_MODULE_6__["encodeOptions"])(options));
-  $(document).keyup(function (e) {
-    if (e.keyCode == 27) {
-      // ESC
-      closeIFrame(iframeElt);
-    }
-  });
-  $(document).mouseup(function (e) {
-    if (block.is(e.target) || block.has(e.target).length > 0) {
-      // If the target of the click is the surrounding block
-      // Hide the iframe
-      closeIFrame(iframeElt);
-    }
-  });
-}
-
-function redirectTo(url) {
-  window.location.href = url;
-}
-
-function attachHandlersToIFrameWindow(host, myIFrame) {
-  Object(_common_iframeWrapper__WEBPACK_IMPORTED_MODULE_4__["default"])(myIFrame[0].contentWindow, host).attachActionHandler("ajax", function (param) {
-    return jQuery.ajax(param);
-  }).attachActionHandler("closeFrame", function () {
-    return closeIFrame(myIFrame);
-  }).attachActionHandler("redirect", function (url) {
-    return redirectTo(url);
-  }).attachActionHandler("$metacontent", function (e) {
-    return jQuery(e).attr("content");
-  }).attachActionHandler("localStorageSetItem", function (e) {
-    return window.localStorage.setItem(e.key, e.value);
-  }).attachActionHandler("localStorageGetItem", function (e) {
-    return window.localStorage.getItem(e);
-  }).attachActionHandler("$text", function (e) {
-    return jQuery(e).text();
-  }).attachActionHandler("cloneAttachment", function (e) {
-    return Object(_common_confluence_confluence_attachment_async__WEBPACK_IMPORTED_MODULE_8__["cloneAttachment"])(e.attachmentUrl, e.targetContainerId, e.title, e.targetId);
-  });
-}
-
-function wireBanner(options) {
-  var jEl = $(options.cssSelector);
-  jEl.addClass("cibanner");
-
-  if (!options.disablePullUp) {
-    jEl.addClass("pullup");
-  }
-
-  options.buttonText = options.buttonText || "Start";
-  options.bannerText = options.bannerText || $('#title-text').text().trim();
-  $(".wiki-content .innerCell").css("overflow-x", "visible");
-  $(options.cssSelector).removeClass("rw_corners rw_page_left_section").html('<div class="cilogo">\
-              <img src="' + options.host + '/banner/service_leads_2.png" />\
-            </div>\
-            <div class="cicenter">\
-            <h1>' + options.bannerText + '</h1>\
-            </div>\
-          ');
-}
-
-function genericButton(options, formPath) {
-  // load dependencies in order
-  var myIFrame = $('#iframecontainer iframe');
-  $(options.cssSelector).click(function () {
-    openIFrame(myIFrame, options.host + '/' + formPath, options);
-    attachHandlersToIFrameWindow(options.host, myIFrame);
-  });
-}
-
-function wireJiraIssueSummary(options) {
-  // {
-  //   host,
-  //   cacheBuster,
-  //   cssSelector,
-  //   jiraLabel,
-  //   summaryType,
-  //   jiraIssueCount,
-  //   jiraColumns
-  // }
-  var el = $(options.cssSelector);
-  var jql = '( labels="' + options.jiraLabel + '" AND labels="' + _common_config__WEBPACK_IMPORTED_MODULE_7__["MAIN_JIRA_LABEL"] + '") ';
-
-  if (options.summaryType == "done") {
-    jql += ' AND status IN (Resolved, "Verified/Closed", Done, Fixed, Complete)';
-  } else if (options.summaryType == "todo") {
-    jql += ' AND status NOT IN (Resolved, "Verified/Closed", Done, Fixed, Complete, Cancelled, Rejected)';
-  }
-
-  var postQuery = '<ac:structured-macro ac:name="jira" ac:schema-version="1" ><ac:parameter ac:name="columns">' + options.jiraColumns + '</ac:parameter><ac:parameter ac:name="maximumIssues">' + options.jiraIssueCount + '</ac:parameter><ac:parameter ac:name="jqlQuery">' + jql + '</ac:parameter></ac:structured-macro>';
-  var reqPayload = {
-    wikiMarkup: encodeURIComponent(postQuery),
-    clearCache: true
-  };
-  $.ajax({
-    url: "/rest/jiraanywhere/1.0/jira/renderTable",
-    type: "POST",
-    data: JSON.stringify(reqPayload),
-    contentType: "application/json",
-    complete: function complete(data) {
-      el.html(JSON.parse(data.responseText).data);
-    }
-  });
-}
-
-function wireStartEngagementButton(options) {
-  var jEl = $(options.cssSelector);
-  jEl.addClass("cibutton btn btn-lg btn-warning btn-raised").html('<span class="text">Start</span>&nbsp;&nbsp;<i class="fa fa-play-circle fa-2x"></i>');
-  return genericButton(options, 'golden-form.html');
-}
-
-function wireCreateJiraButton(options) {
-  var el = $(options.cssSelector);
-  var currentText = el.text();
-  el.addClass("cibutton btn btn-lg btn-warning btn-raised").html('\
-    <span class="text">' + currentText + '</span>&nbsp;&nbsp;<span class="fa-stack" style="top: -3px">\
-      <i class="fa fa-comment-o fa-stack-2x"></i>\
-      <i class="fa fa-lightbulb-o fa-stack-1x"></i>\
-    </span>\
-  ');
-  return genericButton(options, 'create-jira-form.html');
-}
-
-function insertFrame() {
-  // insert the frame html after the current script tag
-  var scripts = document.getElementsByTagName('script');
-  $(scripts[scripts.length - 1]).after('<div id="block"></div><div id="iframecontainer"><div id="loader"></div><iframe></iframe></div>');
-}
-
-function readOptions(el) {
-  var groups = [];
-
-  function defaultNotFalse(v) {
-    return v !== undefined && v !== null && v !== false && v !== "false";
-  }
-
-  el.children('ci-options').each(function () {
-    var name = $(this).attr("name");
-    var options = [];
-    $(this).children('ci-option').each(function () {
-      options.push({
-        name: name,
-        value: $(this).attr("value"),
-        label: $(this).html(),
-        default: defaultNotFalse($(this).attr("default"))
-      });
-    });
-    groups.push({
-      name: name,
-      options: options
-    });
-  });
-  return groups;
-}
-
-function bootstrap(host, cacheBuster) {
-  insertFrame();
-  $('[data-activate="golden-banner"]').each(function () {
-    var jEl = $(this);
-    wireBanner({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      disablePullUp: jEl.data('disable-pull-up'),
-      buttonText: jEl.data('button-text'),
-      bannerText: jEl.data('banner-text'),
-      targetSpace: jEl.data('target-space'),
-      newInstanceDisplayName: jEl.data('new-instance-display-name'),
-      addLabel: jEl.data('add-label'),
-      logToPage: jEl.data('log-to-page'),
-      variantOptions: readOptions(jEl)
-    });
-  });
-  $('[data-activate="golden-button"]').each(function () {
-    var jEl = $(this);
-    wireStartEngagementButton({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      disablePullUp: jEl.data('disable-pull-up'),
-      buttonText: jEl.data('button-text'),
-      bannerText: jEl.data('banner-text'),
-      targetSpace: jEl.data('target-space'),
-      newInstanceDisplayName: jEl.data('new-instance-display-name'),
-      addLabel: jEl.data('add-label'),
-      logToPage: jEl.data('log-to-page'),
-      logToSpace: jEl.data('log-to-space') || jEl.data('target-space'),
-      variantOptions: readOptions(jEl)
-    });
-  });
-  $('[data-activate="issue-creator"]').each(function () {
-    var jEl = $(this);
-    wireCreateJiraButton({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      jiraProjectKey: jEl.data('jira-project-key'),
-      serviceDisplayName: jEl.data('service-display-name'),
-      issueType: jEl.data('issue-type') || "Improvement",
-      issueComponent: jEl.data('issue-component'),
-      issueLabel: jEl.data('issue-label') || jEl.data('jira-label'),
-      //issueTypeSelect: jEl.data('issue-type-select'),
-      issueComponentSelector: jEl.data('issue-component-selector'),
-      feedbackTypeSelector: jEl.data('feedback-type-selector') === false || jEl.data('feedback-type-selector') === 'false' ? null : _common_config__WEBPACK_IMPORTED_MODULE_7__["DEFAULT_FEEDBACK_TYPES"]
-    });
-  });
-  $('[data-activate="issue-summary"]').each(function () {
-    var jEl = $(this);
-    wireJiraIssueSummary({
-      host: host,
-      cacheBuster: cacheBuster,
-      cssSelector: this,
-      jiraLabel: jEl.data('jira-label'),
-      summaryType: jEl.data('summary-type'),
-      jiraIssueCount: Number(jEl.data('jira-max-issues')) || _common_config__WEBPACK_IMPORTED_MODULE_7__["DEFAULT_JIRA_ISSUE_COUNT"],
-      jiraColumns: jEl.data('jira-columns') || _common_config__WEBPACK_IMPORTED_MODULE_7__["DEFAULT_JIRA_COLUMNS"]
-    });
-  });
-}
-
-bootstrap(_pluginCommon__WEBPACK_IMPORTED_MODULE_5__["host"], _pluginCommon__WEBPACK_IMPORTED_MODULE_5__["cacheBuster"]);
-
-/***/ }),
-
-/***/ "./js/mainframe/main.js":
-/*!******************************!*\
-  !*** ./js/mainframe/main.js ***!
-  \******************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _lib_Array_ext__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/Array.ext */ "./js/lib/Array.ext.js");
-/* harmony import */ var _goldenButtonPlugin__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./goldenButtonPlugin */ "./js/mainframe/goldenButtonPlugin.js");
-/* harmony import */ var _stylesheetPlugin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
-
-
-
-Object(_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_2__["loadPluginStyleSheet"])('golden-button.css');
 
 /***/ }),
 
@@ -1393,6 +1723,2914 @@ function loadStyleSheet(host, url) {
 function loadPluginStyleSheet(filename) {
   return loadStyleSheet(_pluginCommon__WEBPACK_IMPORTED_MODULE_1__["host"], 'dist/' + filename + _pluginCommon__WEBPACK_IMPORTED_MODULE_1__["cacheBuster"]);
 }
+
+/***/ }),
+
+/***/ "./js/mktplace/controller/download-controller.js":
+/*!*******************************************************!*\
+  !*** ./js/mktplace/controller/download-controller.js ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
+/* harmony import */ var core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_replace__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _services_download_addon_service_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/download-addon-service.js */ "./js/mktplace/services/download-addon-service.js");
+/* harmony import */ var _mainframe_pluginCommon__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../mainframe/pluginCommon */ "./js/mainframe/pluginCommon.js");
+/* harmony import */ var _mktplace_config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mktplace-config */ "./js/mktplace/mktplace-config.js");
+
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+
+
+
+/**
+ * Loads Form into div placeholder and bind submission buttons to the services updating the CSV data.
+ */
+
+function loadDivContent() {
+  var repoLinks = jquery__WEBPACK_IMPORTED_MODULE_3___default()(linksWithPrefixes(_mktplace_config__WEBPACK_IMPORTED_MODULE_6__["MARKETPLACE_REPOSITORIES"]));
+
+  if (repoLinks.length) {
+    repoLinks.first().after(jquery__WEBPACK_IMPORTED_MODULE_3___default()('<div>', {
+      id: 'mktplace-div-download-form'
+    }));
+  }
+
+  repoLinks.each(function () {
+    var repoLink = jquery__WEBPACK_IMPORTED_MODULE_3___default()(this);
+    var repoButton = jquery__WEBPACK_IMPORTED_MODULE_3___default()('<button>', {
+      'class': 'btn btn-primary btn-lg btn-marketplace-download',
+      'data-toggle': 'modal',
+      'data-target': '#myModal',
+      'data-repo': repoLink.attr('href'),
+      'text': 'Launch Download form'
+    });
+    repoLink.after(repoButton);
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_3___default()('#mktplace-div-download-form').load(_mainframe_pluginCommon__WEBPACK_IMPORTED_MODULE_5__["host"] + '/fragments/mktplace/mktplace-download-form.html #mktplace-wrapper-div', function () {
+    var downloadSubmit = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#download-submit"); // pass the data-repo URL from the download button to the form submit button
+
+    jquery__WEBPACK_IMPORTED_MODULE_3___default()('.btn-marketplace-download').click(function (e) {
+      var repoUrl = jquery__WEBPACK_IMPORTED_MODULE_3___default()(this).data('repo');
+      downloadSubmit.data('repo', repoUrl);
+    });
+    downloadSubmit.click(
+    /*#__PURE__*/
+    function () {
+      var _ref = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee(e) {
+        var repoUrl, formData;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                e.preventDefault();
+                repoUrl = jquery__WEBPACK_IMPORTED_MODULE_3___default()(this).data('repo');
+                formData = new Array();
+                formData[0] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#user-menu-link").data('username');
+                formData[1] = repoUrl;
+                formData[2] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#project-name").val().replace(/,/g, ";");
+                formData[3] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#customer").val().replace(/,/g, ";");
+                formData[4] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#commerce-version").val().replace(/,/g, ";"); //replace new lines with spaces.
+
+                formData[5] = jquery__WEBPACK_IMPORTED_MODULE_3___default()("#comments").val().replace(/\r?\n|\r/g, " ");
+                _context.next = 11;
+                return _services_download_addon_service_js__WEBPACK_IMPORTED_MODULE_4__["default"].upsertMktplaceAddonDownloadsDB(formData);
+
+              case 11:
+                jquery__WEBPACK_IMPORTED_MODULE_3___default()("#myModal").modal('hide');
+                window.location.href = repoUrl;
+
+              case 13:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }());
+  }); //Triggers hidden button that shows up the modal.
+
+  repoLinks.click(function (e) {
+    e.preventDefault();
+    jquery__WEBPACK_IMPORTED_MODULE_3___default()(".btn-marketplace-download").trigger("click");
+  });
+  repoLinks.remove(); //$().click()
+}
+
+function linksWithPrefixes(arr) {
+  return arr.map(function (prefix) {
+    return "a[href^='".concat(prefix, "']");
+  }).join(',');
+}
+
+var MktplaceController = {
+  loadDivContent: loadDivContent
+};
+/* harmony default export */ __webpack_exports__["default"] = (MktplaceController);
+
+/***/ }),
+
+/***/ "./js/mktplace/css/mktplace-download-form.css":
+/*!****************************************************!*\
+  !*** ./js/mktplace/css/mktplace-download-form.css ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "./js/mktplace/mktplace-config.js":
+/*!****************************************!*\
+  !*** ./js/mktplace/mktplace-config.js ***!
+  \****************************************/
+/*! exports provided: DB_SPACE, DB_PAGE_TITLE, ATTACHMENT_NAME, MARKETPLACE_REPOSITORIES */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_SPACE", function() { return DB_SPACE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DB_PAGE_TITLE", function() { return DB_PAGE_TITLE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ATTACHMENT_NAME", function() { return ATTACHMENT_NAME; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MARKETPLACE_REPOSITORIES", function() { return MARKETPLACE_REPOSITORIES; });
+var DB_SPACE = '~adrien.missemer@hybris.com';
+var DB_PAGE_TITLE = 'MarketPlace DB';
+var ATTACHMENT_NAME = "mktplace-addon-download-data.csv";
+var MARKETPLACE_REPOSITORIES = ['https://github.wdf.sap.corp/hybris-coep', 'https://github.wdf.sap.corp/cx-solution-addons'];
+
+/***/ }),
+
+/***/ "./js/mktplace/plugins/mktplace-download-form-plugin.js":
+/*!**************************************************************!*\
+  !*** ./js/mktplace/plugins/mktplace-download-form-plugin.js ***!
+  \**************************************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _css_mktplace_download_form_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../css/mktplace-download-form.css */ "./js/mktplace/css/mktplace-download-form.css");
+/* harmony import */ var _css_mktplace_download_form_css__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_css_mktplace_download_form_css__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.min.css */ "./node_modules/bootstrap/dist/css/bootstrap.min.css");
+/* harmony import */ var bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_css_bootstrap_min_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var bootstrap_dist_css_bootstrap_theme_min_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap-theme.min.css */ "./node_modules/bootstrap/dist/css/bootstrap-theme.min.css");
+/* harmony import */ var bootstrap_dist_css_bootstrap_theme_min_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_css_bootstrap_theme_min_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var bootstrap_select_dist_css_bootstrap_select_min_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! bootstrap-select/dist/css/bootstrap-select.min.css */ "./node_modules/bootstrap-select/dist/css/bootstrap-select.min.css");
+/* harmony import */ var bootstrap_select_dist_css_bootstrap_select_min_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(bootstrap_select_dist_css_bootstrap_select_min_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/npm.js");
+/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(bootstrap__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _controller_download_controller_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../controller/download-controller.js */ "./js/mktplace/controller/download-controller.js");
+/* harmony import */ var _mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../mainframe/stylesheetPlugin */ "./js/mainframe/stylesheetPlugin.js");
+
+
+
+
+
+
+
+
+
+Object(_mainframe_stylesheetPlugin__WEBPACK_IMPORTED_MODULE_7__["loadPluginStyleSheet"])('mktplace-download-form.css'); //Loads plugin
+
+_controller_download_controller_js__WEBPACK_IMPORTED_MODULE_6__["default"].loadDivContent();
+
+/***/ }),
+
+/***/ "./js/mktplace/services/download-addon-service.js":
+/*!********************************************************!*\
+  !*** ./js/mktplace/services/download-addon-service.js ***!
+  \********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+/* harmony import */ var core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_promise__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/confluence/Attachment */ "./js/common/confluence/Attachment.js");
+/* harmony import */ var _mktplace_config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mktplace-config */ "./js/mktplace/mktplace-config.js");
+/* harmony import */ var _common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../common/confluence/confluence-page-async */ "./js/common/confluence/confluence-page-async.js");
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+var Attachment = Object(_common_confluence_Attachment__WEBPACK_IMPORTED_MODULE_2__["default"])();
+
+
+var CONTENT_TYPE = 'text/csv';
+/**
+ * Main entry method to update the downloads table.
+ * @param formData
+ * @returns {Promise<void>}
+ */
+
+function upsertMktplaceAddonDownloadsDB(_x) {
+  return _upsertMktplaceAddonDownloadsDB.apply(this, arguments);
+}
+
+function _upsertMktplaceAddonDownloadsDB() {
+  _upsertMktplaceAddonDownloadsDB = _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee(formData) {
+    var dbPageId, metadata, csvData, newRecord;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            _context.next = 3;
+            return Object(_common_confluence_confluence_page_async__WEBPACK_IMPORTED_MODULE_4__["getContent"])(_mktplace_config__WEBPACK_IMPORTED_MODULE_3__["DB_SPACE"], _mktplace_config__WEBPACK_IMPORTED_MODULE_3__["DB_PAGE_TITLE"]);
+
+          case 3:
+            dbPageId = _context.sent.id;
+            _context.next = 9;
+            break;
+
+          case 6:
+            _context.prev = 6;
+            _context.t0 = _context["catch"](0);
+            throw new Error("Cannot find the marketplace page, please contact an admin (".concat(_mktplace_config__WEBPACK_IMPORTED_MODULE_3__["DB_SPACE"], ":").concat(_mktplace_config__WEBPACK_IMPORTED_MODULE_3__["DB_PAGE_TITLE"], ")"));
+
+          case 9:
+            _context.next = 11;
+            return Attachment.getOrCreateAttachment(dbPageId, _mktplace_config__WEBPACK_IMPORTED_MODULE_3__["ATTACHMENT_NAME"]);
+
+          case 11:
+            metadata = _context.sent;
+            _context.next = 14;
+            return metadata.loadText();
+
+          case 14:
+            csvData = _context.sent;
+
+            if (!csvData) {
+              // initialize the file
+              csvData = 'userId,addonUrl,projectName,customerName,sapCommerceVersion,comments';
+            } //Replace , with ;
+
+
+            newRecord = csvData.concat("\n" + formData[0] + "," + formData[1] + "," + formData[2] + "," + formData[3] + "," + formData[4] + "," + formData[5]);
+            _context.next = 19;
+            return metadata.saveText(newRecord, CONTENT_TYPE);
+
+          case 19:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, this, [[0, 6]]);
+  }));
+  return _upsertMktplaceAddonDownloadsDB.apply(this, arguments);
+}
+
+var DownloadAddonService = {
+  upsertMktplaceAddonDownloadsDB: upsertMktplaceAddonDownloadsDB
+};
+/* harmony default export */ __webpack_exports__["default"] = (DownloadAddonService);
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap-select/dist/css/bootstrap-select.min.css":
+/*!*************************************************************************!*\
+  !*** ./node_modules/bootstrap-select/dist/css/bootstrap-select.min.css ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/dist/css/bootstrap-theme.min.css":
+/*!*****************************************************************!*\
+  !*** ./node_modules/bootstrap/dist/css/bootstrap-theme.min.css ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/dist/css/bootstrap.min.css":
+/*!***********************************************************!*\
+  !*** ./node_modules/bootstrap/dist/css/bootstrap.min.css ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/dist/js/npm.js":
+/*!***********************************************!*\
+  !*** ./node_modules/bootstrap/dist/js/npm.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+// This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
+__webpack_require__(/*! ../../js/transition.js */ "./node_modules/bootstrap/js/transition.js")
+__webpack_require__(/*! ../../js/alert.js */ "./node_modules/bootstrap/js/alert.js")
+__webpack_require__(/*! ../../js/button.js */ "./node_modules/bootstrap/js/button.js")
+__webpack_require__(/*! ../../js/carousel.js */ "./node_modules/bootstrap/js/carousel.js")
+__webpack_require__(/*! ../../js/collapse.js */ "./node_modules/bootstrap/js/collapse.js")
+__webpack_require__(/*! ../../js/dropdown.js */ "./node_modules/bootstrap/js/dropdown.js")
+__webpack_require__(/*! ../../js/modal.js */ "./node_modules/bootstrap/js/modal.js")
+__webpack_require__(/*! ../../js/tooltip.js */ "./node_modules/bootstrap/js/tooltip.js")
+__webpack_require__(/*! ../../js/popover.js */ "./node_modules/bootstrap/js/popover.js")
+__webpack_require__(/*! ../../js/scrollspy.js */ "./node_modules/bootstrap/js/scrollspy.js")
+__webpack_require__(/*! ../../js/tab.js */ "./node_modules/bootstrap/js/tab.js")
+__webpack_require__(/*! ../../js/affix.js */ "./node_modules/bootstrap/js/affix.js")
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/affix.js":
+/*!********************************************!*\
+  !*** ./node_modules/bootstrap/js/affix.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: affix.js v3.3.7
+ * http://getbootstrap.com/javascript/#affix
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // AFFIX CLASS DEFINITION
+  // ======================
+
+  var Affix = function (element, options) {
+    this.options = $.extend({}, Affix.DEFAULTS, options)
+
+    this.$target = $(this.options.target)
+      .on('scroll.bs.affix.data-api', $.proxy(this.checkPosition, this))
+      .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
+
+    this.$element     = $(element)
+    this.affixed      = null
+    this.unpin        = null
+    this.pinnedOffset = null
+
+    this.checkPosition()
+  }
+
+  Affix.VERSION  = '3.3.7'
+
+  Affix.RESET    = 'affix affix-top affix-bottom'
+
+  Affix.DEFAULTS = {
+    offset: 0,
+    target: window
+  }
+
+  Affix.prototype.getState = function (scrollHeight, height, offsetTop, offsetBottom) {
+    var scrollTop    = this.$target.scrollTop()
+    var position     = this.$element.offset()
+    var targetHeight = this.$target.height()
+
+    if (offsetTop != null && this.affixed == 'top') return scrollTop < offsetTop ? 'top' : false
+
+    if (this.affixed == 'bottom') {
+      if (offsetTop != null) return (scrollTop + this.unpin <= position.top) ? false : 'bottom'
+      return (scrollTop + targetHeight <= scrollHeight - offsetBottom) ? false : 'bottom'
+    }
+
+    var initializing   = this.affixed == null
+    var colliderTop    = initializing ? scrollTop : position.top
+    var colliderHeight = initializing ? targetHeight : height
+
+    if (offsetTop != null && scrollTop <= offsetTop) return 'top'
+    if (offsetBottom != null && (colliderTop + colliderHeight >= scrollHeight - offsetBottom)) return 'bottom'
+
+    return false
+  }
+
+  Affix.prototype.getPinnedOffset = function () {
+    if (this.pinnedOffset) return this.pinnedOffset
+    this.$element.removeClass(Affix.RESET).addClass('affix')
+    var scrollTop = this.$target.scrollTop()
+    var position  = this.$element.offset()
+    return (this.pinnedOffset = position.top - scrollTop)
+  }
+
+  Affix.prototype.checkPositionWithEventLoop = function () {
+    setTimeout($.proxy(this.checkPosition, this), 1)
+  }
+
+  Affix.prototype.checkPosition = function () {
+    if (!this.$element.is(':visible')) return
+
+    var height       = this.$element.height()
+    var offset       = this.options.offset
+    var offsetTop    = offset.top
+    var offsetBottom = offset.bottom
+    var scrollHeight = Math.max($(document).height(), $(document.body).height())
+
+    if (typeof offset != 'object')         offsetBottom = offsetTop = offset
+    if (typeof offsetTop == 'function')    offsetTop    = offset.top(this.$element)
+    if (typeof offsetBottom == 'function') offsetBottom = offset.bottom(this.$element)
+
+    var affix = this.getState(scrollHeight, height, offsetTop, offsetBottom)
+
+    if (this.affixed != affix) {
+      if (this.unpin != null) this.$element.css('top', '')
+
+      var affixType = 'affix' + (affix ? '-' + affix : '')
+      var e         = $.Event(affixType + '.bs.affix')
+
+      this.$element.trigger(e)
+
+      if (e.isDefaultPrevented()) return
+
+      this.affixed = affix
+      this.unpin = affix == 'bottom' ? this.getPinnedOffset() : null
+
+      this.$element
+        .removeClass(Affix.RESET)
+        .addClass(affixType)
+        .trigger(affixType.replace('affix', 'affixed') + '.bs.affix')
+    }
+
+    if (affix == 'bottom') {
+      this.$element.offset({
+        top: scrollHeight - height - offsetBottom
+      })
+    }
+  }
+
+
+  // AFFIX PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.affix')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.affix', (data = new Affix(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.affix
+
+  $.fn.affix             = Plugin
+  $.fn.affix.Constructor = Affix
+
+
+  // AFFIX NO CONFLICT
+  // =================
+
+  $.fn.affix.noConflict = function () {
+    $.fn.affix = old
+    return this
+  }
+
+
+  // AFFIX DATA-API
+  // ==============
+
+  $(window).on('load', function () {
+    $('[data-spy="affix"]').each(function () {
+      var $spy = $(this)
+      var data = $spy.data()
+
+      data.offset = data.offset || {}
+
+      if (data.offsetBottom != null) data.offset.bottom = data.offsetBottom
+      if (data.offsetTop    != null) data.offset.top    = data.offsetTop
+
+      Plugin.call($spy, data)
+    })
+  })
+
+}(jQuery);
+
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/alert.js":
+/*!********************************************!*\
+  !*** ./node_modules/bootstrap/js/alert.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: alert.js v3.3.7
+ * http://getbootstrap.com/javascript/#alerts
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // ALERT CLASS DEFINITION
+  // ======================
+
+  var dismiss = '[data-dismiss="alert"]'
+  var Alert   = function (el) {
+    $(el).on('click', dismiss, this.close)
+  }
+
+  Alert.VERSION = '3.3.7'
+
+  Alert.TRANSITION_DURATION = 150
+
+  Alert.prototype.close = function (e) {
+    var $this    = $(this)
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    var $parent = $(selector === '#' ? [] : selector)
+
+    if (e) e.preventDefault()
+
+    if (!$parent.length) {
+      $parent = $this.closest('.alert')
+    }
+
+    $parent.trigger(e = $.Event('close.bs.alert'))
+
+    if (e.isDefaultPrevented()) return
+
+    $parent.removeClass('in')
+
+    function removeElement() {
+      // detach from parent, fire event then clean up data
+      $parent.detach().trigger('closed.bs.alert').remove()
+    }
+
+    $.support.transition && $parent.hasClass('fade') ?
+      $parent
+        .one('bsTransitionEnd', removeElement)
+        .emulateTransitionEnd(Alert.TRANSITION_DURATION) :
+      removeElement()
+  }
+
+
+  // ALERT PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.alert')
+
+      if (!data) $this.data('bs.alert', (data = new Alert(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  var old = $.fn.alert
+
+  $.fn.alert             = Plugin
+  $.fn.alert.Constructor = Alert
+
+
+  // ALERT NO CONFLICT
+  // =================
+
+  $.fn.alert.noConflict = function () {
+    $.fn.alert = old
+    return this
+  }
+
+
+  // ALERT DATA-API
+  // ==============
+
+  $(document).on('click.bs.alert.data-api', dismiss, Alert.prototype.close)
+
+}(jQuery);
+
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/button.js":
+/*!*********************************************!*\
+  !*** ./node_modules/bootstrap/js/button.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: button.js v3.3.7
+ * http://getbootstrap.com/javascript/#buttons
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // BUTTON PUBLIC CLASS DEFINITION
+  // ==============================
+
+  var Button = function (element, options) {
+    this.$element  = $(element)
+    this.options   = $.extend({}, Button.DEFAULTS, options)
+    this.isLoading = false
+  }
+
+  Button.VERSION  = '3.3.7'
+
+  Button.DEFAULTS = {
+    loadingText: 'loading...'
+  }
+
+  Button.prototype.setState = function (state) {
+    var d    = 'disabled'
+    var $el  = this.$element
+    var val  = $el.is('input') ? 'val' : 'html'
+    var data = $el.data()
+
+    state += 'Text'
+
+    if (data.resetText == null) $el.data('resetText', $el[val]())
+
+    // push to event loop to allow forms to submit
+    setTimeout($.proxy(function () {
+      $el[val](data[state] == null ? this.options[state] : data[state])
+
+      if (state == 'loadingText') {
+        this.isLoading = true
+        $el.addClass(d).attr(d, d).prop(d, true)
+      } else if (this.isLoading) {
+        this.isLoading = false
+        $el.removeClass(d).removeAttr(d).prop(d, false)
+      }
+    }, this), 0)
+  }
+
+  Button.prototype.toggle = function () {
+    var changed = true
+    var $parent = this.$element.closest('[data-toggle="buttons"]')
+
+    if ($parent.length) {
+      var $input = this.$element.find('input')
+      if ($input.prop('type') == 'radio') {
+        if ($input.prop('checked')) changed = false
+        $parent.find('.active').removeClass('active')
+        this.$element.addClass('active')
+      } else if ($input.prop('type') == 'checkbox') {
+        if (($input.prop('checked')) !== this.$element.hasClass('active')) changed = false
+        this.$element.toggleClass('active')
+      }
+      $input.prop('checked', this.$element.hasClass('active'))
+      if (changed) $input.trigger('change')
+    } else {
+      this.$element.attr('aria-pressed', !this.$element.hasClass('active'))
+      this.$element.toggleClass('active')
+    }
+  }
+
+
+  // BUTTON PLUGIN DEFINITION
+  // ========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.button')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.button', (data = new Button(this, options)))
+
+      if (option == 'toggle') data.toggle()
+      else if (option) data.setState(option)
+    })
+  }
+
+  var old = $.fn.button
+
+  $.fn.button             = Plugin
+  $.fn.button.Constructor = Button
+
+
+  // BUTTON NO CONFLICT
+  // ==================
+
+  $.fn.button.noConflict = function () {
+    $.fn.button = old
+    return this
+  }
+
+
+  // BUTTON DATA-API
+  // ===============
+
+  $(document)
+    .on('click.bs.button.data-api', '[data-toggle^="button"]', function (e) {
+      var $btn = $(e.target).closest('.btn')
+      Plugin.call($btn, 'toggle')
+      if (!($(e.target).is('input[type="radio"], input[type="checkbox"]'))) {
+        // Prevent double click on radios, and the double selections (so cancellation) on checkboxes
+        e.preventDefault()
+        // The target component still receive the focus
+        if ($btn.is('input,button')) $btn.trigger('focus')
+        else $btn.find('input:visible,button:visible').first().trigger('focus')
+      }
+    })
+    .on('focus.bs.button.data-api blur.bs.button.data-api', '[data-toggle^="button"]', function (e) {
+      $(e.target).closest('.btn').toggleClass('focus', /^focus(in)?$/.test(e.type))
+    })
+
+}(jQuery);
+
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/carousel.js":
+/*!***********************************************!*\
+  !*** ./node_modules/bootstrap/js/carousel.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: carousel.js v3.3.7
+ * http://getbootstrap.com/javascript/#carousel
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // CAROUSEL CLASS DEFINITION
+  // =========================
+
+  var Carousel = function (element, options) {
+    this.$element    = $(element)
+    this.$indicators = this.$element.find('.carousel-indicators')
+    this.options     = options
+    this.paused      = null
+    this.sliding     = null
+    this.interval    = null
+    this.$active     = null
+    this.$items      = null
+
+    this.options.keyboard && this.$element.on('keydown.bs.carousel', $.proxy(this.keydown, this))
+
+    this.options.pause == 'hover' && !('ontouchstart' in document.documentElement) && this.$element
+      .on('mouseenter.bs.carousel', $.proxy(this.pause, this))
+      .on('mouseleave.bs.carousel', $.proxy(this.cycle, this))
+  }
+
+  Carousel.VERSION  = '3.3.7'
+
+  Carousel.TRANSITION_DURATION = 600
+
+  Carousel.DEFAULTS = {
+    interval: 5000,
+    pause: 'hover',
+    wrap: true,
+    keyboard: true
+  }
+
+  Carousel.prototype.keydown = function (e) {
+    if (/input|textarea/i.test(e.target.tagName)) return
+    switch (e.which) {
+      case 37: this.prev(); break
+      case 39: this.next(); break
+      default: return
+    }
+
+    e.preventDefault()
+  }
+
+  Carousel.prototype.cycle = function (e) {
+    e || (this.paused = false)
+
+    this.interval && clearInterval(this.interval)
+
+    this.options.interval
+      && !this.paused
+      && (this.interval = setInterval($.proxy(this.next, this), this.options.interval))
+
+    return this
+  }
+
+  Carousel.prototype.getItemIndex = function (item) {
+    this.$items = item.parent().children('.item')
+    return this.$items.index(item || this.$active)
+  }
+
+  Carousel.prototype.getItemForDirection = function (direction, active) {
+    var activeIndex = this.getItemIndex(active)
+    var willWrap = (direction == 'prev' && activeIndex === 0)
+                || (direction == 'next' && activeIndex == (this.$items.length - 1))
+    if (willWrap && !this.options.wrap) return active
+    var delta = direction == 'prev' ? -1 : 1
+    var itemIndex = (activeIndex + delta) % this.$items.length
+    return this.$items.eq(itemIndex)
+  }
+
+  Carousel.prototype.to = function (pos) {
+    var that        = this
+    var activeIndex = this.getItemIndex(this.$active = this.$element.find('.item.active'))
+
+    if (pos > (this.$items.length - 1) || pos < 0) return
+
+    if (this.sliding)       return this.$element.one('slid.bs.carousel', function () { that.to(pos) }) // yes, "slid"
+    if (activeIndex == pos) return this.pause().cycle()
+
+    return this.slide(pos > activeIndex ? 'next' : 'prev', this.$items.eq(pos))
+  }
+
+  Carousel.prototype.pause = function (e) {
+    e || (this.paused = true)
+
+    if (this.$element.find('.next, .prev').length && $.support.transition) {
+      this.$element.trigger($.support.transition.end)
+      this.cycle(true)
+    }
+
+    this.interval = clearInterval(this.interval)
+
+    return this
+  }
+
+  Carousel.prototype.next = function () {
+    if (this.sliding) return
+    return this.slide('next')
+  }
+
+  Carousel.prototype.prev = function () {
+    if (this.sliding) return
+    return this.slide('prev')
+  }
+
+  Carousel.prototype.slide = function (type, next) {
+    var $active   = this.$element.find('.item.active')
+    var $next     = next || this.getItemForDirection(type, $active)
+    var isCycling = this.interval
+    var direction = type == 'next' ? 'left' : 'right'
+    var that      = this
+
+    if ($next.hasClass('active')) return (this.sliding = false)
+
+    var relatedTarget = $next[0]
+    var slideEvent = $.Event('slide.bs.carousel', {
+      relatedTarget: relatedTarget,
+      direction: direction
+    })
+    this.$element.trigger(slideEvent)
+    if (slideEvent.isDefaultPrevented()) return
+
+    this.sliding = true
+
+    isCycling && this.pause()
+
+    if (this.$indicators.length) {
+      this.$indicators.find('.active').removeClass('active')
+      var $nextIndicator = $(this.$indicators.children()[this.getItemIndex($next)])
+      $nextIndicator && $nextIndicator.addClass('active')
+    }
+
+    var slidEvent = $.Event('slid.bs.carousel', { relatedTarget: relatedTarget, direction: direction }) // yes, "slid"
+    if ($.support.transition && this.$element.hasClass('slide')) {
+      $next.addClass(type)
+      $next[0].offsetWidth // force reflow
+      $active.addClass(direction)
+      $next.addClass(direction)
+      $active
+        .one('bsTransitionEnd', function () {
+          $next.removeClass([type, direction].join(' ')).addClass('active')
+          $active.removeClass(['active', direction].join(' '))
+          that.sliding = false
+          setTimeout(function () {
+            that.$element.trigger(slidEvent)
+          }, 0)
+        })
+        .emulateTransitionEnd(Carousel.TRANSITION_DURATION)
+    } else {
+      $active.removeClass('active')
+      $next.addClass('active')
+      this.sliding = false
+      this.$element.trigger(slidEvent)
+    }
+
+    isCycling && this.cycle()
+
+    return this
+  }
+
+
+  // CAROUSEL PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.carousel')
+      var options = $.extend({}, Carousel.DEFAULTS, $this.data(), typeof option == 'object' && option)
+      var action  = typeof option == 'string' ? option : options.slide
+
+      if (!data) $this.data('bs.carousel', (data = new Carousel(this, options)))
+      if (typeof option == 'number') data.to(option)
+      else if (action) data[action]()
+      else if (options.interval) data.pause().cycle()
+    })
+  }
+
+  var old = $.fn.carousel
+
+  $.fn.carousel             = Plugin
+  $.fn.carousel.Constructor = Carousel
+
+
+  // CAROUSEL NO CONFLICT
+  // ====================
+
+  $.fn.carousel.noConflict = function () {
+    $.fn.carousel = old
+    return this
+  }
+
+
+  // CAROUSEL DATA-API
+  // =================
+
+  var clickHandler = function (e) {
+    var href
+    var $this   = $(this)
+    var $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) // strip for ie7
+    if (!$target.hasClass('carousel')) return
+    var options = $.extend({}, $target.data(), $this.data())
+    var slideIndex = $this.attr('data-slide-to')
+    if (slideIndex) options.interval = false
+
+    Plugin.call($target, options)
+
+    if (slideIndex) {
+      $target.data('bs.carousel').to(slideIndex)
+    }
+
+    e.preventDefault()
+  }
+
+  $(document)
+    .on('click.bs.carousel.data-api', '[data-slide]', clickHandler)
+    .on('click.bs.carousel.data-api', '[data-slide-to]', clickHandler)
+
+  $(window).on('load', function () {
+    $('[data-ride="carousel"]').each(function () {
+      var $carousel = $(this)
+      Plugin.call($carousel, $carousel.data())
+    })
+  })
+
+}(jQuery);
+
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/collapse.js":
+/*!***********************************************!*\
+  !*** ./node_modules/bootstrap/js/collapse.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: collapse.js v3.3.7
+ * http://getbootstrap.com/javascript/#collapse
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+/* jshint latedef: false */
+
++function ($) {
+  'use strict';
+
+  // COLLAPSE PUBLIC CLASS DEFINITION
+  // ================================
+
+  var Collapse = function (element, options) {
+    this.$element      = $(element)
+    this.options       = $.extend({}, Collapse.DEFAULTS, options)
+    this.$trigger      = $('[data-toggle="collapse"][href="#' + element.id + '"],' +
+                           '[data-toggle="collapse"][data-target="#' + element.id + '"]')
+    this.transitioning = null
+
+    if (this.options.parent) {
+      this.$parent = this.getParent()
+    } else {
+      this.addAriaAndCollapsedClass(this.$element, this.$trigger)
+    }
+
+    if (this.options.toggle) this.toggle()
+  }
+
+  Collapse.VERSION  = '3.3.7'
+
+  Collapse.TRANSITION_DURATION = 350
+
+  Collapse.DEFAULTS = {
+    toggle: true
+  }
+
+  Collapse.prototype.dimension = function () {
+    var hasWidth = this.$element.hasClass('width')
+    return hasWidth ? 'width' : 'height'
+  }
+
+  Collapse.prototype.show = function () {
+    if (this.transitioning || this.$element.hasClass('in')) return
+
+    var activesData
+    var actives = this.$parent && this.$parent.children('.panel').children('.in, .collapsing')
+
+    if (actives && actives.length) {
+      activesData = actives.data('bs.collapse')
+      if (activesData && activesData.transitioning) return
+    }
+
+    var startEvent = $.Event('show.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    if (actives && actives.length) {
+      Plugin.call(actives, 'hide')
+      activesData || actives.data('bs.collapse', null)
+    }
+
+    var dimension = this.dimension()
+
+    this.$element
+      .removeClass('collapse')
+      .addClass('collapsing')[dimension](0)
+      .attr('aria-expanded', true)
+
+    this.$trigger
+      .removeClass('collapsed')
+      .attr('aria-expanded', true)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse in')[dimension]('')
+      this.transitioning = 0
+      this.$element
+        .trigger('shown.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    var scrollSize = $.camelCase(['scroll', dimension].join('-'))
+
+    this.$element
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)[dimension](this.$element[0][scrollSize])
+  }
+
+  Collapse.prototype.hide = function () {
+    if (this.transitioning || !this.$element.hasClass('in')) return
+
+    var startEvent = $.Event('hide.bs.collapse')
+    this.$element.trigger(startEvent)
+    if (startEvent.isDefaultPrevented()) return
+
+    var dimension = this.dimension()
+
+    this.$element[dimension](this.$element[dimension]())[0].offsetHeight
+
+    this.$element
+      .addClass('collapsing')
+      .removeClass('collapse in')
+      .attr('aria-expanded', false)
+
+    this.$trigger
+      .addClass('collapsed')
+      .attr('aria-expanded', false)
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.transitioning = 0
+      this.$element
+        .removeClass('collapsing')
+        .addClass('collapse')
+        .trigger('hidden.bs.collapse')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    this.$element
+      [dimension](0)
+      .one('bsTransitionEnd', $.proxy(complete, this))
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)
+  }
+
+  Collapse.prototype.toggle = function () {
+    this[this.$element.hasClass('in') ? 'hide' : 'show']()
+  }
+
+  Collapse.prototype.getParent = function () {
+    return $(this.options.parent)
+      .find('[data-toggle="collapse"][data-parent="' + this.options.parent + '"]')
+      .each($.proxy(function (i, element) {
+        var $element = $(element)
+        this.addAriaAndCollapsedClass(getTargetFromTrigger($element), $element)
+      }, this))
+      .end()
+  }
+
+  Collapse.prototype.addAriaAndCollapsedClass = function ($element, $trigger) {
+    var isOpen = $element.hasClass('in')
+
+    $element.attr('aria-expanded', isOpen)
+    $trigger
+      .toggleClass('collapsed', !isOpen)
+      .attr('aria-expanded', isOpen)
+  }
+
+  function getTargetFromTrigger($trigger) {
+    var href
+    var target = $trigger.attr('data-target')
+      || (href = $trigger.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') // strip for ie7
+
+    return $(target)
+  }
+
+
+  // COLLAPSE PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.collapse')
+      var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
+      if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.collapse
+
+  $.fn.collapse             = Plugin
+  $.fn.collapse.Constructor = Collapse
+
+
+  // COLLAPSE NO CONFLICT
+  // ====================
+
+  $.fn.collapse.noConflict = function () {
+    $.fn.collapse = old
+    return this
+  }
+
+
+  // COLLAPSE DATA-API
+  // =================
+
+  $(document).on('click.bs.collapse.data-api', '[data-toggle="collapse"]', function (e) {
+    var $this   = $(this)
+
+    if (!$this.attr('data-target')) e.preventDefault()
+
+    var $target = getTargetFromTrigger($this)
+    var data    = $target.data('bs.collapse')
+    var option  = data ? 'toggle' : $this.data()
+
+    Plugin.call($target, option)
+  })
+
+}(jQuery);
+
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/dropdown.js":
+/*!***********************************************!*\
+  !*** ./node_modules/bootstrap/js/dropdown.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: dropdown.js v3.3.7
+ * http://getbootstrap.com/javascript/#dropdowns
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // DROPDOWN CLASS DEFINITION
+  // =========================
+
+  var backdrop = '.dropdown-backdrop'
+  var toggle   = '[data-toggle="dropdown"]'
+  var Dropdown = function (element) {
+    $(element).on('click.bs.dropdown', this.toggle)
+  }
+
+  Dropdown.VERSION = '3.3.7'
+
+  function getParent($this) {
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    var $parent = selector && $(selector)
+
+    return $parent && $parent.length ? $parent : $this.parent()
+  }
+
+  function clearMenus(e) {
+    if (e && e.which === 3) return
+    $(backdrop).remove()
+    $(toggle).each(function () {
+      var $this         = $(this)
+      var $parent       = getParent($this)
+      var relatedTarget = { relatedTarget: this }
+
+      if (!$parent.hasClass('open')) return
+
+      if (e && e.type == 'click' && /input|textarea/i.test(e.target.tagName) && $.contains($parent[0], e.target)) return
+
+      $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
+
+      if (e.isDefaultPrevented()) return
+
+      $this.attr('aria-expanded', 'false')
+      $parent.removeClass('open').trigger($.Event('hidden.bs.dropdown', relatedTarget))
+    })
+  }
+
+  Dropdown.prototype.toggle = function (e) {
+    var $this = $(this)
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    clearMenus()
+
+    if (!isActive) {
+      if ('ontouchstart' in document.documentElement && !$parent.closest('.navbar-nav').length) {
+        // if mobile we use a backdrop because click events don't delegate
+        $(document.createElement('div'))
+          .addClass('dropdown-backdrop')
+          .insertAfter($(this))
+          .on('click', clearMenus)
+      }
+
+      var relatedTarget = { relatedTarget: this }
+      $parent.trigger(e = $.Event('show.bs.dropdown', relatedTarget))
+
+      if (e.isDefaultPrevented()) return
+
+      $this
+        .trigger('focus')
+        .attr('aria-expanded', 'true')
+
+      $parent
+        .toggleClass('open')
+        .trigger($.Event('shown.bs.dropdown', relatedTarget))
+    }
+
+    return false
+  }
+
+  Dropdown.prototype.keydown = function (e) {
+    if (!/(38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return
+
+    var $this = $(this)
+
+    e.preventDefault()
+    e.stopPropagation()
+
+    if ($this.is('.disabled, :disabled')) return
+
+    var $parent  = getParent($this)
+    var isActive = $parent.hasClass('open')
+
+    if (!isActive && e.which != 27 || isActive && e.which == 27) {
+      if (e.which == 27) $parent.find(toggle).trigger('focus')
+      return $this.trigger('click')
+    }
+
+    var desc = ' li:not(.disabled):visible a'
+    var $items = $parent.find('.dropdown-menu' + desc)
+
+    if (!$items.length) return
+
+    var index = $items.index(e.target)
+
+    if (e.which == 38 && index > 0)                 index--         // up
+    if (e.which == 40 && index < $items.length - 1) index++         // down
+    if (!~index)                                    index = 0
+
+    $items.eq(index).trigger('focus')
+  }
+
+
+  // DROPDOWN PLUGIN DEFINITION
+  // ==========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.dropdown')
+
+      if (!data) $this.data('bs.dropdown', (data = new Dropdown(this)))
+      if (typeof option == 'string') data[option].call($this)
+    })
+  }
+
+  var old = $.fn.dropdown
+
+  $.fn.dropdown             = Plugin
+  $.fn.dropdown.Constructor = Dropdown
+
+
+  // DROPDOWN NO CONFLICT
+  // ====================
+
+  $.fn.dropdown.noConflict = function () {
+    $.fn.dropdown = old
+    return this
+  }
+
+
+  // APPLY TO STANDARD DROPDOWN ELEMENTS
+  // ===================================
+
+  $(document)
+    .on('click.bs.dropdown.data-api', clearMenus)
+    .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
+    .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
+    .on('keydown.bs.dropdown.data-api', toggle, Dropdown.prototype.keydown)
+    .on('keydown.bs.dropdown.data-api', '.dropdown-menu', Dropdown.prototype.keydown)
+
+}(jQuery);
+
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/modal.js":
+/*!********************************************!*\
+  !*** ./node_modules/bootstrap/js/modal.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: modal.js v3.3.7
+ * http://getbootstrap.com/javascript/#modals
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // MODAL CLASS DEFINITION
+  // ======================
+
+  var Modal = function (element, options) {
+    this.options             = options
+    this.$body               = $(document.body)
+    this.$element            = $(element)
+    this.$dialog             = this.$element.find('.modal-dialog')
+    this.$backdrop           = null
+    this.isShown             = null
+    this.originalBodyPad     = null
+    this.scrollbarWidth      = 0
+    this.ignoreBackdropClick = false
+
+    if (this.options.remote) {
+      this.$element
+        .find('.modal-content')
+        .load(this.options.remote, $.proxy(function () {
+          this.$element.trigger('loaded.bs.modal')
+        }, this))
+    }
+  }
+
+  Modal.VERSION  = '3.3.7'
+
+  Modal.TRANSITION_DURATION = 300
+  Modal.BACKDROP_TRANSITION_DURATION = 150
+
+  Modal.DEFAULTS = {
+    backdrop: true,
+    keyboard: true,
+    show: true
+  }
+
+  Modal.prototype.toggle = function (_relatedTarget) {
+    return this.isShown ? this.hide() : this.show(_relatedTarget)
+  }
+
+  Modal.prototype.show = function (_relatedTarget) {
+    var that = this
+    var e    = $.Event('show.bs.modal', { relatedTarget: _relatedTarget })
+
+    this.$element.trigger(e)
+
+    if (this.isShown || e.isDefaultPrevented()) return
+
+    this.isShown = true
+
+    this.checkScrollbar()
+    this.setScrollbar()
+    this.$body.addClass('modal-open')
+
+    this.escape()
+    this.resize()
+
+    this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
+
+    this.$dialog.on('mousedown.dismiss.bs.modal', function () {
+      that.$element.one('mouseup.dismiss.bs.modal', function (e) {
+        if ($(e.target).is(that.$element)) that.ignoreBackdropClick = true
+      })
+    })
+
+    this.backdrop(function () {
+      var transition = $.support.transition && that.$element.hasClass('fade')
+
+      if (!that.$element.parent().length) {
+        that.$element.appendTo(that.$body) // don't move modals dom position
+      }
+
+      that.$element
+        .show()
+        .scrollTop(0)
+
+      that.adjustDialog()
+
+      if (transition) {
+        that.$element[0].offsetWidth // force reflow
+      }
+
+      that.$element.addClass('in')
+
+      that.enforceFocus()
+
+      var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
+
+      transition ?
+        that.$dialog // wait for modal to slide in
+          .one('bsTransitionEnd', function () {
+            that.$element.trigger('focus').trigger(e)
+          })
+          .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
+        that.$element.trigger('focus').trigger(e)
+    })
+  }
+
+  Modal.prototype.hide = function (e) {
+    if (e) e.preventDefault()
+
+    e = $.Event('hide.bs.modal')
+
+    this.$element.trigger(e)
+
+    if (!this.isShown || e.isDefaultPrevented()) return
+
+    this.isShown = false
+
+    this.escape()
+    this.resize()
+
+    $(document).off('focusin.bs.modal')
+
+    this.$element
+      .removeClass('in')
+      .off('click.dismiss.bs.modal')
+      .off('mouseup.dismiss.bs.modal')
+
+    this.$dialog.off('mousedown.dismiss.bs.modal')
+
+    $.support.transition && this.$element.hasClass('fade') ?
+      this.$element
+        .one('bsTransitionEnd', $.proxy(this.hideModal, this))
+        .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
+      this.hideModal()
+  }
+
+  Modal.prototype.enforceFocus = function () {
+    $(document)
+      .off('focusin.bs.modal') // guard against infinite focus loop
+      .on('focusin.bs.modal', $.proxy(function (e) {
+        if (document !== e.target &&
+            this.$element[0] !== e.target &&
+            !this.$element.has(e.target).length) {
+          this.$element.trigger('focus')
+        }
+      }, this))
+  }
+
+  Modal.prototype.escape = function () {
+    if (this.isShown && this.options.keyboard) {
+      this.$element.on('keydown.dismiss.bs.modal', $.proxy(function (e) {
+        e.which == 27 && this.hide()
+      }, this))
+    } else if (!this.isShown) {
+      this.$element.off('keydown.dismiss.bs.modal')
+    }
+  }
+
+  Modal.prototype.resize = function () {
+    if (this.isShown) {
+      $(window).on('resize.bs.modal', $.proxy(this.handleUpdate, this))
+    } else {
+      $(window).off('resize.bs.modal')
+    }
+  }
+
+  Modal.prototype.hideModal = function () {
+    var that = this
+    this.$element.hide()
+    this.backdrop(function () {
+      that.$body.removeClass('modal-open')
+      that.resetAdjustments()
+      that.resetScrollbar()
+      that.$element.trigger('hidden.bs.modal')
+    })
+  }
+
+  Modal.prototype.removeBackdrop = function () {
+    this.$backdrop && this.$backdrop.remove()
+    this.$backdrop = null
+  }
+
+  Modal.prototype.backdrop = function (callback) {
+    var that = this
+    var animate = this.$element.hasClass('fade') ? 'fade' : ''
+
+    if (this.isShown && this.options.backdrop) {
+      var doAnimate = $.support.transition && animate
+
+      this.$backdrop = $(document.createElement('div'))
+        .addClass('modal-backdrop ' + animate)
+        .appendTo(this.$body)
+
+      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
+        if (this.ignoreBackdropClick) {
+          this.ignoreBackdropClick = false
+          return
+        }
+        if (e.target !== e.currentTarget) return
+        this.options.backdrop == 'static'
+          ? this.$element[0].focus()
+          : this.hide()
+      }, this))
+
+      if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
+
+      this.$backdrop.addClass('in')
+
+      if (!callback) return
+
+      doAnimate ?
+        this.$backdrop
+          .one('bsTransitionEnd', callback)
+          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
+        callback()
+
+    } else if (!this.isShown && this.$backdrop) {
+      this.$backdrop.removeClass('in')
+
+      var callbackRemove = function () {
+        that.removeBackdrop()
+        callback && callback()
+      }
+      $.support.transition && this.$element.hasClass('fade') ?
+        this.$backdrop
+          .one('bsTransitionEnd', callbackRemove)
+          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
+        callbackRemove()
+
+    } else if (callback) {
+      callback()
+    }
+  }
+
+  // these following methods are used to handle overflowing modals
+
+  Modal.prototype.handleUpdate = function () {
+    this.adjustDialog()
+  }
+
+  Modal.prototype.adjustDialog = function () {
+    var modalIsOverflowing = this.$element[0].scrollHeight > document.documentElement.clientHeight
+
+    this.$element.css({
+      paddingLeft:  !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : '',
+      paddingRight: this.bodyIsOverflowing && !modalIsOverflowing ? this.scrollbarWidth : ''
+    })
+  }
+
+  Modal.prototype.resetAdjustments = function () {
+    this.$element.css({
+      paddingLeft: '',
+      paddingRight: ''
+    })
+  }
+
+  Modal.prototype.checkScrollbar = function () {
+    var fullWindowWidth = window.innerWidth
+    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
+      var documentElementRect = document.documentElement.getBoundingClientRect()
+      fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left)
+    }
+    this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth
+    this.scrollbarWidth = this.measureScrollbar()
+  }
+
+  Modal.prototype.setScrollbar = function () {
+    var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
+    this.originalBodyPad = document.body.style.paddingRight || ''
+    if (this.bodyIsOverflowing) this.$body.css('padding-right', bodyPad + this.scrollbarWidth)
+  }
+
+  Modal.prototype.resetScrollbar = function () {
+    this.$body.css('padding-right', this.originalBodyPad)
+  }
+
+  Modal.prototype.measureScrollbar = function () { // thx walsh
+    var scrollDiv = document.createElement('div')
+    scrollDiv.className = 'modal-scrollbar-measure'
+    this.$body.append(scrollDiv)
+    var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth
+    this.$body[0].removeChild(scrollDiv)
+    return scrollbarWidth
+  }
+
+
+  // MODAL PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option, _relatedTarget) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.modal')
+      var options = $.extend({}, Modal.DEFAULTS, $this.data(), typeof option == 'object' && option)
+
+      if (!data) $this.data('bs.modal', (data = new Modal(this, options)))
+      if (typeof option == 'string') data[option](_relatedTarget)
+      else if (options.show) data.show(_relatedTarget)
+    })
+  }
+
+  var old = $.fn.modal
+
+  $.fn.modal             = Plugin
+  $.fn.modal.Constructor = Modal
+
+
+  // MODAL NO CONFLICT
+  // =================
+
+  $.fn.modal.noConflict = function () {
+    $.fn.modal = old
+    return this
+  }
+
+
+  // MODAL DATA-API
+  // ==============
+
+  $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
+    var $this   = $(this)
+    var href    = $this.attr('href')
+    var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) // strip for ie7
+    var option  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
+
+    if ($this.is('a')) e.preventDefault()
+
+    $target.one('show.bs.modal', function (showEvent) {
+      if (showEvent.isDefaultPrevented()) return // only register focus restorer if modal will actually get shown
+      $target.one('hidden.bs.modal', function () {
+        $this.is(':visible') && $this.trigger('focus')
+      })
+    })
+    Plugin.call($target, option, this)
+  })
+
+}(jQuery);
+
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/popover.js":
+/*!**********************************************!*\
+  !*** ./node_modules/bootstrap/js/popover.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: popover.js v3.3.7
+ * http://getbootstrap.com/javascript/#popovers
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // POPOVER PUBLIC CLASS DEFINITION
+  // ===============================
+
+  var Popover = function (element, options) {
+    this.init('popover', element, options)
+  }
+
+  if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
+
+  Popover.VERSION  = '3.3.7'
+
+  Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
+    placement: 'right',
+    trigger: 'click',
+    content: '',
+    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
+  })
+
+
+  // NOTE: POPOVER EXTENDS tooltip.js
+  // ================================
+
+  Popover.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype)
+
+  Popover.prototype.constructor = Popover
+
+  Popover.prototype.getDefaults = function () {
+    return Popover.DEFAULTS
+  }
+
+  Popover.prototype.setContent = function () {
+    var $tip    = this.tip()
+    var title   = this.getTitle()
+    var content = this.getContent()
+
+    $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
+    $tip.find('.popover-content').children().detach().end()[ // we use append for html objects to maintain js events
+      this.options.html ? (typeof content == 'string' ? 'html' : 'append') : 'text'
+    ](content)
+
+    $tip.removeClass('fade top bottom left right in')
+
+    // IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do
+    // this manually by checking the contents.
+    if (!$tip.find('.popover-title').html()) $tip.find('.popover-title').hide()
+  }
+
+  Popover.prototype.hasContent = function () {
+    return this.getTitle() || this.getContent()
+  }
+
+  Popover.prototype.getContent = function () {
+    var $e = this.$element
+    var o  = this.options
+
+    return $e.attr('data-content')
+      || (typeof o.content == 'function' ?
+            o.content.call($e[0]) :
+            o.content)
+  }
+
+  Popover.prototype.arrow = function () {
+    return (this.$arrow = this.$arrow || this.tip().find('.arrow'))
+  }
+
+
+  // POPOVER PLUGIN DEFINITION
+  // =========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.popover')
+      var options = typeof option == 'object' && option
+
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.popover
+
+  $.fn.popover             = Plugin
+  $.fn.popover.Constructor = Popover
+
+
+  // POPOVER NO CONFLICT
+  // ===================
+
+  $.fn.popover.noConflict = function () {
+    $.fn.popover = old
+    return this
+  }
+
+}(jQuery);
+
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/scrollspy.js":
+/*!************************************************!*\
+  !*** ./node_modules/bootstrap/js/scrollspy.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: scrollspy.js v3.3.7
+ * http://getbootstrap.com/javascript/#scrollspy
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // SCROLLSPY CLASS DEFINITION
+  // ==========================
+
+  function ScrollSpy(element, options) {
+    this.$body          = $(document.body)
+    this.$scrollElement = $(element).is(document.body) ? $(window) : $(element)
+    this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
+    this.selector       = (this.options.target || '') + ' .nav li > a'
+    this.offsets        = []
+    this.targets        = []
+    this.activeTarget   = null
+    this.scrollHeight   = 0
+
+    this.$scrollElement.on('scroll.bs.scrollspy', $.proxy(this.process, this))
+    this.refresh()
+    this.process()
+  }
+
+  ScrollSpy.VERSION  = '3.3.7'
+
+  ScrollSpy.DEFAULTS = {
+    offset: 10
+  }
+
+  ScrollSpy.prototype.getScrollHeight = function () {
+    return this.$scrollElement[0].scrollHeight || Math.max(this.$body[0].scrollHeight, document.documentElement.scrollHeight)
+  }
+
+  ScrollSpy.prototype.refresh = function () {
+    var that          = this
+    var offsetMethod  = 'offset'
+    var offsetBase    = 0
+
+    this.offsets      = []
+    this.targets      = []
+    this.scrollHeight = this.getScrollHeight()
+
+    if (!$.isWindow(this.$scrollElement[0])) {
+      offsetMethod = 'position'
+      offsetBase   = this.$scrollElement.scrollTop()
+    }
+
+    this.$body
+      .find(this.selector)
+      .map(function () {
+        var $el   = $(this)
+        var href  = $el.data('target') || $el.attr('href')
+        var $href = /^#./.test(href) && $(href)
+
+        return ($href
+          && $href.length
+          && $href.is(':visible')
+          && [[$href[offsetMethod]().top + offsetBase, href]]) || null
+      })
+      .sort(function (a, b) { return a[0] - b[0] })
+      .each(function () {
+        that.offsets.push(this[0])
+        that.targets.push(this[1])
+      })
+  }
+
+  ScrollSpy.prototype.process = function () {
+    var scrollTop    = this.$scrollElement.scrollTop() + this.options.offset
+    var scrollHeight = this.getScrollHeight()
+    var maxScroll    = this.options.offset + scrollHeight - this.$scrollElement.height()
+    var offsets      = this.offsets
+    var targets      = this.targets
+    var activeTarget = this.activeTarget
+    var i
+
+    if (this.scrollHeight != scrollHeight) {
+      this.refresh()
+    }
+
+    if (scrollTop >= maxScroll) {
+      return activeTarget != (i = targets[targets.length - 1]) && this.activate(i)
+    }
+
+    if (activeTarget && scrollTop < offsets[0]) {
+      this.activeTarget = null
+      return this.clear()
+    }
+
+    for (i = offsets.length; i--;) {
+      activeTarget != targets[i]
+        && scrollTop >= offsets[i]
+        && (offsets[i + 1] === undefined || scrollTop < offsets[i + 1])
+        && this.activate(targets[i])
+    }
+  }
+
+  ScrollSpy.prototype.activate = function (target) {
+    this.activeTarget = target
+
+    this.clear()
+
+    var selector = this.selector +
+      '[data-target="' + target + '"],' +
+      this.selector + '[href="' + target + '"]'
+
+    var active = $(selector)
+      .parents('li')
+      .addClass('active')
+
+    if (active.parent('.dropdown-menu').length) {
+      active = active
+        .closest('li.dropdown')
+        .addClass('active')
+    }
+
+    active.trigger('activate.bs.scrollspy')
+  }
+
+  ScrollSpy.prototype.clear = function () {
+    $(this.selector)
+      .parentsUntil(this.options.target, '.active')
+      .removeClass('active')
+  }
+
+
+  // SCROLLSPY PLUGIN DEFINITION
+  // ===========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.scrollspy')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.scrollspy', (data = new ScrollSpy(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.scrollspy
+
+  $.fn.scrollspy             = Plugin
+  $.fn.scrollspy.Constructor = ScrollSpy
+
+
+  // SCROLLSPY NO CONFLICT
+  // =====================
+
+  $.fn.scrollspy.noConflict = function () {
+    $.fn.scrollspy = old
+    return this
+  }
+
+
+  // SCROLLSPY DATA-API
+  // ==================
+
+  $(window).on('load.bs.scrollspy.data-api', function () {
+    $('[data-spy="scroll"]').each(function () {
+      var $spy = $(this)
+      Plugin.call($spy, $spy.data())
+    })
+  })
+
+}(jQuery);
+
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/tab.js":
+/*!******************************************!*\
+  !*** ./node_modules/bootstrap/js/tab.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: tab.js v3.3.7
+ * http://getbootstrap.com/javascript/#tabs
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // TAB CLASS DEFINITION
+  // ====================
+
+  var Tab = function (element) {
+    // jscs:disable requireDollarBeforejQueryAssignment
+    this.element = $(element)
+    // jscs:enable requireDollarBeforejQueryAssignment
+  }
+
+  Tab.VERSION = '3.3.7'
+
+  Tab.TRANSITION_DURATION = 150
+
+  Tab.prototype.show = function () {
+    var $this    = this.element
+    var $ul      = $this.closest('ul:not(.dropdown-menu)')
+    var selector = $this.data('target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    if ($this.parent('li').hasClass('active')) return
+
+    var $previous = $ul.find('.active:last a')
+    var hideEvent = $.Event('hide.bs.tab', {
+      relatedTarget: $this[0]
+    })
+    var showEvent = $.Event('show.bs.tab', {
+      relatedTarget: $previous[0]
+    })
+
+    $previous.trigger(hideEvent)
+    $this.trigger(showEvent)
+
+    if (showEvent.isDefaultPrevented() || hideEvent.isDefaultPrevented()) return
+
+    var $target = $(selector)
+
+    this.activate($this.closest('li'), $ul)
+    this.activate($target, $target.parent(), function () {
+      $previous.trigger({
+        type: 'hidden.bs.tab',
+        relatedTarget: $this[0]
+      })
+      $this.trigger({
+        type: 'shown.bs.tab',
+        relatedTarget: $previous[0]
+      })
+    })
+  }
+
+  Tab.prototype.activate = function (element, container, callback) {
+    var $active    = container.find('> .active')
+    var transition = callback
+      && $.support.transition
+      && ($active.length && $active.hasClass('fade') || !!container.find('> .fade').length)
+
+    function next() {
+      $active
+        .removeClass('active')
+        .find('> .dropdown-menu > .active')
+          .removeClass('active')
+        .end()
+        .find('[data-toggle="tab"]')
+          .attr('aria-expanded', false)
+
+      element
+        .addClass('active')
+        .find('[data-toggle="tab"]')
+          .attr('aria-expanded', true)
+
+      if (transition) {
+        element[0].offsetWidth // reflow for transition
+        element.addClass('in')
+      } else {
+        element.removeClass('fade')
+      }
+
+      if (element.parent('.dropdown-menu').length) {
+        element
+          .closest('li.dropdown')
+            .addClass('active')
+          .end()
+          .find('[data-toggle="tab"]')
+            .attr('aria-expanded', true)
+      }
+
+      callback && callback()
+    }
+
+    $active.length && transition ?
+      $active
+        .one('bsTransitionEnd', next)
+        .emulateTransitionEnd(Tab.TRANSITION_DURATION) :
+      next()
+
+    $active.removeClass('in')
+  }
+
+
+  // TAB PLUGIN DEFINITION
+  // =====================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.tab')
+
+      if (!data) $this.data('bs.tab', (data = new Tab(this)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.tab
+
+  $.fn.tab             = Plugin
+  $.fn.tab.Constructor = Tab
+
+
+  // TAB NO CONFLICT
+  // ===============
+
+  $.fn.tab.noConflict = function () {
+    $.fn.tab = old
+    return this
+  }
+
+
+  // TAB DATA-API
+  // ============
+
+  var clickHandler = function (e) {
+    e.preventDefault()
+    Plugin.call($(this), 'show')
+  }
+
+  $(document)
+    .on('click.bs.tab.data-api', '[data-toggle="tab"]', clickHandler)
+    .on('click.bs.tab.data-api', '[data-toggle="pill"]', clickHandler)
+
+}(jQuery);
+
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/tooltip.js":
+/*!**********************************************!*\
+  !*** ./node_modules/bootstrap/js/tooltip.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: tooltip.js v3.3.7
+ * http://getbootstrap.com/javascript/#tooltip
+ * Inspired by the original jQuery.tipsy by Jason Frame
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // TOOLTIP PUBLIC CLASS DEFINITION
+  // ===============================
+
+  var Tooltip = function (element, options) {
+    this.type       = null
+    this.options    = null
+    this.enabled    = null
+    this.timeout    = null
+    this.hoverState = null
+    this.$element   = null
+    this.inState    = null
+
+    this.init('tooltip', element, options)
+  }
+
+  Tooltip.VERSION  = '3.3.7'
+
+  Tooltip.TRANSITION_DURATION = 150
+
+  Tooltip.DEFAULTS = {
+    animation: true,
+    placement: 'top',
+    selector: false,
+    template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+    trigger: 'hover focus',
+    title: '',
+    delay: 0,
+    html: false,
+    container: false,
+    viewport: {
+      selector: 'body',
+      padding: 0
+    }
+  }
+
+  Tooltip.prototype.init = function (type, element, options) {
+    this.enabled   = true
+    this.type      = type
+    this.$element  = $(element)
+    this.options   = this.getOptions(options)
+    this.$viewport = this.options.viewport && $($.isFunction(this.options.viewport) ? this.options.viewport.call(this, this.$element) : (this.options.viewport.selector || this.options.viewport))
+    this.inState   = { click: false, hover: false, focus: false }
+
+    if (this.$element[0] instanceof document.constructor && !this.options.selector) {
+      throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
+    }
+
+    var triggers = this.options.trigger.split(' ')
+
+    for (var i = triggers.length; i--;) {
+      var trigger = triggers[i]
+
+      if (trigger == 'click') {
+        this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
+      } else if (trigger != 'manual') {
+        var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focusin'
+        var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
+
+        this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
+        this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
+      }
+    }
+
+    this.options.selector ?
+      (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
+      this.fixTitle()
+  }
+
+  Tooltip.prototype.getDefaults = function () {
+    return Tooltip.DEFAULTS
+  }
+
+  Tooltip.prototype.getOptions = function (options) {
+    options = $.extend({}, this.getDefaults(), this.$element.data(), options)
+
+    if (options.delay && typeof options.delay == 'number') {
+      options.delay = {
+        show: options.delay,
+        hide: options.delay
+      }
+    }
+
+    return options
+  }
+
+  Tooltip.prototype.getDelegateOptions = function () {
+    var options  = {}
+    var defaults = this.getDefaults()
+
+    this._options && $.each(this._options, function (key, value) {
+      if (defaults[key] != value) options[key] = value
+    })
+
+    return options
+  }
+
+  Tooltip.prototype.enter = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget).data('bs.' + this.type)
+
+    if (!self) {
+      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+      $(obj.currentTarget).data('bs.' + this.type, self)
+    }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusin' ? 'focus' : 'hover'] = true
+    }
+
+    if (self.tip().hasClass('in') || self.hoverState == 'in') {
+      self.hoverState = 'in'
+      return
+    }
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'in'
+
+    if (!self.options.delay || !self.options.delay.show) return self.show()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'in') self.show()
+    }, self.options.delay.show)
+  }
+
+  Tooltip.prototype.isInStateTrue = function () {
+    for (var key in this.inState) {
+      if (this.inState[key]) return true
+    }
+
+    return false
+  }
+
+  Tooltip.prototype.leave = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget).data('bs.' + this.type)
+
+    if (!self) {
+      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+      $(obj.currentTarget).data('bs.' + this.type, self)
+    }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusout' ? 'focus' : 'hover'] = false
+    }
+
+    if (self.isInStateTrue()) return
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'out'
+
+    if (!self.options.delay || !self.options.delay.hide) return self.hide()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'out') self.hide()
+    }, self.options.delay.hide)
+  }
+
+  Tooltip.prototype.show = function () {
+    var e = $.Event('show.bs.' + this.type)
+
+    if (this.hasContent() && this.enabled) {
+      this.$element.trigger(e)
+
+      var inDom = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0])
+      if (e.isDefaultPrevented() || !inDom) return
+      var that = this
+
+      var $tip = this.tip()
+
+      var tipId = this.getUID(this.type)
+
+      this.setContent()
+      $tip.attr('id', tipId)
+      this.$element.attr('aria-describedby', tipId)
+
+      if (this.options.animation) $tip.addClass('fade')
+
+      var placement = typeof this.options.placement == 'function' ?
+        this.options.placement.call(this, $tip[0], this.$element[0]) :
+        this.options.placement
+
+      var autoToken = /\s?auto?\s?/i
+      var autoPlace = autoToken.test(placement)
+      if (autoPlace) placement = placement.replace(autoToken, '') || 'top'
+
+      $tip
+        .detach()
+        .css({ top: 0, left: 0, display: 'block' })
+        .addClass(placement)
+        .data('bs.' + this.type, this)
+
+      this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
+      this.$element.trigger('inserted.bs.' + this.type)
+
+      var pos          = this.getPosition()
+      var actualWidth  = $tip[0].offsetWidth
+      var actualHeight = $tip[0].offsetHeight
+
+      if (autoPlace) {
+        var orgPlacement = placement
+        var viewportDim = this.getPosition(this.$viewport)
+
+        placement = placement == 'bottom' && pos.bottom + actualHeight > viewportDim.bottom ? 'top'    :
+                    placement == 'top'    && pos.top    - actualHeight < viewportDim.top    ? 'bottom' :
+                    placement == 'right'  && pos.right  + actualWidth  > viewportDim.width  ? 'left'   :
+                    placement == 'left'   && pos.left   - actualWidth  < viewportDim.left   ? 'right'  :
+                    placement
+
+        $tip
+          .removeClass(orgPlacement)
+          .addClass(placement)
+      }
+
+      var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight)
+
+      this.applyPlacement(calculatedOffset, placement)
+
+      var complete = function () {
+        var prevHoverState = that.hoverState
+        that.$element.trigger('shown.bs.' + that.type)
+        that.hoverState = null
+
+        if (prevHoverState == 'out') that.leave(that)
+      }
+
+      $.support.transition && this.$tip.hasClass('fade') ?
+        $tip
+          .one('bsTransitionEnd', complete)
+          .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
+        complete()
+    }
+  }
+
+  Tooltip.prototype.applyPlacement = function (offset, placement) {
+    var $tip   = this.tip()
+    var width  = $tip[0].offsetWidth
+    var height = $tip[0].offsetHeight
+
+    // manually read margins because getBoundingClientRect includes difference
+    var marginTop = parseInt($tip.css('margin-top'), 10)
+    var marginLeft = parseInt($tip.css('margin-left'), 10)
+
+    // we must check for NaN for ie 8/9
+    if (isNaN(marginTop))  marginTop  = 0
+    if (isNaN(marginLeft)) marginLeft = 0
+
+    offset.top  += marginTop
+    offset.left += marginLeft
+
+    // $.fn.offset doesn't round pixel values
+    // so we use setOffset directly with our own function B-0
+    $.offset.setOffset($tip[0], $.extend({
+      using: function (props) {
+        $tip.css({
+          top: Math.round(props.top),
+          left: Math.round(props.left)
+        })
+      }
+    }, offset), 0)
+
+    $tip.addClass('in')
+
+    // check to see if placing tip in new offset caused the tip to resize itself
+    var actualWidth  = $tip[0].offsetWidth
+    var actualHeight = $tip[0].offsetHeight
+
+    if (placement == 'top' && actualHeight != height) {
+      offset.top = offset.top + height - actualHeight
+    }
+
+    var delta = this.getViewportAdjustedDelta(placement, offset, actualWidth, actualHeight)
+
+    if (delta.left) offset.left += delta.left
+    else offset.top += delta.top
+
+    var isVertical          = /top|bottom/.test(placement)
+    var arrowDelta          = isVertical ? delta.left * 2 - width + actualWidth : delta.top * 2 - height + actualHeight
+    var arrowOffsetPosition = isVertical ? 'offsetWidth' : 'offsetHeight'
+
+    $tip.offset(offset)
+    this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
+  }
+
+  Tooltip.prototype.replaceArrow = function (delta, dimension, isVertical) {
+    this.arrow()
+      .css(isVertical ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
+      .css(isVertical ? 'top' : 'left', '')
+  }
+
+  Tooltip.prototype.setContent = function () {
+    var $tip  = this.tip()
+    var title = this.getTitle()
+
+    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
+    $tip.removeClass('fade in top bottom left right')
+  }
+
+  Tooltip.prototype.hide = function (callback) {
+    var that = this
+    var $tip = $(this.$tip)
+    var e    = $.Event('hide.bs.' + this.type)
+
+    function complete() {
+      if (that.hoverState != 'in') $tip.detach()
+      if (that.$element) { // TODO: Check whether guarding this code with this `if` is really necessary.
+        that.$element
+          .removeAttr('aria-describedby')
+          .trigger('hidden.bs.' + that.type)
+      }
+      callback && callback()
+    }
+
+    this.$element.trigger(e)
+
+    if (e.isDefaultPrevented()) return
+
+    $tip.removeClass('in')
+
+    $.support.transition && $tip.hasClass('fade') ?
+      $tip
+        .one('bsTransitionEnd', complete)
+        .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
+      complete()
+
+    this.hoverState = null
+
+    return this
+  }
+
+  Tooltip.prototype.fixTitle = function () {
+    var $e = this.$element
+    if ($e.attr('title') || typeof $e.attr('data-original-title') != 'string') {
+      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
+    }
+  }
+
+  Tooltip.prototype.hasContent = function () {
+    return this.getTitle()
+  }
+
+  Tooltip.prototype.getPosition = function ($element) {
+    $element   = $element || this.$element
+
+    var el     = $element[0]
+    var isBody = el.tagName == 'BODY'
+
+    var elRect    = el.getBoundingClientRect()
+    if (elRect.width == null) {
+      // width and height are missing in IE8, so compute them manually; see https://github.com/twbs/bootstrap/issues/14093
+      elRect = $.extend({}, elRect, { width: elRect.right - elRect.left, height: elRect.bottom - elRect.top })
+    }
+    var isSvg = window.SVGElement && el instanceof window.SVGElement
+    // Avoid using $.offset() on SVGs since it gives incorrect results in jQuery 3.
+    // See https://github.com/twbs/bootstrap/issues/20280
+    var elOffset  = isBody ? { top: 0, left: 0 } : (isSvg ? null : $element.offset())
+    var scroll    = { scroll: isBody ? document.documentElement.scrollTop || document.body.scrollTop : $element.scrollTop() }
+    var outerDims = isBody ? { width: $(window).width(), height: $(window).height() } : null
+
+    return $.extend({}, elRect, scroll, outerDims, elOffset)
+  }
+
+  Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
+    return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2 } :
+           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2 } :
+           placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
+        /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width }
+
+  }
+
+  Tooltip.prototype.getViewportAdjustedDelta = function (placement, pos, actualWidth, actualHeight) {
+    var delta = { top: 0, left: 0 }
+    if (!this.$viewport) return delta
+
+    var viewportPadding = this.options.viewport && this.options.viewport.padding || 0
+    var viewportDimensions = this.getPosition(this.$viewport)
+
+    if (/right|left/.test(placement)) {
+      var topEdgeOffset    = pos.top - viewportPadding - viewportDimensions.scroll
+      var bottomEdgeOffset = pos.top + viewportPadding - viewportDimensions.scroll + actualHeight
+      if (topEdgeOffset < viewportDimensions.top) { // top overflow
+        delta.top = viewportDimensions.top - topEdgeOffset
+      } else if (bottomEdgeOffset > viewportDimensions.top + viewportDimensions.height) { // bottom overflow
+        delta.top = viewportDimensions.top + viewportDimensions.height - bottomEdgeOffset
+      }
+    } else {
+      var leftEdgeOffset  = pos.left - viewportPadding
+      var rightEdgeOffset = pos.left + viewportPadding + actualWidth
+      if (leftEdgeOffset < viewportDimensions.left) { // left overflow
+        delta.left = viewportDimensions.left - leftEdgeOffset
+      } else if (rightEdgeOffset > viewportDimensions.right) { // right overflow
+        delta.left = viewportDimensions.left + viewportDimensions.width - rightEdgeOffset
+      }
+    }
+
+    return delta
+  }
+
+  Tooltip.prototype.getTitle = function () {
+    var title
+    var $e = this.$element
+    var o  = this.options
+
+    title = $e.attr('data-original-title')
+      || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
+
+    return title
+  }
+
+  Tooltip.prototype.getUID = function (prefix) {
+    do prefix += ~~(Math.random() * 1000000)
+    while (document.getElementById(prefix))
+    return prefix
+  }
+
+  Tooltip.prototype.tip = function () {
+    if (!this.$tip) {
+      this.$tip = $(this.options.template)
+      if (this.$tip.length != 1) {
+        throw new Error(this.type + ' `template` option must consist of exactly 1 top-level element!')
+      }
+    }
+    return this.$tip
+  }
+
+  Tooltip.prototype.arrow = function () {
+    return (this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow'))
+  }
+
+  Tooltip.prototype.enable = function () {
+    this.enabled = true
+  }
+
+  Tooltip.prototype.disable = function () {
+    this.enabled = false
+  }
+
+  Tooltip.prototype.toggleEnabled = function () {
+    this.enabled = !this.enabled
+  }
+
+  Tooltip.prototype.toggle = function (e) {
+    var self = this
+    if (e) {
+      self = $(e.currentTarget).data('bs.' + this.type)
+      if (!self) {
+        self = new this.constructor(e.currentTarget, this.getDelegateOptions())
+        $(e.currentTarget).data('bs.' + this.type, self)
+      }
+    }
+
+    if (e) {
+      self.inState.click = !self.inState.click
+      if (self.isInStateTrue()) self.enter(self)
+      else self.leave(self)
+    } else {
+      self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
+    }
+  }
+
+  Tooltip.prototype.destroy = function () {
+    var that = this
+    clearTimeout(this.timeout)
+    this.hide(function () {
+      that.$element.off('.' + that.type).removeData('bs.' + that.type)
+      if (that.$tip) {
+        that.$tip.detach()
+      }
+      that.$tip = null
+      that.$arrow = null
+      that.$viewport = null
+      that.$element = null
+    })
+  }
+
+
+  // TOOLTIP PLUGIN DEFINITION
+  // =========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.tooltip')
+      var options = typeof option == 'object' && option
+
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.tooltip
+
+  $.fn.tooltip             = Plugin
+  $.fn.tooltip.Constructor = Tooltip
+
+
+  // TOOLTIP NO CONFLICT
+  // ===================
+
+  $.fn.tooltip.noConflict = function () {
+    $.fn.tooltip = old
+    return this
+  }
+
+}(jQuery);
+
+}.call(window));
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap/js/transition.js":
+/*!*************************************************!*\
+  !*** ./node_modules/bootstrap/js/transition.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*** IMPORTS FROM imports-loader ***/
+var jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+(function() {
+
+/* ========================================================================
+ * Bootstrap: transition.js v3.3.7
+ * http://getbootstrap.com/javascript/#transitions
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
+  // ============================================================
+
+  function transitionEnd() {
+    var el = document.createElement('bootstrap')
+
+    var transEndEventNames = {
+      WebkitTransition : 'webkitTransitionEnd',
+      MozTransition    : 'transitionend',
+      OTransition      : 'oTransitionEnd otransitionend',
+      transition       : 'transitionend'
+    }
+
+    for (var name in transEndEventNames) {
+      if (el.style[name] !== undefined) {
+        return { end: transEndEventNames[name] }
+      }
+    }
+
+    return false // explicit for ie8 (  ._.)
+  }
+
+  // http://blog.alexmaccaw.com/css-transitions
+  $.fn.emulateTransitionEnd = function (duration) {
+    var called = false
+    var $el = this
+    $(this).one('bsTransitionEnd', function () { called = true })
+    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
+    setTimeout(callback, duration)
+    return this
+  }
+
+  $(function () {
+    $.support.transition = transitionEnd()
+
+    if (!$.support.transition) return
+
+    $.event.special.bsTransitionEnd = {
+      bindType: $.support.transition.end,
+      delegateType: $.support.transition.end,
+      handle: function (e) {
+        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
+      }
+    }
+  })
+
+}(jQuery);
+
+}.call(window));
 
 /***/ }),
 
@@ -1653,32 +4891,6 @@ module.exports = (
 
 /***/ }),
 
-/***/ "./node_modules/core-js/modules/_enum-keys.js":
-/*!****************************************************!*\
-  !*** ./node_modules/core-js/modules/_enum-keys.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// all enumerable object keys, includes symbols
-var getKeys = __webpack_require__(/*! ./_object-keys */ "./node_modules/core-js/modules/_object-keys.js");
-var gOPS = __webpack_require__(/*! ./_object-gops */ "./node_modules/core-js/modules/_object-gops.js");
-var pIE = __webpack_require__(/*! ./_object-pie */ "./node_modules/core-js/modules/_object-pie.js");
-module.exports = function (it) {
-  var result = getKeys(it);
-  var getSymbols = gOPS.f;
-  if (getSymbols) {
-    var symbols = getSymbols(it);
-    var isEnum = pIE.f;
-    var i = 0;
-    var key;
-    while (symbols.length > i) if (isEnum.call(it, key = symbols[i++])) result.push(key);
-  } return result;
-};
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/modules/_export.js":
 /*!*************************************************!*\
   !*** ./node_modules/core-js/modules/_export.js ***!
@@ -1809,31 +5021,6 @@ module.exports = function (KEY, length, exec) {
       : function (string) { return rxfn.call(string, this); }
     );
   }
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/_flags.js":
-/*!************************************************!*\
-  !*** ./node_modules/core-js/modules/_flags.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// 21.2.5.3 get RegExp.prototype.flags
-var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
-module.exports = function () {
-  var that = anObject(this);
-  var result = '';
-  if (that.global) result += 'g';
-  if (that.ignoreCase) result += 'i';
-  if (that.multiline) result += 'm';
-  if (that.unicode) result += 'u';
-  if (that.sticky) result += 'y';
-  return result;
 };
 
 
@@ -2036,17 +5223,18 @@ module.exports = function (it) {
 
 /***/ }),
 
-/***/ "./node_modules/core-js/modules/_is-array.js":
-/*!***************************************************!*\
-  !*** ./node_modules/core-js/modules/_is-array.js ***!
-  \***************************************************/
+/***/ "./node_modules/core-js/modules/_is-integer.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/core-js/modules/_is-integer.js ***!
+  \*****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-// 7.2.2 IsArray(argument)
-var cof = __webpack_require__(/*! ./_cof */ "./node_modules/core-js/modules/_cof.js");
-module.exports = Array.isArray || function isArray(arg) {
-  return cof(arg) == 'Array';
+// 20.1.2.3 Number.isInteger(number)
+var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
+var floor = Math.floor;
+module.exports = function isInteger(it) {
+  return !isObject(it) && isFinite(it) && floor(it) === it;
 };
 
 
@@ -2281,70 +5469,6 @@ module.exports = {};
 /***/ (function(module, exports) {
 
 module.exports = false;
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/_meta.js":
-/*!***********************************************!*\
-  !*** ./node_modules/core-js/modules/_meta.js ***!
-  \***********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var META = __webpack_require__(/*! ./_uid */ "./node_modules/core-js/modules/_uid.js")('meta');
-var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
-var has = __webpack_require__(/*! ./_has */ "./node_modules/core-js/modules/_has.js");
-var setDesc = __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js").f;
-var id = 0;
-var isExtensible = Object.isExtensible || function () {
-  return true;
-};
-var FREEZE = !__webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js")(function () {
-  return isExtensible(Object.preventExtensions({}));
-});
-var setMeta = function (it) {
-  setDesc(it, META, { value: {
-    i: 'O' + ++id, // object ID
-    w: {}          // weak collections IDs
-  } });
-};
-var fastKey = function (it, create) {
-  // return primitive with prefix
-  if (!isObject(it)) return typeof it == 'symbol' ? it : (typeof it == 'string' ? 'S' : 'P') + it;
-  if (!has(it, META)) {
-    // can't set metadata to uncaught frozen object
-    if (!isExtensible(it)) return 'F';
-    // not necessary to add metadata
-    if (!create) return 'E';
-    // add missing metadata
-    setMeta(it);
-  // return object ID
-  } return it[META].i;
-};
-var getWeak = function (it, create) {
-  if (!has(it, META)) {
-    // can't set metadata to uncaught frozen object
-    if (!isExtensible(it)) return true;
-    // not necessary to add metadata
-    if (!create) return false;
-    // add missing metadata
-    setMeta(it);
-  // return hash weak collections IDs
-  } return it[META].w;
-};
-// add metadata on freeze-family methods calling
-var onFreeze = function (it) {
-  if (FREEZE && meta.NEED && isExtensible(it) && !has(it, META)) setMeta(it);
-  return it;
-};
-var meta = module.exports = {
-  KEY: META,
-  NEED: false,
-  fastKey: fastKey,
-  getWeak: getWeak,
-  onFreeze: onFreeze
-};
 
 
 /***/ }),
@@ -2589,36 +5713,6 @@ exports.f = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/mo
 
 /***/ }),
 
-/***/ "./node_modules/core-js/modules/_object-gopn-ext.js":
-/*!**********************************************************!*\
-  !*** ./node_modules/core-js/modules/_object-gopn-ext.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-var toIObject = __webpack_require__(/*! ./_to-iobject */ "./node_modules/core-js/modules/_to-iobject.js");
-var gOPN = __webpack_require__(/*! ./_object-gopn */ "./node_modules/core-js/modules/_object-gopn.js").f;
-var toString = {}.toString;
-
-var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
-  ? Object.getOwnPropertyNames(window) : [];
-
-var getWindowNames = function (it) {
-  try {
-    return gOPN(it);
-  } catch (e) {
-    return windowNames.slice();
-  }
-};
-
-module.exports.f = function getOwnPropertyNames(it) {
-  return windowNames && toString.call(it) == '[object Window]' ? getWindowNames(it) : gOPN(toIObject(it));
-};
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/modules/_object-gopn.js":
 /*!******************************************************!*\
   !*** ./node_modules/core-js/modules/_object-gopn.js ***!
@@ -2633,18 +5727,6 @@ var hiddenKeys = __webpack_require__(/*! ./_enum-bug-keys */ "./node_modules/cor
 exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
   return $keys(O, hiddenKeys);
 };
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/_object-gops.js":
-/*!******************************************************!*\
-  !*** ./node_modules/core-js/modules/_object-gops.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-exports.f = Object.getOwnPropertySymbols;
 
 
 /***/ }),
@@ -3322,38 +6404,6 @@ module.exports = navigator && navigator.userAgent || '';
 
 /***/ }),
 
-/***/ "./node_modules/core-js/modules/_wks-define.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/core-js/modules/_wks-define.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__(/*! ./_global */ "./node_modules/core-js/modules/_global.js");
-var core = __webpack_require__(/*! ./_core */ "./node_modules/core-js/modules/_core.js");
-var LIBRARY = __webpack_require__(/*! ./_library */ "./node_modules/core-js/modules/_library.js");
-var wksExt = __webpack_require__(/*! ./_wks-ext */ "./node_modules/core-js/modules/_wks-ext.js");
-var defineProperty = __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js").f;
-module.exports = function (name) {
-  var $Symbol = core.Symbol || (core.Symbol = LIBRARY ? {} : global.Symbol || {});
-  if (name.charAt(0) != '_' && !(name in $Symbol)) defineProperty($Symbol, name, { value: wksExt.f(name) });
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/_wks-ext.js":
-/*!**************************************************!*\
-  !*** ./node_modules/core-js/modules/_wks-ext.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports.f = __webpack_require__(/*! ./_wks */ "./node_modules/core-js/modules/_wks.js");
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/modules/_wks.js":
 /*!**********************************************!*\
   !*** ./node_modules/core-js/modules/_wks.js ***!
@@ -3441,6 +6491,33 @@ addToUnscopables('entries');
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/es6.function.name.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.function.name.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var dP = __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js").f;
+var FProto = Function.prototype;
+var nameRE = /^\s*function ([^ (]*)/;
+var NAME = 'name';
+
+// 19.2.4.2 name
+NAME in FProto || __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") && dP(FProto, NAME, {
+  configurable: true,
+  get: function () {
+    try {
+      return ('' + this).match(nameRE)[1];
+    } catch (e) {
+      return '';
+    }
+  }
+});
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/es6.number.constructor.js":
 /*!****************************************************************!*\
   !*** ./node_modules/core-js/modules/es6.number.constructor.js ***!
@@ -3518,6 +6595,21 @@ if (!$Number(' 0o1') || !$Number('0b1') || $Number('+0x1')) {
   proto.constructor = $Number;
   __webpack_require__(/*! ./_redefine */ "./node_modules/core-js/modules/_redefine.js")(global, NUMBER, $Number);
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es6.number.is-integer.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.number.is-integer.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 20.1.2.3 Number.isInteger(number)
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'Number', { isInteger: __webpack_require__(/*! ./_is-integer */ "./node_modules/core-js/modules/_is-integer.js") });
 
 
 /***/ }),
@@ -3820,22 +6912,6 @@ $export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(/*! ./_iter-
 
 /***/ }),
 
-/***/ "./node_modules/core-js/modules/es6.regexp.flags.js":
-/*!**********************************************************!*\
-  !*** ./node_modules/core-js/modules/es6.regexp.flags.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 21.2.5.3 get RegExp.prototype.flags()
-if (__webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") && /./g.flags != 'g') __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js").f(RegExp.prototype, 'flags', {
-  configurable: true,
-  get: __webpack_require__(/*! ./_flags */ "./node_modules/core-js/modules/_flags.js")
-});
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/modules/es6.regexp.replace.js":
 /*!************************************************************!*\
   !*** ./node_modules/core-js/modules/es6.regexp.replace.js ***!
@@ -3875,75 +6951,6 @@ __webpack_require__(/*! ./_fix-re-wks */ "./node_modules/core-js/modules/_fix-re
     var fn = regexp == undefined ? undefined : regexp[SEARCH];
     return fn !== undefined ? fn.call(regexp, O) : new RegExp(regexp)[SEARCH](String(O));
   }, $search];
-});
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/es6.regexp.to-string.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/core-js/modules/es6.regexp.to-string.js ***!
-  \**************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-__webpack_require__(/*! ./es6.regexp.flags */ "./node_modules/core-js/modules/es6.regexp.flags.js");
-var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
-var $flags = __webpack_require__(/*! ./_flags */ "./node_modules/core-js/modules/_flags.js");
-var DESCRIPTORS = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js");
-var TO_STRING = 'toString';
-var $toString = /./[TO_STRING];
-
-var define = function (fn) {
-  __webpack_require__(/*! ./_redefine */ "./node_modules/core-js/modules/_redefine.js")(RegExp.prototype, TO_STRING, fn, true);
-};
-
-// 21.2.5.14 RegExp.prototype.toString()
-if (__webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js")(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
-  define(function toString() {
-    var R = anObject(this);
-    return '/'.concat(R.source, '/',
-      'flags' in R ? R.flags : !DESCRIPTORS && R instanceof RegExp ? $flags.call(R) : undefined);
-  });
-// FF44- RegExp#toString has a wrong name
-} else if ($toString.name != TO_STRING) {
-  define(function toString() {
-    return $toString.call(this);
-  });
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/es6.string.ends-with.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/core-js/modules/es6.string.ends-with.js ***!
-  \**************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-// 21.1.3.6 String.prototype.endsWith(searchString [, endPosition])
-
-var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
-var toLength = __webpack_require__(/*! ./_to-length */ "./node_modules/core-js/modules/_to-length.js");
-var context = __webpack_require__(/*! ./_string-context */ "./node_modules/core-js/modules/_string-context.js");
-var ENDS_WITH = 'endsWith';
-var $endsWith = ''[ENDS_WITH];
-
-$export($export.P + $export.F * __webpack_require__(/*! ./_fails-is-regexp */ "./node_modules/core-js/modules/_fails-is-regexp.js")(ENDS_WITH), 'String', {
-  endsWith: function endsWith(searchString /* , endPosition = @length */) {
-    var that = context(this, searchString, ENDS_WITH);
-    var endPosition = arguments.length > 1 ? arguments[1] : undefined;
-    var len = toLength(that.length);
-    var end = endPosition === undefined ? len : Math.min(toLength(endPosition), len);
-    var search = String(searchString);
-    return $endsWith
-      ? $endsWith.call(that, search, end)
-      : that.slice(end - search.length, end) === search;
-  }
 });
 
 
@@ -4004,264 +7011,6 @@ $export($export.P + $export.F * __webpack_require__(/*! ./_fails-is-regexp */ ".
       : that.slice(index, index + search.length) === search;
   }
 });
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/es6.symbol.js":
-/*!****************************************************!*\
-  !*** ./node_modules/core-js/modules/es6.symbol.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// ECMAScript 6 symbols shim
-var global = __webpack_require__(/*! ./_global */ "./node_modules/core-js/modules/_global.js");
-var has = __webpack_require__(/*! ./_has */ "./node_modules/core-js/modules/_has.js");
-var DESCRIPTORS = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js");
-var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
-var redefine = __webpack_require__(/*! ./_redefine */ "./node_modules/core-js/modules/_redefine.js");
-var META = __webpack_require__(/*! ./_meta */ "./node_modules/core-js/modules/_meta.js").KEY;
-var $fails = __webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js");
-var shared = __webpack_require__(/*! ./_shared */ "./node_modules/core-js/modules/_shared.js");
-var setToStringTag = __webpack_require__(/*! ./_set-to-string-tag */ "./node_modules/core-js/modules/_set-to-string-tag.js");
-var uid = __webpack_require__(/*! ./_uid */ "./node_modules/core-js/modules/_uid.js");
-var wks = __webpack_require__(/*! ./_wks */ "./node_modules/core-js/modules/_wks.js");
-var wksExt = __webpack_require__(/*! ./_wks-ext */ "./node_modules/core-js/modules/_wks-ext.js");
-var wksDefine = __webpack_require__(/*! ./_wks-define */ "./node_modules/core-js/modules/_wks-define.js");
-var enumKeys = __webpack_require__(/*! ./_enum-keys */ "./node_modules/core-js/modules/_enum-keys.js");
-var isArray = __webpack_require__(/*! ./_is-array */ "./node_modules/core-js/modules/_is-array.js");
-var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
-var isObject = __webpack_require__(/*! ./_is-object */ "./node_modules/core-js/modules/_is-object.js");
-var toIObject = __webpack_require__(/*! ./_to-iobject */ "./node_modules/core-js/modules/_to-iobject.js");
-var toPrimitive = __webpack_require__(/*! ./_to-primitive */ "./node_modules/core-js/modules/_to-primitive.js");
-var createDesc = __webpack_require__(/*! ./_property-desc */ "./node_modules/core-js/modules/_property-desc.js");
-var _create = __webpack_require__(/*! ./_object-create */ "./node_modules/core-js/modules/_object-create.js");
-var gOPNExt = __webpack_require__(/*! ./_object-gopn-ext */ "./node_modules/core-js/modules/_object-gopn-ext.js");
-var $GOPD = __webpack_require__(/*! ./_object-gopd */ "./node_modules/core-js/modules/_object-gopd.js");
-var $DP = __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js");
-var $keys = __webpack_require__(/*! ./_object-keys */ "./node_modules/core-js/modules/_object-keys.js");
-var gOPD = $GOPD.f;
-var dP = $DP.f;
-var gOPN = gOPNExt.f;
-var $Symbol = global.Symbol;
-var $JSON = global.JSON;
-var _stringify = $JSON && $JSON.stringify;
-var PROTOTYPE = 'prototype';
-var HIDDEN = wks('_hidden');
-var TO_PRIMITIVE = wks('toPrimitive');
-var isEnum = {}.propertyIsEnumerable;
-var SymbolRegistry = shared('symbol-registry');
-var AllSymbols = shared('symbols');
-var OPSymbols = shared('op-symbols');
-var ObjectProto = Object[PROTOTYPE];
-var USE_NATIVE = typeof $Symbol == 'function';
-var QObject = global.QObject;
-// Don't use setters in Qt Script, https://github.com/zloirock/core-js/issues/173
-var setter = !QObject || !QObject[PROTOTYPE] || !QObject[PROTOTYPE].findChild;
-
-// fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
-var setSymbolDesc = DESCRIPTORS && $fails(function () {
-  return _create(dP({}, 'a', {
-    get: function () { return dP(this, 'a', { value: 7 }).a; }
-  })).a != 7;
-}) ? function (it, key, D) {
-  var protoDesc = gOPD(ObjectProto, key);
-  if (protoDesc) delete ObjectProto[key];
-  dP(it, key, D);
-  if (protoDesc && it !== ObjectProto) dP(ObjectProto, key, protoDesc);
-} : dP;
-
-var wrap = function (tag) {
-  var sym = AllSymbols[tag] = _create($Symbol[PROTOTYPE]);
-  sym._k = tag;
-  return sym;
-};
-
-var isSymbol = USE_NATIVE && typeof $Symbol.iterator == 'symbol' ? function (it) {
-  return typeof it == 'symbol';
-} : function (it) {
-  return it instanceof $Symbol;
-};
-
-var $defineProperty = function defineProperty(it, key, D) {
-  if (it === ObjectProto) $defineProperty(OPSymbols, key, D);
-  anObject(it);
-  key = toPrimitive(key, true);
-  anObject(D);
-  if (has(AllSymbols, key)) {
-    if (!D.enumerable) {
-      if (!has(it, HIDDEN)) dP(it, HIDDEN, createDesc(1, {}));
-      it[HIDDEN][key] = true;
-    } else {
-      if (has(it, HIDDEN) && it[HIDDEN][key]) it[HIDDEN][key] = false;
-      D = _create(D, { enumerable: createDesc(0, false) });
-    } return setSymbolDesc(it, key, D);
-  } return dP(it, key, D);
-};
-var $defineProperties = function defineProperties(it, P) {
-  anObject(it);
-  var keys = enumKeys(P = toIObject(P));
-  var i = 0;
-  var l = keys.length;
-  var key;
-  while (l > i) $defineProperty(it, key = keys[i++], P[key]);
-  return it;
-};
-var $create = function create(it, P) {
-  return P === undefined ? _create(it) : $defineProperties(_create(it), P);
-};
-var $propertyIsEnumerable = function propertyIsEnumerable(key) {
-  var E = isEnum.call(this, key = toPrimitive(key, true));
-  if (this === ObjectProto && has(AllSymbols, key) && !has(OPSymbols, key)) return false;
-  return E || !has(this, key) || !has(AllSymbols, key) || has(this, HIDDEN) && this[HIDDEN][key] ? E : true;
-};
-var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(it, key) {
-  it = toIObject(it);
-  key = toPrimitive(key, true);
-  if (it === ObjectProto && has(AllSymbols, key) && !has(OPSymbols, key)) return;
-  var D = gOPD(it, key);
-  if (D && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key])) D.enumerable = true;
-  return D;
-};
-var $getOwnPropertyNames = function getOwnPropertyNames(it) {
-  var names = gOPN(toIObject(it));
-  var result = [];
-  var i = 0;
-  var key;
-  while (names.length > i) {
-    if (!has(AllSymbols, key = names[i++]) && key != HIDDEN && key != META) result.push(key);
-  } return result;
-};
-var $getOwnPropertySymbols = function getOwnPropertySymbols(it) {
-  var IS_OP = it === ObjectProto;
-  var names = gOPN(IS_OP ? OPSymbols : toIObject(it));
-  var result = [];
-  var i = 0;
-  var key;
-  while (names.length > i) {
-    if (has(AllSymbols, key = names[i++]) && (IS_OP ? has(ObjectProto, key) : true)) result.push(AllSymbols[key]);
-  } return result;
-};
-
-// 19.4.1.1 Symbol([description])
-if (!USE_NATIVE) {
-  $Symbol = function Symbol() {
-    if (this instanceof $Symbol) throw TypeError('Symbol is not a constructor!');
-    var tag = uid(arguments.length > 0 ? arguments[0] : undefined);
-    var $set = function (value) {
-      if (this === ObjectProto) $set.call(OPSymbols, value);
-      if (has(this, HIDDEN) && has(this[HIDDEN], tag)) this[HIDDEN][tag] = false;
-      setSymbolDesc(this, tag, createDesc(1, value));
-    };
-    if (DESCRIPTORS && setter) setSymbolDesc(ObjectProto, tag, { configurable: true, set: $set });
-    return wrap(tag);
-  };
-  redefine($Symbol[PROTOTYPE], 'toString', function toString() {
-    return this._k;
-  });
-
-  $GOPD.f = $getOwnPropertyDescriptor;
-  $DP.f = $defineProperty;
-  __webpack_require__(/*! ./_object-gopn */ "./node_modules/core-js/modules/_object-gopn.js").f = gOPNExt.f = $getOwnPropertyNames;
-  __webpack_require__(/*! ./_object-pie */ "./node_modules/core-js/modules/_object-pie.js").f = $propertyIsEnumerable;
-  __webpack_require__(/*! ./_object-gops */ "./node_modules/core-js/modules/_object-gops.js").f = $getOwnPropertySymbols;
-
-  if (DESCRIPTORS && !__webpack_require__(/*! ./_library */ "./node_modules/core-js/modules/_library.js")) {
-    redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
-  }
-
-  wksExt.f = function (name) {
-    return wrap(wks(name));
-  };
-}
-
-$export($export.G + $export.W + $export.F * !USE_NATIVE, { Symbol: $Symbol });
-
-for (var es6Symbols = (
-  // 19.4.2.2, 19.4.2.3, 19.4.2.4, 19.4.2.6, 19.4.2.8, 19.4.2.9, 19.4.2.10, 19.4.2.11, 19.4.2.12, 19.4.2.13, 19.4.2.14
-  'hasInstance,isConcatSpreadable,iterator,match,replace,search,species,split,toPrimitive,toStringTag,unscopables'
-).split(','), j = 0; es6Symbols.length > j;)wks(es6Symbols[j++]);
-
-for (var wellKnownSymbols = $keys(wks.store), k = 0; wellKnownSymbols.length > k;) wksDefine(wellKnownSymbols[k++]);
-
-$export($export.S + $export.F * !USE_NATIVE, 'Symbol', {
-  // 19.4.2.1 Symbol.for(key)
-  'for': function (key) {
-    return has(SymbolRegistry, key += '')
-      ? SymbolRegistry[key]
-      : SymbolRegistry[key] = $Symbol(key);
-  },
-  // 19.4.2.5 Symbol.keyFor(sym)
-  keyFor: function keyFor(sym) {
-    if (!isSymbol(sym)) throw TypeError(sym + ' is not a symbol!');
-    for (var key in SymbolRegistry) if (SymbolRegistry[key] === sym) return key;
-  },
-  useSetter: function () { setter = true; },
-  useSimple: function () { setter = false; }
-});
-
-$export($export.S + $export.F * !USE_NATIVE, 'Object', {
-  // 19.1.2.2 Object.create(O [, Properties])
-  create: $create,
-  // 19.1.2.4 Object.defineProperty(O, P, Attributes)
-  defineProperty: $defineProperty,
-  // 19.1.2.3 Object.defineProperties(O, Properties)
-  defineProperties: $defineProperties,
-  // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
-  getOwnPropertyDescriptor: $getOwnPropertyDescriptor,
-  // 19.1.2.7 Object.getOwnPropertyNames(O)
-  getOwnPropertyNames: $getOwnPropertyNames,
-  // 19.1.2.8 Object.getOwnPropertySymbols(O)
-  getOwnPropertySymbols: $getOwnPropertySymbols
-});
-
-// 24.3.2 JSON.stringify(value [, replacer [, space]])
-$JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function () {
-  var S = $Symbol();
-  // MS Edge converts symbol values to JSON as {}
-  // WebKit converts symbol values to JSON as null
-  // V8 throws on boxed symbols
-  return _stringify([S]) != '[null]' || _stringify({ a: S }) != '{}' || _stringify(Object(S)) != '{}';
-})), 'JSON', {
-  stringify: function stringify(it) {
-    var args = [it];
-    var i = 1;
-    var replacer, $replacer;
-    while (arguments.length > i) args.push(arguments[i++]);
-    $replacer = replacer = args[1];
-    if (!isObject(replacer) && it === undefined || isSymbol(it)) return; // IE8 returns string on undefined
-    if (!isArray(replacer)) replacer = function (key, value) {
-      if (typeof $replacer == 'function') value = $replacer.call(this, key, value);
-      if (!isSymbol(value)) return value;
-    };
-    args[1] = replacer;
-    return _stringify.apply($JSON, args);
-  }
-});
-
-// 19.4.3.4 Symbol.prototype[@@toPrimitive](hint)
-$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(/*! ./_hide */ "./node_modules/core-js/modules/_hide.js")($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
-// 19.4.3.5 Symbol.prototype[@@toStringTag]
-setToStringTag($Symbol, 'Symbol');
-// 20.2.1.9 Math[@@toStringTag]
-setToStringTag(Math, 'Math', true);
-// 24.3.3 JSON[@@toStringTag]
-setToStringTag(global.JSON, 'JSON', true);
-
-
-/***/ }),
-
-/***/ "./node_modules/core-js/modules/es7.symbol.async-iterator.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/core-js/modules/es7.symbol.async-iterator.js ***!
-  \*******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(/*! ./_wks-define */ "./node_modules/core-js/modules/_wks-define.js")('asyncIterator');
 
 
 /***/ }),
@@ -15582,4 +18331,4 @@ Queue.prototype.isEmpty = function () {
 /***/ })
 
 /******/ });
-//# sourceMappingURL=golden-button.js.map
+//# sourceMappingURL=mktplace-download-form.js.map
